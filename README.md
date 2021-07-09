@@ -9,7 +9,7 @@
 
 ## Documentation
 
-* Documentation *(coming soon)*
+* [Documentation](https://cps-it.github.io/handlebars/)
 * [Repository](https://github.com/CPS-IT/handlebars)
 
 ## License

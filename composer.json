@@ -85,6 +85,7 @@
 	},
 	"support": {
 		"issues": "https://github.com/CPS-IT/handlebars/issues",
-		"source": "https://github.com/CPS-IT/handlebars"
+		"source": "https://github.com/CPS-IT/handlebars",
+		"docs": "https://cps-it.github.io/handlebars/"
 	}
 }

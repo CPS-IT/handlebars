@@ -1,0 +1,91 @@
+{
+	"name": "fr/typo3-handlebars",
+	"type": "typo3-cms-extension",
+	"description": "Handlebars rendering for projects built with TYPO3 CMS",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Elias Häußler",
+			"email": "e.haeussler@familie-redlich.de",
+			"homepage": "https://www.familie-redlich.de",
+			"role": "Maintainer"
+		}
+	],
+	"require": {
+		"php": "^7.1 || 8.0.*",
+		"ext-json": "*",
+		"symfony/config": "^4.4 || ^5.0",
+		"symfony/dependency-injection": "^4.4 || ^5.0",
+		"typo3/cms-core": "^10.4",
+		"typo3/cms-frontend": "^10.4",
+		"zordius/lightncandy": "^1.2"
+	},
+	"require-dev": {
+		"ergebnis/composer-normalize": "^2.15",
+		"helmich/typo3-typoscript-lint": "^2.5",
+		"jangregor/phpstan-prophecy": "^0.8",
+		"mikey179/vfsstream": "^1.6",
+		"phpspec/prophecy-phpunit": "^2.0",
+		"phpstan/phpstan": "^0.12",
+		"phpunit/phpunit": "^9.3",
+		"psr/log": "^1.1",
+		"saschaegerer/phpstan-typo3": "^0.13",
+		"typo3/coding-standards": "^0.3.0",
+		"typo3/testing-framework": "^6.8"
+	},
+	"config": {
+		"bin-dir": ".Build/bin",
+		"sort-packages": true,
+		"vendor-dir": ".Build/vendor"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "handlebars",
+			"web-dir": ".Build/web"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"Fr\\Typo3Handlebars\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Fr\\Typo3Handlebars\\Tests\\": "Tests/"
+		}
+	},
+	"scripts": {
+		"post-autoload-dump": [
+			"mkdir -p .Build/web/typo3conf/ext/",
+			"[ -L .Build/web/typo3conf/ext/handlebars ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/handlebars"
+		],
+		"docs": [
+			"@docs:stop",
+			"@docs:start",
+			"sleep 3",
+			"@docs:open"
+		],
+		"docs:build": "@docs:exec run --rm docs build",
+		"docs:exec": "docker-compose -f Documentation/build/docker-compose.yaml",
+		"docs:open": "open http://$(docker-compose -f Documentation/build/docker-compose.yaml port docs 8000)",
+		"docs:start": "@docs:exec up -d",
+		"docs:stop": "@docs:exec down",
+		"lint": [
+			"@lint:php",
+			"@lint:typoscript"
+		],
+		"lint:php": "php-cs-fixer fix",
+		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",
+		"sca": [
+			"@sca:php"
+		],
+		"sca:php": "phpstan analyse -c phpstan.neon",
+		"test": "phpunit -c phpunit.xml",
+		"test:ci": "phpunit -c phpunit.ci.xml"
+	},
+	"support": {
+		"issues": "https://github.com/CPS-IT/handlebars/issues",
+		"source": "https://github.com/CPS-IT/handlebars",
+		"docs": "https://cps-it.github.io/handlebars/"
+	}
+}

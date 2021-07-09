@@ -1,0 +1,67 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Fr\Typo3Handlebars\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/DependencyInjection/*'
+
+  # Renderer
+  handlebars.renderer:
+    class: 'Fr\Typo3Handlebars\Renderer\HandlebarsRenderer'
+    arguments:
+      $templateResolver: '@handlebars.template_resolver'
+      $partialResolver: '@handlebars.partial_resolver'
+      $cache: '@handlebars.cache'
+      $defaultData: '%handlebars.default_data%'
+
+  Fr\Typo3Handlebars\Renderer\RendererInterface:
+    alias: 'handlebars.renderer'
+
+  # Template
+  handlebars.template_resolver:
+    class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
+    arguments:
+      $templateRootPaths: '%handlebars.template_root_paths%'
+
+  handlebars.partial_resolver:
+    class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
+    arguments:
+      $templateRootPaths: '%handlebars.partial_root_paths%'
+
+  Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface:
+    alias: 'handlebars.template_resolver'
+
+  # Data processor
+  Fr\Typo3Handlebars\DataProcessing\SimpleProcessor:
+    public: true
+
+  # Handlebars Helper
+  Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper:
+    tags:
+      - name: handlebars.helper
+        identifier: 'varDump'
+        method: 'evaluate'
+
+  # Cache
+  handlebars.cache:
+    class: 'Fr\Typo3Handlebars\Cache\HandlebarsCache'
+    arguments:
+      $cache: '@cache.handlebars'
+
+  Fr\Typo3Handlebars\Cache\CacheInterface:
+    alias: 'handlebars.cache'
+
+  cache.handlebars:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['handlebars']
+
+handlebars:
+  default_data: []
+  template:
+    template_root_paths: []
+    partial_root_paths: []

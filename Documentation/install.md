@@ -9,7 +9,7 @@
 ## Composer
 
 ```bash
-composer require fr/typo3-handlebars
+composer require cpsit/typo3-handlebars
 ```
 
 ## Define dependencies

@@ -21,14 +21,15 @@
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
-		"ergebnis/composer-normalize": "^2.8",
-		"helmich/typo3-typoscript-lint": "^1.5 || ^2.0",
-		"jangregor/phpstan-prophecy": "^0.8.1",
+		"ergebnis/composer-normalize": "^2.15",
+		"helmich/typo3-typoscript-lint": "^2.5",
+		"jangregor/phpstan-prophecy": "^0.8",
 		"mikey179/vfsstream": "^1.6",
-		"phpspec/prophecy-phpunit": "^1.1 || ^2.0",
+		"phpspec/prophecy-phpunit": "^2.0",
 		"phpstan/phpstan": "^0.12",
+		"phpunit/phpunit": "^9.3",
 		"psr/log": "^1.1",
-		"saschaegerer/phpstan-typo3": "^0.13.1",
+		"saschaegerer/phpstan-typo3": "^0.13",
 		"typo3/coding-standards": "^0.3.0",
 		"typo3/testing-framework": "^6.8"
 	},

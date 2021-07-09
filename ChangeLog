@@ -1,3 +1,6 @@
+2021-07-09         [RELEASE] Release of handlebars 0.5.1 (Elias Häußler)
+2021-07-09 f4483f8 [TASK] Change project vendor to "cpsit" (Elias Häußler)
+
 2021-07-09         [RELEASE] Release of handlebars 0.5.0 (Elias Häußler)
 2021-07-09 e7e0bd5 [DOCS] Add SonarCloud badges (Elias Häußler)
 2021-07-09 aea6322 [TASK] Exclude several development-only files from being exported (Elias Häußler)

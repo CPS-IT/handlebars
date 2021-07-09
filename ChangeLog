@@ -1,3 +1,17 @@
+2021-07-09         [RELEASE] Release of handlebars 0.5.0 (Elias Häußler)
+2021-07-09 e7e0bd5 [DOCS] Add SonarCloud badges (Elias Häußler)
+2021-07-09 aea6322 [TASK] Exclude several development-only files from being exported (Elias Häußler)
+2021-07-09 0072b8a [TASK] Add .gitattributes (Elias Häußler)
+2021-07-09 0f173a3 [TASK] Add workflow for extension publish at TER (Elias Häußler)
+2021-07-09 2113b36 [BUGFIX] Remove unused safety check from ext_emconf.php (Elias Häußler)
+2021-07-09 ff70f47 [TASK] Add project documentation (Elias Häußler)
+2021-07-09 dd39950 [BUGFIX] Define correct dev-requirements (Elias Häußler)
+2021-07-09 907a72f [TASK] Integrate SonarCloud (Elias Häußler)
+2021-07-09 2813166 [TASK] Add GitHub workflow for CGL (Elias Häußler)
+2021-07-09 215eb24 [TASK] Add GitHub workflow for tests (Elias Häußler)
+2021-07-09 32a1ada [BUGFIX] Add missing Composer dependencies (Elias Häußler)
+2021-07-09 440cf9b [TASK] Add initial project files (Elias Häußler)
+
 2021-06-07         [RELEASE] Release of handlebars 0.4.3 (Elias Häußler)
 2021-06-07 e1a27a0 [DOCS] Remove outdated information about TYPO3-specific renderer (Elias Häußler)
 

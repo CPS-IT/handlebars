@@ -1,0 +1,21 @@
+:root {
+    --md-primary-fg-color: #E40024;
+    --md-primary-fg-color--light: #e78585;
+    --md-primary-fg-color--dark: #90030C;
+}
+
+.svg-lightbox {
+    width: 61rem;
+    max-width: calc(100% - 50px);
+    margin: 0 25px;
+}
+
+.svg-lightbox > svg {
+    width: 100%;
+    height: auto;
+}
+
+h2 > .twemoji:first-child {
+    width: 1.125em;
+    margin-right: 0.25em;
+}

@@ -1,0 +1,16 @@
+version: '3.6'
+
+services:
+  docs:
+    build: .
+    container_name: handlebars-docs
+    ports:
+      - 8000
+    volumes:
+      - ../../:/docs
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "localhost:8000"]
+      interval: 1m
+      timeout: 10s
+      retries: 10
+      start_period: 30s

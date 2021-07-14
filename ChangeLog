@@ -1,3 +1,6 @@
+2021-07-14         [RELEASE] Release of handlebars 0.5.3 (Elias Häußler)
+2021-07-14 f92b1d1 [BUGFIX] Fix link to documentation (Elias Häußler)
+
 2021-07-14         [RELEASE] Release of handlebars 0.5.2 (Elias Häußler)
 2021-07-14 6620bff [DOCS] Beautify README.md (Elias Häußler)
 2021-07-14 e2933ac [TASK] Apply new documentation URL in composer.json support section (Elias Häußler)

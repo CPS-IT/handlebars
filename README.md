@@ -23,7 +23,7 @@ Handlebars templates. It is seamlessly integrated into TYPO3 and offers
 extensive configuration options to get all the power out of your templates.
 To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 
-## Features
+## :rocket: Features
 
 * Full rendering environment for Handlebars templates
 * Native support for custom Handlebars helpers
@@ -31,12 +31,12 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 * Built on dependency injection for better performance and maintainability
 * Integration with TYPO3's cache framework for compiled templates
 
-## Installation
+## :fire: Installation
 
 ```bash
 composer require cpsit/typo3-handlebars
 ```
 
-## License
+## :star: License
 
 This project is licensed under [GNU General Public License 2.0 (or later)](LICENSE.md).

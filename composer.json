@@ -60,16 +60,13 @@
 			"[ -L .Build/web/typo3conf/ext/handlebars ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/handlebars"
 		],
 		"docs": [
-			"@docs:stop",
-			"@docs:start",
-			"sleep 3",
+			"@docs:cleanup",
+			"@docs:build",
 			"@docs:open"
 		],
-		"docs:build": "@docs:exec run --rm docs build",
-		"docs:exec": "docker-compose -f Documentation/build/docker-compose.yaml",
-		"docs:open": "open http://$(docker-compose -f Documentation/build/docker-compose.yaml port docs 8000)",
-		"docs:start": "@docs:exec up -d",
-		"docs:stop": "@docs:exec down",
+		"docs:build": "docker-compose run --rm docs",
+		"docs:cleanup": "rm -rf .Build/docs",
+		"docs:open": "open .Build/docs/Result/project/0.0.0/Index.html",
 		"lint": [
 			"@lint:php",
 			"@lint:typoscript"
@@ -86,6 +83,6 @@
 	"support": {
 		"issues": "https://github.com/CPS-IT/handlebars/issues",
 		"source": "https://github.com/CPS-IT/handlebars",
-		"docs": "https://cps-it.github.io/handlebars/"
+		"docs": "https://docs.typo3.org/p/cpit/typo3-handlebars/master/en-us/"
 	}
 }

@@ -1,3 +1,10 @@
+2021-07-14         [RELEASE] Release of handlebars 0.5.2 (Elias Häußler)
+2021-07-14 6620bff [DOCS] Beautify README.md (Elias Häußler)
+2021-07-14 e2933ac [TASK] Apply new documentation URL in composer.json support section (Elias Häußler)
+2021-07-14 2e7e06c [DOCS] Restructure contents in README.md (Elias Häußler)
+2021-07-14 245e1ad [TASK] Switch to official TYPO3 documentation layout (Elias Häußler)
+2021-07-12 fe409e6 [DOCS] Improve README.md and add various links (Elias Häußler)
+
 2021-07-09         [RELEASE] Release of handlebars 0.5.1 (Elias Häußler)
 2021-07-09 f4483f8 [TASK] Change project vendor to "cpsit" (Elias Häußler)
 

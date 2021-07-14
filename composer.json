@@ -83,6 +83,6 @@
 	"support": {
 		"issues": "https://github.com/CPS-IT/handlebars/issues",
 		"source": "https://github.com/CPS-IT/handlebars",
-		"docs": "https://docs.typo3.org/p/cpit/typo3-handlebars/master/en-us/"
+		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/"
 	}
 }

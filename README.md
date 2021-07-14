@@ -10,7 +10,7 @@
 [![Latest Stable Version](http://poser.pugx.org/cpsit/typo3-handlebars/v)](https://packagist.org/packages/cpsit/typo3-handlebars)
 [![License](http://poser.pugx.org/cpsit/typo3-handlebars/license)](LICENSE.md)
 
-**:orange_book: [Documentation](https://docs.typo3.org/p/cpit/typo3-handlebars/master/en-us/)** |
+**:orange_book: [Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/)** |
 :package: [Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |
 :hatched_chick: [TYPO3 extension repository](https://extensions.typo3.org/extension/handlebars) |
 :floppy_disk: [Repository](https://github.com/CPS-IT/handlebars) |

@@ -15,7 +15,7 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 
 ## Links
 
-* [Documentation](https://cps-it.github.io/handlebars/)
+* [Documentation](https://docs.typo3.org/p/cpit/typo3-handlebars/master/en-us/)
 * [Repository](https://github.com/CPS-IT/handlebars)
 * [Packagist](https://packagist.org/packages/cpsit/typo3-handlebars)
 * [TYPO3 extension repository](https://extensions.typo3.org/extension/handlebars)

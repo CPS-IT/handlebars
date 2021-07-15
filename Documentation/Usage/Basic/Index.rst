@@ -166,8 +166,8 @@ Example
           public const LAYOUT_DEFAULT = 0;
 
           private string $header;
-          private string $headerLayout = '';
-          private int $headerLink = self::LAYOUT_DEFAULT;
+          private int $headerLayout = self::LAYOUT_DEFAULT;
+          private string $headerLink = '';
           private string $subheader = '';
 
           public function __construct(string $header)

@@ -120,7 +120,7 @@ Build documentation
    # Open rendered documentation
    composer docs:open
 
-The built docs will be stored in `.Build/docs`.
+The built docs will be stored in :file:`.Build/docs`.
 
 .. _pull-request:
 

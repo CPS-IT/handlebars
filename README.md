@@ -10,11 +10,11 @@
 [![Latest Stable Version](http://poser.pugx.org/cpsit/typo3-handlebars/v)](https://packagist.org/packages/cpsit/typo3-handlebars)
 [![License](http://poser.pugx.org/cpsit/typo3-handlebars/license)](LICENSE.md)
 
-**:orange_book: [Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/)** |
-:package: [Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |
-:hatched_chick: [TYPO3 extension repository](https://extensions.typo3.org/extension/handlebars) |
-:floppy_disk: [Repository](https://github.com/CPS-IT/handlebars) |
-:bug: [Issue tracker](https://github.com/CPS-IT/handlebars/issues)
+**:orange_book:&nbsp;&nbsp;[Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/)** |
+:package:&nbsp;&nbsp;[Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |
+:hatched_chick:&nbsp;&nbsp;[TYPO3 extension repository](https://extensions.typo3.org/extension/handlebars) |
+:floppy_disk:&nbsp;&nbsp;[Repository](https://github.com/CPS-IT/handlebars) |
+:bug:&nbsp;&nbsp;[Issue tracker](https://github.com/CPS-IT/handlebars/issues)
 
 </div>
 

@@ -16,8 +16,8 @@
 		"ext-json": "*",
 		"symfony/config": "^4.4 || ^5.0",
 		"symfony/dependency-injection": "^4.4 || ^5.0",
-		"typo3/cms-core": "^10.4",
-		"typo3/cms-frontend": "^10.4",
+		"typo3/cms-core": "^10.4 || 11.*.*@dev",
+		"typo3/cms-frontend": "^10.4 || 11.*.*@dev",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {

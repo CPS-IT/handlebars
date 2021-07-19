@@ -8,11 +8,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [7.3]
-        typo3-version: [10.4]
         include:
-          - php-version: 7.4
-            typo3-version: 10.4
+          - typo3-version: 10.4
+            php-version: 7.3
+          - typo3-version: 10.4
+            php-version: 7.4
+          - typo3-version: 11.3
+            php-version: 7.4
+          - typo3-version: 11.3
+            php-version: 8.0
             coverage: 1
     steps:
       - uses: actions/checkout@v2
@@ -66,8 +70,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [7.4, 7.3]
-        typo3-version: [10.4]
+        include:
+          - typo3-version: 10.4
+            php-version: 7.3
+          - typo3-version: 10.4
+            php-version: 7.4
+          - typo3-version: 11.3
+            php-version: 7.4
+          - typo3-version: 11.3
+            php-version: 8.0
     steps:
       - uses: actions/checkout@v2
 

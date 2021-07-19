@@ -18,9 +18,9 @@ Installation
 Requirements
 ============
 
-* PHP 7.1+
+* PHP 7.1 - 8.0
 * Composer
-* TYPO3 10.4 LTS
+* TYPO3 10.4 LTS - 11.x
 
 .. _steps:
 

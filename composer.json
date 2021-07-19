@@ -1,7 +1,7 @@
 {
 	"name": "cpsit/typo3-handlebars",
 	"type": "typo3-cms-extension",
-	"description": "Handlebars rendering for projects built with TYPO3 CMS",
+	"description": "Handlebars rendering extension for projects built with TYPO3 CMS",
 	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
@@ -16,8 +16,8 @@
 		"ext-json": "*",
 		"symfony/config": "^4.4 || ^5.0",
 		"symfony/dependency-injection": "^4.4 || ^5.0",
-		"typo3/cms-core": "^10.4",
-		"typo3/cms-frontend": "^10.4",
+		"typo3/cms-core": "^10.4 || 11.*.*@dev",
+		"typo3/cms-frontend": "^10.4 || 11.*.*@dev",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {

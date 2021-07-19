@@ -1,3 +1,9 @@
+2021-07-19         [RELEASE] Release of handlebars 0.5.5 (Elias Häußler)
+2021-07-19 581e7d3 [TASK] Update project description (Elias Häußler)
+2021-07-19 42fb656 [DOCS] Update installation requirements in documentation (Elias Häußler)
+2021-07-19 1f446a9 [TASK] Add TYPO3 11.3 to GitHub test workflow (Elias Häußler)
+2021-07-19 583f6ca [TASK] Adapt requirements for TYPO3 v11 support (Elias Häußler)
+
 2021-07-15         [RELEASE] Release of handlebars 0.5.4 (Elias Häußler)
 2021-07-15 9676461 [TASK] Add GitHub issue templates (Elias Häußler)
 2021-07-15 a236fc3 [DOCS] Add official contribution guide (Elias Häußler)

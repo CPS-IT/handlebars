@@ -22,14 +22,14 @@
 /** @noinspection PhpUndefinedVariableInspection */
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Handlebars',
-    'description' => 'Handlebars rendering for projects built with TYPO3 CMS',
+    'description' => 'A TYPO3 extension that provides an entire rendering environment for Handlebars templates. It is seamlessly integrated into TYPO3 and offers extensive configuration options to get all the power out of your templates.',
     'category' => 'fe',
     'version' => '0.5.4',
     'state' => 'beta',
     'clearCacheOnLoad' => true,
     'author' => 'Elias Häußler',
     'author_email' => 'e.haeussler@familie-redlich.de',
-    'author_company' => 'familie redlich :digital GmbH',
+    'author_company' => 'familie redlich digital GmbH',
     'constraints' => [
         'depends' => [
             'typo3' => '10.4.0-11.99.99',

@@ -45,7 +45,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     /**
      * @var string[]
      */
-    private $supportedFileExtensions;
+    protected $supportedFileExtensions;
 
     /**
      * @param string[] $templateRootPaths

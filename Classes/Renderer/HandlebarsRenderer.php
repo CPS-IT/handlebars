@@ -25,6 +25,8 @@ namespace Fr\Typo3Handlebars\Renderer;
 
 use Fr\Typo3Handlebars\Cache\CacheInterface;
 use Fr\Typo3Handlebars\Cache\NullCache;
+use Fr\Typo3Handlebars\Event\AfterRenderingEvent;
+use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
 use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
 use Fr\Typo3Handlebars\Exception\TemplateCompilationException;
 use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
@@ -34,6 +36,7 @@ use LightnCandy\Context;
 use LightnCandy\LightnCandy;
 use LightnCandy\Partial;
 use LightnCandy\Runtime;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -53,6 +56,11 @@ class HandlebarsRenderer implements RendererInterface, LoggerAwareInterface
      * @var CacheInterface
      */
     protected $cache;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
 
     /**
      * @var TemplateResolverInterface
@@ -76,17 +84,20 @@ class HandlebarsRenderer implements RendererInterface, LoggerAwareInterface
 
     /**
      * @param CacheInterface $cache
+     * @param EventDispatcherInterface $eventDispatcher
      * @param TemplateResolverInterface $templateResolver
      * @param TemplateResolverInterface|null $partialResolver
      * @param array<mixed, mixed> $defaultData
      */
     public function __construct(
         CacheInterface $cache,
+        EventDispatcherInterface $eventDispatcher,
         TemplateResolverInterface $templateResolver,
         TemplateResolverInterface $partialResolver = null,
         array $defaultData = []
     ) {
         $this->cache = $cache;
+        $this->eventDispatcher = $eventDispatcher;
         $this->templateResolver = $templateResolver;
         $this->partialResolver = $partialResolver;
         $this->defaultData = $defaultData;
@@ -139,10 +150,21 @@ class HandlebarsRenderer implements RendererInterface, LoggerAwareInterface
             throw new TemplateCompilationException('Cannot prepare compiled render function.', 1614705397);
         }
 
-        return $renderer($mergedData, [
+        // Dispatch before rendering event
+        $beforeRenderingEvent = new BeforeRenderingEvent($fullTemplatePath, $mergedData, $this);
+        $this->eventDispatcher->dispatch($beforeRenderingEvent);
+
+        // Render content
+        $content = $renderer($beforeRenderingEvent->getData(), [
             'debug' => Runtime::DEBUG_TAGS_HTML,
             'helpers' => $this->helpers,
         ]);
+
+        // Dispatch after rendering event
+        $afterRenderingEvent = new AfterRenderingEvent($fullTemplatePath, $content, $this);
+        $this->eventDispatcher->dispatch($afterRenderingEvent);
+
+        return $afterRenderingEvent->getContent();
     }
 
     /**

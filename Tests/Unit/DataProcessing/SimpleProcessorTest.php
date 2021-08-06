@@ -32,6 +32,7 @@ use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\Test\TestLogger;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -75,7 +76,7 @@ class SimpleProcessorTest extends UnitTestCase
 
         $this->contentObjectRendererProphecy = $this->prophesize(ContentObjectRenderer::class);
         $this->logger = new TestLogger();
-        $this->renderer = new HandlebarsRenderer($this->getCache(), $this->getTemplateResolver());
+        $this->renderer = new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver());
         $this->subject = new SimpleProcessor($this->renderer);
         $this->subject->cObj = $this->contentObjectRendererProphecy->reveal();
         $this->subject->setLogger($this->logger);

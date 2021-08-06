@@ -31,6 +31,7 @@ use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Presenter\DummyPresenter;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
 use Psr\Log\Test\TestLogger;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -69,7 +70,7 @@ class AbstractDataProcessorTest extends UnitTestCase
         parent::setUp();
 
         $this->logger = new TestLogger();
-        $this->presenter = new DummyPresenter(new HandlebarsRenderer($this->getCache(), $this->getTemplateResolver()));
+        $this->presenter = new DummyPresenter(new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver()));
         $this->provider = new DummyProvider();
         $this->subject = new DummyProcessor();
         $this->subject->setPresenter($this->presenter);

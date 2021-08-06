@@ -24,3 +24,4 @@ primarily aimed at specifically extending the standard components.
    SharedComponents/Index
    CustomRenderingComponents/Index
    CreateACustomHelper/Index
+   Events/Index

@@ -35,6 +35,7 @@ use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\Test\TestLogger;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -259,7 +260,7 @@ class HandlebarsRendererTest extends UnitTestCase
      */
     public function resolvePartialReturnsNullIfNoPartialResolverIsRegistered(): void
     {
-        $subject = new HandlebarsRenderer($this->getCache(), $this->getTemplateResolver());
+        $subject = new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver());
 
         self::assertNull($subject->resolvePartial([], 'foo'));
     }
@@ -318,7 +319,7 @@ class HandlebarsRendererTest extends UnitTestCase
     protected function renewSubject(string $rendererClass = HandlebarsRenderer::class): HandlebarsRenderer
     {
         $this->logger = new TestLogger();
-        $this->subject = new $rendererClass($this->getCache(), $this->getTemplateResolver(), $this->getPartialResolver());
+        $this->subject = new $rendererClass($this->getCache(), new EventDispatcher(), $this->getTemplateResolver(), $this->getPartialResolver());
         $this->subject->setLogger($this->logger);
 
         return $this->subject;

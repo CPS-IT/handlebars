@@ -1,3 +1,9 @@
+2021-08-06         [RELEASE] Release of handlebars 0.6.0 (Elias Häußler)
+2021-08-06 270eba4 [BUGFIX] Make class property protected instead of private (Elias Häußler)
+2021-08-06 a60e328 [!!!][FEATURE] Introduce BeforeRenderingEvent and AfterRenderingEvent (Elias Häußler)
+2021-07-19 cecfc52 [TASK] Add code of conduct (Elias Häußler)
+2021-07-19 6efbfb3 [DOCS] Remove double whitespaces from README.md (Elias Häußler)
+
 2021-07-19         [RELEASE] Release of handlebars 0.5.5 (Elias Häußler)
 2021-07-19 581e7d3 [TASK] Update project description (Elias Häußler)
 2021-07-19 42fb656 [DOCS] Update installation requirements in documentation (Elias Häußler)

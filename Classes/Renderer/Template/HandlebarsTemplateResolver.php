@@ -48,12 +48,12 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     protected $supportedFileExtensions;
 
     /**
-     * @param string[] $templateRootPaths
+     * @param TemplatePaths $templateRootPaths
      * @param string[] $supportedFileExtensions
      */
-    public function __construct(array $templateRootPaths, array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS)
+    public function __construct(TemplatePaths $templateRootPaths, array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS)
     {
-        $this->setTemplateRootPaths($templateRootPaths);
+        $this->setTemplateRootPaths($templateRootPaths->get());
         $this->setSupportedFileExtensions($supportedFileExtensions);
     }
 
@@ -69,7 +69,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
      * Set sorted list of template root paths.
      *
      * Sorts the given template root paths by array key and applies them to the resolver.
-     * Addtionally, trailing directory separators are stripped of to normalize paths and
+     * Additionally, trailing directory separators are stripped of to normalize paths and
      * allow less error-prone template path resolving.
      *
      * @param string[] $templateRootPaths List of (probably unsorted) template root paths

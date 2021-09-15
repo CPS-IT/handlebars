@@ -6,13 +6,21 @@
 Template paths
 ==============
 
+There exist several ways to declare template root paths and partial root
+paths. The most relevant ones are described below.
+
+.. _configuration-via-service-container:
+
+Configuration via service container
+===================================
+
 .. attention::
 
    Make sure you have defined :ref:`EXT:handlebars as dependency <define-dependencies>`
    in your extension(s). Otherwise, template root paths might not be interpreted correctly.
 
-Registration of template root paths and partial root paths is done within
-the :file:`Services.yaml` file:
+The easiest way to register your template root paths and partial root paths
+is by using the :file:`Services.yaml` file:
 
 .. code-block:: yaml
 
@@ -34,6 +42,35 @@ service container resulting in the following parameters:
 
 You can reference those parameters in your custom configuration to use the
 resolved template paths in your services.
+
+The drawback of this configuration is that it is applied to the whole TYPO3
+instance since there exists only one service container for the whole system.
+In case you need different template paths for specific parts of your
+installation, take a look at the following configuration method that uses
+TypoScript.
+
+.. _configuration-via-typoscript:
+
+Configuration via TypoScript
+============================
+
+A more flexible configuration method is the usage of TypoScript. This way you
+can override the configuration from the service container (as described above)
+which allows you to define different template root paths and partial root
+paths for specific parts of the system.
+
+.. code-block:: typoscript
+
+   plugin.tx_handlebars {
+     view {
+       templateRootPaths {
+         20 = EXT:my_other_extension/Resources/Private/Templates
+       }
+       partialRootPaths {
+         20 = EXT:my_other_extension/Resources/Private/Partials
+       }
+     }
+   }
 
 .. note::
 

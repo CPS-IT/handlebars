@@ -89,8 +89,9 @@ final class HandlebarsHelperPass implements CompilerPassInterface
 
         foreach (array_keys($container->findTaggedServiceIds($this->rendererTagName)) as $serviceId) {
             $rendererDefinition = $container->findDefinition($serviceId);
+            $rendererClass = $rendererDefinition->getClass();
 
-            if (in_array(HelperAwareInterface::class, class_implements($rendererDefinition->getClass()))) {
+            if (null !== $rendererClass && in_array(HelperAwareInterface::class, class_implements($rendererClass))) {
                 $this->rendererDefinitions[] = $rendererDefinition;
             }
         }

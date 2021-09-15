@@ -25,6 +25,7 @@ namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing;
 
 use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
 use Fr\Typo3Handlebars\Exception\UnableToPresentException;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * DummyProcessor
@@ -49,5 +50,10 @@ final class DummyProcessor extends AbstractDataProcessor
             $content .= ' ' . json_encode($this->configuration);
         }
         return $content;
+    }
+
+    public function getContentObjectRenderer(): ContentObjectRenderer
+    {
+        return $this->cObj;
     }
 }

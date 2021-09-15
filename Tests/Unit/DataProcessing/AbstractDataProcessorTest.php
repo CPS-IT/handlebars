@@ -32,6 +32,7 @@ use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
 use Psr\Log\Test\TestLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -108,5 +109,17 @@ class AbstractDataProcessorTest extends UnitTestCase
         // Test whether configuration is respected
         $expected = '{"foo":"baz"} {"another":"foo"}';
         self::assertSame($expected, $this->subject->process('', ['another' => 'foo']));
+    }
+
+    /**
+     * @test
+     */
+    public function setContentObjectRendererAppliesContentObjectRenderer(): void
+    {
+        $contentObjectRenderer = new ContentObjectRenderer();
+
+        $this->subject->setContentObjectRenderer($contentObjectRenderer);
+
+        self::assertSame($contentObjectRenderer, $this->subject->getContentObjectRenderer());
     }
 }

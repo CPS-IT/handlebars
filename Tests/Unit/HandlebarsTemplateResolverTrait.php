@@ -24,7 +24,11 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Tests\Unit;
 
 use Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver;
+use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
 use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
+use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
+use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplatePaths;
+use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -58,9 +62,7 @@ trait HandlebarsTemplateResolverTrait
     protected function getTemplateResolver(): TemplateResolverInterface
     {
         if ($this->templateResolver === null) {
-            $this->templateResolver = new HandlebarsTemplateResolver([
-                $this->getTemplateRootPath(),
-            ]);
+            $this->templateResolver = new HandlebarsTemplateResolver($this->getTemplatePaths());
         }
         return $this->templateResolver;
     }
@@ -68,11 +70,28 @@ trait HandlebarsTemplateResolverTrait
     protected function getPartialResolver(): TemplateResolverInterface
     {
         if ($this->partialResolver === null) {
-            $this->partialResolver = new HandlebarsTemplateResolver([
-                $this->getPartialRootPath(),
-            ]);
+            $this->partialResolver = new HandlebarsTemplateResolver($this->getTemplatePaths(TemplatePaths::PARTIALS));
         }
         return $this->partialResolver;
+    }
+
+    protected function getTemplatePaths(string $type = TemplatePaths::TEMPLATES): DummyTemplatePaths
+    {
+        $container = $this->getContainer($type);
+
+        $templatePaths = new DummyTemplatePaths(new DummyConfigurationManager(), $type);
+        $templatePaths->setContainer($container);
+
+        return $templatePaths;
+    }
+
+    protected function getContainer(string $type = TemplatePaths::TEMPLATES): Container
+    {
+        $templateRootPath = TemplatePaths::PARTIALS === $type ? $this->getPartialRootPath() : $this->getTemplateRootPath();
+        $container = new Container();
+        $container->setParameter('handlebars.' . $type, [10 => $templateRootPath]);
+
+        return $container;
     }
 
     public function getTemplateRootPath(): string

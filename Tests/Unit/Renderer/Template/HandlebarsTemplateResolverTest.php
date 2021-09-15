@@ -59,7 +59,7 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
         $this->expectExceptionCode(1613727984);
 
         /** @phpstan-ignore-next-line */
-        new HandlebarsTemplateResolver([null]);
+        new HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths([null]));
     }
 
     /**
@@ -70,7 +70,7 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613728252);
 
-        new HandlebarsTemplateResolver(['EXT:foo/baz']);
+        new HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths(['EXT:foo/baz']));
     }
 
     /**
@@ -82,7 +82,7 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
         $this->expectExceptionCode(1613727952);
 
         /** @phpstan-ignore-next-line */
-        new HandlebarsTemplateResolver([$this->getTemplateRootPath()], [true]);
+        new HandlebarsTemplateResolver($this->getTemplatePaths(), [true]);
     }
 
     /**
@@ -93,7 +93,7 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613727713);
 
-        new HandlebarsTemplateResolver([$this->getTemplateRootPath()], ['.foo']);
+        new HandlebarsTemplateResolver($this->getTemplatePaths(), ['.foo']);
     }
 
     /**
@@ -104,7 +104,7 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613727593);
 
-        new HandlebarsTemplateResolver([$this->getTemplateRootPath()], ['foo?!']);
+        new HandlebarsTemplateResolver($this->getTemplatePaths(), ['foo?!']);
     }
 
     /**

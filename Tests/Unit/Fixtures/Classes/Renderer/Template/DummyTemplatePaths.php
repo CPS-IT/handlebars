@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,32 +21,26 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Configuration;
+namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
+
+use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
 
 /**
- * Extension
+ * DummyTemplatePaths
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
- * @codeCoverageIgnore
+ * @internal
  */
-final class Extension
+final class DummyTemplatePaths extends TemplatePaths
 {
-    public const KEY = 'handlebars';
-    public const NAME = 'Handlebars';
-
     /**
-     * Register additional caches.
-     *
-     * FOR USE IN ext_localconf.php ONLY.
+     * @param string[] $templatePaths
+     * @return self
      */
-    public static function registerCaches(): void
+    public function setTemplatePaths(array $templatePaths): self
     {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars'] ?? null)) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars'] = [];
-        }
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'])) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] = ['pages'];
-        }
+        $this->templatePaths = $templatePaths;
+        return $this;
     }
 }

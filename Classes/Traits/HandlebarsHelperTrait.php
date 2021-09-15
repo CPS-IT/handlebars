@@ -42,21 +42,28 @@ trait HandlebarsHelperTrait
     /**
      * @param string $name
      * @param mixed $function
-     * @return self
      */
-    public function registerHelper(string $name, $function): self
+    public function registerHelper(string $name, $function): void
     {
-        if (!$this->isValidHelper($function)) {
-            if ($this->logger instanceof LoggerInterface) {
-                $this->logger->critical(
-                    'Error while registering Handlebars helper "' . $name . '".',
-                    ['name' => $name, 'function' => $function]
-                );
-            }
-            return $this;
+        if ($this->isValidHelper($function)) {
+            $this->helpers[$name] = $this->resolveHelperFunction($function);
+            return;
         }
-        $this->helpers[$name] = $this->resolveHelperFunction($function);
-        return $this;
+
+        if ($this->logger instanceof LoggerInterface) {
+            $this->logger->critical(
+                'Error while registering Handlebars helper "' . $name . '".',
+                ['name' => $name, 'function' => $function]
+            );
+        }
+    }
+
+    /**
+     * @return array<string, callable>
+     */
+    public function getHelpers(): array
+    {
+        return $this->helpers;
     }
 
     /**

@@ -21,19 +21,28 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits;
-
-use Fr\Typo3Handlebars\Traits\HandlebarsHelperTrait;
-use Psr\Log\LoggerAwareTrait;
+namespace Fr\Typo3Handlebars\Renderer;
 
 /**
- * DummyHandlebarsHelperTraitClass
+ * HelperAwareInterface
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class DummyHandlebarsHelperTraitClass
+interface HelperAwareInterface
 {
-    use HandlebarsHelperTrait;
-    use LoggerAwareTrait;
+    /**
+     * Get all registered Handlebars helpers.
+     *
+     * @return array<string, callable>
+     */
+    public function getHelpers(): array;
+
+    /**
+     * Register new Handlebars helper with given function.
+     *
+     * @param string $name
+     * @param mixed $function
+     */
+    public function registerHelper(string $name, $function): void;
 }

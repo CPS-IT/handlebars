@@ -17,6 +17,7 @@ services:
       $partialResolver: '@handlebars.partial_resolver'
       $cache: '@handlebars.cache'
       $defaultData: '%handlebars.default_data%'
+    tags: ['handlebars.renderer']
 
   Fr\Typo3Handlebars\Renderer\RendererInterface:
     alias: 'handlebars.renderer'

@@ -26,6 +26,7 @@ return [
         '.build',
         '.git',
         '.github',
+        'resources\\/private\\/libs\\/build',
         'tailor-version-upload',
         'tests',
     ],

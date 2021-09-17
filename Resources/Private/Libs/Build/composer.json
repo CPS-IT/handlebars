@@ -1,0 +1,20 @@
+{
+	"name": "cpsit/typo3-handlebars-libs",
+	"description": "Additional libraries to support non-composer mode of EXT:handlebars",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Elias Häußler",
+			"email": "e.haeussler@familie-redlich.de",
+			"homepage": "https://www.familie-redlich.de",
+			"role": "Maintainer"
+		}
+	],
+	"require": {
+		"zordius/lightncandy": "^1.2"
+	},
+	"config": {
+		"lock": false
+	}
+
+}

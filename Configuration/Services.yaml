@@ -78,6 +78,22 @@ services:
   Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver:
     public: true
 
+  # Console commands
+  Fr\Typo3Handlebars\Command\DebugHelpersCommand:
+    arguments:
+      $rendererLocator: !tagged_locator { tag: handlebars.renderer }
+    tags:
+      - name: console.command
+        command: 'handlebars:debug:helpers'
+        schedulable: false
+  Fr\Typo3Handlebars\Command\DebugModulesCommand:
+    arguments:
+      $dataProcessors: !tagged_iterator handlebars.processor
+    tags:
+      - name: console.command
+        command: 'handlebars:debug:modules'
+        schedulable: false
+
 handlebars:
   default_data: []
   template:

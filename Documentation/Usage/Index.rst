@@ -16,3 +16,4 @@ own components.
 
    Basic/Index
    Extended/Index
+   Cli/Index

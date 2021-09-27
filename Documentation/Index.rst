@@ -52,5 +52,6 @@ Contents
    Configuration/Index
    Usage/Index
    RenderingConcept/Index
+   Compatibility/Index
    Contributing/Index
    Sitemap

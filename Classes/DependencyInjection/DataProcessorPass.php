@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\DependencyInjection;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\DependencyInjection\Compatibility\ProcessorCompatibility;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -39,18 +40,24 @@ final class DataProcessorPass implements CompilerPassInterface
     /**
      * @var string
      */
-    private $tagName;
+    private $processorTagName;
 
-    public function __construct(string $tagName)
+    /**
+     * @var string
+     */
+    private $compatibilityTagName;
+
+    public function __construct(string $processorTagName, string $compatibilityTagName)
     {
-        $this->tagName = $tagName;
+        $this->processorTagName = $processorTagName;
+        $this->compatibilityTagName = $compatibilityTagName;
     }
 
     public function process(ContainerBuilder $container): void
     {
-        $container->registerForAutoconfiguration(DataProcessorInterface::class)->addTag($this->tagName);
+        $container->registerForAutoconfiguration(DataProcessorInterface::class)->addTag($this->processorTagName);
 
-        foreach ($container->findTaggedServiceIds($this->tagName) as $id => $tags) {
+        foreach ($container->findTaggedServiceIds($this->processorTagName) as $id => $tags) {
             $service = $container->findDefinition($id);
             $service->setPublic(true);
 
@@ -63,6 +70,13 @@ final class DataProcessorPass implements CompilerPassInterface
             if (!$processingBridge->hasMethodCall('setProvider')) {
                 $providerService = $processingBridge->getProvider();
                 $service->addMethodCall('setProvider', [$providerService]);
+            }
+
+            // Build compatibility layers
+            $compatibilityTags = $container->getDefinition($id)->getTag($this->compatibilityTagName);
+            foreach (array_filter($compatibilityTags) as $attributes) {
+                $processorCompatibility = new ProcessorCompatibility($id, $attributes, $container);
+                $processorCompatibility->provideCompatibility();
             }
         }
     }

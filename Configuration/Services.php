@@ -31,6 +31,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return function (/** @noinspection PhpUnusedParameterInspection */ ContainerConfigurator $containerConfigurator, ContainerBuilder $container) {
     $container->registerExtension(new HandlebarsExtension());
-    $container->addCompilerPass(new DataProcessorPass('handlebars.processor'));
+    $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
     $container->addCompilerPass(new HandlebarsHelperPass('handlebars.helper', 'handlebars.renderer'));
 };

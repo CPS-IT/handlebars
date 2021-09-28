@@ -31,6 +31,7 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final class ProcessingBridge
 {

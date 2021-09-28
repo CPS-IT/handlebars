@@ -26,7 +26,10 @@ namespace Fr\Typo3Handlebars\Tests\Unit\Compatibility\View;
 use Fr\Typo3Handlebars\Compatibility\View\ExtbaseViewAdapter;
 use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyViewResolver;
+use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyView;
+use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -38,11 +41,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class HandlebarsViewResolverTest extends UnitTestCase
 {
     /**
-     * @var DummyViewResolver
-     */
-    protected $defaultViewResolver;
-
-    /**
      * @var HandlebarsViewResolver
      */
     protected $subject;
@@ -51,8 +49,22 @@ class HandlebarsViewResolverTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->defaultViewResolver = new DummyViewResolver();
-        $this->subject = new HandlebarsViewResolver($this->defaultViewResolver, [
+        // Handle different constructor arguments between TYPO3 11.4+ and lower
+        $reflectionClass = new \ReflectionClass(GenericViewResolver::class);
+        $firstConstructorArgumentReflection = $reflectionClass->getConstructor()->getParameters()[0];
+        if ($firstConstructorArgumentReflection->getClass()->getName() === ObjectManager::class) {
+            $objectManagerProphecy = $this->prophesize(ObjectManager::class);
+            $objectManagerProphecy->get('foo')->willReturn(new DummyView());
+            $firstConstructorArgument = $objectManagerProphecy->reveal();
+        } else {
+            $container = new Container();
+            $container->set('foo', new DummyView());
+            $firstConstructorArgument = $container;
+        }
+
+        $this->subject = new HandlebarsViewResolver($firstConstructorArgument);
+        $this->subject->setDefaultViewClass('foo');
+        $this->subject->setProcessorMap([
             'FooController' => [
                 '_all' => new DummyProcessor(),
                 'foo' => new DummyProcessor(),
@@ -91,17 +103,5 @@ class HandlebarsViewResolverTest extends UnitTestCase
             ExtbaseViewAdapter::class,
             $this->subject->resolve('FooController', 'baz', 'html')
         );
-    }
-
-    /**
-     * @test
-     */
-    public function setDefaultViewClassPassesDefaultViewClassToDefaultViewResolver(): void
-    {
-        self::assertNull($this->defaultViewResolver->getDefaultViewClass());
-
-        $this->subject->setDefaultViewClass('foo');
-
-        self::assertSame('foo', $this->defaultViewResolver->getDefaultViewClass());
     }
 }

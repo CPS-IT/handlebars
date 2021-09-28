@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 
 use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
+use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -68,22 +69,36 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
         $actions = GeneralUtility::trimExplode(',', $configuration['actions'] ?? '_all', true);
         $actionMap = array_fill_keys($actions, new Reference($processorServiceId));
 
-        // Initialize processor map
-        try {
-            $processorMap = $this->viewResolverDefinition->getArgument('$processorMap');
-        } catch (\Exception $exception) {
-            $processorMap = [];
-        }
-
-        // Merge processor maps
-        $processorMap[$controllerClassName] = array_replace($processorMap[$controllerClassName] ?? [], $actionMap);
+        // Merge and apply processor map
+        $processorMap = $this->buildProcessorMap($controllerClassName, $actionMap);
+        $this->viewResolverDefinition->removeMethodCall('setProcessorMap');
+        $this->viewResolverDefinition->addMethodCall('setProcessorMap', [$processorMap]);
 
         // Apply processor map and register method call
-        $this->viewResolverDefinition->setArgument('$processorMap', $processorMap);
         $controllerDefinition->removeMethodCall('injectViewResolver');
         $controllerDefinition->addMethodCall('injectViewResolver', [new Reference($this->viewResolverDefinition->getClass())]);
 
         return true;
+    }
+
+    /**
+     * @param string $controllerClassName
+     * @param array<string, Reference> $actionMap
+     * @return array<string, array<string, DataProcessorInterface>>
+     */
+    private function buildProcessorMap(string $controllerClassName, array $actionMap): array
+    {
+        $processorMap = [];
+
+        foreach ($this->viewResolverDefinition->getMethodCalls() as $call) {
+            if ($call[0] === 'setProcessorMap') {
+                $processorMap = $call[1][0];
+            }
+        }
+
+        $processorMap[$controllerClassName] = array_replace($processorMap[$controllerClassName] ?? [], $actionMap);
+
+        return $processorMap;
     }
 
     /**

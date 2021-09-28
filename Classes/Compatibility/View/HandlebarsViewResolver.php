@@ -25,8 +25,8 @@ namespace Fr\Typo3Handlebars\Compatibility\View;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-use TYPO3\CMS\Extbase\Mvc\View\ViewResolverInterface;
 
 /**
  * HandlebarsViewResolver
@@ -34,42 +34,20 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewResolverInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsViewResolver implements ViewResolverInterface
+class HandlebarsViewResolver extends GenericViewResolver
 {
-    /**
-     * @var ViewResolverInterface
-     */
-    protected $defaultViewResolver;
-
     /**
      * @var array<string, array<string, DataProcessorInterface>>
      */
-    protected $processorMap;
-
-    /**
-     * @param ViewResolverInterface $defaultViewResolver
-     * @param array<string, array<string, DataProcessorInterface>> $processorMap
-     */
-    public function __construct(ViewResolverInterface $defaultViewResolver, array $processorMap)
-    {
-        $this->defaultViewResolver = $defaultViewResolver;
-        $this->processorMap = $processorMap;
-    }
+    protected $processorMap = [];
 
     public function resolve(string $controllerObjectName, string $actionName, string $format): ViewInterface
     {
         if (!$this->hasProcessor($controllerObjectName, $actionName)) {
-            return $this->defaultViewResolver->resolve($controllerObjectName, $actionName, $format);
+            return parent::resolve($controllerObjectName, $actionName, $format);
         }
 
         return $this->buildView($controllerObjectName, $actionName);
-    }
-
-    public function setDefaultViewClass(string $defaultViewClass): void
-    {
-        if (method_exists($this->defaultViewResolver, 'setDefaultViewClass')) {
-            $this->defaultViewResolver->setDefaultViewClass($defaultViewClass);
-        }
     }
 
     protected function buildView(string $controllerClassName, string $actionName): ExtbaseViewAdapter
@@ -102,5 +80,15 @@ class HandlebarsViewResolver implements ViewResolverInterface
         }
 
         return $fallbackProcessor;
+    }
+
+    /**
+     * @param array<string, array<string, DataProcessorInterface>> $processorMap
+     * @return self
+     */
+    public function setProcessorMap(array $processorMap): self
+    {
+        $this->processorMap = $processorMap;
+        return $this;
     }
 }

@@ -74,6 +74,10 @@ services:
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['handlebars']
 
+  # Compatibility
+  Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver:
+    public: true
+
 handlebars:
   default_data: []
   template:

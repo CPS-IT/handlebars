@@ -134,22 +134,34 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
 
         $this->subject->provide($processorServiceId, $configuration);
 
-        $expectedProcessorMap = [
-            DummyController::class => [
-                'foo' => $processorReference,
-                'baz' => $processorReference,
+        $expectedViewResolverMethodCalls = [
+            [
+                'setProcessorMap',
+                [
+                    [
+                        DummyController::class => [
+                            'foo' => $processorReference,
+                            'baz' => $processorReference,
+                        ],
+                    ],
+                ],
             ],
         ];
-        $expectedMethodCalls = [
-            ['injectViewResolver', [new Reference(HandlebarsViewResolver::class)]],
+        $expectedControllerMethodCalls = [
+            [
+                'injectViewResolver',
+                [
+                    new Reference(HandlebarsViewResolver::class),
+                ],
+            ],
         ];
 
         self::assertEquals(
-            $expectedProcessorMap,
-            $this->container->getDefinition(HandlebarsViewResolver::class)->getArgument('$processorMap')
+            $expectedViewResolverMethodCalls,
+            $this->container->getDefinition(HandlebarsViewResolver::class)->getMethodCalls()
         );
         self::assertEquals(
-            $expectedMethodCalls,
+            $expectedControllerMethodCalls,
             $this->container->getDefinition(DummyController::class)->getMethodCalls()
         );
     }
@@ -175,24 +187,37 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
         $this->subject->provide($firstProcessorServiceId, $firstConfiguration);
         $this->subject->provide($secondProcessorServiceId, $secondConfiguration);
 
-        $expectedProcessorMap = [
-            DummyController::class => [
-                'foo' => $firstProcessorReference,
-                'baz' => $firstProcessorReference,
-                '_all' => $secondProcessorReference,
+        $expectedViewResolverMethodCalls = [
+            // Index is 1 since the first method call is removed in the second provide() call
+            1 => [
+                'setProcessorMap',
+                [
+                    [
+                        DummyController::class => [
+                            'foo' => $firstProcessorReference,
+                            'baz' => $firstProcessorReference,
+                            '_all' => $secondProcessorReference,
+                        ],
+                    ],
+                ],
             ],
         ];
-        $expectedMethodCalls = [
+        $expectedControllerMethodCalls = [
             // Index is 1 since the first method call is removed in the second provide() call
-            1 => ['injectViewResolver', [new Reference(HandlebarsViewResolver::class)]],
+            1 => [
+                'injectViewResolver',
+                [
+                    new Reference(HandlebarsViewResolver::class),
+                ],
+            ],
         ];
 
         self::assertEquals(
-            $expectedProcessorMap,
-            $this->container->getDefinition(HandlebarsViewResolver::class)->getArgument('$processorMap')
+            $expectedViewResolverMethodCalls,
+            $this->container->getDefinition(HandlebarsViewResolver::class)->getMethodCalls()
         );
         self::assertEquals(
-            $expectedMethodCalls,
+            $expectedControllerMethodCalls,
             $this->container->getDefinition(DummyController::class)->getMethodCalls()
         );
     }

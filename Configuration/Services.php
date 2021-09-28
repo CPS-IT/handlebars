@@ -21,16 +21,13 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars;
+namespace Fr\Typo3Handlebars\DependencyInjection;
 
-use Fr\Typo3Handlebars\DependencyInjection\DataProcessorPass;
-use Fr\Typo3Handlebars\DependencyInjection\Extension\HandlebarsExtension;
-use Fr\Typo3Handlebars\DependencyInjection\HandlebarsHelperPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return function (/** @noinspection PhpUnusedParameterInspection */ ContainerConfigurator $containerConfigurator, ContainerBuilder $container) {
-    $container->registerExtension(new HandlebarsExtension());
+    $container->registerExtension(new Extension\HandlebarsExtension());
     $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
     $container->addCompilerPass(new HandlebarsHelperPass('handlebars.helper', 'handlebars.renderer'));
 };

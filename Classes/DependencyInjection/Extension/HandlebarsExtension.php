@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final class HandlebarsExtension extends Extension
 {

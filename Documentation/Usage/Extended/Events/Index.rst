@@ -6,6 +6,10 @@
 Events
 ======
 
+.. versionadded:: 0.7.0
+
+   `Feature: #10 - Introduce BeforeRenderingEvent and AfterRenderingEvent <https://github.com/CPS-IT/handlebars/pull/10>`__
+
 There are several events available that allow to influence the rendering.
 Event listeners must be registered via the service configuration. More
 information can be found in the :ref:`official TYPO3 documentation <t3coreapi:EventDispatcherRegistration>`.

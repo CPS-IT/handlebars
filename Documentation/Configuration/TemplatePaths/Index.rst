@@ -54,6 +54,10 @@ TypoScript.
 Configuration via TypoScript
 ============================
 
+.. versionadded:: 0.7.0
+
+   `Feature: #15 - Allow TypoScript as configuration for template paths <https://github.com/CPS-IT/handlebars/pull/15>`__
+
 A more flexible configuration method is the usage of TypoScript. This way you
 can override the configuration from the service container (as described above)
 which allows you to define different template root paths and partial root

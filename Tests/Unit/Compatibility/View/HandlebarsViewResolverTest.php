@@ -27,6 +27,7 @@ use Fr\Typo3Handlebars\Compatibility\View\ExtbaseViewAdapter;
 use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyView;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -40,6 +41,8 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class HandlebarsViewResolverTest extends UnitTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var HandlebarsViewResolver
      */

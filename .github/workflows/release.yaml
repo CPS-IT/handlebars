@@ -13,6 +13,8 @@ jobs:
       release-notes-url: ${{ steps.create-release.outputs.url }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Check if tag is valid
       - name: Check tag
@@ -28,7 +30,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           addSections: '{"documentation":{"prefix":"### Documentation","labels":["documentation"]},"feature":{"prefix":"### Added","labels":["feature"]}}'
-          issueLineLabels: "breaking"
           breakingLabel: "### Breaking"
           enhancementLabel: "### Changed"
           bugsLabel: "### Fixed"
@@ -41,7 +42,7 @@ jobs:
           issuesWoLabels: false
           pullRequests: true
           prWoLabels: true
-          stripHeaders: true
+          stripHeaders: false
           stripGeneratorNotice: true
       - name: Print changelog to console
         run: cat CHANGELOG.md
@@ -65,6 +66,8 @@ jobs:
       TYPO3_EXCLUDE_FROM_PACKAGING: packaging_exclude.php
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Check if tag is valid
       - name: Check tag

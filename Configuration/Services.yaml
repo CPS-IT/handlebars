@@ -17,6 +17,7 @@ services:
       $partialResolver: '@handlebars.partial_resolver'
       $cache: '@handlebars.cache'
       $defaultData: '%handlebars.default_data%'
+    tags: ['handlebars.renderer']
 
   Fr\Typo3Handlebars\Renderer\RendererInterface:
     alias: 'handlebars.renderer'
@@ -25,15 +26,28 @@ services:
   handlebars.template_resolver:
     class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
     arguments:
-      $templateRootPaths: '%handlebars.template_root_paths%'
+      $templateRootPaths: '@handlebars.template_paths.template_root_paths'
 
   handlebars.partial_resolver:
     class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
     arguments:
-      $templateRootPaths: '%handlebars.partial_root_paths%'
+      $templateRootPaths: '@handlebars.template_paths.partial_root_paths'
 
   Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface:
     alias: 'handlebars.template_resolver'
+
+  handlebars.template_paths:
+    class: 'Fr\Typo3Handlebars\Renderer\Template\TemplatePaths'
+    calls:
+      - setContainer: ['@service_container']
+  handlebars.template_paths.template_root_paths:
+    parent: 'handlebars.template_paths'
+    arguments:
+      $type: 'template_root_paths'
+  handlebars.template_paths.partial_root_paths:
+    parent: 'handlebars.template_paths'
+    arguments:
+      $type: 'partial_root_paths'
 
   # Data processor
   Fr\Typo3Handlebars\DataProcessing\SimpleProcessor:
@@ -59,6 +73,10 @@ services:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['handlebars']
+
+  # Compatibility
+  Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver:
+    public: true
 
 handlebars:
   default_data: []

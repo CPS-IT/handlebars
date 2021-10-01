@@ -102,6 +102,12 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
         return $this;
     }
 
+    public function setContentObjectRenderer(ContentObjectRenderer $cObj): self
+    {
+        $this->cObj = $cObj;
+        return $this;
+    }
+
     /**
      * Process and render data.
      *

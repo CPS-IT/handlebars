@@ -23,15 +23,17 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection;
 
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
+use Fr\Typo3Handlebars\Renderer\HelperAwareInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
 /**
  * HandlebarsHelperPass
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  * @codeCoverageIgnore
  */
 final class HandlebarsHelperPass implements CompilerPassInterface
@@ -39,48 +41,80 @@ final class HandlebarsHelperPass implements CompilerPassInterface
     /**
      * @var string
      */
-    private $tagName;
+    private $helperTagName;
 
     /**
      * @var string
      */
-    private $rendererServiceId;
+    private $rendererTagName;
 
-    public function __construct(string $tagName, string $rendererId = HandlebarsRenderer::class)
+    /**
+     * @var Definition[]
+     */
+    private $rendererDefinitions = [];
+
+    public function __construct(string $helperTagName, string $rendererTagName)
     {
-        $this->tagName = $tagName;
-        $this->rendererServiceId = $rendererId;
+        $this->helperTagName = $helperTagName;
+        $this->rendererTagName = $rendererTagName;
     }
 
     public function process(ContainerBuilder $container): void
     {
-        $handlebarsRendererDefinition = $container->findDefinition($this->rendererServiceId);
+        $this->fetchRendererDefinitions($container);
 
-        foreach ($container->findTaggedServiceIds($this->tagName) as $serviceName => $tags) {
-            $container->findDefinition($serviceName)->setPublic(true);
+        // Register tagged Handlebars helper at all Helper-aware renderers
+        foreach ($container->findTaggedServiceIds($this->helperTagName) as $serviceId => $tags) {
+            $container->findDefinition($serviceId)->setPublic(true);
 
             foreach (array_filter($tags) as $attributes) {
-                if (!array_key_exists('identifier', $attributes) || (string)$attributes['identifier'] === '') {
-                    throw new \InvalidArgumentException(
-                        'Service tag "' . $this->tagName . '" requires an identifier attribute to be defined, missing in: ' . $serviceName,
-                        1606236820
-                    );
-                }
-                if (!array_key_exists('method', $attributes) || (string)$attributes['method'] === '') {
-                    throw new \InvalidArgumentException(
-                        'Service tag "' . $this->tagName . '" requires an method attribute to be defined, missing in: ' . $serviceName,
-                        1606245140
-                    );
-                }
-
-                // Register Handlebars helpers globally
-                $identifier = $attributes['identifier'];
-                $method = $attributes['method'];
-                $handlebarsRendererDefinition->addMethodCall('registerHelper', [
-                    $identifier,
-                    $serviceName . '::' . $method,
-                ]);
+                $this->validateTag($serviceId, $attributes);
+                $this->registerHelper(
+                    $attributes['identifier'],
+                    sprintf('%s::%s', $serviceId, $attributes['method'])
+                );
             }
+        }
+    }
+
+    private function registerHelper(string $name, string $function): void
+    {
+        foreach ($this->rendererDefinitions as $rendererDefinition) {
+            $rendererDefinition->addMethodCall('registerHelper', [$name, $function]);
+        }
+    }
+
+    protected function fetchRendererDefinitions(ContainerBuilder $container): void
+    {
+        $this->rendererDefinitions = [];
+
+        foreach (array_keys($container->findTaggedServiceIds($this->rendererTagName)) as $serviceId) {
+            $rendererDefinition = $container->findDefinition($serviceId);
+            $rendererClass = $rendererDefinition->getClass();
+
+            if (null !== $rendererClass && in_array(HelperAwareInterface::class, class_implements($rendererClass))) {
+                $this->rendererDefinitions[] = $rendererDefinition;
+            }
+        }
+    }
+
+    /**
+     * @param string $serviceId
+     * @param array<string, string> $tagAttributes
+     */
+    private function validateTag(string $serviceId, array $tagAttributes): void
+    {
+        if (!array_key_exists('identifier', $tagAttributes) || '' === (string)$tagAttributes['identifier']) {
+            throw new \InvalidArgumentException(
+                sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
+                1606236820
+            );
+        }
+        if (!array_key_exists('method', $tagAttributes) || '' === (string)$tagAttributes['method']) {
+            throw new \InvalidArgumentException(
+                sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
+                1606245140
+            );
         }
     }
 }

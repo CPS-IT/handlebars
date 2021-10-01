@@ -36,12 +36,4 @@ final class DummyHandlebarsHelperTraitClass
 {
     use HandlebarsHelperTrait;
     use LoggerAwareTrait;
-
-    /**
-     * @return array<string, string>
-     */
-    public function getHelpers(): array
-    {
-        return $this->helpers;
-    }
 }

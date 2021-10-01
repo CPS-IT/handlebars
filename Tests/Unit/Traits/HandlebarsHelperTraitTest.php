@@ -97,6 +97,17 @@ class HandlebarsHelperTraitTest extends UnitTestCase
     }
 
     /**
+     * @test
+     */
+    public function getHelpersReturnsRegisteredHelpers(): void
+    {
+        self::assertSame([], $this->subject->getHelpers());
+
+        $this->subject->registerHelper('foo', 'strtolower');
+        self::assertSame(['foo' => 'strtolower'], $this->subject->getHelpers());
+    }
+
+    /**
      * @return \Generator<string, array>
      */
     public function registerHelperLogsCriticalErrorIfGivenHelperIsInvalidDataProvider(): \Generator

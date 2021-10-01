@@ -20,6 +20,12 @@ describes a `Renderer`. A distinction must be made as to whether the
 custom `Renderer` is to be used for all components or only for individual
 variants.
 
+.. important::
+
+   If you want your custom `Renderer` to be autoconfigured with all globally
+   registered `Helpers`, make sure to tag it with `handlebars.renderer` and
+   implement the interface :php:`Fr\Typo3Handlebars\Renderer\HelperAwareInterface`.
+
 .. _global-replacement:
 
 Global replacement
@@ -136,5 +142,5 @@ Sources
    View the sources on GitHub:
 
    -  `RendererInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/RendererInterface.php>`__
+   -  `HelperAwareInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/HelperAwareInterface.php>`__
    -  `TemplateResolverInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/Template/TemplateResolverInterface.php>`__
-

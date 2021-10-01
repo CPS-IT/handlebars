@@ -30,6 +30,7 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 * Easy to extend and customize
 * Built on dependency injection for better performance and maintainability
 * Integration with TYPO3's cache framework for compiled templates
+* Compatibility layers for TYPO3 core components
 
 ## :fire: Installation
 

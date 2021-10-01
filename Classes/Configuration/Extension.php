@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Configuration;
 
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Extension
  *
@@ -33,6 +36,7 @@ namespace Fr\Typo3Handlebars\Configuration;
 final class Extension
 {
     public const KEY = 'handlebars';
+    public const NAME = 'Handlebars';
 
     /**
      * Register additional caches.
@@ -46,6 +50,24 @@ final class Extension
         }
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'])) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] = ['pages'];
+        }
+    }
+
+    /**
+     * Load additional libraries provided by PHAR file (only to be used in non-Composer-mode).
+     *
+     * FOR USE IN ext_localconf.php AND NON-COMPOSER-MODE ONLY.
+     */
+    public static function loadVendorLibraries(): void
+    {
+        // Vendor libraries are already available in Composer mode
+        if (Environment::isComposerMode()) {
+            return;
+        }
+
+        $vendorPharFile = GeneralUtility::getFileAbsFileName('EXT:handlebars/Resources/Private/Libs/vendors.phar');
+        if (file_exists($vendorPharFile)) {
+            require_once 'phar://' . $vendorPharFile . '/vendor/autoload.php';
         }
     }
 }

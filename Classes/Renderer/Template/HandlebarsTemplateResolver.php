@@ -25,7 +25,6 @@ namespace Fr\Typo3Handlebars\Renderer\Template;
 
 use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 
 /**
  * HandlebarsTemplateResolver
@@ -177,7 +176,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
                 1613727952
             );
         }
-        if (StringUtility::beginsWith(trim($fileExtension), '.')) {
+        if (str_starts_with(trim($fileExtension), '.')) {
             throw new \InvalidArgumentException('File extension must not start with a dot.', 1613727713);
         }
         if (preg_match('/^[\w\-.]+$/', $fileExtension) !== 1) {

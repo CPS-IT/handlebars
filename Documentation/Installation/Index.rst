@@ -19,15 +19,14 @@ Requirements
 Installation
 ============
 
-Require the extension via Composer:
+Require the extension via Composer (recommended):
 
 .. code-block:: bash
 
    composer require cpsit/typo3-handlebars
 
 Or download it from
-`TYPO3 extension repository <https://extensions.typo3.org/extension/handlebars>`__
-(not recommended).
+`TYPO3 extension repository <https://extensions.typo3.org/extension/handlebars>`__.
 
 .. _define-dependencies:
 

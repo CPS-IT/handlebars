@@ -1,3 +1,7 @@
+2021-10-07         [RELEASE] Release of handlebars 0.7.1 (Elias Häußler)
+2021-10-06 f6fd0dc [DOCS] Recommend Composer installation (Elias Häußler)
+2021-10-06 2cd222d [TASK] Add official support for TYPO3 11.5 LTS (Elias Häußler)
+
 2021-10-01         [RELEASE] Release of handlebars 0.7.0 (Elias Häußler)
 2021-10-01 6ed33dd [BUGFIX] Fix configuration of release workflow (Elias Häußler)
 2021-10-01 94df480 [DOCS] Add compatibility layers as features to README.md (Elias Häußler)

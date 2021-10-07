@@ -11,6 +11,7 @@
 		}
 	],
 	"require": {
+		"symfony/polyfill-php80": "^1.23",
 		"zordius/lightncandy": "^1.2"
 	},
 	"config": {

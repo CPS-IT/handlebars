@@ -12,22 +12,21 @@ Requirements
 ============
 
 * PHP 7.1 - 8.0
-* TYPO3 10.4 LTS - 11.x
+* TYPO3 10.4 LTS - 11.5 LTS
 
 .. _steps:
 
 Installation
 ============
 
-Require the extension via Composer:
+Require the extension via Composer (recommended):
 
 .. code-block:: bash
 
    composer require cpsit/typo3-handlebars
 
 Or download it from
-`TYPO3 extension repository <https://extensions.typo3.org/extension/handlebars>`__
-(not recommended).
+`TYPO3 extension repository <https://extensions.typo3.org/extension/handlebars>`__.
 
 .. _define-dependencies:
 

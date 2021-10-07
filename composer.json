@@ -17,8 +17,9 @@
 		"psr/event-dispatcher": "^1.0",
 		"symfony/config": "^4.4 || ^5.0",
 		"symfony/dependency-injection": "^4.4 || ^5.0",
-		"typo3/cms-core": "^10.4 || 11.*.*@dev",
-		"typo3/cms-frontend": "^10.4 || 11.*.*@dev",
+		"symfony/polyfill-php80": "^1.23",
+		"typo3/cms-core": "^10.4 || ^11.5",
+		"typo3/cms-frontend": "^10.4 || ^11.5",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
@@ -33,7 +34,7 @@
 		"saschaegerer/phpstan-typo3": "^0.13",
 		"symfony/event-dispatcher": "^4.4 || ^5.0",
 		"typo3/coding-standards": "^0.3.0",
-		"typo3/testing-framework": "^6.10"
+		"typo3/testing-framework": "^6.11.2"
 	},
 	"config": {
 		"bin-dir": ".Build/bin",

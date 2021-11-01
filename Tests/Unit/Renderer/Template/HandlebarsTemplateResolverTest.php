@@ -181,7 +181,7 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
      */
     public function resolveTemplatePathResolvesAbsoluteTemplatePathCorrectly(): void
     {
-        $templatePath = 'EXT:handlebars/Tests/Unit/Fixtures/Templates/DummyTemplate.hbs';
+        $templatePath = dirname(__DIR__, 2) . '/Fixtures/Templates/DummyTemplate.hbs';
         $expected = $this->getTemplateRootPath() . '/DummyTemplate.hbs';
 
         self::assertSame($expected, $this->subject->resolveTemplatePath($templatePath));

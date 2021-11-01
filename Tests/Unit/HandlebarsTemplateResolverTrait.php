@@ -29,7 +29,6 @@ use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplatePaths;
 use Symfony\Component\DependencyInjection\Container;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * HandlebarsTemplateResolverTrait
@@ -97,7 +96,7 @@ trait HandlebarsTemplateResolverTrait
     public function getTemplateRootPath(): string
     {
         if ($this->templateRootPath === null) {
-            $this->templateRootPath = GeneralUtility::getFileAbsFileName('EXT:handlebars/Tests/Unit/Fixtures/Templates');
+            $this->templateRootPath = __DIR__ . '/Fixtures/Templates';
         }
         return $this->templateRootPath;
     }
@@ -105,7 +104,7 @@ trait HandlebarsTemplateResolverTrait
     public function getPartialRootPath(): string
     {
         if ($this->partialRootPath === null) {
-            $this->partialRootPath = GeneralUtility::getFileAbsFileName('EXT:handlebars/Tests/Unit/Fixtures/Partials');
+            $this->partialRootPath = __DIR__ . '/Fixtures/Partials';
         }
         return $this->partialRootPath;
     }

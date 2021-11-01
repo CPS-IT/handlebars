@@ -9,6 +9,10 @@ services:
     exclude:
       - '../Classes/DependencyInjection/*'
 
+  Fr\Typo3Handlebars\Generator\HelperGenerator:
+    arguments:
+      $rendererLocator: !tagged_locator { tag: handlebars.renderer }
+
   # Renderer
   handlebars.renderer:
     class: 'Fr\Typo3Handlebars\Renderer\HandlebarsRenderer'
@@ -92,6 +96,20 @@ services:
     tags:
       - name: console.command
         command: 'handlebars:debug:modules'
+        schedulable: false
+  Fr\Typo3Handlebars\Command\NewHelperCommand:
+    arguments:
+      $diCache: '@cache.di'
+    tags:
+      - name: console.command
+        command: 'handlebars:new:helper'
+        schedulable: false
+  Fr\Typo3Handlebars\Command\NewModuleCommand:
+#    arguments:
+#      $diCache: '@cache.di'
+    tags:
+      - name: console.command
+        command: 'handlebars:new:module'
         schedulable: false
 
 handlebars:

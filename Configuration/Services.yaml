@@ -105,8 +105,8 @@ services:
         command: 'handlebars:new:helper'
         schedulable: false
   Fr\Typo3Handlebars\Command\NewModuleCommand:
-#    arguments:
-#      $diCache: '@cache.di'
+    arguments:
+      $diCache: '@cache.di'
     tags:
       - name: console.command
         command: 'handlebars:new:module'

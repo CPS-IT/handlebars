@@ -33,6 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
 
 /**
@@ -48,11 +49,13 @@ final class NewModuleCommand extends BaseFileGenerationCommand
     public function __construct(
         ModuleGenerator $generator,
         PackageManager $packageManager,
+        FrontendInterface $diCache,
         string $name = null
     ) {
         parent::__construct($name);
         $this->generator = $generator;
         $this->packageManager = $packageManager;
+        $this->diCache = $diCache;
         $this->highlighter = new Highlighter(new StatefulCliDecorator());
     }
 

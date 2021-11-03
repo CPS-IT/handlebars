@@ -14,5 +14,7 @@ is up to date in order to use commands successfully.
 .. toctree::
    :maxdepth: 1
 
+   CreateNewHelper
+   CreateNewModule
    ListHelpers
    ListModules

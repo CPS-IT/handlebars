@@ -45,11 +45,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  *   handlebars:list:modules
  *   handlebars:list:modules TextMedia
+ *   handlebars:list:modules "Form*"
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ListModulesCommand extends Command
+final class ListModulesCommand extends Command
 {
     /**
      * @var DataProcessorInterface[]

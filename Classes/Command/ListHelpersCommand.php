@@ -47,7 +47,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ListHelpersCommand extends Command
+final class ListHelpersCommand extends Command
 {
     use HandlebarsRendererResolverTrait;
 

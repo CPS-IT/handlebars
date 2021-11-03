@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Console command "handlebars:debug:modules".
+ * Console command "handlebars:list:modules".
  *
  * Use this console command to show all globally registered Handlebars components.
  * Note that only components that are registered using the service configuration
@@ -39,17 +39,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * Usage:
  *
- *   handlebars:debug:modules [name]
+ *   handlebars:list:modules [name]
  *
  * Example:
  *
- *   handlebars:debug:modules
- *   handlebars:debug:modules TextMedia
+ *   handlebars:list:modules
+ *   handlebars:list:modules TextMedia
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class DebugModulesCommand extends Command
+class ListModulesCommand extends Command
 {
     /**
      * @var DataProcessorInterface[]

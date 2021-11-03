@@ -14,5 +14,5 @@ is up to date in order to use commands successfully.
 .. toctree::
    :maxdepth: 1
 
-   DebugHelpers
-   DebugModules
+   ListHelpers
+   ListModules

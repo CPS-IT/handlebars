@@ -31,23 +31,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 /**
- * Console command "handlebars:debug:helpers".
+ * Console command "handlebars:list:helpers".
  *
  * Use this console command to show all globally registered Handlebars helpers. Note that
  * only helpers that are registered using the service configuration will be shown.
  *
  * Usage:
  *
- *   handlebars:debug:helpers
+ *   handlebars:list:helpers
  *
  * Example:
  *
- *   handlebars:debug:helpers
+ *   handlebars:list:helpers
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class DebugHelpersCommand extends Command
+class ListHelpersCommand extends Command
 {
     use HandlebarsRendererResolverTrait;
 

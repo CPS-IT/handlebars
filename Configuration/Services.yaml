@@ -83,19 +83,19 @@ services:
     public: true
 
   # Console commands
-  Fr\Typo3Handlebars\Command\DebugHelpersCommand:
+  Fr\Typo3Handlebars\Command\ListHelpersCommand:
     arguments:
       $rendererLocator: !tagged_locator { tag: handlebars.renderer }
     tags:
       - name: console.command
-        command: 'handlebars:debug:helpers'
+        command: 'handlebars:list:helpers'
         schedulable: false
-  Fr\Typo3Handlebars\Command\DebugModulesCommand:
+  Fr\Typo3Handlebars\Command\ListModulesCommand:
     arguments:
       $dataProcessors: !tagged_iterator handlebars.processor
     tags:
       - name: console.command
-        command: 'handlebars:debug:modules'
+        command: 'handlebars:list:modules'
         schedulable: false
   Fr\Typo3Handlebars\Command\NewHelperCommand:
     arguments:

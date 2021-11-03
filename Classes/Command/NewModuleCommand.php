@@ -37,7 +37,25 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
 
 /**
- * NewModuleCommand
+ * Console command "handlebars:new:module".
+ *
+ * Use this console command to create a complete new Handlebars module,
+ * including the following components:
+ *
+ *   - DataProcessor
+ *   - DataProvider
+ *   - ProviderResponse
+ *   - Presenter
+ *
+ * Usage:
+ *
+ *   handlebars:new:module [name] [<options>]
+ *
+ * Example:
+ *
+ *   handlebars:new:module "baz" -e "foo"
+ *   handlebars:new:module "baz" -e "foo" --force-overwrite
+ *   handlebars:new:module "baz" -e "foo" --flush-cache
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later

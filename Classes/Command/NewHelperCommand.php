@@ -39,7 +39,22 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
 
 /**
- * NewHelperCommand
+ * Console command "handlebars:new:helper".
+ *
+ * Use this console command to create a new Handlebars helper. Note that
+ * helpers must be unique in the system, otherwise the command will fail.
+ *
+ * Usage:
+ *
+ *   handlebars:new:helper [name] [<options>]
+ *
+ * Example:
+ *
+ *   handlebars:new:helper "baz" -e "foo"
+ *   handlebars:new:helper "baz" -e "foo" -c "FooBazHelper"
+ *   handlebars:new:helper "baz" -e "foo" -m "process"
+ *   handlebars:new:helper "baz" -e "foo" --force-overwrite
+ *   handlebars:new:helper "baz" -e "foo" --flush-cache
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later

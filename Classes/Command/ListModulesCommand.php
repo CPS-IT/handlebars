@@ -33,8 +33,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Console command "handlebars:list:modules".
  *
- * Use this console command to show all globally registered Handlebars components.
- * Note that only components that are registered using the service configuration
+ * Use this console command to show all globally registered Handlebars modules.
+ * Note that only modules that are registered using the service configuration
  * will be shown.
  *
  * Usage:

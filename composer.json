@@ -40,6 +40,7 @@
 		"phpspec/prophecy-phpunit": "^2.0",
 		"phpstan/phpstan": "^1.2",
 		"phpstan/phpstan-phpunit": "^1.1",
+		"phpunit/phpcov": "^8.2",
 		"phpunit/phpunit": "^9.5",
 		"saschaegerer/phpstan-typo3": "^1.0",
 		"symfony/event-dispatcher": "^4.4 || ^5.0",
@@ -103,7 +104,18 @@
 			"@sca:php"
 		],
 		"sca:php": "phpstan analyse -c phpstan.neon",
-		"test": "phpunit -c phpunit.xml",
-		"test:ci": "phpunit -c phpunit.ci.xml"
+		"test": [
+			"@test:functional",
+			"@test:unit"
+		],
+		"test:ci": [
+			"@test:ci:functional",
+			"@test:ci:unit"
+		],
+		"test:ci:functional": "phpunit -c phpunit.ci.functional.xml",
+		"test:ci:merge": "phpcov merge --html .Build/log/coverage/html/_merged --clover .Build/log/coverage/clover.xml --text php://stdout .Build/log/coverage/php",
+		"test:ci:unit": "phpunit -c phpunit.ci.unit.xml",
+		"test:functional": "phpunit -c phpunit.functional.xml",
+		"test:unit": "phpunit -c phpunit.unit.xml"
 	}
 }

@@ -20,6 +20,11 @@ jobs:
           - typo3-version: 11.5
             php-version: 8.1
             coverage: 1
+    env:
+      typo3DatabaseName: typo3
+      typo3DatabaseHost: '127.0.0.1'
+      typo3DatabaseUsername: root
+      typo3DatabasePassword: root
     steps:
       - uses: actions/checkout@v2
         with:
@@ -32,6 +37,10 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: xdebug
+
+      # Start MySQL service
+      - name: Start MySQL
+        run: sudo /etc/init.d/mysql start
 
       # Define Composer cache
       - name: Get Composer cache directory
@@ -52,7 +61,9 @@ jobs:
 
       # Run tests
       - name: Run tests
-        run: composer test:ci -- --coverage-text
+        run: |
+          composer test:ci -- --coverage-text
+          composer test:ci:merge
 
       # Report coverage
       - name: Fix coverage path
@@ -92,6 +103,11 @@ jobs:
             php-version: 8.0
           - typo3-version: 11.5
             php-version: 8.1
+    env:
+      typo3DatabaseName: typo3
+      typo3DatabaseHost: '127.0.0.1'
+      typo3DatabaseUsername: root
+      typo3DatabasePassword: root
     steps:
       - uses: actions/checkout@v2
         with:
@@ -104,6 +120,10 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: xdebug
+
+      # Start MySQL service
+      - name: Start MySQL
+        run: sudo /etc/init.d/mysql start
 
       # Define Composer cache
       - name: Get Composer cache directory

@@ -13,3 +13,4 @@ for compatibility with other TYPO3 components.
    :maxdepth: 1
 
    ExtbaseControllers
+   ExtbaseRepositories

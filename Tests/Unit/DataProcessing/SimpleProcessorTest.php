@@ -88,7 +88,7 @@ class SimpleProcessorTest extends UnitTestCase
     /**
      * @test
      * @dataProvider processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider
-     * @param array<string, array> $configuration
+     * @param array<string, array<string, string|null>> $configuration
      */
     public function processThrowsExceptionIfTemplatePathIsNotConfigured(array $configuration): void
     {
@@ -128,7 +128,7 @@ class SimpleProcessorTest extends UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array>
+     * @return \Generator<string, array<mixed>>
      */
     public function processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider(): \Generator
     {

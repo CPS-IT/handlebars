@@ -40,14 +40,19 @@ final class DummyConfigurationManager implements ConfigurationManagerInterface
      */
     public $configuration = [];
 
+    /**
+     * @var ContentObjectRenderer
+     */
+    private $cObj;
+
     public function setContentObject(ContentObjectRenderer $contentObject): void
     {
-        // Intentionally left blank.
+        $this->cObj = $contentObject;
     }
 
     public function getContentObject(): ?ContentObjectRenderer
     {
-        return null;
+        return $this->cObj;
     }
 
     /**

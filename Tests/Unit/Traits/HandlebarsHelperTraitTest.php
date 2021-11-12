@@ -108,7 +108,7 @@ class HandlebarsHelperTraitTest extends UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array>
+     * @return \Generator<string, array<mixed>>
      */
     public function registerHelperLogsCriticalErrorIfGivenHelperIsInvalidDataProvider(): \Generator
     {
@@ -119,7 +119,7 @@ class HandlebarsHelperTraitTest extends UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array>
+     * @return \Generator<string, array<mixed>>
      */
     public function registerHelperRegistersHelperCorrectlyDataProvider(): \Generator
     {

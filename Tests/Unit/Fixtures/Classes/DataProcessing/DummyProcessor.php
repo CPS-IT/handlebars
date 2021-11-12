@@ -40,15 +40,25 @@ final class DummyProcessor extends AbstractDataProcessor
      */
     public $shouldThrowException = false;
 
+    /**
+     * @var bool
+     */
+    public $shouldInitializeConfigurationManager = false;
+
     protected function render(): string
     {
         if ($this->shouldThrowException) {
             throw new UnableToPresentException();
         }
+        if ($this->shouldInitializeConfigurationManager) {
+            $this->initializeConfigurationManager();
+        }
+
         $content = $this->content . $this->presenter->present($this->provider->get([]));
         if ($this->configuration !== []) {
             $content .= ' ' . json_encode($this->configuration);
         }
+
         return $content;
     }
 

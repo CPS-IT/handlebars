@@ -29,6 +29,8 @@ use Fr\Typo3Handlebars\Presenter\PresenterInterface;
 use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Core\Bootstrap;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -66,6 +68,19 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
      * @var DataProviderInterface
      */
     protected $provider;
+
+    /**
+     * @var ConfigurationManagerInterface
+     */
+    protected $configurationManager;
+
+    /**
+     * @todo Move to constructor with next BC break
+     */
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     public function process(string $content, array $configuration): string
     {
@@ -106,6 +121,29 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
     {
         $this->cObj = $cObj;
         return $this;
+    }
+
+    /**
+     * Make configuration manager stateless by resetting individual settings.
+     *
+     * Resets the extension name and plugin name applied to the configuration manager.
+     * This is required in order to fully respect "pages" and "recursive" configuration
+     * from the content object data in Extbase repositories. By default, this is handled
+     * by the controller context in an action controller. Since we're outside of Extbase
+     * context, we need to apply/reset those states by or own.
+     *
+     * @see Bootstrap::initializeConfiguration()
+     */
+    protected function initializeConfigurationManager(): void
+    {
+        if (null !== $this->configurationManager && null !== $this->cObj) {
+            $fullConfiguration = $this->configurationManager->getConfiguration(
+                ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+            );
+            // setConfiguration() resets extensionName and pluginName
+            $this->configurationManager->setConfiguration($fullConfiguration);
+            $this->configurationManager->setContentObject($this->cObj);
+        }
     }
 
     /**

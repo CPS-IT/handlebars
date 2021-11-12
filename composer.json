@@ -25,13 +25,13 @@
 	"require-dev": {
 		"ergebnis/composer-normalize": "^2.15",
 		"helmich/typo3-typoscript-lint": "^2.5",
-		"jangregor/phpstan-prophecy": "^0.8",
+		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6",
 		"phpspec/prophecy-phpunit": "^2.0",
-		"phpstan/phpstan": "^0.12",
+		"phpstan/phpstan": "^1.1",
 		"phpunit/phpunit": "^9.3",
 		"psr/log": "^1.1",
-		"saschaegerer/phpstan-typo3": "^0.13",
+		"saschaegerer/phpstan-typo3": "^1.0",
 		"symfony/event-dispatcher": "^4.4 || ^5.0",
 		"typo3/coding-standards": "^0.4.0",
 		"typo3/testing-framework": "^6.11.2"

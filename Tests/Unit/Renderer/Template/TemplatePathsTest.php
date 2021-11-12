@@ -59,7 +59,7 @@ class TemplatePathsTest extends UnitTestCase
     /**
      * @test
      * @dataProvider getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider
-     * @param array<string, array> $typoScriptConfiguration
+     * @param array<string, array<mixed>> $typoScriptConfiguration
      * @param string[] $expected
      */
     public function getMergesConfigurationFromContainerWithTypoScriptConfiguration(
@@ -72,7 +72,7 @@ class TemplatePathsTest extends UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array>
+     * @return \Generator<string, array<mixed>>
      */
     public function getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider(): \Generator
     {

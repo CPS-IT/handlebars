@@ -50,7 +50,7 @@ class HandlebarsExtensionTest extends UnitTestCase
     /**
      * @test
      * @dataProvider loadAddsResolvedParametersToContainerDataProvider
-     * @param array<mixed, mixed>[] $configs
+     * @param array<int, mixed>[] $configs
      * @param array<string, mixed> $expectedParameters
      */
     public function loadAddsResolvedParametersToContainer(array $configs, array $expectedParameters): void
@@ -66,7 +66,7 @@ class HandlebarsExtensionTest extends UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array>
+     * @return \Generator<string, array<mixed>>
      */
     public function loadAddsResolvedParametersToContainerDataProvider(): \Generator
     {

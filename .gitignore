@@ -2,6 +2,6 @@
 /Resources/Private/Libs/Build/vendor
 /Resources/Private/Libs/vendors.phar
 /var/
-/.php_cs.cache
+/.php-cs-fixer.cache
 /.phpunit.result.cache
 /composer.lock

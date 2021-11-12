@@ -1,3 +1,8 @@
+2021-11-12         [RELEASE] Release of handlebars 0.7.3 (Elias Häußler)
+2021-11-12 88ecec5 [TASK] Switch to PHPStan 1.x (Elias Häußler)
+2021-11-12 bc541f1 [TASK] Update PHP-CS-Fixer and typo3/coding-standards (Elias Häußler)
+2021-11-12 f710ff0 [FEATURE] Provide compatibility method for Extbase repositories (Elias Häußler)
+
 2021-11-01         [RELEASE] Release of handlebars 0.7.2 (Elias Häußler)
 2021-11-01 df25817 [BUGFIX] Avoid resolving package paths in Unit tests (Elias Häußler)
 2021-11-01 c021819 [BUGFIX] Avoid access to undefined array key (Elias Häußler)

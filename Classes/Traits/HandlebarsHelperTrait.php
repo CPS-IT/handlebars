@@ -145,9 +145,21 @@ trait HandlebarsHelperTrait
     /**
      * @param mixed $helperFunction
      * @return bool
+     * @codeCoverageIgnore
+     * @deprecated use resolveHelperFunction() instead and check for thrown exceptions
      */
     protected function isValidHelper($helperFunction): bool
     {
+        trigger_error(
+            sprintf(
+                'The method "%s" is deprecated and will be removed with 0.9.0. ' .
+                'Use "%s::resolveHelperFunction()" instead and check for thrown exceptions.',
+                __METHOD__,
+                __TRAIT__
+            ),
+            E_USER_DEPRECATED
+        );
+
         try {
             return (bool)$this->resolveHelperFunction($helperFunction);
         } catch (InvalidHelperException | \ReflectionException $e) {

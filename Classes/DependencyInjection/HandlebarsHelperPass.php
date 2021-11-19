@@ -27,6 +27,7 @@ use Fr\Typo3Handlebars\Renderer\HelperAwareInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * HandlebarsHelperPass
@@ -71,16 +72,20 @@ final class HandlebarsHelperPass implements CompilerPassInterface
                 $this->validateTag($serviceId, $attributes);
                 $this->registerHelper(
                     $attributes['identifier'],
-                    sprintf('%s::%s', $serviceId, $attributes['method'])
+                    [new Reference($serviceId), $attributes['method']]
                 );
             }
         }
     }
 
-    private function registerHelper(string $name, string $function): void
+    /**
+     * @param string $name
+     * @param array{0: string|Reference, 1: string} $callable
+     */
+    private function registerHelper(string $name, array $callable): void
     {
         foreach ($this->rendererDefinitions as $rendererDefinition) {
-            $rendererDefinition->addMethodCall('registerHelper', [$name, $function]);
+            $rendererDefinition->addMethodCall('registerHelper', [$name, $callable]);
         }
     }
 

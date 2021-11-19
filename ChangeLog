@@ -1,3 +1,8 @@
+2021-11-19         [RELEASE] Release of handlebars 0.7.4 (Elias Häußler)
+2021-11-19 f4a238b [FEATURE] Store helper class as reference in service container (Elias Häußler)
+2021-11-19 f716495 [TASK] Deprecate `HandlebarsHelperTrait::isValidHelper()` (Elias Häußler)
+2021-11-19 6bc5dd3 [BUGFIX] Properly support helper functions in PHP 8 and higher (Elias Häußler)
+
 2021-11-12         [RELEASE] Release of handlebars 0.7.3 (Elias Häußler)
 2021-11-12 88ecec5 [TASK] Switch to PHPStan 1.x (Elias Häußler)
 2021-11-12 bc541f1 [TASK] Update PHP-CS-Fixer and typo3/coding-standards (Elias Häußler)

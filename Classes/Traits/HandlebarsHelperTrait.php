@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Traits;
 
+use Fr\Typo3Handlebars\Exception\InvalidHelperException;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,16 +46,15 @@ trait HandlebarsHelperTrait
      */
     public function registerHelper(string $name, $function): void
     {
-        if ($this->isValidHelper($function)) {
+        try {
             $this->helpers[$name] = $this->resolveHelperFunction($function);
-            return;
-        }
-
-        if ($this->logger instanceof LoggerInterface) {
-            $this->logger->critical(
-                'Error while registering Handlebars helper "' . $name . '".',
-                ['name' => $name, 'function' => $function]
-            );
+        } catch (InvalidHelperException | \ReflectionException $exception) {
+            if ($this->logger instanceof LoggerInterface) {
+                $this->logger->critical(
+                    'Error while registering Handlebars helper "' . $name . '".',
+                    ['name' => $name, 'function' => $function, 'exception' => $exception]
+                );
+            }
         }
     }
 
@@ -69,27 +69,101 @@ trait HandlebarsHelperTrait
     /**
      * @param mixed $function
      * @return callable
+     * @throws InvalidHelperException
+     * @throws \ReflectionException
      */
     protected function resolveHelperFunction($function): callable
     {
-        if (!is_string($function) || strpos($function, '::') === false) {
+        // Try to resolve the Helper function in this order:
+        //
+        // 1. callable
+        // 2. invokable class
+        // ├─ a. as string (class-name)
+        // └─ b. as object
+        // 3. class method
+        // ├─ a. as string => class-name::method-name
+        // ├─ b. as array => [class-name, method-name]
+        // └─ c. as initialized array => [object, method-name]
+
+        $className = null;
+        $methodName = null;
+
+        if (is_string($function) && !str_contains($function, '::')) {
+            // 1. callable
+            if (is_callable($function)) {
+                return $function;
+            }
+
+            // 2a. invokable class as string
+            if (class_exists($function) && is_callable($callable = GeneralUtility::makeInstance($function))) {
+                return $callable;
+            }
+        }
+
+        // 2b. invokable class as object
+        if (is_object($function) && is_callable($function)) {
             return $function;
         }
 
-        // Instantiate class and use combination of object and method name as callable Helper function
-        /** @var class-string $className */
-        [$className, $methodName] = explode('::', $function);
-        $instance = GeneralUtility::makeInstance($className);
+        // 3a. class method as string
+        if (is_string($function) && str_contains($function, '::')) {
+            [$className, $methodName] = explode('::', $function, 2);
+        }
 
-        return [$instance, $methodName];
+        // 3b. class method as array
+        // 3c. class method as initialized array
+        if (is_array($function) && 2 === count($function)) {
+            [$className, $methodName] = $function;
+        }
+
+        // Early return if either class name or method name cannot be resolved
+        if (null === $className || null === $methodName) {
+            throw InvalidHelperException::forUnsupportedType($function);
+        }
+
+        // Early return if method is not public
+        $reflectionClass = new \ReflectionClass($className);
+        $reflectionMethod = $reflectionClass->getMethod($methodName);
+        if (!$reflectionMethod->isPublic()) {
+            throw InvalidHelperException::forFunction($className . '::' . $methodName);
+        }
+
+        // Check if method can be called statically
+        if ($reflectionMethod->isStatic()) {
+            return [$className, $methodName];
+        }
+
+        // Instantiate class if not done yet
+        /** @var class-string $className */
+        if (is_string($className)) {
+            $className = GeneralUtility::makeInstance($className);
+        }
+
+        return [$className, $methodName];
     }
 
     /**
      * @param mixed $helperFunction
      * @return bool
+     * @codeCoverageIgnore
+     * @deprecated use resolveHelperFunction() instead and check for thrown exceptions
      */
     protected function isValidHelper($helperFunction): bool
     {
-        return is_callable($helperFunction);
+        trigger_error(
+            sprintf(
+                'The method "%s" is deprecated and will be removed with 0.9.0. ' .
+                'Use "%s::resolveHelperFunction()" instead and check for thrown exceptions.',
+                __METHOD__,
+                __TRAIT__
+            ),
+            E_USER_DEPRECATED
+        );
+
+        try {
+            return (bool)$this->resolveHelperFunction($helperFunction);
+        } catch (InvalidHelperException | \ReflectionException $e) {
+            return false;
+        }
     }
 }

@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Traits;
 
+use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits\DummyHandlebarsHelperTraitClass;
-use Fr\Typo3Handlebars\Traits\HandlebarsHelperTrait;
 use Psr\Log\Test\TestLogger;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -114,8 +114,9 @@ class HandlebarsHelperTraitTest extends UnitTestCase
     {
         yield 'null value' => [null];
         yield 'non-callable function as string' => ['foo_baz'];
-        yield 'non-callable class method' => [HandlebarsHelperTrait::class . '::isValidHelper'];
-        yield 'non-callable class method in array syntax' => [[$this->subject, 'isValidHelper']];
+        yield 'non-callable class method' => [DummyHelper::class . '::foo'];
+        yield 'non-callable class method in array syntax' => [[new DummyHelper(), 'foo']];
+        yield 'non-callable private class method' => [DummyHelper::class . '::executeInternal'];
     }
 
     /**
@@ -127,13 +128,33 @@ class HandlebarsHelperTraitTest extends UnitTestCase
             'trim',
             'trim',
         ];
-        yield 'callable class method' => [
-            self::class . '::assertSame',
-            [new self(), 'assertSame'],
+        yield 'invokable class as string' => [
+            DummyHelper::class,
+            new DummyHelper(),
         ];
-        yield 'callable class method in array syntax' => [
-            [$this, 'assertSame'],
-            [$this, 'assertSame'],
+        yield 'invokable class as object' => [
+            new DummyHelper(),
+            new DummyHelper(),
+        ];
+        yield 'callable static class method' => [
+            DummyHelper::class . '::staticExecute',
+            [DummyHelper::class, 'staticExecute'],
+        ];
+        yield 'callable non-static class method' => [
+            DummyHelper::class . '::execute',
+            [new DummyHelper(), 'execute'],
+        ];
+        yield 'callable static class method in array syntax' => [
+            [DummyHelper::class, 'staticExecute'],
+            [DummyHelper::class, 'staticExecute'],
+        ];
+        yield 'callable non-static class method in array syntax' => [
+            [DummyHelper::class, 'execute'],
+            [new DummyHelper(), 'execute'],
+        ];
+        yield 'callable non-static class method in initialized array syntax' => [
+            [new DummyHelper(), 'execute'],
+            [new DummyHelper(), 'execute'],
         ];
     }
 }

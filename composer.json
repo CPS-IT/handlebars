@@ -17,7 +17,7 @@
 		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/"
 	},
 	"require": {
-		"php": "^7.1 || 8.0.*",
+		"php": ">= 7.1 < 8.2",
 		"ext-json": "*",
 		"psr/event-dispatcher": "^1.0",
 		"psr/log": "^1.1 || ^2.0 || ^3.0",

@@ -97,10 +97,11 @@ jobs:
           LIB_PATH: Resources/Private/Libs
         run: |
           git reset --hard HEAD && git clean -dfx
-          composer global require clue/phar-composer
+          curl -L https://clue.engineering/phar-composer-latest.phar -o phar-composer.phar
           composer install -d $(pwd)/$BUILD_PATH
-          composer global exec phar-composer build $(pwd)/$BUILD_PATH $(pwd)/$LIB_PATH/vendors.phar
+          php phar-composer.phar build $(pwd)/$BUILD_PATH $(pwd)/$LIB_PATH/vendors.phar
           echo "\\Fr\\Typo3Handlebars\\Configuration\\Extension::loadVendorLibraries();" >> ext_localconf.php
+          rm phar-composer.phar
 
       # Install tailor
       - name: Install tailor

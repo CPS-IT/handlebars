@@ -96,7 +96,7 @@ class HandlebarsExtensionTest extends UnitTestCase
             [
                 [
                     'default_data' => [
-                        'foo' => 'baz'
+                        'foo' => 'baz',
                     ],
                 ],
                 [

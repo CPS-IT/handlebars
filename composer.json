@@ -18,9 +18,9 @@
 		"symfony/config": "^4.4 || ^5.0",
 		"symfony/dependency-injection": "^4.4 || ^5.0",
 		"symfony/polyfill-php80": "^1.23",
-		"typo3/cms-core": "^10.4 || ^11.5",
-		"typo3/cms-extbase": "^10.4 || ^11.5",
-		"typo3/cms-frontend": "^10.4 || ^11.5",
+		"typo3/cms-core": "~10.4.0 || ~11.5.0",
+		"typo3/cms-extbase": "~10.4.0 || ~11.5.0",
+		"typo3/cms-frontend": "~10.4.0 || ~11.5.0",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
@@ -29,13 +29,13 @@
 		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6",
 		"phpspec/prophecy-phpunit": "^2.0",
-		"phpstan/phpstan": "^1.1",
-		"phpunit/phpunit": "^9.3",
-		"psr/log": "^1.1",
+		"phpstan/phpstan": "^1.2",
+		"phpunit/phpunit": "^9.5",
+		"psr/log": "^1.1 || ^2.0 || ^3.0",
 		"saschaegerer/phpstan-typo3": "^1.0",
 		"symfony/event-dispatcher": "^4.4 || ^5.0",
-		"typo3/coding-standards": "^0.4.0",
-		"typo3/testing-framework": "^6.11.2"
+		"typo3/coding-standards": "^0.5.0",
+		"typo3/testing-framework": "^6.15"
 	},
 	"config": {
 		"bin-dir": ".Build/bin",

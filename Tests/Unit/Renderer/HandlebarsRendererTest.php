@@ -283,7 +283,7 @@ class HandlebarsRendererTest extends UnitTestCase
     {
         self::assertSame(
             'Welcome, {{ name }}, I am the partial!',
-            trim($this->subject->resolvePartial([], 'DummyPartial'))
+            trim($this->subject->resolvePartial([], 'DummyPartial') ?: '')
         );
     }
 

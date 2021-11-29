@@ -49,12 +49,25 @@ class InvalidHelperExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function forUnsupportedType(): void
+    public function forUnsupportedTypeReturnsExceptionForTypeOfGivenArgument(): void
     {
         $actual = InvalidHelperException::forUnsupportedType(null);
 
         self::assertInstanceOf(InvalidHelperException::class, $actual);
         self::assertSame('Only callables, strings and arrays can be defined as helpers, "NULL" given.', $actual->getMessage());
         self::assertSame(1637339694, $actual->getCode());
+    }
+
+    /**
+     * @test
+     */
+    public function forInvalidCallableReturnsExceptionForGivenCallable(): void
+    {
+        /* @phpstan-ignore-next-line */
+        $actual = InvalidHelperException::forInvalidCallable(['foo', null]);
+
+        self::assertInstanceOf(InvalidHelperException::class, $actual);
+        self::assertSame('The helper function with callable [string, NULL] is not valid.', $actual->getMessage());
+        self::assertSame(1638180355, $actual->getCode());
     }
 }

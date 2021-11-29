@@ -36,6 +36,6 @@ final class DummyPresenter extends AbstractPresenter
 {
     public function present(ProviderResponseInterface $data): string
     {
-        return json_encode($data->toArray());
+        return json_encode($data->toArray()) ?: '';
     }
 }

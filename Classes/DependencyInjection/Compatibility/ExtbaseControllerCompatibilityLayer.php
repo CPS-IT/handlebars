@@ -124,7 +124,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
                 1632814520
             );
         }
-        if (!in_array(ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()))) {
+        if (!in_array(ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()) ?: [])) {
             throw new \InvalidArgumentException(
                 sprintf('Only extbase controllers extending from "%s" are supported, found in: %s', ActionController::class, $configuration['controller']),
                 1632814592

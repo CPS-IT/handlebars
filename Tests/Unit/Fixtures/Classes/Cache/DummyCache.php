@@ -48,7 +48,7 @@ class DummyCache implements CacheInterface
     {
         $cacheFile = $this->resolveCacheFile($template);
         if (file_exists($cacheFile)) {
-            return file_get_contents($cacheFile);
+            return file_get_contents($cacheFile) ?: '';
         }
         return null;
     }

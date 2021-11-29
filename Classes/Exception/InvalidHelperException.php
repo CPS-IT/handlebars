@@ -50,4 +50,18 @@ final class InvalidHelperException extends \Exception
             1637339694
         );
     }
+
+    /**
+     * @param array{class-string|object, string} $callable
+     * @return self
+     */
+    public static function forInvalidCallable(array $callable): self
+    {
+        [$className, $methodName] = $callable;
+
+        return new self(
+            sprintf('The helper function with callable [%s, %s] is not valid.', gettype($className), gettype($methodName)),
+            1638180355
+        );
+    }
 }

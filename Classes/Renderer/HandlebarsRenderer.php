@@ -192,10 +192,12 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
 
         // Handle compilation failures
         if ($compileResult === false) {
+            $errors = LightnCandy::getContext()['error'] ?? [];
+
             throw new TemplateCompilationException(
                 sprintf(
                     'Error during template compilation: "%s"',
-                    implode('", "', LightnCandy::getContext()['error'] ?? [])
+                    implode('", "', is_array($errors) ? $errors : [$errors])
                 ),
                 1614620212
             );
@@ -265,7 +267,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         if ($this->partialResolver === null) {
             return null;
         }
-        return file_get_contents($this->partialResolver->resolveTemplatePath($name));
+        return file_get_contents($this->partialResolver->resolveTemplatePath($name)) ?: null;
     }
 
     /**

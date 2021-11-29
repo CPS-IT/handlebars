@@ -156,7 +156,7 @@ class HandlebarsRendererTest extends UnitTestCase
         $this->getCache()->set(
             file_get_contents(
                 $this->getTemplateResolver()->resolveTemplatePath('DummyTemplate')
-            ),
+            ) ?: '',
             'return function() { return \'foo\'; }'
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
@@ -218,7 +218,7 @@ class HandlebarsRendererTest extends UnitTestCase
         $this->getCache()->set(
             file_get_contents(
                 $this->getTemplateResolver()->resolveTemplatePath('DummyTemplate')
-            ),
+            ) ?: '',
             'return \'foo\';'
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
@@ -299,14 +299,14 @@ class HandlebarsRendererTest extends UnitTestCase
     protected function assertCacheIsEmptyForTemplate(string $template): void
     {
         self::assertNull(
-            $this->getCache()->get(file_get_contents($this->templateRootPath . DIRECTORY_SEPARATOR . $template))
+            $this->getCache()->get(file_get_contents($this->templateRootPath . DIRECTORY_SEPARATOR . $template) ?: '')
         );
     }
 
     protected function assertCacheIsNotEmptyForTemplate(string $template): void
     {
         self::assertNotNull(
-            $this->getCache()->get(file_get_contents($this->templateRootPath . DIRECTORY_SEPARATOR . $template))
+            $this->getCache()->get(file_get_contents($this->templateRootPath . DIRECTORY_SEPARATOR . $template) ?: '')
         );
     }
 
@@ -316,6 +316,10 @@ class HandlebarsRendererTest extends UnitTestCase
         parent::tearDown();
     }
 
+    /**
+     * @param class-string<HandlebarsRenderer> $rendererClass
+     * @return HandlebarsRenderer
+     */
     protected function renewSubject(string $rendererClass = HandlebarsRenderer::class): HandlebarsRenderer
     {
         $this->logger = new TestLogger();

@@ -129,8 +129,9 @@ trait HandlebarsHelperTrait
         }
 
         // Check if method can be called statically
-        if ($reflectionMethod->isStatic()) {
-            return [$className, $methodName];
+        $callable = [$className, $methodName];
+        if ($reflectionMethod->isStatic() && is_callable($callable)) {
+            return $callable;
         }
 
         // Instantiate class if not done yet
@@ -139,7 +140,12 @@ trait HandlebarsHelperTrait
             $className = GeneralUtility::makeInstance($className);
         }
 
-        return [$className, $methodName];
+        $callable = [$className, $methodName];
+        if (is_callable($callable)) {
+            return $callable;
+        }
+
+        throw InvalidHelperException::forInvalidCallable($callable);
     }
 
     /**

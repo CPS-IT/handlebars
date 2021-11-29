@@ -109,7 +109,10 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         try {
             return $this->processRendering($templatePath, $data);
         } catch (InvalidTemplateFileException | TemplateCompilationException | TemplateNotFoundException $exception) {
-            $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
+            if (null !== $this->logger) {
+                $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
+            }
+
             return '';
         }
     }

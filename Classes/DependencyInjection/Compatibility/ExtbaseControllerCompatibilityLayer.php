@@ -25,6 +25,7 @@ namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 
 use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\Exception\InvalidClassException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -56,6 +57,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
     {
         $this->container = $container;
         $this->viewResolverDefinition = $container->getDefinition(HandlebarsViewResolver::class);
+        $this->validateService(HandlebarsViewResolver::class);
     }
 
     public function provide(string $processorServiceId, array $configuration): bool
@@ -64,7 +66,11 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
 
         $controller = $configuration['controller'];
         $controllerDefinition = $this->container->getDefinition($controller);
+        /** @var class-string $controllerClassName */
         $controllerClassName = $controllerDefinition->getClass();
+
+        // Validate controller class name
+        $this->validateService($controller);
 
         $actions = GeneralUtility::trimExplode(',', $configuration['actions'] ?? '_all', true);
         $actionMap = array_fill_keys($actions, new Reference($processorServiceId));
@@ -73,16 +79,18 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
         $processorMap = $this->buildProcessorMap($controllerClassName, $actionMap);
         $this->viewResolverDefinition->removeMethodCall('setProcessorMap');
         $this->viewResolverDefinition->addMethodCall('setProcessorMap', [$processorMap]);
+        /** @var class-string $viewResolverClassName */
+        $viewResolverClassName = $this->viewResolverDefinition->getClass();
 
         // Apply processor map and register method call
         $controllerDefinition->removeMethodCall('injectViewResolver');
-        $controllerDefinition->addMethodCall('injectViewResolver', [new Reference($this->viewResolverDefinition->getClass())]);
+        $controllerDefinition->addMethodCall('injectViewResolver', [new Reference($viewResolverClassName)]);
 
         return true;
     }
 
     /**
-     * @param string $controllerClassName
+     * @param class-string $controllerClassName
      * @param array<string, Reference> $actionMap
      * @return array<string, array<string, DataProcessorInterface>>
      */
@@ -135,6 +143,20 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
                 sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', gettype($configuration['actions'])),
                 1632814413
             );
+        }
+    }
+
+    private function validateService(string $serviceId): void
+    {
+        $definition = $this->container->findDefinition($serviceId);
+        /** @var class-string|null $className */
+        $className = $definition->getClass();
+
+        if (null === $className) {
+            throw InvalidClassException::forService($serviceId);
+        }
+        if (!class_exists($className)) {
+            throw InvalidClassException::create($className);
         }
     }
 }

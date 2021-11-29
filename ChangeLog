@@ -1,3 +1,6 @@
+2021-11-29         [RELEASE] Release of handlebars 0.7.5 (Elias Häußler)
+2021-11-19 c1c7254 [BUGFIX] Install clue/phar-composer from pre-built phar file (Elias Häußler)
+
 2021-11-19         [RELEASE] Release of handlebars 0.7.4 (Elias Häußler)
 2021-11-19 f4a238b [FEATURE] Store helper class as reference in service container (Elias Häußler)
 2021-11-19 f716495 [TASK] Deprecate `HandlebarsHelperTrait::isValidHelper()` (Elias Häußler)

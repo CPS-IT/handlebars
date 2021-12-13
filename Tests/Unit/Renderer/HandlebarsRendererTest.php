@@ -157,7 +157,7 @@ class HandlebarsRendererTest extends UnitTestCase
             file_get_contents(
                 $this->getTemplateResolver()->resolveTemplatePath('DummyTemplate')
             ) ?: '',
-            'return function() { return \'foo\'; }'
+            'return function() { return \'foo\'; };'
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
 
@@ -228,7 +228,8 @@ class HandlebarsRendererTest extends UnitTestCase
             /** @var TemplateCompilationException $exception */
             $exception = $logRecord['context']['exception'];
             static::assertInstanceOf(TemplateCompilationException::class, $exception);
-            static::assertSame(1614705397, $exception->getCode());
+            static::assertSame('Got invalid compile result from compiler.', $exception->getMessage());
+            static::assertSame(1639405571, $exception->getCode());
             return true;
         }));
     }

@@ -1,8 +1,8 @@
 {
 	"name": "cpsit/typo3-handlebars",
-	"type": "typo3-cms-extension",
 	"description": "Handlebars rendering extension for projects built with TYPO3 CMS",
 	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
 	"authors": [
 		{
 			"name": "Elias Häußler",
@@ -11,6 +11,11 @@
 			"role": "Maintainer"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/CPS-IT/handlebars/issues",
+		"source": "https://github.com/CPS-IT/handlebars",
+		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/"
+	},
 	"require": {
 		"php": "^7.1 || 8.0.*",
 		"ext-json": "*",
@@ -37,6 +42,16 @@
 		"typo3/coding-standards": "^0.5.0",
 		"typo3/testing-framework": "^6.15"
 	},
+	"autoload": {
+		"psr-4": {
+			"Fr\\Typo3Handlebars\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Fr\\Typo3Handlebars\\Tests\\": "Tests/"
+		}
+	},
 	"config": {
 		"bin-dir": ".Build/bin",
 		"sort-packages": true,
@@ -46,16 +61,6 @@
 		"typo3/cms": {
 			"extension-key": "handlebars",
 			"web-dir": ".Build/web"
-		}
-	},
-	"autoload": {
-		"psr-4": {
-			"Fr\\Typo3Handlebars\\": "Classes/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Fr\\Typo3Handlebars\\Tests\\": "Tests/"
 		}
 	},
 	"scripts": {
@@ -83,10 +88,5 @@
 		"sca:php": "phpstan analyse -c phpstan.neon",
 		"test": "phpunit -c phpunit.xml",
 		"test:ci": "phpunit -c phpunit.ci.xml"
-	},
-	"support": {
-		"issues": "https://github.com/CPS-IT/handlebars/issues",
-		"source": "https://github.com/CPS-IT/handlebars",
-		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/"
 	}
 }

@@ -1,3 +1,11 @@
+2021-12-13         [RELEASE] Release of handlebars 0.7.6 (Elias Häußler)
+2021-12-13 2dcffcf [FEATURE] Write compile result in typo3temp instead of sys_get_temp_dir() (Elias Häußler)
+2021-12-13 6593abb [TASK] Normalize composer.json (Elias Häußler)
+2021-11-29 e436c56 [FEATURE] Upgrade to PHPStan level 8 (Elias Häußler)
+2021-11-29 fa799e6 [FEATURE] Upgrade to PHPStan level 7 (Elias Häußler)
+2021-11-29 691e923 [TASK] Harden dev-requirements and apply updated PHP-CS-Fixer rules (Elias Häußler)
+2021-11-29 b34a80e [BUGFIX] Add missing dependency to typo3/cms-extbase (Elias Häußler)
+
 2021-11-29         [RELEASE] Release of handlebars 0.7.5 (Elias Häußler)
 2021-11-19 c1c7254 [BUGFIX] Install clue/phar-composer from pre-built phar file (Elias Häußler)
 

@@ -24,44 +24,27 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Exception;
 
 /**
- * InvalidHelperException
+ * InvalidClassException
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class InvalidHelperException extends \Exception
+final class InvalidClassException extends \RuntimeException
 {
-    public static function forFunction(string $helperFunction): self
-    {
-        return new self(
-            sprintf('The helper function "%s" is invalid.', $helperFunction),
-            1637339290
-        );
-    }
-
     /**
-     * @param mixed $helperFunction
+     * @param class-string $className
      * @return self
      */
-    public static function forUnsupportedType($helperFunction): self
+    public static function create(string $className): self
     {
-        return new self(
-            sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', gettype($helperFunction)),
-            1637339694
-        );
+        return new self(sprintf('The class "%s" does not exist.', $className), 1638182580);
     }
 
-    /**
-     * @param array{class-string|object, string} $callable
-     * @return self
-     */
-    public static function forInvalidCallable(array $callable): self
+    public static function forService(string $serviceId): self
     {
-        [$className, $methodName] = $callable;
-
         return new self(
-            sprintf('The helper function with callable [%s, %s] is not valid.', gettype($className), gettype($methodName)),
-            1638180355
+            sprintf('Class name of service "%s" cannot be resolved or does not exist.', $serviceId),
+            1638183576
         );
     }
 }

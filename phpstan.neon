@@ -6,7 +6,7 @@ parameters:
     bootstrapFiles:
         - .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php
 
-    level: 6
+    level: 8
     paths:
         - Classes
         - Configuration
@@ -17,3 +17,13 @@ parameters:
         - message: '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy<[a-zA-Z0-9\\_]+>::\$[a-zA-Z0-9_]+\.#'
           paths:
               - Tests/Unit/*
+        # Handle different constructor arguments between TYPO3 10 and 11
+        - message: '#^Parameter \#1 \$container of class Fr\\Typo3Handlebars\\Compatibility\\View\\HandlebarsViewResolver constructor expects Psr\\Container\\ContainerInterface, [a-zA-Z0-9\\_|]+ given\.$#'
+          count: 1
+          path: Tests/Unit/Compatibility/View/HandlebarsViewResolverTest.php
+        - message: '#^Cannot call method getName\(\) on ReflectionClass\|null\.$#'
+          count: 1
+          path: Tests/Unit/Compatibility/View/HandlebarsViewResolverTest.php
+        - message: '#^Cannot call method getParameters\(\) on ReflectionMethod\|null\.$#'
+          count: 1
+          path: Tests/Unit/Compatibility/View/HandlebarsViewResolverTest.php

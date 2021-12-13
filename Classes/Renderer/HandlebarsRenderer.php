@@ -39,6 +39,7 @@ use LightnCandy\Runtime;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -109,7 +110,10 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         try {
             return $this->processRendering($templatePath, $data);
         } catch (InvalidTemplateFileException | TemplateCompilationException | TemplateNotFoundException $exception) {
-            $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
+            if (null !== $this->logger) {
+                $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
+            }
+
             return '';
         }
     }
@@ -142,13 +146,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
 
         // Compile template
         $compileResult = $this->compile($template);
-        /** @var \Closure|false $renderer */
-        $renderer = LightnCandy::prepare($compileResult);
-
-        // Handle closure preparation failures
-        if (!is_callable($renderer)) {
-            throw new TemplateCompilationException('Cannot prepare compiled render function.', 1614705397);
-        }
+        $renderer = $this->prepareCompileResult($compileResult);
 
         // Dispatch before rendering event
         $beforeRenderingEvent = new BeforeRenderingEvent($fullTemplatePath, $mergedData, $this);
@@ -192,10 +190,12 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
 
         // Handle compilation failures
         if ($compileResult === false) {
+            $errors = LightnCandy::getContext()['error'] ?? [];
+
             throw new TemplateCompilationException(
                 sprintf(
                     'Error during template compilation: "%s"',
-                    implode('", "', LightnCandy::getContext()['error'] ?? [])
+                    implode('", "', is_array($errors) ? $errors : [$errors])
                 ),
                 1614620212
             );
@@ -228,6 +228,32 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
             $flags |= LightnCandy::FLAG_RENDER_DEBUG;
         }
         return $flags;
+    }
+
+    protected function prepareCompileResult(string $compileResult): callable
+    {
+        // Touch temporary file
+        $path = GeneralUtility::tempnam('hbs_');
+
+        // Write file and validate write result
+        /** @var string|null $writeResult */
+        $writeResult = GeneralUtility::writeFileToTypo3tempDir($path, '<?php ' . $compileResult);
+        if (null !== $writeResult) {
+            throw new TemplateCompilationException(sprintf('Cannot prepare compiled render function: %s', $writeResult), 1614705397);
+        }
+
+        // Build callable
+        $callable = include $path;
+
+        // Remove temporary file
+        GeneralUtility::unlink_tempfile($path);
+
+        // Validate callable
+        if (!is_callable($callable)) {
+            throw new TemplateCompilationException('Got invalid compile result from compiler.', 1639405571);
+        }
+
+        return $callable;
     }
 
     /**
@@ -265,7 +291,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         if ($this->partialResolver === null) {
             return null;
         }
-        return file_get_contents($this->partialResolver->resolveTemplatePath($name));
+        return file_get_contents($this->partialResolver->resolveTemplatePath($name)) ?: null;
     }
 
     /**

@@ -97,7 +97,7 @@ final class HandlebarsHelperPass implements CompilerPassInterface
             $rendererDefinition = $container->findDefinition($serviceId);
             $rendererClass = $rendererDefinition->getClass();
 
-            if (null !== $rendererClass && in_array(HelperAwareInterface::class, class_implements($rendererClass))) {
+            if (null !== $rendererClass && in_array(HelperAwareInterface::class, class_implements($rendererClass) ?: [])) {
                 $this->rendererDefinitions[] = $rendererDefinition;
             }
         }

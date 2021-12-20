@@ -13,7 +13,7 @@ Handlebars
    en
 
 :Author:
-   Elias Häußler, familie redlich digital GmbH
+   Elias Häußler, coding. powerful. systems. CPS GmbH
 
 :Email:
    e.haeussler@familie-redlich.de

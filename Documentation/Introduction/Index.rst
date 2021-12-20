@@ -46,7 +46,7 @@ Contributors
 ============
 
 This extension is based on the great work of `Digitas Pixelpark GmbH <https://www.digitaspixelpark.com/>`_.
-It was heavily extended and is now maintained by `familie redlich digital GmbH <https://www.familie-redlich.de/>`_.
+It was heavily extended and is now maintained by `coding. powerful. systems. CPS GmbH <https://www.cps-it.de/>`_.
 
 .. _license:
 

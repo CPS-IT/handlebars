@@ -128,6 +128,18 @@ class SimpleProcessorTest extends UnitTestCase
     }
 
     /**
+     * @test
+     */
+    public function setContentObjectRendererAppliesContentObjectRenderer(): void
+    {
+        $contentObjectRenderer = new ContentObjectRenderer();
+
+        $this->subject->setContentObjectRenderer($contentObjectRenderer);
+
+        self::assertSame($contentObjectRenderer, $this->subject->cObj);
+    }
+
+    /**
      * @return \Generator<string, array<mixed>>
      */
     public function processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider(): \Generator

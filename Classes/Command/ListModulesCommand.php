@@ -172,7 +172,7 @@ final class ListModulesCommand extends Command
 
     /**
      * @param DataProcessorInterface[] $dataProcessors
-     * @return \Generator<array>
+     * @return \Generator<array{string, class-string<DataProcessorInterface>}>
      */
     private function decorateDataProcessorsForTable(array $dataProcessors): \Generator
     {

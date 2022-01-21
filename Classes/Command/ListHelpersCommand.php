@@ -51,13 +51,8 @@ final class ListHelpersCommand extends Command
 {
     use HandlebarsRendererResolverTrait;
 
-    private const TYPE_CLOSURE = 'closure';
-    private const TYPE_FUNCTION = 'function';
-    private const TYPE_METHOD = 'method';
-    private const TYPE_UNKNOWN = 'unknown';
-
     /**
-     * @var array[]
+     * @var array<string, array<string, array{renderer: string, callable: callable}>>
      */
     protected $registeredHelpers;
 
@@ -89,7 +84,9 @@ final class ListHelpersCommand extends Command
         }
 
         foreach ($this->registeredHelpers as $rendererServiceId => $helpers) {
-            $rendererClassName = reset($helpers)['renderer'];
+            $firstHelper = reset($helpers);
+            \assert(is_array($firstHelper));
+            $rendererClassName = $firstHelper['renderer'];
 
             $io->section(sprintf('Renderer: %s', $rendererServiceId));
             if ($rendererServiceId !== $rendererClassName) {
@@ -104,8 +101,8 @@ final class ListHelpersCommand extends Command
     }
 
     /**
-     * @param array[] $helpers
-     * @return \Generator<array>
+     * @param array<string, array{renderer: string, callable: callable}> $helpers
+     * @return \Generator<array{string, string}>
      */
     private function decorateHelpersForTable(array $helpers): \Generator
     {
@@ -116,41 +113,22 @@ final class ListHelpersCommand extends Command
 
     private function decorateCallable(callable $callable): string
     {
-        switch ($this->determineCallableType($callable)) {
-            case self::TYPE_CLOSURE:
+        switch (true) {
+            case $callable instanceof \Closure:
                 return 'Closure';
 
-            case self::TYPE_FUNCTION:
-                /* @phpstan-ignore-next-line */
-                return (string)$callable;
+            case is_string($callable):
+                return $callable;
 
-            case self::TYPE_METHOD:
+            case is_array($callable):
                 [$classOrObject, $methodName] = $callable;
                 if (is_object($classOrObject)) {
                     $classOrObject = get_class($classOrObject);
                 }
                 return '<fg=cyan>' . $classOrObject . '</>::' . $methodName;
 
-            case self::TYPE_UNKNOWN:
             default:
                 return '<error>Unknown</error>';
         }
-    }
-
-    private function determineCallableType(callable $callable): string
-    {
-        if ($callable instanceof \Closure) {
-            return self::TYPE_CLOSURE;
-        }
-
-        if (is_string($callable)) {
-            return self::TYPE_FUNCTION;
-        }
-
-        if (is_array($callable)) {
-            return self::TYPE_METHOD;
-        }
-
-        return self::TYPE_UNKNOWN;
     }
 }

@@ -106,7 +106,7 @@ class ClassResolver
     public function sanitizeNamespacePart(string $namespacePart): string
     {
         return trim(
-            preg_replace(
+            (string)preg_replace(
                 '/[^\w\\\]/',
                 '',
                 ucwords(str_replace('\\', '\\ ', $namespacePart))

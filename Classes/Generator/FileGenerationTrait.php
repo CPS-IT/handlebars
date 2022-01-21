@@ -51,7 +51,7 @@ trait FileGenerationTrait
      * @param array{namespace: string, className: string} $classParts
      * @param array<string, mixed> $classDefinition
      * @param bool $overwriteExistingFile
-     * @return array{0: string, 1: string, 2: string|bool, 3: string|null}
+     * @return array{string, string, string|bool, string|null}
      */
     protected function generateClass(
         string $extensionKey,
@@ -78,7 +78,7 @@ trait FileGenerationTrait
 
         // Generate PHP class
         if (file_exists($classFilename) && $overwriteExistingFile) {
-            $previousContent = file_get_contents($classFilename);
+            $previousContent = file_get_contents($classFilename) ?: '';
             $result[] = $this->phpWriter->write($classFilename, $classDefinition);
             $result[] = $previousContent;
         } elseif (!file_exists($classFilename)) {

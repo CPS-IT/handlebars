@@ -38,17 +38,18 @@ trait HandlebarsRendererResolverTrait
     /**
      * @param ServiceLocator $rendererLocator
      * @param string $groupBy
-     * @return array[]
+     * @return array<string, array<string, array{renderer: string, callable: callable}>>
      */
     private function getHelpersOfRegisteredRenderers(ServiceLocator $rendererLocator, string $groupBy = 'helper'): array
     {
         $helpers = [];
 
         foreach ($rendererLocator->getProvidedServices() as $serviceId => $rendererClassName) {
-            if (!in_array(HelperAwareInterface::class, class_implements($rendererClassName))) {
+            if (!in_array(HelperAwareInterface::class, class_implements($rendererClassName) ?: [])) {
                 continue;
             }
 
+            /** @var HelperAwareInterface $renderer */
             $renderer = $rendererLocator->get($serviceId);
             foreach ($renderer->getHelpers() as $name => $function) {
                 $helperDefinition = [

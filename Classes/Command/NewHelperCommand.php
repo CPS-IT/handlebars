@@ -157,7 +157,7 @@ final class NewHelperCommand extends BaseFileGenerationCommand
             $question->setValidator(function ($value) use ($input, $namespace, $classNameProposal): string {
                 $this->extensionKey = $input->getOption('extension-key');
                 return $this->validateClassNameOption($value, $namespace)
-                    ?? $this->validateClassNameOption($classNameProposal, $namespace);
+                    ?? (string)$this->validateClassNameOption($classNameProposal, $namespace);
             });
             $input->setOption('class-name', $helper->ask($input, $output, $question) ?: $classNameProposal);
         }
@@ -212,7 +212,7 @@ final class NewHelperCommand extends BaseFileGenerationCommand
     /**
      * @param mixed $value
      * @param string $namespace
-     * @return string
+     * @return string|null
      */
     public function validateClassNameOption($value, string $namespace): ?string
     {

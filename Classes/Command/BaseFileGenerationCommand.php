@@ -62,7 +62,7 @@ abstract class BaseFileGenerationCommand extends Command
     protected $highlighter;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $extensionKey;
 
@@ -73,7 +73,6 @@ abstract class BaseFileGenerationCommand extends Command
 
     protected function handleResult(GeneratorResult $result, string $name, string $type, bool $flushDiCache = false): void
     {
-
         // Get results
         $allFiles = $result->getFiles();
         $generatedFiles = $result->getByFilter(function (GeneratedFile $file): bool {

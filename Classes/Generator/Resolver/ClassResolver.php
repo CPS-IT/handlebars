@@ -25,7 +25,6 @@ namespace Fr\Typo3Handlebars\Generator\Resolver;
 
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 
 /**
  * ClassResolver
@@ -119,7 +118,7 @@ class ClassResolver
     {
         $vendorNamespace = $this->resolveVendorNamespace($extensionKey);
 
-        if (!StringUtility::beginsWith($className, $vendorNamespace)) {
+        if (!str_starts_with($className, $vendorNamespace)) {
             throw new \InvalidArgumentException(
                 sprintf('The given class name "%s" is not part of the extension with key "%s"!', $className, $extensionKey),
                 1622137836

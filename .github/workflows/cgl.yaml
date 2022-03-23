@@ -16,6 +16,10 @@ jobs:
           php-version: 7.4
           tools: composer:v2
 
+      # Validation
+      - name: Validate composer.json
+        run: composer validate --no-check-lock
+
       # Install dependencies
       - name: Install Composer dependencies
         run: composer install --no-progress

@@ -9,6 +9,7 @@
 [![CGL](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml)
 [![Latest Stable Version](http://poser.pugx.org/cpsit/typo3-handlebars/v)](https://packagist.org/packages/cpsit/typo3-handlebars)
 [![License](http://poser.pugx.org/cpsit/typo3-handlebars/license)](LICENSE.md)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCPS-IT%2Fhandlebars.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FCPS-IT%2Fhandlebars?ref=badge_shield)
 
 **:orange_book:&nbsp;[Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/)** |
 :package:&nbsp;[Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |
@@ -41,3 +42,6 @@ composer require cpsit/typo3-handlebars
 ## :star: License
 
 This project is licensed under [GNU General Public License 2.0 (or later)](LICENSE.md).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCPS-IT%2Fhandlebars.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FCPS-IT%2Fhandlebars?ref=badge_large)

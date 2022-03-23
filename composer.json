@@ -82,9 +82,11 @@
 		"docs:cleanup": "rm -rf .Build/docs",
 		"docs:open": "open .Build/docs/Result/project/0.0.0/Index.html",
 		"lint": [
+			"@lint:composer",
 			"@lint:php",
 			"@lint:typoscript"
 		],
+		"lint:composer": "@composer normalize --no-check-lock --no-update-lock",
 		"lint:php": "php-cs-fixer fix",
 		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",
 		"sca": [

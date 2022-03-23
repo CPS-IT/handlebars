@@ -22,7 +22,7 @@ jobs:
 
       # Linting
       - name: Lint composer.json
-        run: composer normalize --dry-run
+        run: composer lint:composer -- --dry-run
       - name: Lint PHP
         run: composer lint:php -- --dry-run
       - name: Lint TypoScript

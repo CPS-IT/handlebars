@@ -88,31 +88,31 @@ trait HandlebarsHelperTrait
         $className = null;
         $methodName = null;
 
-        if (is_string($function) && !str_contains($function, '::')) {
+        if (\is_string($function) && !str_contains($function, '::')) {
             // 1. callable
-            if (is_callable($function)) {
+            if (\is_callable($function)) {
                 return $function;
             }
 
             // 2a. invokable class as string
-            if (class_exists($function) && is_callable($callable = GeneralUtility::makeInstance($function))) {
+            if (class_exists($function) && \is_callable($callable = GeneralUtility::makeInstance($function))) {
                 return $callable;
             }
         }
 
         // 2b. invokable class as object
-        if (is_object($function) && is_callable($function)) {
+        if (\is_object($function) && \is_callable($function)) {
             return $function;
         }
 
         // 3a. class method as string
-        if (is_string($function) && str_contains($function, '::')) {
+        if (\is_string($function) && str_contains($function, '::')) {
             [$className, $methodName] = explode('::', $function, 2);
         }
 
         // 3b. class method as array
         // 3c. class method as initialized array
-        if (is_array($function) && 2 === count($function)) {
+        if (\is_array($function) && 2 === \count($function)) {
             [$className, $methodName] = $function;
         }
 
@@ -130,18 +130,18 @@ trait HandlebarsHelperTrait
 
         // Check if method can be called statically
         $callable = [$className, $methodName];
-        if ($reflectionMethod->isStatic() && is_callable($callable)) {
+        if ($reflectionMethod->isStatic() && \is_callable($callable)) {
             return $callable;
         }
 
         // Instantiate class if not done yet
         /** @var class-string $className */
-        if (is_string($className)) {
+        if (\is_string($className)) {
             $className = GeneralUtility::makeInstance($className);
         }
 
         $callable = [$className, $methodName];
-        if (is_callable($callable)) {
+        if (\is_callable($callable)) {
             return $callable;
         }
 

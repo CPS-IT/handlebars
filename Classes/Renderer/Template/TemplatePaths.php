@@ -96,7 +96,7 @@ class TemplatePaths implements ContainerAwareInterface
         $parameterName = 'handlebars.' . $type;
         $templatePathsParameter = $this->container->getParameter($parameterName);
 
-        return is_array($templatePathsParameter) ? $templatePathsParameter : [$templatePathsParameter];
+        return \is_array($templatePathsParameter) ? $templatePathsParameter : [$templatePathsParameter];
     }
 
     /**

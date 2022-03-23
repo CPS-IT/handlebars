@@ -132,15 +132,15 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
                 1632814520
             );
         }
-        if (!in_array(ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()) ?: [])) {
+        if (!\in_array(ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()) ?: [])) {
             throw new \InvalidArgumentException(
                 sprintf('Only extbase controllers extending from "%s" are supported, found in: %s', ActionController::class, $configuration['controller']),
                 1632814592
             );
         }
-        if (isset($configuration['actions']) && !is_string($configuration['actions']) && null !== $configuration['actions']) {
+        if (isset($configuration['actions']) && !\is_string($configuration['actions']) && null !== $configuration['actions']) {
             throw new \InvalidArgumentException(
-                sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', gettype($configuration['actions'])),
+                sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', \gettype($configuration['actions'])),
                 1632814413
             );
         }

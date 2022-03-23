@@ -195,7 +195,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
             throw new TemplateCompilationException(
                 sprintf(
                     'Error during template compilation: "%s"',
-                    implode('", "', is_array($errors) ? $errors : [$errors])
+                    implode('", "', \is_array($errors) ? $errors : [$errors])
                 ),
                 1614620212
             );
@@ -249,7 +249,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         GeneralUtility::unlink_tempfile($path);
 
         // Validate callable
-        if (!is_callable($callable)) {
+        if (!\is_callable($callable)) {
             throw new TemplateCompilationException('Got invalid compile result from compiler.', 1639405571);
         }
 

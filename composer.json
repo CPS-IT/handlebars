@@ -60,6 +60,10 @@
 			"ergebnis/composer-normalize": true
 		},
 		"bin-dir": ".Build/bin",
+		"preferred-install": {
+			"*": "dist",
+			"zordius/lightncandy": "source"
+		},
 		"sort-packages": true,
 		"vendor-dir": ".Build/vendor"
 	},

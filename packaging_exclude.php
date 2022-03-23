@@ -42,7 +42,6 @@ return [
         'phpstan.neon',
         'phpunit.ci.xml',
         'phpunit.xml',
-        'sonar-project.properties',
         'typoscript-lint.yml',
     ],
 ];

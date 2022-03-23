@@ -31,15 +31,7 @@ namespace Fr\Typo3Handlebars\Cache;
  */
 interface CacheInterface
 {
-    /**
-     * @param string $template
-     * @return string|null
-     */
     public function get(string $template): ?string;
 
-    /**
-     * @param string $template
-     * @param string $compileResult
-     */
     public function set(string $template, string $compileResult): void;
 }

@@ -69,7 +69,6 @@ class SimpleProcessor implements DataProcessorInterface, LoggerAwareInterface
 
     /**
      * @param array<string|int, mixed> $configuration
-     * @return string
      * @throws InvalidTemplateFileException
      */
     protected function getTemplatePath(array $configuration): string

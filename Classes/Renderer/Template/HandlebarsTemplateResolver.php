@@ -47,7 +47,6 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     protected $supportedFileExtensions;
 
     /**
-     * @param TemplatePaths $templateRootPaths
      * @param string[] $supportedFileExtensions
      */
     public function __construct(TemplatePaths $templateRootPaths, array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS)

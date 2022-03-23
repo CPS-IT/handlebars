@@ -51,9 +51,7 @@ final class ProcessorCompatibility
     private $container;
 
     /**
-     * @param string $serviceId
      * @param array<string, mixed> $tagAttributes
-     * @param ContainerBuilder $container
      */
     public function __construct(string $serviceId, array $tagAttributes, ContainerBuilder $container)
     {
@@ -75,8 +73,6 @@ final class ProcessorCompatibility
     }
 
     /**
-     * @param string $type
-     * @return CompatibilityLayerInterface
      * @throws UnsupportedTypeException
      */
     private function buildLayerForType(string $type): CompatibilityLayerInterface

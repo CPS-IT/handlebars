@@ -41,7 +41,6 @@ interface HelperAwareInterface
     /**
      * Register new Handlebars helper with given function.
      *
-     * @param string $name
      * @param mixed $function
      */
     public function registerHelper(string $name, $function): void;

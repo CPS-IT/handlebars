@@ -41,7 +41,6 @@ trait HandlebarsHelperTrait
     protected $helpers = [];
 
     /**
-     * @param string $name
      * @param mixed $function
      */
     public function registerHelper(string $name, $function): void
@@ -68,7 +67,6 @@ trait HandlebarsHelperTrait
 
     /**
      * @param mixed $function
-     * @return callable
      * @throws InvalidHelperException
      * @throws \ReflectionException
      */
@@ -150,7 +148,6 @@ trait HandlebarsHelperTrait
 
     /**
      * @param mixed $helperFunction
-     * @return bool
      * @codeCoverageIgnore
      * @deprecated use resolveHelperFunction() instead and check for thrown exceptions
      */

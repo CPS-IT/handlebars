@@ -79,7 +79,6 @@ final class HandlebarsHelperPass implements CompilerPassInterface
     }
 
     /**
-     * @param string $name
      * @param array{0: string|Reference, 1: string} $callable
      */
     private function registerHelper(string $name, array $callable): void
@@ -104,7 +103,6 @@ final class HandlebarsHelperPass implements CompilerPassInterface
     }
 
     /**
-     * @param string $serviceId
      * @param array<string, string> $tagAttributes
      */
     private function validateTag(string $serviceId, array $tagAttributes): void

@@ -35,7 +35,6 @@ interface DataProviderInterface
 {
     /**
      * @param array<string, mixed> $data
-     * @return ProviderResponseInterface
      */
     public function get(array $data): ProviderResponseInterface;
 }

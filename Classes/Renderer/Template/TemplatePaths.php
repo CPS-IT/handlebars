@@ -57,10 +57,6 @@ class TemplatePaths implements ContainerAwareInterface
      */
     protected $templatePaths;
 
-    /**
-     * @param ConfigurationManagerInterface $configurationManager
-     * @param string $type
-     */
     public function __construct(ConfigurationManagerInterface $configurationManager, string $type = self::TEMPLATES)
     {
         $this->configurationManager = $configurationManager;
@@ -88,7 +84,6 @@ class TemplatePaths implements ContainerAwareInterface
     }
 
     /**
-     * @param string $type
      * @return string[]
      */
     protected function getTemplatePathsFromContainer(string $type): array
@@ -100,7 +95,6 @@ class TemplatePaths implements ContainerAwareInterface
     }
 
     /**
-     * @param string $type
      * @return string[]
      */
     protected function getTemplatePathsFromTypoScriptConfiguration(string $type): array

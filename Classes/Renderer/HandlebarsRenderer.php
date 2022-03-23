@@ -84,10 +84,6 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
     protected $debugMode;
 
     /**
-     * @param CacheInterface $cache
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param TemplateResolverInterface $templateResolver
-     * @param TemplateResolverInterface|null $partialResolver
      * @param array<mixed, mixed> $defaultData
      */
     public function __construct(
@@ -119,9 +115,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
     }
 
     /**
-     * @param string $templatePath
      * @param array<mixed, mixed> $data
-     * @return string
      * @throws InvalidTemplateFileException if template file is invalid
      * @throws TemplateCompilationException if template compilation fails and errors are not yet handled by compiler
      * @throws TemplateNotFoundException if template could not be found
@@ -304,7 +298,6 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
 
     /**
      * @param array<mixed, mixed> $defaultData
-     * @return self
      */
     public function setDefaultData(array $defaultData): self
     {

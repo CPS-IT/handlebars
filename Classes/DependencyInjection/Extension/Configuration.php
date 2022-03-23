@@ -105,7 +105,6 @@ final class Configuration implements ConfigurationInterface
 
     /**
      * @param array<mixed, mixed> $array
-     * @return bool
      */
     private function containsNonNumericIndexes(array $array): bool
     {

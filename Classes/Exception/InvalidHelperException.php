@@ -41,7 +41,6 @@ final class InvalidHelperException extends \Exception
 
     /**
      * @param mixed $helperFunction
-     * @return self
      */
     public static function forUnsupportedType($helperFunction): self
     {
@@ -53,7 +52,6 @@ final class InvalidHelperException extends \Exception
 
     /**
      * @param array{class-string|object, string} $callable
-     * @return self
      */
     public static function forInvalidCallable(array $callable): self
     {

@@ -62,7 +62,7 @@ composer normalize
 ### Run tests
 
 [![Tests](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=CPS-IT_handlebars&metric=coverage)](https://sonarcloud.io/dashboard?id=CPS-IT_handlebars)
+[![Coverage](https://codecov.io/gh/CPS-IT/handlebars/branch/develop/graph/badge.svg?token=6TDD6TVHQH)](https://codecov.io/gh/CPS-IT/handlebars)
 
 ```bash
 # Run tests

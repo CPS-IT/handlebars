@@ -29,6 +29,7 @@
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
+		"armin/editorconfig-cli": "^1.5",
 		"ergebnis/composer-normalize": "^2.15",
 		"helmich/typo3-typoscript-lint": "^2.5",
 		"jangregor/phpstan-prophecy": "^1.0",
@@ -83,10 +84,12 @@
 		"docs:open": "open .Build/docs/Result/project/0.0.0/Index.html",
 		"lint": [
 			"@lint:composer",
+			"@lint:editorconfig",
 			"@lint:php",
 			"@lint:typoscript"
 		],
 		"lint:composer": "@composer normalize --no-check-lock --no-update-lock",
+		"lint:editorconfig": "ec --fix -e .Build",
 		"lint:php": "php-cs-fixer fix",
 		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",
 		"sca": [

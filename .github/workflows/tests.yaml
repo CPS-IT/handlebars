@@ -90,6 +90,8 @@ jobs:
             php-version: 8.0
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Prepare environment
       - name: Setup PHP

@@ -33,7 +33,6 @@ final class InvalidClassException extends \RuntimeException
 {
     /**
      * @param class-string $className
-     * @return self
      */
     public static function create(string $className): self
     {

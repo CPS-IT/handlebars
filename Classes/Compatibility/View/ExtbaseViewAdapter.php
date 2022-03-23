@@ -68,7 +68,6 @@ class ExtbaseViewAdapter implements ViewInterface
 
     /**
      * @param array<string, mixed> $values
-     * @return self
      */
     public function assignMultiple(array $values): self
     {

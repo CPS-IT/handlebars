@@ -87,9 +87,9 @@ final class Configuration implements ConfigurationInterface
             if ($transitions === null) {
                 return [];
             }
-            if (!is_array($transitions)) {
+            if (!\is_array($transitions)) {
                 throw new \InvalidArgumentException(
-                    sprintf('Illegal value for root path configuration. Only numeric arrays are allowed, got "%s" instead.', gettype($transitions)),
+                    sprintf('Illegal value for root path configuration. Only numeric arrays are allowed, got "%s" instead.', \gettype($transitions)),
                     1615835938
                 );
             }
@@ -105,10 +105,9 @@ final class Configuration implements ConfigurationInterface
 
     /**
      * @param array<mixed, mixed> $array
-     * @return bool
      */
     private function containsNonNumericIndexes(array $array): bool
     {
-        return count(array_filter(array_keys($array), 'is_string')) !== 0;
+        return \count(array_filter(array_keys($array), 'is_string')) !== 0;
     }
 }

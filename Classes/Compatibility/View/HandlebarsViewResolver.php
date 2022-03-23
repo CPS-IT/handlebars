@@ -64,7 +64,7 @@ class HandlebarsViewResolver extends GenericViewResolver
 
     protected function getProcessor(string $controllerClassName, string $actionName): ?DataProcessorInterface
     {
-        if (!array_key_exists($controllerClassName, $this->processorMap)) {
+        if (!\array_key_exists($controllerClassName, $this->processorMap)) {
             return null;
         }
 
@@ -84,7 +84,6 @@ class HandlebarsViewResolver extends GenericViewResolver
 
     /**
      * @param array<string, array<string, DataProcessorInterface>> $processorMap
-     * @return self
      */
     public function setProcessorMap(array $processorMap): self
     {

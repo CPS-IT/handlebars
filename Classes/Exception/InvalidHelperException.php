@@ -41,26 +41,24 @@ final class InvalidHelperException extends \Exception
 
     /**
      * @param mixed $helperFunction
-     * @return self
      */
     public static function forUnsupportedType($helperFunction): self
     {
         return new self(
-            sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', gettype($helperFunction)),
+            sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', \gettype($helperFunction)),
             1637339694
         );
     }
 
     /**
      * @param array{class-string|object, string} $callable
-     * @return self
      */
     public static function forInvalidCallable(array $callable): self
     {
         [$className, $methodName] = $callable;
 
         return new self(
-            sprintf('The helper function with callable [%s, %s] is not valid.', gettype($className), gettype($methodName)),
+            sprintf('The helper function with callable [%s, %s] is not valid.', \gettype($className), \gettype($methodName)),
             1638180355
         );
     }

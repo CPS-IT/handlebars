@@ -69,14 +69,13 @@ class SimpleProcessor implements DataProcessorInterface, LoggerAwareInterface
 
     /**
      * @param array<string|int, mixed> $configuration
-     * @return string
      * @throws InvalidTemplateFileException
      */
     protected function getTemplatePath(array $configuration): string
     {
         if (
-            !array_key_exists('templatePath', $configuration['userFunc.'] ?? []) ||
-            !is_string($configuration['userFunc.']['templatePath']) ||
+            !\array_key_exists('templatePath', $configuration['userFunc.'] ?? []) ||
+            !\is_string($configuration['userFunc.']['templatePath']) ||
             trim($configuration['userFunc.']['templatePath']) === ''
         ) {
             throw new InvalidTemplateFileException(

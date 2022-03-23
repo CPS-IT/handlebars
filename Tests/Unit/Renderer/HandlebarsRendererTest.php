@@ -319,7 +319,6 @@ class HandlebarsRendererTest extends UnitTestCase
 
     /**
      * @param class-string<HandlebarsRenderer> $rendererClass
-     * @return HandlebarsRenderer
      */
     protected function renewSubject(string $rendererClass = HandlebarsRenderer::class): HandlebarsRenderer
     {

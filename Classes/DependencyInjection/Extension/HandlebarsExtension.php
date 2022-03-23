@@ -57,7 +57,6 @@ final class HandlebarsExtension extends Extension
 
     /**
      * @param array<mixed, mixed>[] $configs
-     * @param ContainerBuilder $container
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -84,7 +83,6 @@ final class HandlebarsExtension extends Extension
 
     /**
      * @param array<mixed, mixed>[] $configs
-     * @param string $configKey
      * @return array<mixed, mixed>
      */
     private function mergeConfigs(array $configs, string $configKey): array

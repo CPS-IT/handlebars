@@ -36,9 +36,6 @@ final class DummyContentObjectRendererAwareTraitClass
 {
     use ContentObjectRendererAwareTrait;
 
-    /**
-     * @return ContentObjectRenderer|null
-     */
     public function getContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->contentObjectRenderer;

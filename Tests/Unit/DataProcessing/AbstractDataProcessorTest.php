@@ -97,7 +97,7 @@ class AbstractDataProcessorTest extends UnitTestCase
 
         self::assertSame('', $this->subject->process('', []));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $expectedMessage = 'Data processing for ' . get_class($this->subject) . ' failed.';
+            $expectedMessage = 'Data processing for ' . \get_class($this->subject) . ' failed.';
             static::assertSame($expectedMessage, $logRecord['message']);
             static::assertInstanceOf(UnableToPresentException::class, $logRecord['context']['exception']);
             return true;

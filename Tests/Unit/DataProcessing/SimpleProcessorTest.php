@@ -94,7 +94,7 @@ class SimpleProcessorTest extends UnitTestCase
     {
         self::assertSame('', $this->subject->process('', $configuration));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $expectedMessage = 'Data processing for ' . get_class($this->subject) . ' failed.';
+            $expectedMessage = 'Data processing for ' . \get_class($this->subject) . ' failed.';
             static::assertSame($expectedMessage, $logRecord['message']);
             static::assertInstanceOf(InvalidTemplateFileException::class, $logRecord['context']['exception']);
             static::assertSame(1606834398, $logRecord['context']['exception']->getCode());

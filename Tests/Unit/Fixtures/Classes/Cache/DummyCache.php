@@ -56,7 +56,7 @@ class DummyCache implements CacheInterface
     public function set(string $template, string $compileResult): void
     {
         $cacheFile = $this->resolveCacheFile($template);
-        GeneralUtility::mkdir_deep(dirname($cacheFile));
+        GeneralUtility::mkdir_deep(\dirname($cacheFile));
         file_put_contents($cacheFile, $compileResult);
     }
 

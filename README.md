@@ -46,3 +46,5 @@ composer require cpsit/typo3-handlebars
 ## :star: License
 
 This project is licensed under [GNU General Public License 2.0 (or later)](LICENSE.md).
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FCPS-IT%2Fhandlebars.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FCPS-IT%2Fhandlebars?ref=badge_large)

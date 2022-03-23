@@ -20,6 +20,7 @@
 		"php": "^7.1 || 8.0.*",
 		"ext-json": "*",
 		"psr/event-dispatcher": "^1.0",
+		"psr/log": "^1.1 || ^2.0 || ^3.0",
 		"symfony/config": "^4.4 || ^5.0",
 		"symfony/dependency-injection": "^4.4 || ^5.0",
 		"symfony/polyfill-php80": "^1.23",
@@ -29,6 +30,7 @@
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
+		"armin/editorconfig-cli": "^1.5",
 		"ergebnis/composer-normalize": "^2.15",
 		"helmich/typo3-typoscript-lint": "^2.5",
 		"jangregor/phpstan-prophecy": "^1.0",
@@ -36,7 +38,6 @@
 		"phpspec/prophecy-phpunit": "^2.0",
 		"phpstan/phpstan": "^1.2",
 		"phpunit/phpunit": "^9.5",
-		"psr/log": "^1.1 || ^2.0 || ^3.0",
 		"saschaegerer/phpstan-typo3": "^1.0",
 		"symfony/event-dispatcher": "^4.4 || ^5.0",
 		"typo3/coding-standards": "^0.5.0",
@@ -59,6 +60,10 @@
 			"ergebnis/composer-normalize": true
 		},
 		"bin-dir": ".Build/bin",
+		"preferred-install": {
+			"*": "dist",
+			"zordius/lightncandy": "source"
+		},
 		"sort-packages": true,
 		"vendor-dir": ".Build/vendor"
 	},
@@ -82,9 +87,13 @@
 		"docs:cleanup": "rm -rf .Build/docs",
 		"docs:open": "open .Build/docs/Result/project/0.0.0/Index.html",
 		"lint": [
+			"@lint:composer",
+			"@lint:editorconfig",
 			"@lint:php",
 			"@lint:typoscript"
 		],
+		"lint:composer": "@composer normalize --no-check-lock --no-update-lock",
+		"lint:editorconfig": "ec --fix -e .Build",
 		"lint:php": "php-cs-fixer fix",
 		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",
 		"sca": [

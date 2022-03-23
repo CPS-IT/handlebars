@@ -5,10 +5,11 @@
 /.gitattributes           export-ignore
 /.gitignore               export-ignore
 /.php-cs-fixer.php        export-ignore
+/codecov.yml              export-ignore
+/dependency-checker.json  export-ignore
 /docker-compose.yml       export-ignore
 /packaging_exclude.php    export-ignore
 /phpstan.neon             export-ignore
 /phpunit.ci.xml           export-ignore
 /phpunit.xml              export-ignore
-/sonar-project.properties export-ignore
 /typoscript-lint.yml      export-ignore

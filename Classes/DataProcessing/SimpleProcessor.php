@@ -86,4 +86,10 @@ class SimpleProcessor implements DataProcessorInterface, LoggerAwareInterface
         }
         return trim($configuration['userFunc.']['templatePath']);
     }
+
+    public function setContentObjectRenderer(ContentObjectRenderer $cObj): self
+    {
+        $this->cObj = $cObj;
+        return $this;
+    }
 }

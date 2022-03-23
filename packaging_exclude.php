@@ -32,7 +32,9 @@ return [
     ],
     'files' => [
         'DS_Store',
+        'codecov.yml',
         'composer.lock',
+        'dependency-checker.json',
         'docker-compose.yml',
         'editorconfig',
         'gitattributes',
@@ -42,7 +44,6 @@ return [
         'phpstan.neon',
         'phpunit.ci.xml',
         'phpunit.xml',
-        'sonar-project.properties',
         'typoscript-lint.yml',
     ],
 ];

@@ -32,6 +32,7 @@ return [
     ],
     'files' => [
         'DS_Store',
+        'codecov.yml',
         'composer.lock',
         'docker-compose.yml',
         'editorconfig',

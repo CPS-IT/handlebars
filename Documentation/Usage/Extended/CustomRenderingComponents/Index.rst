@@ -141,6 +141,6 @@ Sources
 
    View the sources on GitHub:
 
-   -  `RendererInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/RendererInterface.php>`__
-   -  `HelperAwareInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/HelperAwareInterface.php>`__
-   -  `TemplateResolverInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/Template/TemplateResolverInterface.php>`__
+   -  `RendererInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/RendererInterface.php>`__
+   -  `HelperAwareInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/HelperAwareInterface.php>`__
+   -  `TemplateResolverInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Template/TemplateResolverInterface.php>`__

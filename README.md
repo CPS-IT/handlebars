@@ -15,7 +15,7 @@
 [![Extension stability](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/stability/shields)](https://extensions.typo3.org/extension/handlebars)
 [![TYPO3 badge](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/typo3/shields)](https://typo3.org/)
 
-**:orange_book:&nbsp;[Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/master/en-us/)** |
+**:orange_book:&nbsp;[Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/)** |
 :package:&nbsp;[Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |
 :hatched_chick:&nbsp;[TYPO3 extension repository](https://extensions.typo3.org/extension/handlebars) |
 :floppy_disk:&nbsp;[Repository](https://github.com/CPS-IT/handlebars) |

@@ -24,7 +24,7 @@ assume different roles in the MVC pattern:
 
 .. rst-class:: horizbuttons-primary-m
 
--  `DataProviderInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Data/DataProviderInterface.php>`__
+-  `DataProviderInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/DataProviderInterface.php>`__
 
 `DataProviders` are used to provide relevant data for processing by a
 `DataProcessor`. The data source is irrelevant: data can be provided both
@@ -43,8 +43,8 @@ process of a parent module.
 
 .. rst-class:: horizbuttons-primary-m
 
--  `DataProcessorInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/DataProcessing/DataProcessorInterface.php>`__
--  `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/master/Classes/DataProcessing/AbstractDataProcessor.php>`__
+-  `DataProcessorInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/DataProcessorInterface.php>`__
+-  `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/AbstractDataProcessor.php>`__
 
 `DataProcessors` are the entry point into the entire rendering process.
 They fetch the data from the `DataProvider`, process it and pass it on to
@@ -61,8 +61,8 @@ addressed directly via TypoScript.
 
 .. rst-class:: horizbuttons-primary-m
 
--  `PresenterInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Presenter/PresenterInterface.php>`__
--  `AbstractPresenter <https://github.com/CPS-IT/handlebars/blob/master/Classes/Presenter/AbstractPresenter.php>`__
+-  `PresenterInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/PresenterInterface.php>`__
+-  `AbstractPresenter <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/AbstractPresenter.php>`__
 
 In `Presenter`, the supplied data is prepared for rendering a specific
 Handlebars template. Dependent templates can also be selected based on
@@ -78,8 +78,8 @@ between the `DataProcessor` (*Controller*) and the `Renderer` (*View*).
 
 .. rst-class:: horizbuttons-primary-m
 
--  `RendererInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/RendererInterface.php>`__
--  `HandlebarsRenderer <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/HandlebarsRenderer.php>`__
+-  `RendererInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/RendererInterface.php>`__
+-  `HandlebarsRenderer <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/HandlebarsRenderer.php>`__
 
 The template is finally rendered in the `Renderer`. For this purpose,
 the template is compiled and filled with data from the `Presenter`. The
@@ -95,7 +95,7 @@ MVC pattern. The compiled templates used for this are usually cached.
 
 .. rst-class:: horizbuttons-primary-m
 
--  `HelperInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/Helper/HelperInterface.php>`__
+-  `HelperInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Helper/HelperInterface.php>`__
 
 `Helpers` describe a simple way to bring custom PHP functionality to
 Handlebars templates. They are similar to ViewHelpers used in Fluid
@@ -121,8 +121,8 @@ of the *View*.
 
 .. rst-class:: horizbuttons-primary-m
 
--  `TemplateResolverInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/Template/TemplateResolverInterface.php>`__
--  `HandlebarsTemplateResolver <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/Template/HandlebarsTemplateResolver.php>`__
+-  `TemplateResolverInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Template/TemplateResolverInterface.php>`__
+-  `HandlebarsTemplateResolver <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Template/HandlebarsTemplateResolver.php>`__
 
 Whenever a template is rendered by the `Renderer`, it must first be
 resolved, e.g. by looking it up in all defined template root paths. It

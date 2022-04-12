@@ -85,6 +85,6 @@ Sources
 
    View the sources on GitHub:
 
-   -  `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/master/Classes/DataProcessing/AbstractDataProcessor.php>`__
-   -  `DataProcessorPass <https://github.com/CPS-IT/handlebars/blob/master/Classes/DependencyInjection/DataProcessorPass.php>`__
-   -  `ProcessingBridge <https://github.com/CPS-IT/handlebars/blob/master/Classes/DependencyInjection/ProcessingBridge.php>`__
+   -  `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/AbstractDataProcessor.php>`__
+   -  `DataProcessorPass <https://github.com/CPS-IT/handlebars/blob/main/Classes/DependencyInjection/DataProcessorPass.php>`__
+   -  `ProcessingBridge <https://github.com/CPS-IT/handlebars/blob/main/Classes/DependencyInjection/ProcessingBridge.php>`__

@@ -84,4 +84,4 @@ paths for specific parts of the system.
    extensions that provide Handlebars templates), the ones with the
    same numeric key will be overridden by the last defined one.
 
-.. _HandlebarsExtension: https://github.com/CPS-IT/handlebars/blob/master/Classes/DependencyInjection/Extension/HandlebarsExtension.php
+.. _HandlebarsExtension: https://github.com/CPS-IT/handlebars/blob/main/Classes/DependencyInjection/Extension/HandlebarsExtension.php

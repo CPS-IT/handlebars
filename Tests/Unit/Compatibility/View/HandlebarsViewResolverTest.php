@@ -84,6 +84,9 @@ class HandlebarsViewResolverTest extends UnitTestCase
                 '_all' => $this->processor,
                 'foo' => $this->processor,
             ],
+            'BazController' => [
+                'baz' => $this->processor,
+            ],
         ]);
     }
 
@@ -91,6 +94,17 @@ class HandlebarsViewResolverTest extends UnitTestCase
      * @test
      */
     public function resolveReturnsViewFromDefaultResolverIfControllerIsNotSupported(): void
+    {
+        self::assertNotInstanceOf(
+            ExtbaseViewAdapter::class,
+            $this->subject->resolve('UnsupportedController', 'foo', 'html')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function resolveReturnsViewFromDefaultResolverIfControllerActionIsNotSupported(): void
     {
         self::assertNotInstanceOf(
             ExtbaseViewAdapter::class,

@@ -85,5 +85,5 @@ Sources
 
    View the sources on GitHub:
 
-   -  `BeforeRenderingEvent <https://github.com/CPS-IT/handlebars/blob/master/Classes/Event/BeforeRenderingEvent.php>`__
-   -  `AfterRenderingEvent <https://github.com/CPS-IT/handlebars/blob/master/Classes/Event/AfterRenderingEvent.php>`__
+   -  `BeforeRenderingEvent <https://github.com/CPS-IT/handlebars/blob/main/Classes/Event/BeforeRenderingEvent.php>`__
+   -  `AfterRenderingEvent <https://github.com/CPS-IT/handlebars/blob/main/Classes/Event/AfterRenderingEvent.php>`__

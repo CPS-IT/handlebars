@@ -80,6 +80,6 @@ Sources
 
    View the sources on GitHub:
 
-   -  `ExtbaseViewAdapter <https://github.com/CPS-IT/handlebars/blob/master/Classes/Compatibility/View/ExtbaseViewAdapter.php>`__
-   -  `HandlebarsViewResolver <https://github.com/CPS-IT/handlebars/blob/master/Classes/Compatibility/View/HandlebarsViewResolver.php>`__
-   -  `ExtbaseControllerCompatibilityLayer <https://github.com/CPS-IT/handlebars/blob/master/Classes/DependencyInjection/Compatibility/ExtbaseControllerCompatibilityLayer.php>`__
+   -  `ExtbaseViewAdapter <https://github.com/CPS-IT/handlebars/blob/main/Classes/Compatibility/View/ExtbaseViewAdapter.php>`__
+   -  `HandlebarsViewResolver <https://github.com/CPS-IT/handlebars/blob/main/Classes/Compatibility/View/HandlebarsViewResolver.php>`__
+   -  `ExtbaseControllerCompatibilityLayer <https://github.com/CPS-IT/handlebars/blob/main/Classes/DependencyInjection/Compatibility/ExtbaseControllerCompatibilityLayer.php>`__

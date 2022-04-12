@@ -26,11 +26,13 @@ namespace Fr\Typo3Handlebars\Tests\Unit\Compatibility\View;
 use Fr\Typo3Handlebars\Compatibility\View\ExtbaseViewAdapter;
 use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
+use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyView;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -44,6 +46,11 @@ class HandlebarsViewResolverTest extends UnitTestCase
     use ProphecyTrait;
 
     /**
+     * @var DummyProcessor
+     */
+    protected $processor;
+
+    /**
      * @var HandlebarsViewResolver
      */
     protected $subject;
@@ -51,6 +58,9 @@ class HandlebarsViewResolverTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $configurationManager = new DummyConfigurationManager();
+        $configurationManager->setContentObject(new ContentObjectRenderer());
 
         // Handle different constructor arguments between TYPO3 11.4+ and lower
         $typo3Version = new Typo3Version();
@@ -64,13 +74,18 @@ class HandlebarsViewResolverTest extends UnitTestCase
             $firstConstructorArgument = $container;
         }
 
+        $this->processor = new DummyProcessor();
         /* @phpstan-ignore-next-line */
         $this->subject = new HandlebarsViewResolver($firstConstructorArgument);
+        $this->subject->injectConfigurationManager($configurationManager);
         $this->subject->setDefaultViewClass('foo');
         $this->subject->setProcessorMap([
             'FooController' => [
-                '_all' => new DummyProcessor(),
-                'foo' => new DummyProcessor(),
+                '_all' => $this->processor,
+                'foo' => $this->processor,
+            ],
+            'BazController' => [
+                'baz' => $this->processor,
             ],
         ]);
     }
@@ -79,6 +94,17 @@ class HandlebarsViewResolverTest extends UnitTestCase
      * @test
      */
     public function resolveReturnsViewFromDefaultResolverIfControllerIsNotSupported(): void
+    {
+        self::assertNotInstanceOf(
+            ExtbaseViewAdapter::class,
+            $this->subject->resolve('UnsupportedController', 'foo', 'html')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function resolveReturnsViewFromDefaultResolverIfControllerActionIsNotSupported(): void
     {
         self::assertNotInstanceOf(
             ExtbaseViewAdapter::class,
@@ -106,5 +132,17 @@ class HandlebarsViewResolverTest extends UnitTestCase
             ExtbaseViewAdapter::class,
             $this->subject->resolve('FooController', 'baz', 'html')
         );
+    }
+
+    /**
+     * @test
+     */
+    public function resolvePassesContentObjectRendererToResolvedProcessor(): void
+    {
+        self::assertNull($this->processor->getContentObjectRenderer());
+
+        $this->subject->resolve('FooController', 'foo', 'html');
+
+        self::assertInstanceOf(ContentObjectRenderer::class, $this->processor->getContentObjectRenderer());
     }
 }

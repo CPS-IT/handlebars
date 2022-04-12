@@ -80,27 +80,18 @@ class HandlebarsViewResolver extends GenericViewResolver
         }
 
         $processors = $this->processorMap[$controllerClassName];
-        $selectedProcessor = null;
+        $processor = $processors[$actionName] ?? $processors['_all'] ?? null;
 
-        foreach ($processors as $action => $processor) {
-            if ('_all' === $action) {
-                $selectedProcessor = $processor;
-            } elseif ($actionName === $action) {
-                $selectedProcessor = $processor;
-                break;
-            }
+        if (null === $processor) {
+            return null;
         }
 
         $contentObjectRenderer = $this->configurationManager->getContentObject();
-        if (
-            null !== $contentObjectRenderer
-            && null !== $selectedProcessor
-            && method_exists($selectedProcessor, 'setContentObjectRenderer')
-        ) {
-            $selectedProcessor->setContentObjectRenderer($contentObjectRenderer);
+        if (null !== $contentObjectRenderer && method_exists($processor, 'setContentObjectRenderer')) {
+            $processor->setContentObjectRenderer($contentObjectRenderer);
         }
 
-        return $selectedProcessor;
+        return $processor;
     }
 
     /**

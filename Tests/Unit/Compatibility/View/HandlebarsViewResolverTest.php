@@ -29,7 +29,7 @@ use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyView;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\DependencyInjection\Container;
-use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -53,9 +53,8 @@ class HandlebarsViewResolverTest extends UnitTestCase
         parent::setUp();
 
         // Handle different constructor arguments between TYPO3 11.4+ and lower
-        $reflectionClass = new \ReflectionClass(GenericViewResolver::class);
-        $firstConstructorArgumentReflection = $reflectionClass->getConstructor()->getParameters()[0];
-        if ($firstConstructorArgumentReflection->getClass()->getName() === ObjectManager::class) {
+        $typo3Version = new Typo3Version();
+        if ($typo3Version->getMajorVersion() < 11) {
             $objectManagerProphecy = $this->prophesize(ObjectManager::class);
             $objectManagerProphecy->get('foo')->willReturn(new DummyView());
             $firstConstructorArgument = $objectManagerProphecy->reveal();
@@ -65,6 +64,7 @@ class HandlebarsViewResolverTest extends UnitTestCase
             $firstConstructorArgument = $container;
         }
 
+        /* @phpstan-ignore-next-line */
         $this->subject = new HandlebarsViewResolver($firstConstructorArgument);
         $this->subject->setDefaultViewClass('foo');
         $this->subject->setProcessorMap([

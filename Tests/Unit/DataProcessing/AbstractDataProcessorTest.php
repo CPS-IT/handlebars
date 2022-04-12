@@ -137,6 +137,7 @@ class AbstractDataProcessorTest extends UnitTestCase
         $this->subject->process('', []);
 
         self::assertSame(['foo' => 'baz'], $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT));
+        /* @phpstan-ignore-next-line */
         self::assertSame($contentObjectRenderer, $this->configurationManager->getContentObject());
     }
 

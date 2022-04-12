@@ -49,9 +49,7 @@ class BeforeRenderingEvent
     private $renderer;
 
     /**
-     * @param string $templatePath
      * @param array<mixed, mixed> $data
-     * @param HandlebarsRenderer $renderer
      */
     public function __construct(string $templatePath, array $data, HandlebarsRenderer $renderer)
     {
@@ -75,7 +73,6 @@ class BeforeRenderingEvent
 
     /**
      * @param array<mixed, mixed> $data
-     * @return self
      */
     public function setData(array $data): self
     {

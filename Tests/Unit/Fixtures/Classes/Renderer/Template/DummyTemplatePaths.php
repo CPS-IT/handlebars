@@ -36,7 +36,6 @@ final class DummyTemplatePaths extends TemplatePaths
 {
     /**
      * @param string[] $templatePaths
-     * @return self
      */
     public function setTemplatePaths(array $templatePaths): self
     {

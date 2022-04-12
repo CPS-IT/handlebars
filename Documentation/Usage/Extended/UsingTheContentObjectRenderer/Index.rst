@@ -116,5 +116,5 @@ Sources
 
    View the sources on GitHub:
 
-   -  `ContentObjectRendererAwareInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/ContentObjectRendererAwareInterface.php>`__
-   -  `ContentObjectRendererAwareTrait <https://github.com/CPS-IT/handlebars/blob/master/Classes/Traits/ContentObjectRendererAwareTrait.php>`__
+   -  `ContentObjectRendererAwareInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/ContentObjectRendererAwareInterface.php>`__
+   -  `ContentObjectRendererAwareTrait <https://github.com/CPS-IT/handlebars/blob/main/Classes/Traits/ContentObjectRendererAwareTrait.php>`__

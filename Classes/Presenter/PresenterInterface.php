@@ -33,9 +33,5 @@ use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
  */
 interface PresenterInterface
 {
-    /**
-     * @param ProviderResponseInterface $data
-     * @return string
-     */
     public function present(ProviderResponseInterface $data): string;
 }

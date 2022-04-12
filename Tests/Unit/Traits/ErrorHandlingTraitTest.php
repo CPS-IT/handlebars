@@ -63,7 +63,7 @@ class ErrorHandlingTraitTest extends UnitTestCase
 
         $this->subject->doHandleError($exception);
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) use ($exception) {
-            $expectedMessage = 'Data processing for ' . get_class($this->subject) . ' failed.';
+            $expectedMessage = 'Data processing for ' . \get_class($this->subject) . ' failed.';
             static::assertSame($expectedMessage, $logRecord['message']);
             static::assertSame($exception, $logRecord['context']['exception']);
             return true;

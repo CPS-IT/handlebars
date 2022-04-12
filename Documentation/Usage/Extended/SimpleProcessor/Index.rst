@@ -41,4 +41,4 @@ Sources
 
    View the sources on GitHub:
 
-   -  `SimpleProcessor <https://github.com/CPS-IT/handlebars/blob/master/Classes/DataProcessing/SimpleProcessor.php>`__
+   -  `SimpleProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/SimpleProcessor.php>`__

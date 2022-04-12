@@ -33,9 +33,7 @@ namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 interface CompatibilityLayerInterface
 {
     /**
-     * @param string $processorServiceId
      * @param array<string, mixed> $configuration
-     * @return bool
      */
     public function provide(string $processorServiceId, array $configuration): bool;
 }

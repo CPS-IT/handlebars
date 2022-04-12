@@ -32,9 +32,7 @@ namespace Fr\Typo3Handlebars\DataProcessing;
 interface DataProcessorInterface
 {
     /**
-     * @param string $content
      * @param array<string|int, mixed> $configuration
-     * @return string
      */
     public function process(string $content, array $configuration): string;
 }

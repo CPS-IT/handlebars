@@ -33,7 +33,6 @@ class VarDumpHelper implements HelperInterface
 {
     /**
      * @param array<mixed, mixed> $context
-     * @return string
      */
     public static function evaluate(array $context): string
     {

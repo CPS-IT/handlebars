@@ -271,9 +271,9 @@ Sources
 
    View the sources on GitHub:
 
-   -  `DataProcessorInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/DataProcessing/DataProcessorInterface.php>`__
-   -  `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/master/Classes/DataProcessing/AbstractDataProcessor.php>`__
-   -  `DataProviderInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Data/DataProviderInterface.php>`__
-   -  `ProviderResponseInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Data/Response/ProviderResponseInterface.php>`__
-   -  `PresenterInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Presenter/PresenterInterface.php>`__
-   -  `AbstractPresenter <https://github.com/CPS-IT/handlebars/blob/master/Classes/Presenter/AbstractPresenter.php>`__
+   -  `DataProcessorInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/DataProcessorInterface.php>`__
+   -  `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/AbstractDataProcessor.php>`__
+   -  `DataProviderInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/DataProviderInterface.php>`__
+   -  `ProviderResponseInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/Response/ProviderResponseInterface.php>`__
+   -  `PresenterInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/PresenterInterface.php>`__
+   -  `AbstractPresenter <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/AbstractPresenter.php>`__

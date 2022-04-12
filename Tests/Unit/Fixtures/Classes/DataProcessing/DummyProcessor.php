@@ -62,7 +62,7 @@ final class DummyProcessor extends AbstractDataProcessor
         return $content;
     }
 
-    public function getContentObjectRenderer(): ContentObjectRenderer
+    public function getContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->cObj;
     }

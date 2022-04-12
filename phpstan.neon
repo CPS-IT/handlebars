@@ -1,6 +1,8 @@
 includes:
-    - .Build/vendor/saschaegerer/phpstan-typo3/extension.neon
+    - phpstan-baseline.neon
     - .Build/vendor/jangregor/phpstan-prophecy/extension.neon
+    - .Build/vendor/phpstan/phpstan-phpunit/extension.neon
+    - .Build/vendor/saschaegerer/phpstan-typo3/extension.neon
 
 parameters:
     bootstrapFiles:
@@ -17,13 +19,3 @@ parameters:
         - message: '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy<[a-zA-Z0-9\\_]+>::\$[a-zA-Z0-9_]+\.#'
           paths:
               - Tests/Unit/*
-        # Handle different constructor arguments between TYPO3 10 and 11
-        - message: '#^Parameter \#1 \$container of class Fr\\Typo3Handlebars\\Compatibility\\View\\HandlebarsViewResolver constructor expects Psr\\Container\\ContainerInterface, [a-zA-Z0-9\\_|]+ given\.$#'
-          count: 1
-          path: Tests/Unit/Compatibility/View/HandlebarsViewResolverTest.php
-        - message: '#^Cannot call method getName\(\) on ReflectionClass\|null\.$#'
-          count: 1
-          path: Tests/Unit/Compatibility/View/HandlebarsViewResolverTest.php
-        - message: '#^Cannot call method getParameters\(\) on ReflectionMethod\|null\.$#'
-          count: 1
-          path: Tests/Unit/Compatibility/View/HandlebarsViewResolverTest.php

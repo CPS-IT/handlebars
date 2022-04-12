@@ -32,9 +32,7 @@ namespace Fr\Typo3Handlebars\Renderer;
 interface RendererInterface
 {
     /**
-     * @param string $templatePath
      * @param array<mixed, mixed> $data
-     * @return string
      */
     public function render(string $templatePath, array $data = []): string;
 }

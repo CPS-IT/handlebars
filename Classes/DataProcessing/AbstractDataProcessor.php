@@ -97,8 +97,6 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
 
     /**
      * @required
-     * @param PresenterInterface $presenter
-     * @return DataProcessorInterface
      */
     public function setPresenter(PresenterInterface $presenter): DataProcessorInterface
     {
@@ -108,8 +106,6 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
 
     /**
      * @required
-     * @param DataProviderInterface $provider
-     * @return DataProcessorInterface
      */
     public function setProvider(DataProviderInterface $provider): DataProcessorInterface
     {

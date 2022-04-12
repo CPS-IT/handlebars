@@ -22,7 +22,7 @@ Implementation options
 
 There are several ways to implement `Helpers`. To understand how `Helpers` are
 resolved in the `Renderer`, it is worth taking a look at the responsible
-`Trait <https://github.com/CPS-IT/handlebars/blob/master/Classes/Traits/HandlebarsHelperTrait.php>`__.
+`Trait <https://github.com/CPS-IT/handlebars/blob/main/Classes/Traits/HandlebarsHelperTrait.php>`__.
 
 Basically every registered `Helper` must be
 `callable <https://www.php.net/manual/en/function.is-callable.php>`__. This means
@@ -202,5 +202,5 @@ Sources
 
    View the sources on GitHub:
 
-   -  `HelperInterface <https://github.com/CPS-IT/handlebars/blob/master/Classes/Renderer/Helper/HelperInterface.php>`__
-   -  `HandlebarsHelperPass <https://github.com/CPS-IT/handlebars/blob/master/Classes/DependencyInjection/HandlebarsHelperPass.php>`__
+   -  `HelperInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Helper/HelperInterface.php>`__
+   -  `HandlebarsHelperPass <https://github.com/CPS-IT/handlebars/blob/main/Classes/DependencyInjection/HandlebarsHelperPass.php>`__

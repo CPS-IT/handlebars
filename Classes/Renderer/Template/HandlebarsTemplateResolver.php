@@ -47,7 +47,6 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     protected $supportedFileExtensions;
 
     /**
-     * @param TemplatePaths $templateRootPaths
      * @param string[] $supportedFileExtensions
      */
     public function __construct(TemplatePaths $templateRootPaths, array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS)
@@ -112,7 +111,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
 
     public function supports(string $fileExtension): bool
     {
-        return in_array($fileExtension, $this->supportedFileExtensions, true);
+        return \in_array($fileExtension, $this->supportedFileExtensions, true);
     }
 
     public function resolveTemplatePath(string $templatePath): string
@@ -139,7 +138,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
         } else {
             $filename = $templatePath;
         }
-        if ($extension !== null && !in_array(pathinfo($filename, PATHINFO_EXTENSION), $this->supportedFileExtensions)) {
+        if ($extension !== null && !\in_array(pathinfo($filename, PATHINFO_EXTENSION), $this->supportedFileExtensions)) {
             $filename .= '.' . $extension;
         }
         $filename = GeneralUtility::getFileAbsFileName($filename);
@@ -151,9 +150,9 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
      */
     protected function validateTemplateRootPath($templateRootPath): void
     {
-        if (!is_string($templateRootPath)) {
+        if (!\is_string($templateRootPath)) {
             throw new \InvalidArgumentException(
-                sprintf('Template root path must be of type string, "%s" given.', gettype($templateRootPath)),
+                sprintf('Template root path must be of type string, "%s" given.', \gettype($templateRootPath)),
                 1613727984
             );
         }
@@ -170,9 +169,9 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
      */
     protected function validateFileExtension($fileExtension): void
     {
-        if (!is_string($fileExtension)) {
+        if (!\is_string($fileExtension)) {
             throw new \InvalidArgumentException(
-                sprintf('File extension must be of type string, "%s" given.', gettype($fileExtension)),
+                sprintf('File extension must be of type string, "%s" given.', \gettype($fileExtension)),
                 1613727952
             );
         }

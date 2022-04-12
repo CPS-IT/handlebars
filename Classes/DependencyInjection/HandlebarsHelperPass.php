@@ -79,7 +79,6 @@ final class HandlebarsHelperPass implements CompilerPassInterface
     }
 
     /**
-     * @param string $name
      * @param array{0: string|Reference, 1: string} $callable
      */
     private function registerHelper(string $name, array $callable): void
@@ -97,25 +96,24 @@ final class HandlebarsHelperPass implements CompilerPassInterface
             $rendererDefinition = $container->findDefinition($serviceId);
             $rendererClass = $rendererDefinition->getClass();
 
-            if (null !== $rendererClass && in_array(HelperAwareInterface::class, class_implements($rendererClass) ?: [])) {
+            if (null !== $rendererClass && \in_array(HelperAwareInterface::class, class_implements($rendererClass) ?: [])) {
                 $this->rendererDefinitions[] = $rendererDefinition;
             }
         }
     }
 
     /**
-     * @param string $serviceId
      * @param array<string, string> $tagAttributes
      */
     private function validateTag(string $serviceId, array $tagAttributes): void
     {
-        if (!array_key_exists('identifier', $tagAttributes) || '' === (string)$tagAttributes['identifier']) {
+        if (!\array_key_exists('identifier', $tagAttributes) || '' === (string)$tagAttributes['identifier']) {
             throw new \InvalidArgumentException(
                 sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
                 1606236820
             );
         }
-        if (!array_key_exists('method', $tagAttributes) || '' === (string)$tagAttributes['method']) {
+        if (!\array_key_exists('method', $tagAttributes) || '' === (string)$tagAttributes['method']) {
             throw new \InvalidArgumentException(
                 sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
                 1606245140

@@ -84,10 +84,6 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
     protected $debugMode;
 
     /**
-     * @param CacheInterface $cache
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param TemplateResolverInterface $templateResolver
-     * @param TemplateResolverInterface|null $partialResolver
      * @param array<mixed, mixed> $defaultData
      */
     public function __construct(
@@ -119,9 +115,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
     }
 
     /**
-     * @param string $templatePath
      * @param array<mixed, mixed> $data
-     * @return string
      * @throws InvalidTemplateFileException if template file is invalid
      * @throws TemplateCompilationException if template compilation fails and errors are not yet handled by compiler
      * @throws TemplateNotFoundException if template could not be found
@@ -195,7 +189,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
             throw new TemplateCompilationException(
                 sprintf(
                     'Error during template compilation: "%s"',
-                    implode('", "', is_array($errors) ? $errors : [$errors])
+                    implode('", "', \is_array($errors) ? $errors : [$errors])
                 ),
                 1614620212
             );
@@ -249,7 +243,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         GeneralUtility::unlink_tempfile($path);
 
         // Validate callable
-        if (!is_callable($callable)) {
+        if (!\is_callable($callable)) {
             throw new TemplateCompilationException('Got invalid compile result from compiler.', 1639405571);
         }
 
@@ -304,7 +298,6 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
 
     /**
      * @param array<mixed, mixed> $defaultData
-     * @return self
      */
     public function setDefaultData(array $defaultData): self
     {

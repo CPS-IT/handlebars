@@ -25,6 +25,7 @@ namespace Fr\Typo3Handlebars\Compatibility\View;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
@@ -40,6 +41,16 @@ class HandlebarsViewResolver extends GenericViewResolver
      * @var array<string, array<string, DataProcessorInterface>>
      */
     protected $processorMap = [];
+
+    /**
+     * @var ConfigurationManagerInterface
+     */
+    protected $configurationManager;
+
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
     public function resolve(string $controllerObjectName, string $actionName, string $format): ViewInterface
     {
@@ -69,17 +80,27 @@ class HandlebarsViewResolver extends GenericViewResolver
         }
 
         $processors = $this->processorMap[$controllerClassName];
-        $fallbackProcessor = null;
+        $selectedProcessor = null;
 
         foreach ($processors as $action => $processor) {
             if ('_all' === $action) {
-                $fallbackProcessor = $processor;
+                $selectedProcessor = $processor;
             } elseif ($actionName === $action) {
-                return $processor;
+                $selectedProcessor = $processor;
+                break;
             }
         }
 
-        return $fallbackProcessor;
+        $contentObjectRenderer = $this->configurationManager->getContentObject();
+        if (
+            null !== $contentObjectRenderer
+            && null !== $selectedProcessor
+            && method_exists($selectedProcessor, 'setContentObjectRenderer')
+        ) {
+            $selectedProcessor->setContentObjectRenderer($contentObjectRenderer);
+        }
+
+        return $selectedProcessor;
     }
 
     /**

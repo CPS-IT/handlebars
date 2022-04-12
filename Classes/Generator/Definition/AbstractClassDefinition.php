@@ -44,8 +44,6 @@ abstract class AbstractClassDefinition implements ClassDefinitionInterface
 
     /**
      * @param class-string $className
-     * @param string $methodName
-     * @return MethodGenerator
      */
     protected function getMethodGeneratorFromReflection(string $className, string $methodName): MethodGenerator
     {

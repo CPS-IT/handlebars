@@ -34,10 +34,7 @@ use Fr\Typo3Handlebars\Generator\Result\GeneratorResult;
 interface GeneratorInterface
 {
     /**
-     * @param string $name
      * @param array<string, mixed> $options
-     * @param bool $overwriteExistingFiles
-     * @return GeneratorResult
      */
     public function generate(string $name, array $options, bool $overwriteExistingFiles = false): GeneratorResult;
 }

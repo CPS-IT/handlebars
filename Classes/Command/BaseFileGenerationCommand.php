@@ -147,13 +147,12 @@ abstract class BaseFileGenerationCommand extends Command
             'EXT:%s%s%s',
             $extensionKey,
             DIRECTORY_SEPARATOR,
-            trim(substr($filename, strlen($packagePath)), DIRECTORY_SEPARATOR)
+            trim(substr($filename, \strlen($packagePath)), DIRECTORY_SEPARATOR)
         );
     }
 
     /**
      * @param GeneratedFile[] $files
-     * @param string $extensionKey
      * @return string[]
      */
     protected function decorateGeneratedFiles(array $files, string $extensionKey): array
@@ -185,7 +184,6 @@ abstract class BaseFileGenerationCommand extends Command
 
     /**
      * @param GeneratedFile[] $files
-     * @return bool
      */
     protected function servicesYamlWasWritten(array $files): bool
     {
@@ -223,11 +221,10 @@ abstract class BaseFileGenerationCommand extends Command
 
     /**
      * @param mixed $value
-     * @return string
      */
     public function validateNameArgument($value): string
     {
-        if (!is_string($value) || '' === trim($value)) {
+        if (!\is_string($value) || '' === trim($value)) {
             throw new \RuntimeException('The helper name cannot be empty.', 1622465202);
         }
 
@@ -236,11 +233,10 @@ abstract class BaseFileGenerationCommand extends Command
 
     /**
      * @param mixed $value
-     * @return string
      */
     public function validateExtensionKeyOption($value): string
     {
-        if (!is_string($value) || '' === trim($value)) {
+        if (!\is_string($value) || '' === trim($value)) {
             throw new \RuntimeException('The extension key cannot be empty.', 1622465793);
         }
         if (!$this->packageManager->isPackageActive($value)) {

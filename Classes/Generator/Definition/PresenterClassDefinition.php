@@ -56,9 +56,7 @@ final class PresenterClassDefinition extends AbstractClassDefinition
     }
 
     /**
-     * @param string $name
      * @param array<string, mixed> $options
-     * @return MethodGenerator
      */
     private function buildMethodGenerator(string $name, array $options = []): MethodGenerator
     {

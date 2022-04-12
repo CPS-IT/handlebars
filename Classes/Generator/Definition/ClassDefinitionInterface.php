@@ -32,7 +32,6 @@ namespace Fr\Typo3Handlebars\Generator\Definition;
 interface ClassDefinitionInterface
 {
     /**
-     * @param string $name
      * @param array<string, mixed> $options
      * @return array<string, mixed>
      */

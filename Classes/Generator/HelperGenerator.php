@@ -58,12 +58,6 @@ class HelperGenerator implements GeneratorInterface
      */
     protected $registeredHelpers;
 
-    /**
-     * @param PhpWriter $phpWriter
-     * @param YamlWriter $yamlWriter
-     * @param ClassResolver $classResolver
-     * @param ServiceLocator $rendererLocator
-     */
     public function __construct(
         PhpWriter $phpWriter,
         YamlWriter $yamlWriter,
@@ -77,15 +71,12 @@ class HelperGenerator implements GeneratorInterface
     }
 
     /**
-     * @param string $name
      * @param array<string, mixed> $options
-     * @param bool $overwriteExistingFiles
-     * @return GeneratorResult
      * @throws ConstraintViolationException
      */
     public function generate(string $name, array $options, bool $overwriteExistingFiles = false): GeneratorResult
     {
-        if (in_array($name, $this->registeredHelpers, true)) {
+        if (\in_array($name, $this->registeredHelpers, true)) {
             throw ConstraintViolationException::createForUniqueHelper($name);
         }
 
@@ -116,7 +107,7 @@ class HelperGenerator implements GeneratorInterface
 
         $generatedClass = new GeneratedFile($classFilename, 'helperClass', ['className' => $className]);
         $generatedClass->setGenerated($classGenerated);
-        if (is_string($templateResult)) {
+        if (\is_string($templateResult)) {
             $generatedClass->setContent($templateResult);
         }
         if (null !== $previousContent) {
@@ -151,7 +142,7 @@ class HelperGenerator implements GeneratorInterface
 
         $generatedServicesYaml = new GeneratedFile($servicesYamlFile, 'servicesYaml');
         $generatedServicesYaml->setGenerated($servicesYamlGenerated);
-        if (is_string($servicesYamlResult)) {
+        if (\is_string($servicesYamlResult)) {
             $generatedServicesYaml->setContent($servicesYamlResult);
         }
 
@@ -163,8 +154,6 @@ class HelperGenerator implements GeneratorInterface
     }
 
     /**
-     * @param string $extensionKey
-     * @param string $name
      * @return array{namespace: string, className: string}
      */
     public function resolveClassParts(string $extensionKey, string $name): array
@@ -178,11 +167,6 @@ class HelperGenerator implements GeneratorInterface
     }
 
     /**
-     * @param string $extensionKey
-     * @param string $name
-     * @param string $className
-     * @param string $methodName
-     * @param bool $overwriteExistingFile
      * @return array{0: string, 1: string|bool}
      */
     protected function writeToServicesYaml(

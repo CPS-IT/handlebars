@@ -56,10 +56,6 @@ final class ListHelpersCommand extends Command
      */
     protected $registeredHelpers;
 
-    /**
-     * @param ServiceLocator $rendererLocator
-     * @param string|null $name
-     */
     public function __construct(ServiceLocator $rendererLocator, string $name = null)
     {
         parent::__construct($name);
@@ -85,7 +81,7 @@ final class ListHelpersCommand extends Command
 
         foreach ($this->registeredHelpers as $rendererServiceId => $helpers) {
             $firstHelper = reset($helpers);
-            \assert(is_array($firstHelper));
+            \assert(\is_array($firstHelper));
             $rendererClassName = $firstHelper['renderer'];
 
             $io->section(sprintf('Renderer: %s', $rendererServiceId));
@@ -117,13 +113,13 @@ final class ListHelpersCommand extends Command
             case $callable instanceof \Closure:
                 return 'Closure';
 
-            case is_string($callable):
+            case \is_string($callable):
                 return $callable;
 
-            case is_array($callable):
+            case \is_array($callable):
                 [$classOrObject, $methodName] = $callable;
-                if (is_object($classOrObject)) {
-                    $classOrObject = get_class($classOrObject);
+                if (\is_object($classOrObject)) {
+                    $classOrObject = \get_class($classOrObject);
                 }
                 return '<fg=cyan>' . $classOrObject . '</>::' . $methodName;
 

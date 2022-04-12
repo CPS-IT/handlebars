@@ -140,7 +140,7 @@ class ModuleGenerator implements GeneratorInterface
 
         $generatedServicesYaml = new GeneratedFile($servicesYamlFile, 'servicesYaml');
         $generatedServicesYaml->setGenerated($servicesYamlGenerated);
-        if (is_string($servicesYamlResult)) {
+        if (\is_string($servicesYamlResult)) {
             $generatedServicesYaml->setContent($servicesYamlResult);
         }
         $this->result->addFile($generatedServicesYaml);
@@ -230,7 +230,6 @@ class ModuleGenerator implements GeneratorInterface
     }
 
     /**
-     * @param string $type
      * @param array{namespace: string, className: string} $classParts
      * @param array<string, mixed> $classDefinition
      */
@@ -246,7 +245,7 @@ class ModuleGenerator implements GeneratorInterface
         $file = new GeneratedFile($filename, $type, ['className' => $className]);
         $file->setGenerated(true === $templateResult);
 
-        if (is_string($templateResult)) {
+        if (\is_string($templateResult)) {
             $file->setContent($templateResult);
         }
 
@@ -258,9 +257,6 @@ class ModuleGenerator implements GeneratorInterface
     }
 
     /**
-     * @param string $extensionKey
-     * @param string $className
-     * @param bool $overwriteExistingFile
      * @return array{0: string, 1: string|bool}
      */
     protected function writeToServicesYaml(

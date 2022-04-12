@@ -67,7 +67,6 @@ final class GeneratorResult
     }
 
     /**
-     * @param callable $filter
      * @return GeneratedFile[]
      */
     public function getByFilter(callable $filter): array
@@ -77,7 +76,6 @@ final class GeneratorResult
 
     /**
      * @param GeneratedFile[] $files
-     * @return self
      */
     public function setFiles(array $files): self
     {
@@ -98,7 +96,7 @@ final class GeneratorResult
         if ([] === $generatedFiles) {
             return self::STATE_FAILED;
         }
-        if (count($this->files) !== count($generatedFiles)) {
+        if (\count($this->files) !== \count($generatedFiles)) {
             return self::STATE_INCOMPLETE;
         }
 

@@ -38,20 +38,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PhpWriter
 {
     /**
-     * @param string $targetFile
      * @param array<string, mixed> $classDefinition
-     * @return bool
      */
     public function write(string $targetFile, array $classDefinition): bool
     {
-        GeneralUtility::mkdir_deep(dirname($targetFile));
+        GeneralUtility::mkdir_deep(\dirname($targetFile));
 
         return GeneralUtility::writeFile($targetFile, $this->fill($classDefinition));
     }
 
     /**
      * @param array<string, mixed> $classDefinition
-     * @return string
      */
     public function fill(array $classDefinition): string
     {

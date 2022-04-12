@@ -64,7 +64,6 @@ final class GeneratedFile implements \ArrayAccess
     private $previousContent;
 
     /**
-     * @param string $filename
      * @param array<string, mixed> $additionalData
      */
     public function __construct(string $filename, string $type, array $additionalData = [])

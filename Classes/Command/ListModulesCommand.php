@@ -126,11 +126,11 @@ final class ListModulesCommand extends Command
 
     private function resolveBaseName(DataProcessorInterface $dataProcessor): string
     {
-        $className = get_class($dataProcessor);
+        $className = \get_class($dataProcessor);
         $namespacePart = '\\DataProcessing\\';
 
         // Get base name from cache
-        if (array_key_exists($className, $this->resolvedBaseNames)) {
+        if (\array_key_exists($className, $this->resolvedBaseNames)) {
             return $this->resolvedBaseNames[$className];
         }
 
@@ -140,11 +140,10 @@ final class ListModulesCommand extends Command
         }
 
         // Resolve base name
-        return $this->resolvedBaseNames[$className] = substr($className, $pos + strlen($namespacePart), -9);
+        return $this->resolvedBaseNames[$className] = substr($className, $pos + \strlen($namespacePart), -9);
     }
 
     /**
-     * @param DataProcessorInterface $dataProcessor
      * @return \Generator<string>
      */
     private function resolveDataProcessorMetadata(DataProcessorInterface $dataProcessor): \Generator
@@ -153,20 +152,20 @@ final class ListModulesCommand extends Command
         $template = '%s: <info>%s</info>';
 
         // Show data processor
-        yield sprintf($template, 'DataProcessor', get_class($dataProcessor));
+        yield sprintf($template, 'DataProcessor', \get_class($dataProcessor));
 
         // Show data provider
         if ($reflection->hasProperty('provider')) {
             $providerProperty = $reflection->getProperty('provider');
             $providerProperty->setAccessible(true);
-            yield sprintf($template, 'DataProvider', get_class($providerProperty->getValue($dataProcessor)));
+            yield sprintf($template, 'DataProvider', \get_class($providerProperty->getValue($dataProcessor)));
         }
 
         // Show presenter
         if ($reflection->hasProperty('presenter')) {
             $presenterProperty = $reflection->getProperty('presenter');
             $presenterProperty->setAccessible(true);
-            yield sprintf($template, 'Presenter', get_class($presenterProperty->getValue($dataProcessor)));
+            yield sprintf($template, 'Presenter', \get_class($presenterProperty->getValue($dataProcessor)));
         }
     }
 
@@ -179,13 +178,12 @@ final class ListModulesCommand extends Command
         foreach ($dataProcessors as $dataProcessor) {
             yield [
                 sprintf('<info>%s</info>', $this->resolveBaseName($dataProcessor)),
-                get_class($dataProcessor),
+                \get_class($dataProcessor),
             ];
         }
     }
 
     /**
-     * @param string $name
      * @return \Generator<DataProcessorInterface>
      */
     private function filterDataProcessorsByName(string $name): \Generator
@@ -193,7 +191,7 @@ final class ListModulesCommand extends Command
         $lowercasedName = strtolower($name);
 
         foreach ($this->dataProcessors as $dataProcessor) {
-            if (strtolower(get_class($dataProcessor)) === $lowercasedName) {
+            if (strtolower(\get_class($dataProcessor)) === $lowercasedName) {
                 yield $dataProcessor;
                 continue;
             }

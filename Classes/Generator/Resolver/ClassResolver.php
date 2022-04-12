@@ -46,10 +46,6 @@ class ClassResolver
     }
 
     /**
-     * @param string $extensionKey
-     * @param string $baseName
-     * @param string|null $namespacePath
-     * @param string|null $classNameSuffix
      * @return array{namespace: string, className: string}
      */
     public function buildClassParts(
@@ -128,7 +124,7 @@ class ClassResolver
         $absFilename = sprintf(
             'EXT:%s/Classes/%s.php',
             $extensionKey,
-            str_replace('\\', DIRECTORY_SEPARATOR, rtrim(substr($className, strlen($vendorNamespace)), '\\'))
+            str_replace('\\', DIRECTORY_SEPARATOR, rtrim(substr($className, \strlen($vendorNamespace)), '\\'))
         );
         $filename = GeneralUtility::getFileAbsFileName($absFilename);
 

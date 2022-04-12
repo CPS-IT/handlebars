@@ -211,8 +211,6 @@ final class NewHelperCommand extends BaseFileGenerationCommand
 
     /**
      * @param mixed $value
-     * @param string $namespace
-     * @return string|null
      */
     public function validateClassNameOption($value, string $namespace): ?string
     {
@@ -220,9 +218,9 @@ final class NewHelperCommand extends BaseFileGenerationCommand
             return null;
         }
 
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             throw new \RuntimeException(
-                sprintf('The class name must be of type string, "%s" given..', gettype($value)),
+                sprintf('The class name must be of type string, "%s" given..', \gettype($value)),
                 1622465793
             );
         }
@@ -252,7 +250,7 @@ final class NewHelperCommand extends BaseFileGenerationCommand
             return null;
         }
 
-        if (!is_string($value) || '' === trim($value)) {
+        if (!\is_string($value) || '' === trim($value)) {
             throw new \RuntimeException('The method name cannot be empty.', 1622467549);
         }
 

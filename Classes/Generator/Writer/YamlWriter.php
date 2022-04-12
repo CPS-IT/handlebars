@@ -37,9 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class YamlWriter
 {
     /**
-     * @param string $filename
      * @param array<mixed, mixed> $content
-     * @return bool
      */
     public function write(string $filename, array $content): bool
     {
@@ -47,10 +45,7 @@ class YamlWriter
     }
 
     /**
-     * @param string $filename
      * @param array<mixed, mixed> $content
-     * @param bool $returnOnlyChangedContent
-     * @return string
      */
     public function fill(string $filename, array $content, bool $returnOnlyChangedContent = false): string
     {

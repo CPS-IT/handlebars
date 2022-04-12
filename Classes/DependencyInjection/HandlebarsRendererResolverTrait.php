@@ -36,8 +36,6 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 trait HandlebarsRendererResolverTrait
 {
     /**
-     * @param ServiceLocator $rendererLocator
-     * @param string $groupBy
      * @return array<string, array<string, array{renderer: string, callable: callable}>>
      */
     private function getHelpersOfRegisteredRenderers(ServiceLocator $rendererLocator, string $groupBy = 'helper'): array
@@ -45,7 +43,7 @@ trait HandlebarsRendererResolverTrait
         $helpers = [];
 
         foreach ($rendererLocator->getProvidedServices() as $serviceId => $rendererClassName) {
-            if (!in_array(HelperAwareInterface::class, class_implements($rendererClassName) ?: [])) {
+            if (!\in_array(HelperAwareInterface::class, class_implements($rendererClassName) ?: [])) {
                 continue;
             }
 

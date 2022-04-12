@@ -47,10 +47,8 @@ trait FileGenerationTrait
     protected $classResolver;
 
     /**
-     * @param string $extensionKey
      * @param array{namespace: string, className: string} $classParts
      * @param array<string, mixed> $classDefinition
-     * @param bool $overwriteExistingFile
      * @return array{string, string, string|bool, string|null}
      */
     protected function generateClass(

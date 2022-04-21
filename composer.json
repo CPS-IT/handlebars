@@ -36,7 +36,7 @@
 		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6",
 		"phpspec/prophecy-phpunit": "^2.0",
-		"phpstan/phpstan": "^1.2",
+		"phpstan/phpstan": "^1.5.5",
 		"phpstan/phpstan-phpunit": "^1.1",
 		"phpunit/phpunit": "^9.5",
 		"saschaegerer/phpstan-typo3": "^1.0",

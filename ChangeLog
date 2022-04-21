@@ -1,3 +1,7 @@
+2022-04-21         [RELEASE] Release of handlebars 0.7.10 (Elias Häußler)
+2022-04-20 7df7168 [TASK] Streamline Code of Conduct with TYPO3 core (Elias Häußler)
+2022-04-15 e3bc335 [BUGFIX] Resolve PHPStan issue phpstan/phpstan#7020 (Elias Häußler)
+
 2022-04-12         [RELEASE] Release of handlebars 0.7.9 (Elias Häußler)
 2022-04-12 6ad6953 [DOCS] Reflect PHP 8.1 support in documentation (Elias Häußler)
 2021-11-19 fad72f5 [FEATURE] Declare compatibility with PHP 8.1 (Elias Häußler)

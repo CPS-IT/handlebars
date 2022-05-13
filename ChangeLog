@@ -1,3 +1,7 @@
+2022-05-13         [RELEASE] Release of handlebars 0.7.11 (Elias Häußler)
+2022-05-13 05f1671 [BUGFIX] Do not require "composer mode" checkbox in issue forms (Elias Häußler)
+2022-05-13 514e078 [BUGFIX] Handle changes in recent PHPStan versions (Elias Häußler)
+
 2022-04-21         [RELEASE] Release of handlebars 0.7.10 (Elias Häußler)
 2022-04-20 7df7168 [TASK] Streamline Code of Conduct with TYPO3 core (Elias Häußler)
 2022-04-15 e3bc335 [BUGFIX] Resolve PHPStan issue phpstan/phpstan#7020 (Elias Häußler)

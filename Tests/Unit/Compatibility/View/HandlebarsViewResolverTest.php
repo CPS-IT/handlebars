@@ -143,6 +143,7 @@ class HandlebarsViewResolverTest extends UnitTestCase
 
         $this->subject->resolve('FooController', 'foo', 'html');
 
+        /* @phpstan-ignore-next-line */
         self::assertInstanceOf(ContentObjectRenderer::class, $this->processor->getContentObjectRenderer());
     }
 }

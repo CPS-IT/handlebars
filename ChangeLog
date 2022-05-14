@@ -1,3 +1,9 @@
+2022-05-14         [RELEASE] Release of handlebars 0.7.12 (Elias Häußler)
+2022-05-14 f3b915e [BUGFIX] Switch back to default comment behavior of codecov (Elias Häußler)
+2022-05-14 4ab8970 [BUGFIX] Add dependency updates to release notes (Elias Häußler)
+2022-05-14 b40d86c [TASK] Enable Dependabot updates for GitHub Actions (Elias Häußler)
+2022-05-14 d0ce1ab [DOCS] Use codecov badge in "Contributing" section (Elias Häußler)
+
 2022-05-13         [RELEASE] Release of handlebars 0.7.11 (Elias Häußler)
 2022-05-13 05f1671 [BUGFIX] Do not require "composer mode" checkbox in issue forms (Elias Häußler)
 2022-05-13 514e078 [BUGFIX] Handle changes in recent PHPStan versions (Elias Häußler)

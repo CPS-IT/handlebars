@@ -89,8 +89,8 @@ Run tests
 .. image:: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg
    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
 
-.. image:: https://sonarcloud.io/api/project_badges/measure?project=CPS-IT_handlebars&metric=coverage
-   :target: https://sonarcloud.io/dashboard?id=CPS-IT_handlebars
+.. image:: https://codecov.io/gh/CPS-IT/handlebars/branch/develop/graph/badge.svg?token=6TDD6TVHQH
+   :target: https://codecov.io/gh/CPS-IT/handlebars
 
 .. rst-class:: mt-3
 

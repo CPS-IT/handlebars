@@ -1,4 +1,4 @@
-.. include:: Includes.txt
+.. include:: /Includes.rst.txt
 
 .. _start:
 
@@ -54,4 +54,9 @@ Contents
    RenderingConcept/Index
    Compatibility/Index
    Contributing/Index
+
+.. toctree::
+   :hidden:
+
    Sitemap
+   genindex

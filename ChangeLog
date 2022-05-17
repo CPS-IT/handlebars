@@ -1,3 +1,7 @@
+2022-05-17         [RELEASE] Release of handlebars 0.7.14 (Elias Häußler)
+2022-05-17 3c3c71d [DOCS] Use Slack channel for project contact (Elias Häußler)
+2022-05-17 f2d4a45 [DOCS] Align with new documentation standard (Elias Häußler)
+
 2022-05-17         [RELEASE] Release of handlebars 0.7.13 (Elias Häußler)
 2022-05-17 593d005 [TASK] Include maintenance label in automatic release notes (Elias Häußler)
 2022-05-17 2519818 [TASK] Update to `ubuntu-latest` in GitHub workflows (Elias Häußler)

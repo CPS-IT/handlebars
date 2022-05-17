@@ -1,3 +1,11 @@
+2022-05-17         [RELEASE] Release of handlebars 0.7.13 (Elias Häußler)
+2022-05-17 593d005 [TASK] Include maintenance label in automatic release notes (Elias Häußler)
+2022-05-17 2519818 [TASK] Update to `ubuntu-latest` in GitHub workflows (Elias Häußler)
+2022-05-17 f234bce [BUGFIX] Avoid concurrent workflow runs in pull requests (Elias Häußler)
+2022-05-15 07c7f3d [TASK]: Bump codecov/codecov-action from 2 to 3 (dependabot[bot])
+2022-05-15 03ce62c [TASK]: Bump actions/cache from 2 to 3 (dependabot[bot])
+2022-05-14 39a7b7a [TASK]: Bump actions/checkout from 2 to 3 (dependabot[bot])
+
 2022-05-14         [RELEASE] Release of handlebars 0.7.12 (Elias Häußler)
 2022-05-14 f3b915e [BUGFIX] Switch back to default comment behavior of codecov (Elias Häußler)
 2022-05-14 4ab8970 [BUGFIX] Add dependency updates to release notes (Elias Häußler)

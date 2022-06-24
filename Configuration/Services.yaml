@@ -9,6 +9,10 @@ services:
     exclude:
       - '../Classes/DependencyInjection/*'
 
+  Fr\Typo3Handlebars\Generator\HelperGenerator:
+    arguments:
+      $rendererLocator: !tagged_locator { tag: handlebars.renderer }
+
   # Renderer
   handlebars.renderer:
     class: 'Fr\Typo3Handlebars\Renderer\HandlebarsRenderer'
@@ -77,6 +81,36 @@ services:
   # Compatibility
   Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver:
     public: true
+
+  # Console commands
+  Fr\Typo3Handlebars\Command\ListHelpersCommand:
+    arguments:
+      $rendererLocator: !tagged_locator { tag: handlebars.renderer }
+    tags:
+      - name: console.command
+        command: 'handlebars:list:helpers'
+        schedulable: false
+  Fr\Typo3Handlebars\Command\ListModulesCommand:
+    arguments:
+      $dataProcessors: !tagged_iterator handlebars.processor
+    tags:
+      - name: console.command
+        command: 'handlebars:list:modules'
+        schedulable: false
+  Fr\Typo3Handlebars\Command\NewHelperCommand:
+    arguments:
+      $diCache: '@cache.di'
+    tags:
+      - name: console.command
+        command: 'handlebars:new:helper'
+        schedulable: false
+  Fr\Typo3Handlebars\Command\NewModuleCommand:
+    arguments:
+      $diCache: '@cache.di'
+    tags:
+      - name: console.command
+        command: 'handlebars:new:module'
+        schedulable: false
 
 handlebars:
   default_data: []

@@ -10,6 +10,10 @@ Any `Helper` implemented in the frontend via JavaScript and used in Handlebars
 templates must also be replicated in PHP. For this purpose, the extension
 provides an interface :php:`Fr\Typo3Handlebars\Renderer\Helper\HelperInterface`.
 
+.. tip::
+
+   Custom helpers can also be created from the :ref:`command-line <create-new-helper>`.
+
 .. note::
 
    In the following examples, a `Helper` is created with the identifier `greet`.

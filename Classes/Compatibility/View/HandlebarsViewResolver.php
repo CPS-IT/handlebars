@@ -70,7 +70,7 @@ class HandlebarsViewResolver extends GenericViewResolver
 
     protected function hasProcessor(string $controllerClassName, string $actionName): bool
     {
-        return null !== $this->getProcessor($controllerClassName, $actionName);
+        return $this->getProcessor($controllerClassName, $actionName) !== null;
     }
 
     protected function getProcessor(string $controllerClassName, string $actionName): ?DataProcessorInterface
@@ -82,12 +82,12 @@ class HandlebarsViewResolver extends GenericViewResolver
         $processors = $this->processorMap[$controllerClassName];
         $processor = $processors[$actionName] ?? $processors['_all'] ?? null;
 
-        if (null === $processor) {
+        if ($processor === null) {
             return null;
         }
 
         $contentObjectRenderer = $this->configurationManager->getContentObject();
-        if (null !== $contentObjectRenderer && method_exists($processor, 'setContentObjectRenderer')) {
+        if ($contentObjectRenderer !== null && method_exists($processor, 'setContentObjectRenderer')) {
             $processor->setContentObjectRenderer($contentObjectRenderer);
         }
 

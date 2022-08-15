@@ -132,7 +132,7 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
      */
     protected function initializeConfigurationManager(): void
     {
-        if (null !== $this->configurationManager && null !== $this->cObj) {
+        if ($this->configurationManager !== null && $this->cObj !== null) {
             $fullConfiguration = $this->configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
             );

@@ -106,7 +106,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         try {
             return $this->processRendering($templatePath, $data);
         } catch (InvalidTemplateFileException | TemplateCompilationException | TemplateNotFoundException $exception) {
-            if (null !== $this->logger) {
+            if ($this->logger !== null) {
                 $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
             }
 
@@ -232,7 +232,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         // Write file and validate write result
         /** @var string|null $writeResult */
         $writeResult = GeneralUtility::writeFileToTypo3tempDir($path, '<?php ' . $compileResult);
-        if (null !== $writeResult) {
+        if ($writeResult !== null) {
             throw new TemplateCompilationException(sprintf('Cannot prepare compiled render function: %s', $writeResult), 1614705397);
         }
 

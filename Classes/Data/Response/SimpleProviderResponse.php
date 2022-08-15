@@ -51,6 +51,7 @@ class SimpleProviderResponse implements ProviderResponseInterface, \ArrayAccess
         return \array_key_exists($offset, $this->data);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {

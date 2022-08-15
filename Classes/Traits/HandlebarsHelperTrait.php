@@ -110,12 +110,12 @@ trait HandlebarsHelperTrait
 
         // 3b. class method as array
         // 3c. class method as initialized array
-        if (\is_array($function) && 2 === \count($function)) {
+        if (\is_array($function) && \count($function) === 2) {
             [$className, $methodName] = $function;
         }
 
         // Early return if either class name or method name cannot be resolved
-        if (null === $className || null === $methodName) {
+        if ($className === null || $methodName === null) {
             throw InvalidHelperException::forUnsupportedType($function);
         }
 

@@ -86,7 +86,7 @@ trait HandlebarsTemplateResolverTrait
 
     protected function getContainer(string $type = TemplatePaths::TEMPLATES): Container
     {
-        $templateRootPath = TemplatePaths::PARTIALS === $type ? $this->getPartialRootPath() : $this->getTemplateRootPath();
+        $templateRootPath = $type === TemplatePaths::PARTIALS ? $this->getPartialRootPath() : $this->getTemplateRootPath();
         $container = new Container();
         $container->setParameter('handlebars.' . $type, [10 => $templateRootPath]);
 

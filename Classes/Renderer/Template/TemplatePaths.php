@@ -68,7 +68,7 @@ class TemplatePaths implements ContainerAwareInterface
      */
     public function get(): array
     {
-        if (null === $this->templatePaths) {
+        if ($this->templatePaths === null) {
             $this->resolveTemplatePaths();
         }
 

@@ -1,3 +1,8 @@
+2022-08-15         [RELEASE] Release of handlebars 0.7.15 (Elias Häußler)
+2022-08-15 81114b9 [TASK] Align test workflow with default workflows (Elias Häußler)
+2022-08-15 e7fd70b [BUGFIX] Assure compatiblity with PHP 8.1 in SimpleProviderResponse (Elias Häußler)
+2022-08-15 d8db1ae [BUGFIX] Avoid yoda-style conditions in PHP (Elias Häußler)
+
 2022-05-17         [RELEASE] Release of handlebars 0.7.14 (Elias Häußler)
 2022-05-17 3c3c71d [DOCS] Use Slack channel for project contact (Elias Häußler)
 2022-05-17 f2d4a45 [DOCS] Align with new documentation standard (Elias Häußler)

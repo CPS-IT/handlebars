@@ -114,7 +114,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
      */
     private function validateConfiguration(array $configuration): void
     {
-        if (!isset($configuration['controller']) || '' === (string)$configuration['controller']) {
+        if (!isset($configuration['controller']) || (string)$configuration['controller'] === '') {
             throw new \InvalidArgumentException(
                 sprintf('An extbase controller must be configured for the "%s" compatibility layer.', self::TYPE),
                 1632814271
@@ -126,7 +126,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
                 1632814362
             );
         }
-        if (null === $this->container->getDefinition($configuration['controller'])->getClass()) {
+        if ($this->container->getDefinition($configuration['controller'])->getClass() === null) {
             throw new \InvalidArgumentException(
                 sprintf('Unable to determine class name for extbase controller with service id "%s".', $configuration['controller']),
                 1632814520
@@ -138,7 +138,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
                 1632814592
             );
         }
-        if (isset($configuration['actions']) && !\is_string($configuration['actions']) && null !== $configuration['actions']) {
+        if (isset($configuration['actions']) && !\is_string($configuration['actions']) && $configuration['actions'] !== null) {
             throw new \InvalidArgumentException(
                 sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', \gettype($configuration['actions'])),
                 1632814413
@@ -152,7 +152,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
         /** @var class-string|null $className */
         $className = $definition->getClass();
 
-        if (null === $className) {
+        if ($className === null) {
             throw InvalidClassException::forService($serviceId);
         }
         if (!class_exists($className)) {

@@ -10,23 +10,19 @@ on:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }} & TYPO3 ${{ matrix.typo3-version }}
+    name: Tests (PHP ${{ matrix.php-version }}, TYPO3 ${{ matrix.typo3-version }} & ${{ matrix.preferred-install }} dependencies)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - typo3-version: 10.4
-            php-version: 7.3
-          - typo3-version: 10.4
-            php-version: 7.4
-          - typo3-version: 11.5
-            php-version: 7.4
-          - typo3-version: 11.5
-            php-version: 8.0
-          - typo3-version: 11.5
-            php-version: 8.1
-            coverage: 1
+        typo3-version: ["10.4", "11.5"]
+        php-version: ["7.4", "8.0", "8.1"]
+        preferred-install: ["stable", "lowest"]
+        exclude:
+          - typo3-version: "10.4"
+            php-version: "8.0"
+          - typo3-version: "10.4"
+            php-version: "8.1"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,7 +34,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
-          coverage: xdebug
+          coverage: none
 
       # Define Composer cache
       - name: Get Composer cache directory
@@ -55,50 +51,15 @@ jobs:
 
       # Install dependencies
       - name: Install TYPO3 and Composer dependencies
-        run: composer require typo3/cms-core:"^${{ matrix.typo3-version }}" --no-progress
+        run: composer require typo3/cms-core:"^${{ matrix.typo3-version }}" --no-progress --prefer-${{ matrix.preferred-install }}
 
       # Run tests
       - name: Run tests
-        run: composer test:ci -- --coverage-text
+        run: composer test
 
-      # Report coverage
-      - name: Fix coverage path
-        working-directory: .Build/log/coverage
-        run: sed -i 's#/home/runner/work/handlebars/handlebars#${{ github.workspace }}#g' clover.xml
-        if: ${{ matrix.coverage }}
-      - name: CodeClimate report
-        uses: paambaati/codeclimate-action@v3.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageLocations: |
-            ${{ github.workspace }}/.Build/log/coverage/clover.xml:clover
-        if: ${{ matrix.coverage }}
-      - name: codecov report
-        uses: codecov/codecov-action@v3
-        with:
-          directory: .Build/log/coverage
-          fail_ci_if_error: true
-          verbose: true
-        if: ${{ matrix.coverage }}
-
-  tests-lowest:
-    name: '[test-lowest] PHP ${{ matrix.php-version }} & TYPO3 ${{ matrix.typo3-version }}'
+  coverage:
+    name: Test coverage
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - typo3-version: 10.4
-            php-version: 7.3
-          - typo3-version: 10.4
-            php-version: 7.4
-          - typo3-version: 11.5
-            php-version: 7.4
-          - typo3-version: 11.5
-            php-version: 8.0
-          - typo3-version: 11.5
-            php-version: 8.1
     steps:
       - uses: actions/checkout@v3
         with:
@@ -108,9 +69,9 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: 8.1
           tools: composer:v2
-          coverage: xdebug
+          coverage: pcov
 
       # Define Composer cache
       - name: Get Composer cache directory
@@ -121,14 +82,32 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: tests-lowest-php-${{ matrix.php-version }}-typo3-${{ matrix.typo3-version }}
+          key: tests-php-8.1-typo3-11.5
           restore-keys: |
-            tests-lowest-php-${{ matrix.php-version }}-typo3-
+            tests-php-8.1-typo3-
 
       # Install dependencies
       - name: Install TYPO3 and Composer dependencies
-        run: composer require typo3/cms-core:"^${{ matrix.typo3-version }}" --prefer-lowest --no-progress
+        run: composer update --no-progress
 
       # Run tests
       - name: Run tests
-        run: composer test:ci -- --coverage-text
+        run: composer test:ci
+
+      # Report coverage
+      - name: Fix coverage path
+        working-directory: .Build/log/coverage
+        run: sed -i 's#/home/runner/work/handlebars/handlebars#${{ github.workspace }}#g' clover.xml
+      - name: CodeClimate report
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageLocations: |
+            ${{ github.workspace }}/.Build/log/coverage/clover.xml:clover
+      - name: codecov report
+        uses: codecov/codecov-action@v3
+        with:
+          directory: .Build/log/coverage
+          fail_ci_if_error: true
+          verbose: true

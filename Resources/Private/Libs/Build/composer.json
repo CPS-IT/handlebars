@@ -11,11 +11,8 @@
 		}
 	],
 	"require": {
+		"php": "~7.4.0",
 		"symfony/polyfill-php80": "^1.23",
 		"zordius/lightncandy": "^1.2"
-	},
-	"config": {
-		"lock": false
 	}
-
 }

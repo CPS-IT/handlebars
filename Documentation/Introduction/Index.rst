@@ -1,12 +1,12 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _introduction:
+..  _introduction:
 
 ============
 Introduction
 ============
 
-.. _what-it-does:
+..  _what-it-does:
 
 What does it do?
 ================
@@ -19,7 +19,7 @@ Handlebars.js are supported by the usage of the third-party library
 Its main use is to seamlessly integrate Handlebars templates into TYPO3 without
 the need to modify these templates again for output in TYPO3.
 
-.. _features:
+..  _features:
 
 Features
 ========
@@ -30,7 +30,7 @@ Features
 * Built on dependency injection for better performance and maintainability
 * Integration with TYPO3's cache framework for compiled templates
 
-.. _support:
+..  _support:
 
 Support
 =======
@@ -40,7 +40,7 @@ There are several ways to get support for this extension:
 * Slack: https://typo3.slack.com/messages/ext-handlebars
 * GitHub: https://github.com/CPS-IT/handlebars/issues
 
-.. _contributors:
+..  _contributors:
 
 Contributors
 ============
@@ -48,7 +48,7 @@ Contributors
 This extension is based on the great work of `Digitas Pixelpark GmbH <https://www.digitaspixelpark.com/>`_.
 It was heavily extended and is now maintained by `coding. powerful. systems. CPS GmbH <https://www.cps-it.de/>`_.
 
-.. _license:
+..  _license:
 
 License
 =======

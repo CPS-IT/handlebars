@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _using-the-content-object-renderer:
+..  _using-the-content-object-renderer:
 
 =================================
 Using the `ContentObjectRenderer`
@@ -12,109 +12,109 @@ be necessary in the `DataProvider`. For this case an interface
 provided, which can be used in combination with the trait
 :php:`Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait`.
 
-.. _content-object-renderer-usage:
+..  _content-object-renderer-usage:
 
 Usage
 =====
 
-.. rst-class:: bignums-xxl
+..  rst-class:: bignums-xxl
 
-#. Transfer of the `ContentObjectRenderer`
+#.  Transfer of the `ContentObjectRenderer`
 
-   If the rendering process is triggered via TypoScript, the
-   `DataProcessor` is automatically assigned the current instance of
-   the `ContentObjectRenderer` (via the :php:`cObj` property). It can
-   then pass this to the `DataProvider`:
+    If the rendering process is triggered via TypoScript, the
+    `DataProcessor` is automatically assigned the current instance of
+    the `ContentObjectRenderer` (via the :php:`cObj` property). It can
+    then pass this to the `DataProvider`:
 
-   ::
+    ::
 
-      # Classes/DataProcessing/CustomProcessor.php
+        # Classes/DataProcessing/CustomProcessor.php
 
-      namespace Vendor\Extension\DataProcessing;
+        namespace Vendor\Extension\DataProcessing;
 
-      use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
+        use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
 
-      class CustomProcessor extends AbstractDataProcessor
-      {
-          protected function render(): string
-          {
-              $this->provider->setContentObjectRenderer($this->cObj);
-              // ...
-          }
-      }
+        class CustomProcessor extends AbstractDataProcessor
+        {
+            protected function render(): string
+            {
+                $this->provider->setContentObjectRenderer($this->cObj);
+                // ...
+            }
+        }
 
-#. Assure `ContentObjectRenderer` is available
+#.  Assure `ContentObjectRenderer` is available
 
-   In the `DataProvider`, the existence of the `ContentObjectRenderer`
-   can be easily checked if the associated trait is used:
+    In the `DataProvider`, the existence of the `ContentObjectRenderer`
+    can be easily checked if the associated trait is used:
 
-   ::
+    ::
 
-      # Classes/Data/CustomProvider.php
+        # Classes/Data/CustomProvider.php
 
-      namespace Vendor\Extension\Data;
+        namespace Vendor\Extension\Data;
 
-      use Fr\Typo3Handlebars\ContentObjectRendererAwareInterface;
-      use Fr\Typo3Handlebars\Data\DataProviderInterface;
-      use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
-      use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
+        use Fr\Typo3Handlebars\ContentObjectRendererAwareInterface;
+        use Fr\Typo3Handlebars\Data\DataProviderInterface;
+        use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+        use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
 
-      class CustomProvider implements DataProviderInterface, ContentObjectRendererAwareInterface
-      {
-          use ContentObjectRendererAwareTrait;
+        class CustomProvider implements DataProviderInterface, ContentObjectRendererAwareInterface
+        {
+            use ContentObjectRendererAwareTrait;
 
-          public function get(array $data): ProviderResponseInterface
-          {
-              $this->assertContentObjectRendererIsAvailable();
-              // ...
-          }
-      }
+            public function get(array $data): ProviderResponseInterface
+            {
+                $this->assertContentObjectRendererIsAvailable();
+                // ...
+            }
+        }
 
-#. Use the `ContentObjectRenderer`
+#.  Use the `ContentObjectRenderer`
 
-   If successful, the `ContentObjectRenderer` can then be used, for example,
-   to parse database content generated using RTE:
+    If successful, the `ContentObjectRenderer` can then be used, for example,
+    to parse database content generated using RTE:
 
-   .. code-block:: diff
+    ..  code-block:: diff
 
-       # Classes/Data/CustomProvider.php
+         # Classes/Data/CustomProvider.php
 
-       namespace Vendor\Extension\Data;
+         namespace Vendor\Extension\Data;
 
-       use Fr\Typo3Handlebars\ContentObjectRendererAwareInterface;
-       use Fr\Typo3Handlebars\Data\DataProviderInterface;
-       use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
-       use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
-      +use Vendor\Extension\Data\Response\CustomProviderResponse;
+         use Fr\Typo3Handlebars\ContentObjectRendererAwareInterface;
+         use Fr\Typo3Handlebars\Data\DataProviderInterface;
+         use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+         use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
+        +use Vendor\Extension\Data\Response\CustomProviderResponse;
 
-       class CustomProvider implements DataProviderInterface, ContentObjectRendererAwareInterface
-       {
-           use ContentObjectRendererAwareTrait;
+         class CustomProvider implements DataProviderInterface, ContentObjectRendererAwareInterface
+         {
+             use ContentObjectRendererAwareTrait;
 
-           public function get(array $data): ProviderResponseInterface
-           {
-               $this->assertContentObjectRendererIsAvailable();
-      -        // ...
-      +
-      +        $text = $this->parseText($data);
-      +
-      +        return new CustomProviderResponse($text);
-          }
-      +
-      +    private function parseText(string $plaintext): string
-      +    {
-      +        return $this->contentObjectRenderer->parseFunc($plaintext, [], '< lib.parseFunc_RTE');
-      +    }
-       }
+             public function get(array $data): ProviderResponseInterface
+             {
+                 $this->assertContentObjectRendererIsAvailable();
+        -        // ...
+        +
+        +        $text = $this->parseText($data);
+        +
+        +        return new CustomProviderResponse($text);
+            }
+        +
+        +    private function parseText(string $plaintext): string
+        +    {
+        +        return $this->contentObjectRenderer->parseFunc($plaintext, [], '< lib.parseFunc_RTE');
+        +    }
+         }
 
-.. _content-object-renderer-sources:
+..  _content-object-renderer-sources:
 
 Sources
 =======
 
-.. seealso::
+..  seealso::
 
-   View the sources on GitHub:
+    View the sources on GitHub:
 
-   -  `ContentObjectRendererAwareInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/ContentObjectRendererAwareInterface.php>`__
-   -  `ContentObjectRendererAwareTrait <https://github.com/CPS-IT/handlebars/blob/main/Classes/Traits/ContentObjectRendererAwareTrait.php>`__
+    - `ContentObjectRendererAwareInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/ContentObjectRendererAwareInterface.php>`__
+    - `ContentObjectRendererAwareTrait <https://github.com/CPS-IT/handlebars/blob/main/Classes/Traits/ContentObjectRendererAwareTrait.php>`__

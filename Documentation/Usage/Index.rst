@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _usage:
+..  _usage:
 
 =====
 Usage
@@ -11,8 +11,8 @@ possible applications. Here you can learn how to use the individual
 components of the extension optimally and how to reuse them in your
 own components.
 
-.. toctree::
-   :maxdepth: 3
+..  toctree::
+    :maxdepth: 3
 
-   Basic/Index
-   Extended/Index
+    Basic/Index
+    Extended/Index

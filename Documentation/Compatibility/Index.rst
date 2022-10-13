@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _compatibility:
+..  _compatibility:
 
 =============
 Compatibility
@@ -9,8 +9,8 @@ Compatibility
 This section shows which possibilities the extension provides
 for compatibility with other TYPO3 components.
 
-.. toctree::
-   :maxdepth: 1
+..  toctree::
+    :maxdepth: 1
 
-   ExtbaseControllers
-   ExtbaseRepositories
+    ExtbaseControllers
+    ExtbaseRepositories

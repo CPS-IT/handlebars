@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _configuration:
+..  _configuration:
 
 =============
 Configuration
@@ -16,10 +16,10 @@ correctly.
 Learn here which configurations are necessary and learn more about
 how to use the extension:
 
-.. toctree::
-   :maxdepth: 3
+..  toctree::
+    :maxdepth: 3
 
-   Cache/Index
-   TemplatePaths/Index
-   DefaultData/Index
-   Debugging/Index
+    Cache/Index
+    TemplatePaths/Index
+    DefaultData/Index
+    Debugging/Index

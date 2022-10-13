@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _simple-processor:
+..  _simple-processor:
 
 =================
 `SimpleProcessor`
@@ -11,18 +11,18 @@ by TypoScript, a `SimpleProcessor` is available. This passes the
 transferred data directly to the `Renderer` without any further
 interaction.
 
-.. _simple-processor-usage:
+..  _simple-processor-usage:
 
 Usage
 =====
 
-.. code-block:: typoscript
+..  code-block:: typoscript
 
-   tt_content.tx_myextension_mymodule = USER
-   tt_content.tx_myextension_mymodule {
-       userFunc = Fr\Typo3Handlebars\DataProcessing\SimpleProcessor->process
-       userFunc.templatePath = Extensions/FluidStyledContent/MyModule
-   }
+    tt_content.tx_myextension_mymodule = USER
+    tt_content.tx_myextension_mymodule {
+        userFunc = Fr\Typo3Handlebars\DataProcessing\SimpleProcessor->process
+        userFunc.templatePath = Extensions/FluidStyledContent/MyModule
+    }
 
 As you can see, the `SimpleProcessor` is directly addressed as
 :typoscript:`userFunc`. It already provides the necessary functionality,
@@ -32,13 +32,13 @@ Furthermore it is necessary to indicate a template path with (this normally
 happens in the `Presenter`). The `SimpleProcessor` throws an exception, if
 the template path is not set or invalid.
 
-.. _simple-processor-sources:
+..  _simple-processor-sources:
 
 Sources
 =======
 
-.. seealso::
+..  seealso::
 
-   View the sources on GitHub:
+    View the sources on GitHub:
 
-   -  `SimpleProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/SimpleProcessor.php>`__
+    - `SimpleProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/SimpleProcessor.php>`__

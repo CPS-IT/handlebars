@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _cache:
+..  _cache:
 
 =====
 Cache
@@ -15,14 +15,14 @@ You can specify a different cache backend as follows:
 
 ::
 
-   # ext_localconf.php
+    # ext_localconf.php
 
-   if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['backend'])) {
-       $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['backend']
-           = \TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend::class;
-   }
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['backend'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['backend']
+            = \TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend::class;
+    }
 
-.. seealso::
+..  seealso::
 
-   Read more about cache configuration in the
-   :ref:`official TYPO3 documentation <t3coreapi:caching-configuration>`.
+    Read more about cache configuration in the
+    :ref:`official TYPO3 documentation <t3coreapi:caching-configuration>`.

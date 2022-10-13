@@ -1,6 +1,6 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _debugging:
+..  _debugging:
 
 =========
 Debugging
@@ -14,39 +14,39 @@ them more efficiently.
 Learn more in the
 `official documentation of LightnCandy <https://zordius.github.io/HandlebarsCookbook/LC-FLAG_RENDER_DEBUG.html>`__.
 
-.. warning::
+..  warning::
 
-   Note that debugging only applies in the default `Renderer`. If a custom
-   `Renderer` is implemented and used, then this functionality is not available
-   out of the box.
+    Note that debugging only applies in the default `Renderer`. If a custom
+    `Renderer` is implemented and used, then this functionality is not available
+    out of the box.
 
-.. _typoscript:
+..  _typoscript:
 
 TypoScript
 ==========
 
-.. seealso::
+..  seealso::
 
-   Read more about this TypoScript configuration in the
-   :ref:`official TYPO3 documentation <t3tsref:setup-config-debug>`.
+    Read more about this TypoScript configuration in the
+    :ref:`official TYPO3 documentation <t3tsref:setup-config-debug>`.
 
-.. code-block:: typoscript
+..  code-block:: typoscript
 
-   # Disable debugging
-   config.debug = 0
+    # Disable debugging
+    config.debug = 0
 
-   # Enable debugging
-   config.debug = 1
+    # Enable debugging
+    config.debug = 1
 
-.. _local-configuration:
+..  _local-configuration:
 
 Local configuration
 ===================
 
 ::
 
-   // Disable debugging
-   $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = false;
+    // Disable debugging
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = false;
 
-   // Enable debugging
-   $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = true;
+    // Enable debugging
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = true;

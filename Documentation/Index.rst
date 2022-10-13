@@ -7,21 +7,21 @@ Handlebars
 ==========
 
 :Version:
-   |release|
+    |release|
 
 :Language:
-   en
+    en
 
 :Author:
-   Elias Häußler, coding. powerful. systems. CPS GmbH
+    Elias Häußler, coding. powerful. systems. CPS GmbH
 
 :Email:
-   e.haeussler@familie-redlich.de
+    e.haeussler@familie-redlich.de
 
 :License:
-   This extension documentation is published under the
-   `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
-   license
+    This extension documentation is published under the
+    `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
+    license
 
 **TYPO3**
 
@@ -39,24 +39,24 @@ If you find an error or something is missing, please
 `create an issue <https://github.com/CPS-IT/handlebars/issues/new>`_ or click on
 "Edit me on GitHub" on the top right to submit your change request.
 
-.. _contents:
+..  _contents:
 
 Contents
 ========
 
-.. toctree::
-   :maxdepth: 3
+..  toctree::
+    :maxdepth: 3
 
-   Introduction/Index
-   Installation/Index
-   Configuration/Index
-   Usage/Index
-   RenderingConcept/Index
-   Compatibility/Index
-   Contributing/Index
+    Introduction/Index
+    Installation/Index
+    Configuration/Index
+    Usage/Index
+    RenderingConcept/Index
+    Compatibility/Index
+    Contributing/Index
 
-.. toctree::
-   :hidden:
+..  toctree::
+    :hidden:
 
-   Sitemap
-   genindex
+    Sitemap
+    genindex

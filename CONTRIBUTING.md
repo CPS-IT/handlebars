@@ -28,7 +28,7 @@ to address.
 Clone the repository first:
 
 ```bash
-git clone git@github.com:CPS-IT/handlebars.git
+git clone https://github.com/CPS-IT/handlebars.git
 cd handlebars
 ```
 
@@ -46,6 +46,9 @@ composer install
 # Run all linters
 composer lint
 
+# Run Composer normalization
+composer lint:composer
+
 # Run PHP linter only
 composer lint:php
 
@@ -54,9 +57,6 @@ composer lint:typoscript
 
 # Run PHP static code analysis
 composer sca
-
-# Run Composer normalization
-composer normalize
 ```
 
 ### Run tests

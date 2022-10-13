@@ -45,7 +45,7 @@ Clone the repository first:
 
 .. code-block:: bash
 
-   git clone git@github.com:CPS-IT/handlebars.git
+   git clone https://github.com/CPS-IT/handlebars.git
    cd handlebars
 
 Now install all Composer dependencies:
@@ -69,6 +69,9 @@ Check code quality
    # Run all linters
    composer lint
 
+   # Run Composer normalization
+   composer lint:composer
+
    # Run PHP linter only
    composer lint:php
 
@@ -77,9 +80,6 @@ Check code quality
 
    # Run PHP static code analysis
    composer sca
-
-   # Run Composer normalization
-   composer normalize
 
 .. _run-tests:
 

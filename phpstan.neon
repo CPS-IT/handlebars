@@ -1,4 +1,5 @@
 includes:
+	- phpstan-baseline.neon
 	- .Build/vendor/jangregor/phpstan-prophecy/extension.neon
 	- .Build/vendor/phpstan/phpstan-phpunit/extension.neon
 	- .Build/vendor/saschaegerer/phpstan-typo3/extension.neon
@@ -12,10 +13,3 @@ parameters:
 		- Classes
 		- Configuration
 		- Tests
-
-	ignoreErrors:
-		# Property accesses of prophesized objects
-		-
-			message: '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy<[a-zA-Z0-9\\_]+>::\$[a-zA-Z0-9_]+\.#'
-			paths:
-				- Tests/Unit/*

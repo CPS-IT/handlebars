@@ -44,6 +44,7 @@ return [
         'phpstan.neon',
         'phpunit.ci.xml',
         'phpunit.xml',
+        'rector.php',
         'typoscript-lint.yml',
     ],
 ];

@@ -1,20 +1,21 @@
 includes:
-    - .Build/vendor/jangregor/phpstan-prophecy/extension.neon
-    - .Build/vendor/phpstan/phpstan-phpunit/extension.neon
-    - .Build/vendor/saschaegerer/phpstan-typo3/extension.neon
+	- .Build/vendor/jangregor/phpstan-prophecy/extension.neon
+	- .Build/vendor/phpstan/phpstan-phpunit/extension.neon
+	- .Build/vendor/saschaegerer/phpstan-typo3/extension.neon
 
 parameters:
-    bootstrapFiles:
-        - .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php
+	bootstrapFiles:
+		- .Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php
 
-    level: 8
-    paths:
-        - Classes
-        - Configuration
-        - Tests
+	level: 8
+	paths:
+		- Classes
+		- Configuration
+		- Tests
 
-    ignoreErrors:
-        # Property accesses of prophesized objects
-        - message: '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy<[a-zA-Z0-9\\_]+>::\$[a-zA-Z0-9_]+\.#'
-          paths:
-              - Tests/Unit/*
+	ignoreErrors:
+		# Property accesses of prophesized objects
+		-
+			message: '#Access to an undefined property Prophecy\\Prophecy\\ObjectProphecy<[a-zA-Z0-9\\_]+>::\$[a-zA-Z0-9_]+\.#'
+			paths:
+				- Tests/Unit/*

@@ -21,18 +21,18 @@
 		"ext-json": "*",
 		"psr/event-dispatcher": "^1.0",
 		"psr/log": "^1.1 || ^2.0 || ^3.0",
-		"symfony/config": "^4.4 || ^5.0",
-		"symfony/dependency-injection": "^4.4 || ^5.0",
+		"symfony/config": "^4.4 || ^5.0 || ^6.0",
+		"symfony/dependency-injection": "^4.4 || ^5.0 || ^6.0",
 		"symfony/polyfill-php80": "^1.23",
-		"typo3/cms-core": "~10.4.0 || ~11.5.0",
-		"typo3/cms-extbase": "~10.4.0 || ~11.5.0",
-		"typo3/cms-frontend": "~10.4.0 || ~11.5.0",
+		"typo3/cms-core": "~10.4.0 || ~11.5.0 || ~12.0.0",
+		"typo3/cms-extbase": "~10.4.0 || ~11.5.0 || ~12.0.0",
+		"typo3/cms-frontend": "~10.4.0 || ~11.5.0 || ~12.0.0",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
 		"armin/editorconfig-cli": "^1.5",
 		"ergebnis/composer-normalize": "^2.15",
-		"helmich/typo3-typoscript-lint": "^2.5",
+		"helmich/typo3-typoscript-lint": "^2.5 || ^3.0",
 		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6",
 		"phpspec/prophecy-phpunit": "^2.0",
@@ -41,9 +41,9 @@
 		"phpunit/phpunit": "^9.5",
 		"saschaegerer/phpstan-typo3": "^1.0",
 		"ssch/typo3-rector": "^1.0",
-		"symfony/event-dispatcher": "^4.4 || ^5.0",
+		"symfony/event-dispatcher": "^4.4 || ^5.0 || ^6.0",
 		"typo3/coding-standards": "^0.5.0",
-		"typo3/testing-framework": "^6.15"
+		"typo3/testing-framework": "^6.15 || ^7.0@dev"
 	},
 	"autoload": {
 		"psr-4": {

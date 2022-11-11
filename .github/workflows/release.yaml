@@ -10,7 +10,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     outputs:
-      release-notes-url: ${{ steps.create-release.outputs.url }}
+      release-notes-url: ${{ steps.create-release.outputs.html_url }}
     steps:
       - uses: actions/checkout@v3
         with:

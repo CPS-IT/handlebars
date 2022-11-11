@@ -64,6 +64,7 @@ jobs:
           php-version: 7.4
           extensions: intl, mbstring, json, zip, curl
           tools: composer:v2
+          coverage: none
 
       # Build dependencies
       - name: Build dependencies

@@ -12,8 +12,8 @@
 [![License](http://poser.pugx.org/cpsit/typo3-handlebars/license)](LICENSE.md)\
 [![Version](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/version/shields)](https://extensions.typo3.org/extension/handlebars)
 [![Downloads](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/downloads/shields)](https://extensions.typo3.org/extension/handlebars)
+[![Supported TYPO3 versions](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/typo3/shields)](https://extensions.typo3.org/extension/handlebars)
 [![Extension stability](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/stability/shields)](https://extensions.typo3.org/extension/handlebars)
-[![TYPO3 badge](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/typo3/shields)](https://typo3.org/)
 
 **:orange_book:&nbsp;[Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/)** |
 :package:&nbsp;[Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |

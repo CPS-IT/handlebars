@@ -25,16 +25,19 @@ jobs:
 
       # Validation
       - name: Validate composer.json
-        run: composer validate --no-check-lock
+        run: composer validate
 
       # Install dependencies
       - name: Install Composer dependencies
-        run: composer update --no-progress --no-plugins
+        uses: ramsey/composer-install@v2
+        with:
+          composer-options: --no-plugins
 
       # Check Composer dependencies
       - name: Check dependencies
         run: composer-require-checker check --config-file dependency-checker.json
-      - run: composer install --no-progress
+      - name: Re-install Composer dependencies
+        uses: ramsey/composer-install@v2
       - name: Check for unused dependencies
         run: composer-unused
 

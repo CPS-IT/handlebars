@@ -1,3 +1,7 @@
+2022-11-11         [RELEASE] Release of handlebars 0.7.18 (Elias Häußler)
+2022-11-11 0dbe2b2 [BUGFIX] Widen dependency versions via Dependabot (Elias Häußler)
+2022-11-11 004d6b1 [BUGFIX] Fix access to HTML url of generated release (Elias Häußler)
+
 2022-11-11         [RELEASE] Release of handlebars 0.7.17 (Elias Häußler)
 2022-11-11 cc66366 [TASK] Enable Dependabot auto-merge for minor and patch updates (Elias Häußler)
 2022-11-10 747e4b2 [TASK]: Bump symfony/polyfill-php80 in /Resources/Private/Libs/Build (dependabot[bot])

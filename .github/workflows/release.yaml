@@ -26,9 +26,9 @@ jobs:
       # Create release
       - name: Create release
         id: create-release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          generate_release_notes: true
+          generateReleaseNotes: true
 
   # Job: Publish on TER
   ter-publish:
@@ -64,6 +64,7 @@ jobs:
           php-version: 7.4
           extensions: intl, mbstring, json, zip, curl
           tools: composer:v2
+          coverage: none
 
       # Build dependencies
       - name: Build dependencies

@@ -23,7 +23,7 @@ updates:
     labels:
       - dependencies
     open-pull-requests-limit: 10
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: widen
 
   - package-ecosystem: composer
     directory: 'Resources/Private/Libs/Build'
@@ -35,4 +35,4 @@ updates:
     labels:
       - dependencies
     open-pull-requests-limit: 10
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: widen

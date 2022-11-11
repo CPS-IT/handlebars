@@ -26,7 +26,7 @@ namespace Fr\Typo3Handlebars\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return function (/** @noinspection PhpUnusedParameterInspection */ ContainerConfigurator $containerConfigurator, ContainerBuilder $container) {
+return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $container): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
     $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
     $container->addCompilerPass(new HandlebarsHelperPass('handlebars.helper', 'handlebars.renderer'));

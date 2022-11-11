@@ -94,7 +94,7 @@
 			"@lint:php",
 			"@lint:typoscript"
 		],
-		"lint:composer": "@composer normalize --no-check-lock --no-update-lock",
+		"lint:composer": "@composer normalize",
 		"lint:editorconfig": "ec --fix -e .Build",
 		"lint:php": "php-cs-fixer fix",
 		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",

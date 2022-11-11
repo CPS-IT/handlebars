@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
+use Rector\PostRector\Rector\NameImportingPostRector;
 use Ssch\TYPO3Rector\Configuration\Typo3Option;
 use Ssch\TYPO3Rector\FileProcessor\TypoScript\Rector\v10\v0\ExtbasePersistenceTypoScriptRector;
 use Ssch\TYPO3Rector\FileProcessor\TypoScript\Rector\v9\v0\FileIncludeToImportStatementTypoScriptRector;
@@ -59,6 +60,10 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/.github/*',
         __DIR__ . '/config/*',
         __DIR__ . '/var/*',
+        NameImportingPostRector::class => [
+            __DIR__ . '/ext_*.php',
+            __DIR__ . '/Configuration/Services.php',
+        ],
     ]);
 
     // Rewrite your extbase persistence class mapping from typoscript into php according to official docs.

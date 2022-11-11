@@ -32,7 +32,7 @@
 	"require-dev": {
 		"armin/editorconfig-cli": "^1.5",
 		"ergebnis/composer-normalize": "^2.15",
-		"helmich/typo3-typoscript-lint": "^2.5",
+		"helmich/typo3-typoscript-lint": "^2.5 || ^3.0",
 		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6",
 		"phpspec/prophecy-phpunit": "^2.0",

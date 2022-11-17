@@ -7592,16 +7592,16 @@
         },
         {
             "name": "saschaegerer/phpstan-typo3",
-            "version": "1.8.1",
+            "version": "1.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sascha-egerer/phpstan-typo3.git",
-                "reference": "3d6d7d250e234a8491b48abbcf79df957e107a9d"
+                "reference": "a5121d6e610ced02445a8ac7deb91cd31bb02b71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sascha-egerer/phpstan-typo3/zipball/3d6d7d250e234a8491b48abbcf79df957e107a9d",
-                "reference": "3d6d7d250e234a8491b48abbcf79df957e107a9d",
+                "url": "https://api.github.com/repos/sascha-egerer/phpstan-typo3/zipball/a5121d6e610ced02445a8ac7deb91cd31bb02b71",
+                "reference": "a5121d6e610ced02445a8ac7deb91cd31bb02b71",
                 "shasum": ""
             },
             "require": {
@@ -7645,7 +7645,7 @@
             "description": "TYPO3 CMS class reflection extension for PHPStan",
             "support": {
                 "issues": "https://github.com/sascha-egerer/phpstan-typo3/issues",
-                "source": "https://github.com/sascha-egerer/phpstan-typo3/tree/1.8.1"
+                "source": "https://github.com/sascha-egerer/phpstan-typo3/tree/1.8.2"
             },
             "funding": [
                 {
@@ -7657,7 +7657,7 @@
                     "type": "liberapay"
                 }
             ],
-            "time": "2022-10-26T11:05:08+00:00"
+            "time": "2022-11-06T09:11:41+00:00"
         },
         {
             "name": "sebastian/cli-parser",

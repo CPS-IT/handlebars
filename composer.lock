@@ -7533,27 +7533,26 @@
         },
         {
             "name": "rector/rector",
-            "version": "0.14.8",
+            "version": "0.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "46ee9a173a2b2645ca92a75ffc17460139fa226e"
+                "reference": "bf5297204f7d46b8a74c1cc01b54341cbf00b74c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/46ee9a173a2b2645ca92a75ffc17460139fa226e",
-                "reference": "46ee9a173a2b2645ca92a75ffc17460139fa226e",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/bf5297204f7d46b8a74c1cc01b54341cbf00b74c",
+                "reference": "bf5297204f7d46b8a74c1cc01b54341cbf00b74c",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2|^8.0",
-                "phpstan/phpstan": "^1.9.0"
+                "phpstan/phpstan": "^1.9.3"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
                 "rector/rector-downgrade-php": "*",
                 "rector/rector-php-parser": "*",
-                "rector/rector-phpoffice": "*",
                 "rector/rector-phpunit": "*",
                 "rector/rector-symfony": "*"
             },
@@ -7578,7 +7577,7 @@
             "description": "Instant Upgrade and Automated Refactoring of any PHP code",
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/0.14.8"
+                "source": "https://github.com/rectorphp/rector/tree/0.15.1"
             },
             "funding": [
                 {
@@ -7586,7 +7585,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-11-14T14:09:49+00:00"
+            "time": "2022-12-14T15:53:50+00:00"
         },
         {
             "name": "saschaegerer/phpstan-typo3",
@@ -8623,16 +8622,16 @@
         },
         {
             "name": "ssch/typo3-rector",
-            "version": "v1.0.7",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabbelasichon/typo3-rector.git",
-                "reference": "3b5a4cf7eb4311b6a981f7ceb6e792e7b1642fc7"
+                "reference": "d375d548390fe9da0dddc5d3b98bc9d5092ee8e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/3b5a4cf7eb4311b6a981f7ceb6e792e7b1642fc7",
-                "reference": "3b5a4cf7eb4311b6a981f7ceb6e792e7b1642fc7",
+                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/d375d548390fe9da0dddc5d3b98bc9d5092ee8e2",
+                "reference": "d375d548390fe9da0dddc5d3b98bc9d5092ee8e2",
                 "shasum": ""
             },
             "require": {
@@ -8644,7 +8643,7 @@
                 "nikic/php-parser": "^4.14",
                 "php": "^7.4 || ^8.0",
                 "phpstan/phpstan": "^1.7.12",
-                "rector/rector": "0.14.8",
+                "rector/rector": "0.15.1",
                 "symfony/console": "^4.0 || ^5.0 || ^6.0",
                 "symfony/polyfill-php80": "^1.26",
                 "symfony/polyfill-php81": "^1.26",
@@ -8711,7 +8710,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-12-06T20:42:00+00:00"
+            "time": "2022-12-19T07:56:06+00:00"
         },
         {
             "name": "symfony/process",

@@ -14,12 +14,25 @@ updates:
     open-pull-requests-limit: 10
 
   - package-ecosystem: composer
+    directory: '/'
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: '[TASK]'
+    target-branch: develop
+    labels:
+      - dependencies
+    open-pull-requests-limit: 10
+    versioning-strategy: widen
+
+  - package-ecosystem: composer
     directory: 'Resources/Private/Libs/Build'
     schedule:
       interval: daily
     commit-message:
       prefix: '[TASK]'
+    target-branch: develop
     labels:
       - dependencies
     open-pull-requests-limit: 10
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: widen

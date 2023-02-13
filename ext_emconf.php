@@ -32,7 +32,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => 'coding. powerful. systems. CPS GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-12.0.99',
+            'typo3' => '10.4.0-12.2.99',
         ],
     ],
 ];

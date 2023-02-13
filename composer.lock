@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "efe24e1baaa4fe5a224caa250c03d45b",
+    "content-hash": "bbe721c136e05bc72ddccd314f2dc19e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -7538,6 +7538,58 @@
                 }
             ],
             "time": "2022-11-06T09:11:41+00:00"
+        },
+        {
+            "name": "sbuerk/typo3-cmscomposerinstallers-testingframework-bridge",
+            "version": "0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sbuerk/typo3-cmscomposerinstallers-testingframework-bridge.git",
+                "reference": "0b821f290424d1ba7c7ebadc3d2c8098deed69bd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sbuerk/typo3-cmscomposerinstallers-testingframework-bridge/zipball/0b821f290424d1ba7c7ebadc3d2c8098deed69bd",
+                "reference": "0b821f290424d1ba7c7ebadc3d2c8098deed69bd",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0.0",
+                "php": "^7.4 || ^8.0 || ^8.1 || ^8.2"
+            },
+            "require-dev": {
+                "composer/composer": "2.0.*@dev",
+                "friendsofphp/php-cs-fixer": "^3.4.0",
+                "overtrue/phplint": "^2.4.1",
+                "phpstan/phpstan": "^1.8.4",
+                "phpstan/phpstan-strict-rules": "^1.4.3"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "SBUERK\\TYPO3CmsComposerInstallersTestingFrameworkBridge\\Installer\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "SBUERK\\TYPO3CmsComposerInstallersTestingFrameworkBridge\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Stefan Bürk",
+                    "email": "stefan@buerk.tech"
+                }
+            ],
+            "homepage": "https://github.com/sbuerk/typo3-cmscomposerinstallers-testingframework-bridge",
+            "support": {
+                "general": "https://github.com/sbuerk/typo3-cmscomposerinstallers-testingframework-bridge/issues",
+                "issues": "https://github.com/sbuerk/typo3-cmscomposerinstallers-testingframework-bridge/issues",
+                "source": "https://github.com/sbuerk/typo3-cmscomposerinstallers-testingframework-bridge/tree/0.1.2"
+            },
+            "time": "2023-01-13T19:59:15+00:00"
         },
         {
             "name": "sebastian/cli-parser",

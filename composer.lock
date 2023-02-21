@@ -6203,29 +6203,29 @@
         },
         {
             "name": "helmich/typo3-typoscript-lint",
-            "version": "v3.0.0",
+            "version": "v3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/martin-helmich/typo3-typoscript-lint.git",
-                "reference": "b229e85cc012b845b767b55469a7e327d65e6306"
+                "reference": "85eb5b93baac724785ddb3bcd28ac6a72df0dd6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/martin-helmich/typo3-typoscript-lint/zipball/b229e85cc012b845b767b55469a7e327d65e6306",
-                "reference": "b229e85cc012b845b767b55469a7e327d65e6306",
+                "url": "https://api.github.com/repos/martin-helmich/typo3-typoscript-lint/zipball/85eb5b93baac724785ddb3bcd28ac6a72df0dd6d",
+                "reference": "85eb5b93baac724785ddb3bcd28ac6a72df0dd6d",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "helmich/typo3-typoscript-parser": "^2.3",
                 "php": "^7.4 || ^8.0",
-                "symfony/config": "^4.4 || ^5.4 || ^6.1",
-                "symfony/console": "^4.4 || ^5.4 || ^6.1",
-                "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.1",
-                "symfony/event-dispatcher": "^4.4 || ^5.4 || ^6.1",
-                "symfony/filesystem": "^4.4 || ^5.4 || ^6.1",
-                "symfony/finder": "^4.4 || ^5.4 || ^6.1",
-                "symfony/yaml": "^4.4 || ^5.4 || ^6.1"
+                "symfony/config": "^4.4 || ^5.4 || ^6.2",
+                "symfony/console": "^4.4 || ^5.4 || ^6.2",
+                "symfony/dependency-injection": "^4.4 || ^5.4 || ^6.2",
+                "symfony/event-dispatcher": "^4.4 || ^5.4 || ^6.2",
+                "symfony/filesystem": "^4.4 || ^5.4 || ^6.2",
+                "symfony/finder": "^4.4 || ^5.4 || ^6.2",
+                "symfony/yaml": "^4.4 || ^5.4 || ^6.2"
             },
             "require-dev": {
                 "mikey179/vfsstream": "^1.6.11",
@@ -6257,7 +6257,7 @@
             "homepage": "https://github.com/martin-helmich",
             "support": {
                 "issues": "https://github.com/martin-helmich/typo3-typoscript-lint/issues",
-                "source": "https://github.com/martin-helmich/typo3-typoscript-lint/tree/v3.0.0"
+                "source": "https://github.com/martin-helmich/typo3-typoscript-lint/tree/v3.1.0"
             },
             "funding": [
                 {
@@ -6269,20 +6269,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-10-16T14:15:22+00:00"
+            "time": "2023-02-21T14:29:29+00:00"
         },
         {
             "name": "helmich/typo3-typoscript-parser",
-            "version": "v2.4.1",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/martin-helmich/typo3-typoscript-parser.git",
-                "reference": "b61bc9d63d42901d08885c18f6c691aa0f0c800d"
+                "reference": "2c350d1a9148e4fc14d33602bb7fc18fe79b284b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/martin-helmich/typo3-typoscript-parser/zipball/b61bc9d63d42901d08885c18f6c691aa0f0c800d",
-                "reference": "b61bc9d63d42901d08885c18f6c691aa0f0c800d",
+                "url": "https://api.github.com/repos/martin-helmich/typo3-typoscript-parser/zipball/2c350d1a9148e4fc14d33602bb7fc18fe79b284b",
+                "reference": "2c350d1a9148e4fc14d33602bb7fc18fe79b284b",
                 "shasum": ""
             },
             "require": {
@@ -6319,7 +6319,7 @@
             "homepage": "https://github.com/martin-helmich",
             "support": {
                 "issues": "https://github.com/martin-helmich/typo3-typoscript-parser/issues",
-                "source": "https://github.com/martin-helmich/typo3-typoscript-parser/tree/v2.4.1"
+                "source": "https://github.com/martin-helmich/typo3-typoscript-parser/tree/v2.5.0"
             },
             "funding": [
                 {
@@ -6331,7 +6331,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-13T16:23:17+00:00"
+            "time": "2022-12-13T15:27:29+00:00"
         },
         {
             "name": "idiosyncratic/editorconfig",

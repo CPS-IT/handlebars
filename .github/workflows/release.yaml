@@ -28,6 +28,7 @@ jobs:
         id: create-release
         uses: ncipollo/release-action@v1
         with:
+          token: ${{ secrets.RELEASE_TOKEN }}
           generateReleaseNotes: true
 
   # Job: Publish on TER

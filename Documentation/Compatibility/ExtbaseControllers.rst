@@ -33,6 +33,7 @@ about the target extbase controller and actions supported by it.
         tags:
           - name: handlebars.processor
           - name: handlebars.compatibility_layer
+            type: 'extbase_controller'
             controller: 'Vendor\Extension\Controller\MyController'
             actions: 'dummy'
 

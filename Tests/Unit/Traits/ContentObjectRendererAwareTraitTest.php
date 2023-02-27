@@ -78,5 +78,7 @@ class ContentObjectRendererAwareTraitTest extends UnitTestCase
         $this->subject->setContentObjectRenderer($contentObjectRenderer);
 
         $this->subject->testAssertContentObjectRendererIsAvailable();
+
+        self::assertSame($contentObjectRenderer, $this->subject->getContentObjectRenderer());
     }
 }

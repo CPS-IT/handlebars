@@ -43,6 +43,9 @@ trait ContentObjectRendererAwareTrait
         $this->contentObjectRenderer = $contentObjectRenderer;
     }
 
+    /**
+     * @phpstan-assert ContentObjectRenderer $this->contentObjectRenderer
+     */
     protected function assertContentObjectRendererIsAvailable(): void
     {
         if (!($this->contentObjectRenderer instanceof ContentObjectRenderer)) {

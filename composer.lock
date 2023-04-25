@@ -7720,21 +7720,21 @@
         },
         {
             "name": "rector/rector",
-            "version": "0.15.22",
+            "version": "0.15.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "5c499ec662a698d5042a3cdc936a4642ada35e19"
+                "reference": "015935c7ed9e48a4f5895ba974f337e20a263841"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/5c499ec662a698d5042a3cdc936a4642ada35e19",
-                "reference": "5c499ec662a698d5042a3cdc936a4642ada35e19",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/015935c7ed9e48a4f5895ba974f337e20a263841",
+                "reference": "015935c7ed9e48a4f5895ba974f337e20a263841",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2|^8.0",
-                "phpstan/phpstan": "^1.10.1"
+                "phpstan/phpstan": "^1.10.14"
             },
             "conflict": {
                 "rector/rector-doctrine": "*",
@@ -7769,7 +7769,7 @@
             ],
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/0.15.22"
+                "source": "https://github.com/rectorphp/rector/tree/0.15.25"
             },
             "funding": [
                 {
@@ -7777,7 +7777,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-22T09:37:21+00:00"
+            "time": "2023-04-20T16:07:39+00:00"
         },
         {
             "name": "saschaegerer/phpstan-typo3",
@@ -8815,16 +8815,16 @@
         },
         {
             "name": "ssch/typo3-rector",
-            "version": "v1.2.1",
+            "version": "v1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabbelasichon/typo3-rector.git",
-                "reference": "2bb4e892a678cb392925effd68c67f7b50b90205"
+                "reference": "06e6c37cd57fb6c69a66f21e76f24419918cf385"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/2bb4e892a678cb392925effd68c67f7b50b90205",
-                "reference": "2bb4e892a678cb392925effd68c67f7b50b90205",
+                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/06e6c37cd57fb6c69a66f21e76f24419918cf385",
+                "reference": "06e6c37cd57fb6c69a66f21e76f24419918cf385",
                 "shasum": ""
             },
             "require": {
@@ -8836,7 +8836,7 @@
                 "nikic/php-parser": "^4.14",
                 "php": "^7.4 || ^8.0",
                 "phpstan/phpstan": "^1.9.7",
-                "rector/rector": "0.15.22",
+                "rector/rector": "0.15.25",
                 "symfony/console": "^4.0 || ^5.0 || ^6.0",
                 "symfony/polyfill-php80": "^1.26",
                 "symfony/polyfill-php81": "^1.26",
@@ -8903,7 +8903,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-28T20:31:21+00:00"
+            "time": "2023-04-23T15:03:20+00:00"
         },
         {
             "name": "symfony/process",

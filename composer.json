@@ -17,21 +17,21 @@
 		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/"
 	},
 	"require": {
-		"php": "^7.1 || ~8.0.0 || ~8.1.0 || ~8.2.0",
+		"php": "~8.1.0 || ~8.2.0",
 		"ext-json": "*",
 		"psr/event-dispatcher": "^1.0",
 		"psr/log": "^1.1 || ^2.0 || ^3.0",
-		"symfony/config": "^4.4 || ^5.0",
-		"symfony/dependency-injection": "^4.4 || ^5.0",
+		"symfony/config": "^6.1",
+		"symfony/dependency-injection": "^6.1",
 		"symfony/polyfill-php80": "^1.23",
-		"typo3/cms-core": "~10.4.0 || ~11.5.0",
-		"typo3/cms-extbase": "~10.4.0 || ~11.5.0",
-		"typo3/cms-frontend": "~10.4.0 || ~11.5.0",
+		"typo3/cms-core": "^12.4",
+		"typo3/cms-extbase": "^12.4",
+		"typo3/cms-frontend": "^12.4",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
 		"armin/editorconfig-cli": "^1.5",
-		"ergebnis/composer-normalize": "^2.15",
+		"ergebnis/composer-normalize": "^2.28",
 		"helmich/typo3-typoscript-lint": "^2.5 || ^3.0",
 		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6",
@@ -42,8 +42,8 @@
 		"saschaegerer/phpstan-typo3": "^1.0",
 		"ssch/typo3-rector": "^1.0",
 		"symfony/event-dispatcher": "^4.4 || ^5.0",
-		"typo3/coding-standards": "^0.6.0 || ^0.7.0",
-		"typo3/testing-framework": "^6.15"
+		"typo3/coding-standards": "^0.7.0",
+		"typo3/testing-framework": "^7.0@dev"
 	},
 	"autoload": {
 		"psr-4": {

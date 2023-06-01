@@ -24,7 +24,7 @@ $EM_CONF[$_EXTKEY] = [
     'title' => 'Handlebars',
     'description' => 'A TYPO3 extension that provides an entire rendering environment for Handlebars templates. It is seamlessly integrated into TYPO3 and offers extensive configuration options to get all the power out of your templates.',
     'category' => 'fe',
-    'version' => '0.7.22',
+    'version' => '1.0.0',
     'state' => 'beta',
     'clearCacheOnLoad' => true,
     'author' => 'Elias Häußler',
@@ -32,7 +32,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => 'coding. powerful. systems. CPS GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-11.5.99',
+            'typo3' => '12.4.0-12.4.99',
         ],
     ],
 ];

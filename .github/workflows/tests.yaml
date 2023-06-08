@@ -71,7 +71,7 @@ jobs:
 
       # Run tests
       - name: Run tests
-        run: composer test:ci
+        run: composer test:coverage
 
       # Report coverage
       - name: Fix coverage path

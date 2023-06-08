@@ -69,7 +69,7 @@ composer sca
 composer test
 
 # Run tests with code coverage
-composer test:ci
+composer test:coverage
 ```
 
 The code coverage reports will be stored in `.Build/log/coverage`.

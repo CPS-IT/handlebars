@@ -8809,16 +8809,16 @@
         },
         {
             "name": "ssch/typo3-rector",
-            "version": "v1.3.2",
+            "version": "v1.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabbelasichon/typo3-rector.git",
-                "reference": "daa9a6367e05ba46b8cc2f3025d52225d3239c19"
+                "reference": "e9366e11451db5f5d71c1fb1d2de5b7f985305ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/daa9a6367e05ba46b8cc2f3025d52225d3239c19",
-                "reference": "daa9a6367e05ba46b8cc2f3025d52225d3239c19",
+                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/e9366e11451db5f5d71c1fb1d2de5b7f985305ff",
+                "reference": "e9366e11451db5f5d71c1fb1d2de5b7f985305ff",
                 "shasum": ""
             },
             "require": {
@@ -8897,7 +8897,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-22T14:38:36+00:00"
+            "time": "2023-06-23T13:39:52+00:00"
         },
         {
             "name": "symfony/process",

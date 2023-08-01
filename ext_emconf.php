@@ -26,7 +26,6 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'fe',
     'version' => '0.7.22',
     'state' => 'beta',
-    'clearCacheOnLoad' => true,
     'author' => 'Elias Häußler',
     'author_email' => 'e.haeussler@familie-redlich.de',
     'author_company' => 'coding. powerful. systems. CPS GmbH',

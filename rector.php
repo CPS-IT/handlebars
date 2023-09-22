@@ -59,6 +59,7 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/.Build/*',
         __DIR__ . '/.github/*',
         __DIR__ . '/config/*',
+        __DIR__ . '/Resources/Private/Libs/Build/vendor/*',
         __DIR__ . '/var/*',
         NameImportingPostRector::class => [
             __DIR__ . '/ext_*.php',

@@ -26,7 +26,7 @@ jobs:
           - typo3-version: "10.4"
             php-version: "8.2"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -53,7 +53,7 @@ jobs:
     name: Test coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -71,14 +71,14 @@ jobs:
 
       # Run tests
       - name: Run tests
-        run: composer test:ci
+        run: composer test:coverage
 
       # Report coverage
       - name: Fix coverage path
         working-directory: .Build/log/coverage
         run: sed -i 's#/home/runner/work/handlebars/handlebars#${{ github.workspace }}#g' clover.xml
       - name: CodeClimate report
-        uses: paambaati/codeclimate-action@v3.2.0
+        uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:

@@ -43,9 +43,9 @@ return [
         'php-cs-fixer.php',
         'phpstan.neon',
         'phpstan-baseline.neon',
-        'phpunit.ci.xml',
         'phpunit.xml',
         'rector.php',
+        'renovate.json',
         'typoscript-lint.yml',
     ],
 ];

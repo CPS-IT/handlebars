@@ -100,7 +100,7 @@ Run tests
     composer test
 
     # Run tests with code coverage
-    composer test:ci
+    composer test:coverage
 
 The code coverage reports will be stored in :file:`.Build/log/coverage`.
 

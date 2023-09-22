@@ -45,6 +45,7 @@ return [
         'phpstan-baseline.neon',
         'phpunit.xml',
         'rector.php',
+        'renovate.json',
         'typoscript-lint.yml',
     ],
 ];

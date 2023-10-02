@@ -69,17 +69,25 @@ Check code quality
     # Run all linters
     composer lint
 
-    # Run Composer normalization
+    # Run specific linters
     composer lint:composer
-
-    # Run PHP linter only
+    composer lint:editorconfig
     composer lint:php
-
-    # Run TypoScript linter only
     composer lint:typoscript
 
-    # Run PHP static code analysis
+    # Fix all CGL issues
+    composer fix
+
+    # Fix specific CGL issues
+    composer fix:composer
+    composer fix:editorconfig
+    composer fix:php
+
+    # Run all static code analyzers
     composer sca
+
+    # Run specific static code analyzers
+    composer sca:php
 
 ..  _run-tests:
 

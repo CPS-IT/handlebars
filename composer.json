@@ -57,14 +57,14 @@
 	},
 	"config": {
 		"allow-plugins": {
+			"ergebnis/composer-normalize": true,
 			"typo3/class-alias-loader": true,
-			"typo3/cms-composer-installers": true,
-			"ergebnis/composer-normalize": true
+			"typo3/cms-composer-installers": true
 		},
 		"bin-dir": ".Build/bin",
 		"preferred-install": {
-			"*": "dist",
-			"zordius/lightncandy": "source"
+			"zordius/lightncandy": "source",
+			"*": "dist"
 		},
 		"sort-packages": true,
 		"vendor-dir": ".Build/vendor"

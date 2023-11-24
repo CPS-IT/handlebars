@@ -28,7 +28,6 @@ use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyView;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -43,8 +42,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class HandlebarsViewResolverTest extends UnitTestCase
 {
-    use ProphecyTrait;
-
     /**
      * @var DummyProcessor
      */
@@ -65,9 +62,9 @@ class HandlebarsViewResolverTest extends UnitTestCase
         // Handle different constructor arguments between TYPO3 11.4+ and lower
         $typo3Version = new Typo3Version();
         if ($typo3Version->getMajorVersion() < 11) {
-            $objectManagerProphecy = $this->prophesize(ObjectManager::class);
-            $objectManagerProphecy->get('foo')->willReturn(new DummyView());
-            $firstConstructorArgument = $objectManagerProphecy->reveal();
+            $objectManagerMock = $this->createMock(ObjectManager::class);
+            $objectManagerMock->method('get')->with('foo')->willReturn(new DummyView());
+            $firstConstructorArgument = $objectManagerMock;
         } else {
             $container = new Container();
             $container->set('foo', new DummyView());

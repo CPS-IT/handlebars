@@ -25,7 +25,6 @@ namespace Fr\Typo3Handlebars\Tests\Unit\Event;
 
 use Fr\Typo3Handlebars\Event\AfterRenderingEvent;
 use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
-use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -36,8 +35,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class AfterRenderingEventTest extends UnitTestCase
 {
-    use ProphecyTrait;
-
     /**
      * @var AfterRenderingEvent
      */
@@ -46,7 +43,7 @@ class AfterRenderingEventTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->subject = new AfterRenderingEvent('foo', 'baz', $this->prophesize(HandlebarsRenderer::class)->reveal());
+        $this->subject = new AfterRenderingEvent('foo', 'baz', $this->createMock(HandlebarsRenderer::class));
     }
 
     /**

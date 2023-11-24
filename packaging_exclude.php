@@ -42,7 +42,6 @@ return [
         'packaging_exclude.php',
         'php-cs-fixer.php',
         'phpstan.neon',
-        'phpstan-baseline.neon',
         'phpunit.xml',
         'rector.php',
         'renovate.json',

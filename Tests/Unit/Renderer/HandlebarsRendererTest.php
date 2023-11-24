@@ -32,8 +32,7 @@ use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\Test\TestLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -49,7 +48,6 @@ class HandlebarsRendererTest extends UnitTestCase
 {
     use HandlebarsCacheTrait;
     use HandlebarsTemplateResolverTrait;
-    use ProphecyTrait;
 
     /**
      * @var TestLogger
@@ -62,18 +60,18 @@ class HandlebarsRendererTest extends UnitTestCase
     protected $subject;
 
     /**
-     * @var ObjectProphecy|TypoScriptFrontendController
+     * @var TypoScriptFrontendController&MockObject
      */
-    protected $tsfeProphecy;
+    protected $tsfeMock;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->renewSubject();
-        $this->tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
+        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
 
-        $GLOBALS['TSFE'] = $this->tsfeProphecy->reveal();
+        $GLOBALS['TSFE'] = $this->tsfeMock;
     }
 
     /**
@@ -188,12 +186,12 @@ class HandlebarsRendererTest extends UnitTestCase
     public function renderDoesNotStoreRenderedTemplateInCacheIfDebugModeIsEnabled(): void
     {
         // Test with TypoScript config.debug = 1
-        $this->tsfeProphecy->config = ['config' => ['debug' => '1']];
+        $this->tsfeMock->config = ['config' => ['debug' => '1']];
         $this->renewSubject()->render('DummyTemplate');
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
 
         // Test with TYPO3_CONF_VARS
-        $this->tsfeProphecy->config = [];
+        $this->tsfeMock->config = [];
         $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
         $this->renewSubject()->render('DummyTemplate');
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
@@ -204,7 +202,7 @@ class HandlebarsRendererTest extends UnitTestCase
      */
     public function renderDoesNotStoreRenderedTemplateInCacheIfCachingIsDisabled(): void
     {
-        $this->tsfeProphecy->no_cache = true;
+        $this->tsfeMock->no_cache = true;
         $this->subject->render('DummyTemplate');
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }

@@ -25,9 +25,7 @@ namespace Fr\Typo3Handlebars\Tests\Unit\Cache;
 
 use Fr\Typo3Handlebars\Cache\HandlebarsCache;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -40,12 +38,11 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 class HandlebarsCacheTest extends UnitTestCase
 {
     use HandlebarsCacheTrait;
-    use ProphecyTrait;
 
     /**
-     * @var ObjectProphecy|FrontendInterface
+     * @var FrontendInterface&MockObject
      */
-    protected $cacheProphecy;
+    protected $cacheMock;
 
     /**
      * @var HandlebarsCache
@@ -57,15 +54,15 @@ class HandlebarsCacheTest extends UnitTestCase
         parent::setUp();
 
         $cache = $this->getCache();
-        $this->cacheProphecy = $this->prophesize(FrontendInterface::class);
-        $this->cacheProphecy->get(Argument::type('string'))->will(function (array $parameters) use ($cache) {
-            $cachedTemplate = $cache->get($parameters[0]);
-            return $cachedTemplate;
+
+        $this->cacheMock = $this->createMock(FrontendInterface::class);
+        $this->cacheMock->method('get')->willReturnCallback(function (string $entryIdentifier) use ($cache) {
+            return $cache->get($entryIdentifier);
         });
-        $this->cacheProphecy->set(Argument::type('string'), Argument::type('string'))->will(function (array $parameters) use ($cache) {
-            $cache->set($parameters[0], $parameters[1]);
+        $this->cacheMock->method('set')->willReturnCallback(function (string $entryIdentifier, $data) use ($cache) {
+            $cache->set($entryIdentifier, $data);
         });
-        $this->subject = new HandlebarsCache($this->cacheProphecy->reveal());
+        $this->subject = new HandlebarsCache($this->cacheMock);
     }
 
     /**

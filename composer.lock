@@ -1527,16 +1527,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.24.4",
+            "version": "1.24.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "6bd0c26f3786cd9b7c359675cb789e35a8e07496"
+                "reference": "fedf211ff14ec8381c9bf5714e33a7a552dd1acc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/6bd0c26f3786cd9b7c359675cb789e35a8e07496",
-                "reference": "6bd0c26f3786cd9b7c359675cb789e35a8e07496",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fedf211ff14ec8381c9bf5714e33a7a552dd1acc",
+                "reference": "fedf211ff14ec8381c9bf5714e33a7a552dd1acc",
                 "shasum": ""
             },
             "require": {
@@ -1568,9 +1568,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.4"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.5"
             },
-            "time": "2023-11-26T18:29:22+00:00"
+            "time": "2023-12-16T09:33:33+00:00"
         },
         {
             "name": "psr/cache",
@@ -5400,16 +5400,16 @@
         },
         {
             "name": "typo3fluid/fluid",
-            "version": "2.10.0",
+            "version": "2.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/Fluid.git",
-                "reference": "d521f00f60d783c0a7326c132475917350188c42"
+                "reference": "567a16691beedbcbefa5c12f35c5e71661cfbf53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/d521f00f60d783c0a7326c132475917350188c42",
-                "reference": "d521f00f60d783c0a7326c132475917350188c42",
+                "url": "https://api.github.com/repos/TYPO3/Fluid/zipball/567a16691beedbcbefa5c12f35c5e71661cfbf53",
+                "reference": "567a16691beedbcbefa5c12f35c5e71661cfbf53",
                 "shasum": ""
             },
             "require": {
@@ -5446,7 +5446,7 @@
                 "issues": "https://github.com/TYPO3/Fluid/issues",
                 "source": "https://github.com/TYPO3/Fluid"
             },
-            "time": "2023-11-27T11:50:12+00:00"
+            "time": "2023-12-11T13:07:39+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -5899,41 +5899,39 @@
         },
         {
             "name": "ergebnis/composer-normalize",
-            "version": "2.40.0",
+            "version": "2.41.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/composer-normalize.git",
-                "reference": "665de8e2bbe7c3e31b0a819b4dc0165289c0d230"
+                "reference": "01eb2d9b8623828ec2264f54d7782a25558d27b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/composer-normalize/zipball/665de8e2bbe7c3e31b0a819b4dc0165289c0d230",
-                "reference": "665de8e2bbe7c3e31b0a819b4dc0165289c0d230",
+                "url": "https://api.github.com/repos/ergebnis/composer-normalize/zipball/01eb2d9b8623828ec2264f54d7782a25558d27b2",
+                "reference": "01eb2d9b8623828ec2264f54d7782a25558d27b2",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^2.0.0",
                 "ergebnis/json": "^1.1.0",
-                "ergebnis/json-normalizer": "^4.3.0",
+                "ergebnis/json-normalizer": "^4.4.1",
                 "ergebnis/json-printer": "^3.4.0",
                 "ext-json": "*",
                 "justinrainbow/json-schema": "^5.2.12",
                 "localheinz/diff": "^1.1.1",
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0"
             },
-            "conflict": {
-                "symfony/console": "^7.0.0"
-            },
             "require-dev": {
-                "composer/composer": "^2.6.5",
+                "composer/composer": "^2.6.6",
                 "ergebnis/license": "^2.4.0",
-                "ergebnis/php-cs-fixer-config": "~6.13.1",
+                "ergebnis/php-cs-fixer-config": "~6.14.0",
                 "ergebnis/phpunit-slow-test-detector": "^2.7.0",
                 "fakerphp/faker": "^1.23.0",
-                "infection/infection": "~0.27.8",
-                "phpunit/phpunit": "^10.4.2",
+                "infection/infection": "~0.27.9",
+                "phpunit/phpunit": "^10.5.3",
                 "psalm/plugin-phpunit": "~0.18.4",
                 "rector/rector": "~0.18.12",
+                "roave/backward-compatibility-check": "^8.4.0",
                 "symfony/filesystem": "^6.4.0",
                 "vimeo/psalm": "^5.17.0"
             },
@@ -5975,7 +5973,7 @@
                 "security": "https://github.com/ergebnis/composer-normalize/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/composer-normalize"
             },
-            "time": "2023-12-05T16:07:43+00:00"
+            "time": "2023-12-14T09:37:52+00:00"
         },
         {
             "name": "ergebnis/json",
@@ -6044,16 +6042,16 @@
         },
         {
             "name": "ergebnis/json-normalizer",
-            "version": "4.3.0",
+            "version": "4.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ergebnis/json-normalizer.git",
-                "reference": "716fa0a5dcc75fbcb2c1c2e0542b2f56732460bd"
+                "reference": "d28f36af9763ee6bc4e2a2390c0348963df7881b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ergebnis/json-normalizer/zipball/716fa0a5dcc75fbcb2c1c2e0542b2f56732460bd",
-                "reference": "716fa0a5dcc75fbcb2c1c2e0542b2f56732460bd",
+                "url": "https://api.github.com/repos/ergebnis/json-normalizer/zipball/d28f36af9763ee6bc4e2a2390c0348963df7881b",
+                "reference": "d28f36af9763ee6bc4e2a2390c0348963df7881b",
                 "shasum": ""
             },
             "require": {
@@ -6067,18 +6065,19 @@
             },
             "require-dev": {
                 "composer/semver": "^3.4.0",
-                "ergebnis/data-provider": "^3.0.0",
-                "ergebnis/license": "^2.2.0",
-                "ergebnis/php-cs-fixer-config": "~6.7.0",
-                "ergebnis/phpunit-slow-test-detector": "^2.3.0",
+                "ergebnis/data-provider": "^3.2.0",
+                "ergebnis/license": "^2.4.0",
+                "ergebnis/php-cs-fixer-config": "~6.14.0",
+                "ergebnis/phpunit-slow-test-detector": "^2.7.0",
                 "fakerphp/faker": "^1.23.0",
-                "infection/infection": "~0.27.4",
-                "phpunit/phpunit": "^10.4.1",
+                "infection/infection": "~0.27.9",
+                "phpunit/phpunit": "^10.5.3",
                 "psalm/plugin-phpunit": "~0.18.4",
-                "rector/rector": "~0.18.5",
-                "symfony/filesystem": "^6.3.1",
-                "symfony/finder": "^6.3.5",
-                "vimeo/psalm": "^5.15.0"
+                "rector/rector": "~0.18.12",
+                "roave/backward-compatibility-check": "^8.4.0",
+                "symfony/filesystem": "^6.4.0",
+                "symfony/finder": "^6.4.0",
+                "vimeo/psalm": "^5.17.0"
             },
             "suggest": {
                 "composer/semver": "If you want to use ComposerJsonNormalizer or VersionConstraintNormalizer"
@@ -6111,7 +6110,7 @@
                 "security": "https://github.com/ergebnis/json-normalizer/blob/main/.github/SECURITY.md",
                 "source": "https://github.com/ergebnis/json-normalizer"
             },
-            "time": "2023-10-10T15:15:03+00:00"
+            "time": "2023-12-14T09:30:24+00:00"
         },
         {
             "name": "ergebnis/json-pointer",
@@ -7067,16 +7066,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.48",
+            "version": "1.10.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "087ed4b5f4a7a6e8f3bbdfbfe98ce5c181380bc6"
+                "reference": "06a98513ac72c03e8366b5a0cb00750b487032e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/087ed4b5f4a7a6e8f3bbdfbfe98ce5c181380bc6",
-                "reference": "087ed4b5f4a7a6e8f3bbdfbfe98ce5c181380bc6",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/06a98513ac72c03e8366b5a0cb00750b487032e4",
+                "reference": "06a98513ac72c03e8366b5a0cb00750b487032e4",
                 "shasum": ""
             },
             "require": {
@@ -7125,7 +7124,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-08T14:34:28+00:00"
+            "time": "2023-12-13T10:59:42+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",

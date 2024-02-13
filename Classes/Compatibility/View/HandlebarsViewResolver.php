@@ -27,7 +27,7 @@ use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * HandlebarsViewResolver

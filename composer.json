@@ -41,7 +41,7 @@
 		"phpunit/phpunit": "^10.1",
 		"saschaegerer/phpstan-typo3": "^1.0",
 		"ssch/typo3-rector": "^1.2",
-		"symfony/event-dispatcher": "^4.4 || ^5.0",
+		"symfony/event-dispatcher": "^5.4 || ^6.0 || ^7.0",
 		"typo3/coding-standards": "^0.6.0 || ^0.7.0",
 		"typo3/testing-framework": "^8.0"
 	},

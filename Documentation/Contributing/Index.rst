@@ -99,7 +99,7 @@ Run tests
 
 ..  rst-class:: d-inline-block mb-3
 
-..  image:: https://codecov.io/gh/CPS-IT/handlebars/branch/develop/graph/badge.svg?token=6TDD6TVHQH
+..  image:: https://codecov.io/gh/CPS-IT/handlebars/branch/main/graph/badge.svg?token=6TDD6TVHQH
     :target: https://codecov.io/gh/CPS-IT/handlebars
 
 ..  code-block:: bash

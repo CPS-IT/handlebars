@@ -99,8 +99,8 @@ Run tests
 
 ..  rst-class:: d-inline-block mb-3
 
-..  image:: https://codecov.io/gh/CPS-IT/handlebars/branch/main/graph/badge.svg?token=6TDD6TVHQH
-    :target: https://codecov.io/gh/CPS-IT/handlebars
+..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
+    :target: https://coveralls.io/github/CPS-IT/handlebars
 
 ..  code-block:: bash
 

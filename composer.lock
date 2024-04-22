@@ -6282,16 +6282,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.53.0",
+            "version": "v3.54.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "69a19093a9ded8d1baac62ed6c009b8bc148d008"
+                "reference": "2aecbc8640d7906c38777b3dcab6f4ca79004d08"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/69a19093a9ded8d1baac62ed6c009b8bc148d008",
-                "reference": "69a19093a9ded8d1baac62ed6c009b8bc148d008",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/2aecbc8640d7906c38777b3dcab6f4ca79004d08",
+                "reference": "2aecbc8640d7906c38777b3dcab6f4ca79004d08",
                 "shasum": ""
             },
             "require": {
@@ -6363,7 +6363,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.53.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.54.0"
             },
             "funding": [
                 {
@@ -6371,7 +6371,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-08T15:03:00+00:00"
+            "time": "2024-04-17T08:12:13+00:00"
         },
         {
             "name": "helmich/typo3-typoscript-lint",
@@ -7235,16 +7235,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.66",
+            "version": "1.10.67",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd"
+                "reference": "16ddbe776f10da6a95ebd25de7c1dbed397dc493"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/94779c987e4ebd620025d9e5fdd23323903950bd",
-                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/16ddbe776f10da6a95ebd25de7c1dbed397dc493",
+                "reference": "16ddbe776f10da6a95ebd25de7c1dbed397dc493",
                 "shasum": ""
             },
             "require": {
@@ -7287,13 +7287,9 @@
                 {
                     "url": "https://github.com/phpstan",
                     "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
-                    "type": "tidelift"
                 }
             ],
-            "time": "2024-03-28T16:17:31+00:00"
+            "time": "2024-04-16T07:22:02+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
@@ -8863,19 +8859,20 @@
         },
         {
             "name": "ssch/typo3-rector",
-            "version": "v2.4.1",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabbelasichon/typo3-rector.git",
-                "reference": "bc09faab1b1b3122b3f880c3483d906d52dda0d3"
+                "reference": "386e86753f2c88833b0cb6b8b0f3e7a5b65422ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/bc09faab1b1b3122b3f880c3483d906d52dda0d3",
-                "reference": "bc09faab1b1b3122b3f880c3483d906d52dda0d3",
+                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/386e86753f2c88833b0cb6b8b0f3e7a5b65422ae",
+                "reference": "386e86753f2c88833b0cb6b8b0f3e7a5b65422ae",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "league/flysystem": "^2.0",
                 "league/flysystem-memory": "^2.0",
                 "nette/utils": "^3.2.10 || ^4.0.4",
@@ -8904,6 +8901,7 @@
                 "symplify/easy-coding-standard": "^12.1.14"
             },
             "suggest": {
+                "ext-pdo": "*",
                 "ssch/typo3-debug-dump-pass": "^0.0.1"
             },
             "bin": [
@@ -8936,19 +8934,26 @@
             "authors": [
                 {
                     "name": "Sebastian Schreiber",
-                    "email": "breakpoint@schreibersebastian.de"
+                    "email": "breakpoint@schreibersebastian.de",
+                    "role": "Founder and lead developer"
                 },
                 {
                     "name": "Henrik Elsner"
                 },
                 {
-                    "name": "Simon Schaufelberger"
+                    "name": "Simon Schaufelberger",
+                    "role": "Developer"
                 }
             ],
             "description": "Instant fixes for your TYPO3 PHP code by using Rector.",
             "homepage": "https://www.typo3-rector.com/",
             "keywords": [
-                "dev"
+                "automation",
+                "dev",
+                "migration",
+                "rector",
+                "refactoring",
+                "upgrade"
             ],
             "support": {
                 "chat": "https://typo3.slack.com/archives/C019R5LAA6A",
@@ -8966,7 +8971,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-11T12:38:04+00:00"
+            "time": "2024-04-18T12:44:27+00:00"
         },
         {
             "name": "symfony/process",

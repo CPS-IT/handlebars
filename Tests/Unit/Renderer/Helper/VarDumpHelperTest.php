@@ -45,8 +45,15 @@ class VarDumpHelperTest extends UnitTestCase
                 'foo' => 'baz',
             ],
         ];
-
-        $expected = DebugUtility::convertVariableToString($context);
-        self::assertSame(trim($expected), trim(VarDumpHelper::evaluate($context)));
+        // sorry, I could not come up with a better way to test this
+        // DebugUtility::debug() streams an output.
+        $expected = <<<EOF
+[1mDebug[0m
+[36marray[0m(1 item)
+   [37m_this[0m => [36marray[0m(1 item)
+      [37mfoo[0m => [33m"baz"[0m (3 chars)
+EOF;
+        $this->expectOutputString($expected);
+        VarDumpHelper::evaluate($context);
     }
 }

@@ -36,8 +36,8 @@ class VarDumpHelper implements HelperInterface
     /**
      * @param array<mixed, mixed> $context
      */
-    public static function evaluate(array $context): string
+    public static function evaluate(array $context): void
     {
-        return DebugUtility::debug($context);
+        DebugUtility::debug($context);
     }
 }

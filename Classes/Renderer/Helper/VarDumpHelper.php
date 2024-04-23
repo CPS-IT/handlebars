@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use TYPO3\CMS\Core\Utility\DebugUtility;
+
 /**
  * VarDumpHelper
  *
@@ -36,6 +38,6 @@ class VarDumpHelper implements HelperInterface
      */
     public static function evaluate(array $context): string
     {
-        return print_r($context['_this'], true);
+        return DebugUtility::debug($context);
     }
 }

@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
 use Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -45,7 +46,7 @@ class VarDumpHelperTest extends UnitTestCase
             ],
         ];
 
-        $expected = print_r(['foo' => 'baz'], true);
+        $expected = DebugUtility::convertVariableToString($context);
         self::assertSame(trim($expected), trim(VarDumpHelper::evaluate($context)));
     }
 }

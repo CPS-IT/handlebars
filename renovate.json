@@ -7,7 +7,14 @@
 	"assignees": [
 		"eliashaeussler"
 	],
-	"constraints": {
-		"php": "8.1.*"
-	}
+	"packageRules": [
+		{
+			"matchFileNames": [
+				"composer.json"
+			],
+			"constraints": {
+				"php": "8.1.*"
+			}
+		}
+	]
 }

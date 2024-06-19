@@ -26,7 +26,6 @@ namespace Fr\Typo3Handlebars\Compatibility\View;
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
-use TYPO3Fluid\Fluid\View\Exception;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
@@ -90,15 +89,13 @@ class ExtbaseViewAdapter implements ViewInterface
         ]);
     }
 
-    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false)
+    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): string
     {
-        // Intentionally left blank.
+        return '';
     }
 
-    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false)
+    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false): string
     {
-        // Intentionally left blank.
+        return '';
     }
-
-
 }

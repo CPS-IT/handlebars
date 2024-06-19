@@ -30,17 +30,17 @@
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {
-		"armin/editorconfig-cli": "^1.5",
+		"armin/editorconfig-cli": "^1.5 || ^2.0",
 		"ergebnis/composer-normalize": "^2.15",
 		"helmich/typo3-typoscript-lint": "^2.5 || ^3.0",
-		"jangregor/phpstan-prophecy": "^1.0",
 		"mikey179/vfsstream": "^1.6.7",
 		"phpspec/prophecy-phpunit": "@dev",
+		"phpstan/extension-installer": "^1.3",
 		"phpstan/phpstan": "^1.9",
 		"phpstan/phpstan-phpunit": "^1.1",
 		"phpunit/phpunit": "^10.1",
 		"saschaegerer/phpstan-typo3": "^1.0",
-		"ssch/typo3-rector": "^1.2",
+		"ssch/typo3-rector": "^1.2 || ^2.0",
 		"symfony/event-dispatcher": "^5.4 || ^6.0 || ^7.0",
 		"typo3/coding-standards": "^0.6.0 || ^0.7.0",
 		"typo3/testing-framework": "^8.0"
@@ -57,14 +57,15 @@
 	},
 	"config": {
 		"allow-plugins": {
+			"ergebnis/composer-normalize": true,
+			"phpstan/extension-installer": true,
 			"typo3/class-alias-loader": true,
-			"typo3/cms-composer-installers": true,
-			"ergebnis/composer-normalize": true
+			"typo3/cms-composer-installers": true
 		},
 		"bin-dir": ".Build/bin",
 		"preferred-install": {
-			"*": "dist",
-			"zordius/lightncandy": "source"
+			"zordius/lightncandy": "source",
+			"*": "dist"
 		},
 		"sort-packages": true,
 		"vendor-dir": ".Build/vendor"
@@ -88,15 +89,23 @@
 		"docs:build": "docker-compose run --rm docs",
 		"docs:cleanup": "rm -rf .Build/docs",
 		"docs:open": "open .Build/docs/Result/project/0.0.0/Index.html",
+		"fix": [
+			"@fix:composer",
+			"@fix:editorconfig",
+			"@fix:php"
+		],
+		"fix:composer": "@composer normalize",
+		"fix:editorconfig": "@lint:editorconfig --fix",
+		"fix:php": "php-cs-fixer fix",
 		"lint": [
 			"@lint:composer",
 			"@lint:editorconfig",
 			"@lint:php",
 			"@lint:typoscript"
 		],
-		"lint:composer": "@composer normalize",
-		"lint:editorconfig": "ec --fix -e .Build",
-		"lint:php": "php-cs-fixer fix",
+		"lint:composer": "@fix:composer --dry-run",
+		"lint:editorconfig": "ec -e .Build",
+		"lint:php": "@fix:php --dry-run",
 		"lint:typoscript": "typoscript-lint -c typoscript-lint.yml",
 		"migration": [
 			"@migration:rector"
@@ -106,7 +115,7 @@
 			"@sca:php"
 		],
 		"sca:php": "phpstan analyse -c phpstan.neon",
-		"test": "phpunit -c phpunit.xml",
-		"test:ci": "phpunit -c phpunit.ci.xml"
+		"test": "@test:coverage --no-coverage",
+		"test:coverage": "phpunit -c phpunit.xml"
 	}
 }

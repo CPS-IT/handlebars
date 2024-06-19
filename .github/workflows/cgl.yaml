@@ -3,16 +3,15 @@ on:
   push:
     branches:
       - main
-      - develop
   pull_request:
     branches:
-      - '**'
+      - main
 
 jobs:
   cgl:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -20,7 +19,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.3
           tools: composer:v2, composer-require-checker, composer-unused
           coverage: none
 

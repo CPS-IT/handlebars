@@ -32,7 +32,6 @@ return [
     ],
     'files' => [
         'DS_Store',
-        'codecov.yml',
         'composer.lock',
         'dependency-checker.json',
         'docker-compose.yml',
@@ -42,10 +41,9 @@ return [
         'packaging_exclude.php',
         'php-cs-fixer.php',
         'phpstan.neon',
-        'phpstan-baseline.neon',
-        'phpunit.ci.xml',
         'phpunit.xml',
         'rector.php',
+        'renovate.json',
         'typoscript-lint.yml',
     ],
 ];

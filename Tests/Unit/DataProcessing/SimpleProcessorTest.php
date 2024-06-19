@@ -29,8 +29,7 @@ use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
 use Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
 use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\Test\TestLogger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -48,12 +47,11 @@ class SimpleProcessorTest extends UnitTestCase
 {
     use HandlebarsCacheTrait;
     use HandlebarsTemplateResolverTrait;
-    use ProphecyTrait;
 
     /**
-     * @var ObjectProphecy|ContentObjectRenderer
+     * @var ContentObjectRenderer&MockObject
      */
-    protected $contentObjectRendererProphecy;
+    protected $contentObjectRendererMock;
 
     /**
      * @var TestLogger
@@ -74,15 +72,15 @@ class SimpleProcessorTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->contentObjectRendererProphecy = $this->prophesize(ContentObjectRenderer::class);
+        $this->contentObjectRendererMock = $this->createMock(ContentObjectRenderer::class);
         $this->logger = new TestLogger();
         $this->renderer = new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver());
         $this->subject = new SimpleProcessor($this->renderer);
-        $this->subject->cObj = $this->contentObjectRendererProphecy->reveal();
+        $this->subject->cObj = $this->contentObjectRendererMock;
         $this->subject->setLogger($this->logger);
 
         $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
-        $GLOBALS['TSFE'] = $this->prophesize(TypoScriptFrontendController::class)->reveal();
+        $GLOBALS['TSFE'] = $this->createMock(TypoScriptFrontendController::class);
     }
 
     /**
@@ -115,7 +113,7 @@ class SimpleProcessorTest extends UnitTestCase
             'title' => 'foo',
             'comment' => 'baz',
         ];
-        $this->contentObjectRendererProphecy->data = $data;
+        $this->contentObjectRendererMock->data = $data;
 
         $configuration = [
             'userFunc.' => [

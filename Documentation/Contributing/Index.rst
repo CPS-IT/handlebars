@@ -69,17 +69,25 @@ Check code quality
     # Run all linters
     composer lint
 
-    # Run Composer normalization
+    # Run specific linters
     composer lint:composer
-
-    # Run PHP linter only
+    composer lint:editorconfig
     composer lint:php
-
-    # Run TypoScript linter only
     composer lint:typoscript
 
-    # Run PHP static code analysis
+    # Fix all CGL issues
+    composer fix
+
+    # Fix specific CGL issues
+    composer fix:composer
+    composer fix:editorconfig
+    composer fix:php
+
+    # Run all static code analyzers
     composer sca
+
+    # Run specific static code analyzers
+    composer sca:php
 
 ..  _run-tests:
 
@@ -91,8 +99,8 @@ Run tests
 
 ..  rst-class:: d-inline-block mb-3
 
-..  image:: https://codecov.io/gh/CPS-IT/handlebars/branch/develop/graph/badge.svg?token=6TDD6TVHQH
-    :target: https://codecov.io/gh/CPS-IT/handlebars
+..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
+    :target: https://coveralls.io/github/CPS-IT/handlebars
 
 ..  code-block:: bash
 
@@ -100,7 +108,7 @@ Run tests
     composer test
 
     # Run tests with code coverage
-    composer test:ci
+    composer test:coverage
 
 The code coverage reports will be stored in :file:`.Build/log/coverage`.
 

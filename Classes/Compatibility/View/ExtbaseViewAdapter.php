@@ -24,8 +24,9 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * ExtbaseViewAdapter
@@ -35,11 +36,6 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  */
 class ExtbaseViewAdapter implements ViewInterface
 {
-    /**
-     * @var ControllerContext
-     */
-    protected $controllerContext;
-
     /**
      * @var DataProcessorInterface
      */
@@ -53,11 +49,6 @@ class ExtbaseViewAdapter implements ViewInterface
     public function __construct(DataProcessorInterface $processor)
     {
         $this->processor = $processor;
-    }
-
-    public function setControllerContext(ControllerContext $controllerContext): void
-    {
-        $this->controllerContext = $controllerContext;
     }
 
     public function assign($key, $value): self
@@ -78,14 +69,15 @@ class ExtbaseViewAdapter implements ViewInterface
         return $this;
     }
 
-    public function canRender(ControllerContext $controllerContext): bool
+    public function canRender(): bool
     {
         return true;
     }
 
     public function render(): string
     {
-        $request = $this->controllerContext->getRequest();
+        $renderingContext = GeneralUtility::makeInstance(RenderingContextFactory::class)->create();
+        $request = $renderingContext->getRequest();
 
         return $this->processor->process('', [
             'extbaseViewConfiguration' => [
@@ -97,8 +89,13 @@ class ExtbaseViewAdapter implements ViewInterface
         ]);
     }
 
-    public function initializeView(): void
+    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): string
     {
-        // Intentionally left blank.
+        return '';
+    }
+
+    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false): string
+    {
+        return '';
     }
 }

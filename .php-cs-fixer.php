@@ -7,6 +7,8 @@ $config->setParallelConfig(\PhpCsFixer\Runner\Parallel\ParallelConfigFactory::de
 
 $finder = $config->getFinder()
     ->in(__DIR__)
-    ->ignoreVCSIgnored(true);
+    ->ignoreVCSIgnored(true)
+    ->ignoreDotFiles(false)
+;
 
 return $config;

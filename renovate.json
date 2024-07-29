@@ -15,6 +15,14 @@
 			"constraints": {
 				"php": "8.1.*"
 			}
+		},
+		{
+			"matchFileNames": [
+				"Resources/Private/Libs/Build/composer.json"
+			],
+			"constraints": {
+				"php": "7.4.*"
+			}
 		}
 	]
 }

@@ -36,13 +36,13 @@ final class InvalidClassException extends \RuntimeException
      */
     public static function create(string $className): self
     {
-        return new self(sprintf('The class "%s" does not exist.', $className), 1638182580);
+        return new self(\sprintf('The class "%s" does not exist.', $className), 1638182580);
     }
 
     public static function forService(string $serviceId): self
     {
         return new self(
-            sprintf('Class name of service "%s" cannot be resolved or does not exist.', $serviceId),
+            \sprintf('Class name of service "%s" cannot be resolved or does not exist.', $serviceId),
             1638183576
         );
     }

@@ -42,7 +42,7 @@ class InvalidClassExceptionTest extends UnitTestCase
         $actual = InvalidClassException::create(__CLASS__);
 
         self::assertInstanceOf(InvalidClassException::class, $actual);
-        self::assertSame(sprintf('The class "%s" does not exist.', __CLASS__), $actual->getMessage());
+        self::assertSame(\sprintf('The class "%s" does not exist.', __CLASS__), $actual->getMessage());
         self::assertSame(1638182580, $actual->getCode());
     }
 

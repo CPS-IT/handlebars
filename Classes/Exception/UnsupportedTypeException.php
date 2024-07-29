@@ -34,7 +34,7 @@ final class UnsupportedTypeException extends \Exception
     public static function create(string $type): self
     {
         return new self(
-            sprintf('The configured type "%s" is invalid or not supported.', $type),
+            \sprintf('The configured type "%s" is invalid or not supported.', $type),
             1632813839
         );
     }

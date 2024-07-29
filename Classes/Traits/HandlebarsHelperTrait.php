@@ -154,7 +154,7 @@ trait HandlebarsHelperTrait
     protected function isValidHelper($helperFunction): bool
     {
         trigger_error(
-            sprintf(
+            \sprintf(
                 'The method "%s" is deprecated and will be removed with 0.9.0. ' .
                 'Use "%s::resolveHelperFunction()" instead and check for thrown exceptions.',
                 __METHOD__,

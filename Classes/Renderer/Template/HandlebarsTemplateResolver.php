@@ -152,13 +152,13 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     {
         if (!\is_string($templateRootPath)) {
             throw new \InvalidArgumentException(
-                sprintf('Template root path must be of type string, "%s" given.', \gettype($templateRootPath)),
+                \sprintf('Template root path must be of type string, "%s" given.', \gettype($templateRootPath)),
                 1613727984
             );
         }
         if (GeneralUtility::getFileAbsFileName($templateRootPath) === '') {
             throw new \InvalidArgumentException(
-                sprintf('Template root path must be resolvable by %s::getFileAbsFileName().', GeneralUtility::class),
+                \sprintf('Template root path must be resolvable by %s::getFileAbsFileName().', GeneralUtility::class),
                 1613728252
             );
         }
@@ -171,7 +171,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     {
         if (!\is_string($fileExtension)) {
             throw new \InvalidArgumentException(
-                sprintf('File extension must be of type string, "%s" given.', \gettype($fileExtension)),
+                \sprintf('File extension must be of type string, "%s" given.', \gettype($fileExtension)),
                 1613727952
             );
         }
@@ -180,7 +180,7 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
         }
         if (preg_match('/^[\w\-.]+$/', $fileExtension) !== 1) {
             throw new \InvalidArgumentException(
-                sprintf('File extension "%s" is not valid.', $fileExtension),
+                \sprintf('File extension "%s" is not valid.', $fileExtension),
                 1613727593
             );
         }

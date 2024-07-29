@@ -40,7 +40,7 @@ final class TemplateNotFoundException extends \RuntimeException
     public function __construct(string $templateFile = '', int $code = 0, \Throwable $previous = null)
     {
         $this->templateFile = $templateFile;
-        $message = sprintf('The requested template file "%s" could not be found.', $templateFile);
+        $message = \sprintf('The requested template file "%s" could not be found.', $templateFile);
         parent::__construct($message, $code, $previous);
     }
 

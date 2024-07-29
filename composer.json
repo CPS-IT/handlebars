@@ -32,6 +32,7 @@
 	"require-dev": {
 		"armin/editorconfig-cli": "^1.5 || ^2.0",
 		"ergebnis/composer-normalize": "^2.15",
+		"friendsofphp/php-cs-fixer": "^3.57",
 		"helmich/typo3-typoscript-lint": "^2.5 || ^3.0",
 		"mikey179/vfsstream": "^1.6.7",
 		"phpstan/extension-installer": "^1.3",

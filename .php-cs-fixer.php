@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-$config = \TYPO3\CodingStandards\CsFixerConfig::create()
-    ->addRules([
-        'native_function_invocation' => true,
-        'no_superfluous_phpdoc_tags' => ['allow_mixed' => true],
-    ]);
+$config = \TYPO3\CodingStandards\CsFixerConfig::create();
+$config->setParallelConfig(\PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect());
 
 $finder = $config->getFinder()
     ->in(__DIR__)

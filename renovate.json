@@ -7,6 +7,10 @@
 	"assignees": [
 		"eliashaeussler"
 	],
+	"baseBranches": [
+		"main",
+		"0.8.x"
+	],
 	"packageRules": [
 		{
 			"matchFileNames": [

@@ -52,7 +52,7 @@ class TemplatePathsTest extends UnitTestCase
     {
         parent::setUp();
         $this->configurationManager = new DummyConfigurationManager();
-        $this->subject = new TemplatePaths($this->configurationManager, $this->getParameterBag());
+        $this->subject = new TemplatePaths($this->configurationManager, $this->getViewConfiguration());
     }
 
     /**

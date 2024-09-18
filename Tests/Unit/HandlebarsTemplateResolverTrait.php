@@ -28,8 +28,6 @@ use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
 use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
 use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplatePaths;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * HandlebarsTemplateResolverTrait
@@ -77,16 +75,19 @@ trait HandlebarsTemplateResolverTrait
 
     protected function getTemplatePaths(string $type = TemplatePaths::TEMPLATES): DummyTemplatePaths
     {
-        return new DummyTemplatePaths(new DummyConfigurationManager(), $this->getParameterBag($type), $type);
+        return new DummyTemplatePaths(new DummyConfigurationManager(), $this->getViewConfiguration($type), $type);
     }
 
-    protected function getParameterBag(string $type = TemplatePaths::TEMPLATES): ParameterBagInterface
+    /**
+     * @return array<string, array<int, string>>
+     */
+    protected function getViewConfiguration(string $type = TemplatePaths::TEMPLATES): array
     {
         $templateRootPath = $type === TemplatePaths::PARTIALS ? $this->getPartialRootPath() : $this->getTemplateRootPath();
 
-        return new ParameterBag([
-            'handlebars.' . $type => [10 => $templateRootPath],
-        ]);
+        return [
+            $type => [10 => $templateRootPath],
+        ];
     }
 
     public function getTemplateRootPath(): string

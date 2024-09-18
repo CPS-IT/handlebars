@@ -10,7 +10,8 @@
 /docker-compose.yml       export-ignore
 /packaging_exclude.php    export-ignore
 /phpstan.neon             export-ignore
-/phpunit.xml              export-ignore
+/phpunit.functional.xml   export-ignore
+/phpunit.unit.xml         export-ignore
 /rector.php               export-ignore
 /renovate.json            export-ignore
 /typoscript-lint.yml      export-ignore

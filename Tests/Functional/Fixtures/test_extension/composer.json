@@ -1,0 +1,20 @@
+{
+	"name": "cpsit/typo3-handlebars-test-extension",
+	"description": "Test extension for EXT:handlebars",
+	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
+	"version": "1.0.0",
+	"require": {
+		"typo3/cms-core": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Fr\\Typo3Handlebars\\TestExtension\\": "Classes/"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "test_extension"
+		}
+	}
+}

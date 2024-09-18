@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d04f6d9496fac18b1ad38752eed8e8a",
+    "content-hash": "c41bb03f6dab0a8653d8ae9d7a1050d8",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -5936,6 +5936,36 @@
             "time": "2024-05-06T16:37:16+00:00"
         },
         {
+            "name": "cpsit/typo3-handlebars-test-extension",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "Tests/Functional/Fixtures/test_extension",
+                "reference": "df86f70cfd3060828c241882cafe72cf35b25c9f"
+            },
+            "require": {
+                "typo3/cms-core": "*"
+            },
+            "type": "typo3-cms-extension",
+            "extra": {
+                "typo3/cms": {
+                    "extension-key": "test_extension"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fr\\Typo3Handlebars\\TestExtension\\": "Classes/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Test extension for EXT:handlebars",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
             "name": "ergebnis/composer-normalize",
             "version": "2.43.0",
             "source": {
@@ -7947,6 +7977,68 @@
                 }
             ],
             "time": "2023-02-03T06:57:52+00:00"
+        },
+        {
+            "name": "phpunit/phpcov",
+            "version": "9.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpcov.git",
+                "reference": "05307478b8f4b2a50c508d6f4eca15704cf7c1fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpcov/zipball/05307478b8f4b2a50c508d6f4eca15704cf7c1fd",
+                "reference": "05307478b8f4b2a50c508d6f4eca15704cf7c1fd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "phpunit/php-code-coverage": "^10.1.5",
+                "phpunit/php-file-iterator": "^4.0",
+                "phpunit/phpunit": "^10.0",
+                "sebastian/cli-parser": "^2.0",
+                "sebastian/diff": "^5.0",
+                "sebastian/version": "^4.0"
+            },
+            "bin": [
+                "phpcov"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "9.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "CLI frontend for php-code-coverage",
+            "homepage": "https://github.com/sebastianbergmann/phpcov",
+            "support": {
+                "issues": "https://github.com/sebastianbergmann/phpcov/issues",
+                "source": "https://github.com/sebastianbergmann/phpcov/tree/9.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-12T14:47:35+00:00"
         },
         {
             "name": "phpunit/phpunit",

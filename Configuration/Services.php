@@ -31,4 +31,5 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $container->registerExtension(new HandlebarsExtension());
     $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
     $container->addCompilerPass(new HandlebarsHelperPass('handlebars.helper', 'handlebars.renderer'));
+    $container->addCompilerPass(new FeatureRegistrationPass(), priority: 30);
 };

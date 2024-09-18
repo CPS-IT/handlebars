@@ -7,9 +7,9 @@
 >
     <coverage>
         <report>
-            <clover outputFile=".Build/log/coverage/clover.xml"/>
-            <html outputDirectory=".Build/log/coverage/html/"/>
-            <text outputFile="php://stdout"/>
+            <php outputFile=".Build/coverage/php/unit.cov"/>
+            <html outputDirectory=".Build/coverage/html/unit/"/>
+            <text outputFile="php://stdout" showOnlySummary="true"/>
         </report>
     </coverage>
     <testsuites>
@@ -18,7 +18,7 @@
         </testsuite>
     </testsuites>
     <logging>
-        <junit outputFile=".Build/log/coverage/junit.xml"/>
+        <junit outputFile=".Build/coverage/junit/unit.xml"/>
     </logging>
     <source>
         <include>

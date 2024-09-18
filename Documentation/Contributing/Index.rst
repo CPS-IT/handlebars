@@ -104,13 +104,29 @@ Run tests
 
 ..  code-block:: bash
 
-    # Run tests
+    # All tests
     composer test
 
-    # Run tests with code coverage
+    # Specific tests
+    composer test:functional
+    composer test:unit
+
+    # All tests with code coverage
     composer test:coverage
 
-The code coverage reports will be stored in :file:`.Build/log/coverage`.
+    # Specific tests with code coverage
+    composer test:coverage:functional
+    composer test:coverage:unit
+
+    # Merge code coverage of all test suites
+    composer test:coverage:merge
+
+Code coverage reports are written to :file:`.Build/coverage`. You can
+open the last merged HTML report like follows:
+
+..  code-block:: bash
+
+    open .Build/coverage/html/_merged/index.html
 
 ..  _build-documentation:
 

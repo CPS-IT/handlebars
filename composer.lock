@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c41bb03f6dab0a8653d8ae9d7a1050d8",
+    "content-hash": "43b5fd23e44d71a6af68c8704ad7cf15",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6481,6 +6481,52 @@
                 }
             ],
             "time": "2024-08-06T10:04:20+00:00"
+        },
+        {
+            "name": "fig/log-test",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log-test.git",
+                "reference": "02d6eaf8b09784b7adacf57a3c951bad95229a7f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log-test/zipball/02d6eaf8b09784b7adacf57a3c951bad95229a7f",
+                "reference": "02d6eaf8b09784b7adacf57a3c951bad95229a7f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "psr/log": "^2.0 | ^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0 | ^9.0",
+                "squizlabs/php_codesniffer": "^3.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/",
+                    "role": "Organisation"
+                }
+            ],
+            "description": "Test utilities for the psr/log package that backs the PSR-3 specification.",
+            "support": {
+                "issues": "https://github.com/php-fig/log-test/issues",
+                "source": "https://github.com/php-fig/log-test/tree/1.1.0"
+            },
+            "time": "2022-10-18T05:33:27+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",

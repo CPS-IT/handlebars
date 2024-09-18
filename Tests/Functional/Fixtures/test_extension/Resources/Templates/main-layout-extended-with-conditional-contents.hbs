@@ -1,0 +1,11 @@
+{{#extend templateName}}
+    {{#content "main"}}
+        main block
+    {{/content}}
+
+    {{#if renderSecondBlock}}
+        {{#content "second"}}
+            second block
+        {{/content}}
+    {{/if}}
+{{/extend}}

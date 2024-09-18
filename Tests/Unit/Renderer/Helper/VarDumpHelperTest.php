@@ -40,20 +40,22 @@ class VarDumpHelperTest extends UnitTestCase
      */
     public function evaluateReturnsDumpedContext(): void
     {
+        DebugUtility::usePlainTextOutput(true);
+        DebugUtility::useAnsiColor(false);
+
         $context = [
             '_this' => [
                 'foo' => 'baz',
             ],
         ];
-        // sorry, I could not come up with a better way to test this
-        // DebugUtility::debug() streams an output.
+
         $expected = <<<EOF
-[1mDebug[0m
-[36marray[0m(1 item)
-   [37m_this[0m => [36marray[0m(1 item)
-      [37mfoo[0m => [33m"baz"[0m (3 chars)
+Debug
+array(1 item)
+   _this => array(1 item)
+      foo => "baz" (3 chars)
 EOF;
-        $this->expectOutputString($expected);
-        VarDumpHelper::evaluate($context);
+
+        self::assertSame($expected, VarDumpHelper::evaluate($context));
     }
 }

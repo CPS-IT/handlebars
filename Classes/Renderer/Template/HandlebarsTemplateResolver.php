@@ -39,12 +39,12 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
     /**
      * @var string[]
      */
-    protected $templateRootPaths;
+    protected array $templateRootPaths = [];
 
     /**
      * @var string[]
      */
-    protected $supportedFileExtensions;
+    protected array $supportedFileExtensions = [];
 
     /**
      * @param string[] $supportedFileExtensions
@@ -145,14 +145,11 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
         return $filename;
     }
 
-    /**
-     * @param mixed $templateRootPath
-     */
-    protected function validateTemplateRootPath($templateRootPath): void
+    protected function validateTemplateRootPath(mixed $templateRootPath): void
     {
         if (!\is_string($templateRootPath)) {
             throw new \InvalidArgumentException(
-                \sprintf('Template root path must be of type string, "%s" given.', \gettype($templateRootPath)),
+                \sprintf('Template root path must be of type string, "%s" given.', \get_debug_type($templateRootPath)),
                 1613727984
             );
         }
@@ -164,14 +161,11 @@ class HandlebarsTemplateResolver implements TemplateResolverInterface
         }
     }
 
-    /**
-     * @param mixed $fileExtension
-     */
-    protected function validateFileExtension($fileExtension): void
+    protected function validateFileExtension(mixed $fileExtension): void
     {
         if (!\is_string($fileExtension)) {
             throw new \InvalidArgumentException(
-                \sprintf('File extension must be of type string, "%s" given.', \gettype($fileExtension)),
+                \sprintf('File extension must be of type string, "%s" given.', \get_debug_type($fileExtension)),
                 1613727952
             );
         }

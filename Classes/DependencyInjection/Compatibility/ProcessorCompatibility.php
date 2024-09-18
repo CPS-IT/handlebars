@@ -36,29 +36,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 final class ProcessorCompatibility
 {
     /**
-     * @var string
-     */
-    private $serviceId;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $tagAttributes;
-
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
-
-    /**
      * @param array<string, mixed> $tagAttributes
      */
-    public function __construct(string $serviceId, array $tagAttributes, ContainerBuilder $container)
-    {
-        $this->serviceId = $serviceId;
-        $this->tagAttributes = $tagAttributes;
-        $this->container = $container;
-
+    public function __construct(
+        private readonly string $serviceId,
+        private readonly array $tagAttributes,
+        private readonly ContainerBuilder $container,
+    ) {
         $this->validate();
     }
 
@@ -77,13 +61,10 @@ final class ProcessorCompatibility
      */
     private function buildLayerForType(string $type): CompatibilityLayerInterface
     {
-        switch ($type) {
-            case ExtbaseControllerCompatibilityLayer::TYPE:
-                return new ExtbaseControllerCompatibilityLayer($this->container);
-
-            default:
-                throw UnsupportedTypeException::create($type);
-        }
+        return match ($type) {
+            ExtbaseControllerCompatibilityLayer::TYPE => new ExtbaseControllerCompatibilityLayer($this->container),
+            default => throw UnsupportedTypeException::create($type),
+        };
     }
 
     private function validate(): void

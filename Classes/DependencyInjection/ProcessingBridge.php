@@ -37,31 +37,14 @@ final class ProcessingBridge
 {
     private const PROCESSOR_CLASSNAME_PATTERN = '#(?P<vendorName>.+)\\\\DataProcessing\\\\(?P<baseProcessorName>.+?(?=Data)?)(Data)?Processor$#';
 
-    /**
-     * @var string
-     */
-    private $id;
+    private string $vendorName = '';
+    private string $baseProcessorName = '';
 
-    /**
-     * @var Definition
-     */
-    private $definition;
-
-    /**
-     * @var string
-     */
-    private $vendorName;
-
-    /**
-     * @var string
-     */
-    private $baseProcessorName;
-
-    public function __construct(string $id, Definition $definition)
-    {
-        $this->id = $id;
-        $this->definition = $definition;
-        $this->inspectProcessor();
+    public function __construct(
+        private readonly string $id,
+        private readonly Definition $definition,
+    ) {
+        [$this->vendorName, $this->baseProcessorName] = $this->inspectProcessor();
     }
 
     public function getPresenter(): Reference
@@ -91,7 +74,10 @@ final class ProcessingBridge
         return $this->definition->hasMethodCall($method);
     }
 
-    private function inspectProcessor(): void
+    /**
+     * @return array{string, string}
+     */
+    private function inspectProcessor(): array
     {
         // Throw exception if given data processor does not match expected class scheme
         if (!preg_match(self::PROCESSOR_CLASSNAME_PATTERN, $this->id, $matches)) {
@@ -101,7 +87,9 @@ final class ProcessingBridge
             );
         }
 
-        $this->vendorName = $matches['vendorName'];
-        $this->baseProcessorName = $matches['baseProcessorName'];
+        return [
+            $matches['vendorName'],
+            $matches['baseProcessorName'],
+        ];
     }
 }

@@ -34,25 +34,18 @@ namespace Fr\Typo3Handlebars\Data\Response;
 class SimpleProviderResponse implements ProviderResponseInterface, \ArrayAccess
 {
     /**
-     * @var array<string, mixed>
-     */
-    protected $data;
-
-    /**
      * @param array<string, mixed> $data
      */
-    public function __construct(array $data = [])
-    {
-        $this->data = $data;
-    }
+    public function __construct(
+        protected array $data = [],
+    ) {}
 
     public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->data);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         if ($this->offsetExists($offset)) {
             return $this->data[$offset];
@@ -60,7 +53,7 @@ class SimpleProviderResponse implements ProviderResponseInterface, \ArrayAccess
         return null;
     }
 
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, mixed $value): void
     {
         $this->data[$offset] = $value;
     }

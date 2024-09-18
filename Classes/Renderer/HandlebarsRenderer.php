@@ -37,8 +37,7 @@ use LightnCandy\LightnCandy;
 use LightnCandy\Partial;
 use LightnCandy\Runtime;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -48,56 +47,23 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, LoggerAwareInterface
+class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
 {
     use HandlebarsHelperTrait;
-    use LoggerAwareTrait;
+
+    protected readonly bool $debugMode;
 
     /**
-     * @var CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var TemplateResolverInterface
-     */
-    protected $templateResolver;
-
-    /**
-     * @var TemplateResolverInterface|null
-     */
-    protected $partialResolver;
-
-    /**
-     * @var array<mixed, mixed>
-     */
-    protected $defaultData;
-
-    /**
-     * @var bool
-     */
-    protected $debugMode;
-
-    /**
-     * @param array<mixed, mixed> $defaultData
+     * @param array<string|int, mixed> $defaultData
      */
     public function __construct(
-        CacheInterface $cache,
-        EventDispatcherInterface $eventDispatcher,
-        TemplateResolverInterface $templateResolver,
-        TemplateResolverInterface $partialResolver = null,
-        array $defaultData = []
+        protected readonly CacheInterface $cache,
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly LoggerInterface $logger,
+        protected readonly TemplateResolverInterface $templateResolver,
+        protected readonly ?TemplateResolverInterface $partialResolver = null,
+        protected array $defaultData = [],
     ) {
-        $this->cache = $cache;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->templateResolver = $templateResolver;
-        $this->partialResolver = $partialResolver;
-        $this->defaultData = $defaultData;
         $this->debugMode = $this->isDebugModeEnabled();
     }
 
@@ -106,16 +72,14 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         try {
             return $this->processRendering($templatePath, $data);
         } catch (InvalidTemplateFileException | TemplateCompilationException | TemplateNotFoundException $exception) {
-            if ($this->logger !== null) {
-                $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
-            }
+            $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
 
             return '';
         }
     }
 
     /**
-     * @param array<mixed, mixed> $data
+     * @param array<string|int, mixed> $data
      * @throws InvalidTemplateFileException if template file is invalid
      * @throws TemplateCompilationException if template compilation fails and errors are not yet handled by compiler
      * @throws TemplateNotFoundException if template could not be found
@@ -211,7 +175,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         return [
             'flags' => $this->getCompileFlags(),
             'helpers' => $this->getHelperStubs(),
-            'partialresolver' => $this->partialResolver ? [$this, 'resolvePartial'] : false,
+            'partialresolver' => $this->partialResolver !== null ? $this->resolvePartial(...) : false,
         ];
     }
 
@@ -289,7 +253,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
     }
 
     /**
-     * @return array<mixed, mixed>
+     * @return array<string|int, mixed>
      */
     public function getDefaultData(): array
     {
@@ -297,7 +261,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
     }
 
     /**
-     * @param array<mixed, mixed> $defaultData
+     * @param array<string|int, mixed> $defaultData
      */
     public function setDefaultData(array $defaultData): self
     {

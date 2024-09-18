@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use TYPO3\CMS\Core\Utility\DebugUtility;
+
 /**
  * VarDumpHelper
  *
@@ -32,10 +34,14 @@ namespace Fr\Typo3Handlebars\Renderer\Helper;
 class VarDumpHelper implements HelperInterface
 {
     /**
-     * @param array<mixed, mixed> $context
+     * @param array<string|int, mixed> $context
      */
     public static function evaluate(array $context): string
     {
-        return print_r($context['_this'], true);
+        \ob_start();
+
+        DebugUtility::debug($context);
+
+        return (string)\ob_get_clean();
     }
 }

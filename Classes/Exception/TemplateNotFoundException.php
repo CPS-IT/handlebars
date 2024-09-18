@@ -32,15 +32,12 @@ namespace Fr\Typo3Handlebars\Exception;
  */
 final class TemplateNotFoundException extends \RuntimeException
 {
-    /**
-     * @var string
-     */
-    private $templateFile;
-
-    public function __construct(string $templateFile = '', int $code = 0, \Throwable $previous = null)
-    {
-        $this->templateFile = $templateFile;
-        $message = \sprintf('The requested template file "%s" could not be found.', $templateFile);
+    public function __construct(
+        private readonly string $templateFile = '',
+        int $code = 0,
+        \Throwable $previous = null,
+    ) {
+        $message = \sprintf('The requested template file "%s" could not be found.', $this->templateFile);
         parent::__construct($message, $code, $previous);
     }
 

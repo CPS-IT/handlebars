@@ -33,7 +33,7 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v2
         with:
-          composer-options: --no-plugins
+          composer-options: --no-scripts --no-plugins
 
       # Check Composer dependencies
       - name: Check dependencies
@@ -45,11 +45,11 @@ jobs:
 
       # Linting
       - name: Lint composer.json
-        run: composer lint:composer -- --dry-run
+        run: composer lint:composer
       - name: Lint Editorconfig
-        run: .Build/bin/ec -e .Build
+        run: composer lint:editorconfig
       - name: Lint PHP
-        run: composer lint:php -- --dry-run
+        run: composer lint:php
       - name: Lint TypoScript
         run: composer lint:typoscript -- --fail-on-warnings
 

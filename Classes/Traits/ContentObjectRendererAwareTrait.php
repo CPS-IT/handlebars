@@ -33,10 +33,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 trait ContentObjectRendererAwareTrait
 {
-    /**
-     * @var ContentObjectRenderer|null
-     */
-    protected $contentObjectRenderer;
+    protected ?ContentObjectRenderer $contentObjectRenderer = null;
 
     public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer): void
     {

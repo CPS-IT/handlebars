@@ -26,8 +26,7 @@ namespace Fr\Typo3Handlebars\DataProcessing;
 use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
 use Fr\Typo3Handlebars\Renderer\RendererInterface;
 use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -36,31 +35,22 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class SimpleProcessor implements DataProcessorInterface, LoggerAwareInterface
+class SimpleProcessor implements DataProcessorInterface
 {
     use ErrorHandlingTrait;
-    use LoggerAwareTrait;
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    public $cObj;
+    protected ?ContentObjectRenderer $contentObjectRenderer = null;
 
-    /**
-     * @var RendererInterface
-     */
-    protected $renderer;
-
-    public function __construct(RendererInterface $renderer)
-    {
-        $this->renderer = $renderer;
-    }
+    public function __construct(
+        protected readonly LoggerInterface $logger,
+        protected readonly RendererInterface $renderer,
+    ) {}
 
     public function process(string $content, array $configuration): string
     {
         try {
             $templatePath = $this->getTemplatePath($configuration);
-            return $this->renderer->render($templatePath, $this->cObj->data);
+            return $this->renderer->render($templatePath, $this->contentObjectRenderer?->data ?? []);
         } catch (InvalidTemplateFileException $exception) {
             $this->handleError($exception);
             return '';
@@ -86,9 +76,9 @@ class SimpleProcessor implements DataProcessorInterface, LoggerAwareInterface
         return trim($configuration['userFunc.']['templatePath']);
     }
 
-    public function setContentObjectRenderer(ContentObjectRenderer $cObj): self
+    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer): self
     {
-        $this->cObj = $cObj;
+        $this->contentObjectRenderer = $contentObjectRenderer;
         return $this;
     }
 }

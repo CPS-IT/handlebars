@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
 use Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -39,13 +40,22 @@ class VarDumpHelperTest extends UnitTestCase
      */
     public function evaluateReturnsDumpedContext(): void
     {
+        DebugUtility::usePlainTextOutput(true);
+        DebugUtility::useAnsiColor(false);
+
         $context = [
             '_this' => [
                 'foo' => 'baz',
             ],
         ];
 
-        $expected = print_r(['foo' => 'baz'], true);
-        self::assertSame(trim($expected), trim(VarDumpHelper::evaluate($context)));
+        $expected = <<<EOF
+Debug
+array(1 item)
+   _this => array(1 item)
+      foo => "baz" (3 chars)
+EOF;
+
+        self::assertSame($expected, VarDumpHelper::evaluate($context));
     }
 }

@@ -24,8 +24,9 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
+use TYPO3\CMS\Fluid\View\AbstractTemplateView;
 
 /**
  * ExtbaseViewAdapter
@@ -33,31 +34,17 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ExtbaseViewAdapter implements ViewInterface
+class ExtbaseViewAdapter extends AbstractTemplateView
 {
-    /**
-     * @var ControllerContext
-     */
-    protected $controllerContext;
-
-    /**
-     * @var DataProcessorInterface
-     */
-    protected $processor;
-
     /**
      * @var array<string, mixed>
      */
-    protected $renderData = [];
+    protected array $renderData = [];
 
-    public function __construct(DataProcessorInterface $processor)
-    {
-        $this->processor = $processor;
-    }
-
-    public function setControllerContext(ControllerContext $controllerContext): void
-    {
-        $this->controllerContext = $controllerContext;
+    public function __construct(
+        protected readonly DataProcessorInterface $processor,
+    ) {
+        parent::__construct();
     }
 
     public function assign($key, $value): self
@@ -78,27 +65,42 @@ class ExtbaseViewAdapter implements ViewInterface
         return $this;
     }
 
-    public function canRender(ControllerContext $controllerContext): bool
+    public function render($actionName = null): string
     {
-        return true;
-    }
+        $renderingContext = $this->getRenderingContext();
+        $controller = null;
+        $request = null;
 
-    public function render(): string
-    {
-        $request = $this->controllerContext->getRequest();
+        if ($renderingContext instanceof RenderingContext) {
+            $request = $renderingContext->getRequest();
+        }
+        if ($request instanceof Request) {
+            $controller = $request->getControllerObjectName();
+        }
 
         return $this->processor->process('', [
             'extbaseViewConfiguration' => [
-                'controller' => $request->getControllerObjectName(),
-                'action' => $request->getControllerActionName(),
+                'controller' => $controller,
+                'action' => $actionName,
                 'request' => $request,
                 'variables' => $this->renderData,
             ],
         ]);
     }
 
-    public function initializeView(): void
+    /**
+     * @param array<string, mixed> $variables
+     */
+    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): string
     {
-        // Intentionally left blank.
+        return '';
+    }
+
+    /**
+     * @param array<string, mixed> $variables
+     */
+    public function renderPartial($partialName, $sectionName = null, array $variables = [], $ignoreUnknown = false): string
+    {
+        return '';
     }
 }

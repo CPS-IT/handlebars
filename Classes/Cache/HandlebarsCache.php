@@ -33,15 +33,9 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
  */
 class HandlebarsCache implements CacheInterface
 {
-    /**
-     * @var FrontendInterface
-     */
-    protected $cache;
-
-    public function __construct(FrontendInterface $cache)
-    {
-        $this->cache = $cache;
-    }
+    public function __construct(
+        protected readonly FrontendInterface $cache,
+    ) {}
 
     public function get(string $template): ?string
     {

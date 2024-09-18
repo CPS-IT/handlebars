@@ -34,7 +34,7 @@ use TYPO3\CMS\Core;
 trait DefaultContextAwareConfigurationTrait
 {
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     protected function getDefaultContextFromConfiguration(): array
     {

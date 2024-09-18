@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
 use Fr\Typo3Handlebars\Configuration\Extension;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -44,10 +43,15 @@ class TemplatePaths
      */
     protected ?array $templatePaths = null;
 
+    /**
+     * @param array{
+     *     partial_root_paths?: array<int, string>,
+     *     template_root_paths?: array<int, string>,
+     * } $viewConfiguration
+     */
     public function __construct(
         protected readonly ConfigurationManagerInterface $configurationManager,
-        // @todo check if this works as expected
-        protected readonly ParameterBagInterface $parameterBag,
+        protected readonly array $viewConfiguration = [],
         protected readonly string $type = self::TEMPLATES,
     ) {}
 
@@ -69,7 +73,7 @@ class TemplatePaths
     protected function resolveTemplatePaths(): void
     {
         $this->templatePaths = $this->mergeTemplatePaths(
-            $this->getTemplatePathsFromContainer($this->type),
+            $this->getTemplatePathsFromViewConfiguration($this->type),
             $this->getTemplatePathsFromTypoScriptConfiguration($this->type)
         );
     }
@@ -77,17 +81,9 @@ class TemplatePaths
     /**
      * @return string[]
      */
-    protected function getTemplatePathsFromContainer(string $type): array
+    protected function getTemplatePathsFromViewConfiguration(string $type): array
     {
-        $parameterName = 'handlebars.' . $type;
-
-        if (!$this->parameterBag->has($parameterName)) {
-            return [];
-        }
-
-        $templatePathsParameter = $this->parameterBag->get($parameterName);
-
-        return \is_array($templatePathsParameter) ? $templatePathsParameter : [$templatePathsParameter];
+        return $this->viewConfiguration[$type] ?? [];
     }
 
     /**

@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes;
 
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Frontend;
 
 /**
  * DummyConfigurationManager
@@ -33,30 +33,26 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyConfigurationManager implements ConfigurationManagerInterface
+final class DummyConfigurationManager implements Extbase\Configuration\ConfigurationManagerInterface
 {
     /**
      * @var array<string, mixed>
      */
-    public $configuration = [];
+    public array $configuration = [];
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    private $cObj;
+    private ?Frontend\ContentObject\ContentObjectRenderer $cObj = null;
 
-    public function setContentObject(ContentObjectRenderer $contentObject): void
+    public function setContentObject(Frontend\ContentObject\ContentObjectRenderer $contentObject): void
     {
         $this->cObj = $contentObject;
     }
 
-    public function getContentObject(): ?ContentObjectRenderer
+    public function getContentObject(): ?Frontend\ContentObject\ContentObjectRenderer
     {
         return $this->cObj;
     }
 
     /**
-     * @inheritDoc
      * @return array<string, mixed>
      */
     public function getConfiguration(string $configurationType, ?string $extensionName = null, ?string $pluginName = null): array

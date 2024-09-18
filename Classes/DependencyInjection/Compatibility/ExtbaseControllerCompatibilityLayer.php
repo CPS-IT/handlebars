@@ -116,31 +116,31 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
     {
         if (!isset($configuration['controller']) || (string)$configuration['controller'] === '') {
             throw new \InvalidArgumentException(
-                sprintf('An extbase controller must be configured for the "%s" compatibility layer.', self::TYPE),
+                \sprintf('An extbase controller must be configured for the "%s" compatibility layer.', self::TYPE),
                 1632814271
             );
         }
         if (!$this->container->hasDefinition($configuration['controller'])) {
             throw new \OutOfBoundsException(
-                sprintf('Unable to find extbase controller "%s" in service container.', $configuration['controller']),
+                \sprintf('Unable to find extbase controller "%s" in service container.', $configuration['controller']),
                 1632814362
             );
         }
         if ($this->container->getDefinition($configuration['controller'])->getClass() === null) {
             throw new \InvalidArgumentException(
-                sprintf('Unable to determine class name for extbase controller with service id "%s".', $configuration['controller']),
+                \sprintf('Unable to determine class name for extbase controller with service id "%s".', $configuration['controller']),
                 1632814520
             );
         }
         if (!\in_array(ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()) ?: [])) {
             throw new \InvalidArgumentException(
-                sprintf('Only extbase controllers extending from "%s" are supported, found in: %s', ActionController::class, $configuration['controller']),
+                \sprintf('Only extbase controllers extending from "%s" are supported, found in: %s', ActionController::class, $configuration['controller']),
                 1632814592
             );
         }
         if (isset($configuration['actions']) && !\is_string($configuration['actions']) && $configuration['actions'] !== null) {
             throw new \InvalidArgumentException(
-                sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', \gettype($configuration['actions'])),
+                \sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', \gettype($configuration['actions'])),
                 1632814413
             );
         }

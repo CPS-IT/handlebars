@@ -109,13 +109,13 @@ final class HandlebarsHelperPass implements CompilerPassInterface
     {
         if (!\array_key_exists('identifier', $tagAttributes) || (string)$tagAttributes['identifier'] === '') {
             throw new \InvalidArgumentException(
-                sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
+                \sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
                 1606236820
             );
         }
         if (!\array_key_exists('method', $tagAttributes) || (string)$tagAttributes['method'] === '') {
             throw new \InvalidArgumentException(
-                sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
+                \sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
                 1606245140
             );
         }

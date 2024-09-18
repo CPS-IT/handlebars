@@ -29,4 +29,6 @@ namespace Fr\Typo3Handlebars\Exception;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class TemplateCompilationException extends \RuntimeException {}
+final class TemplateCompilationException extends \RuntimeException
+{
+}

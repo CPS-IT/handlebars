@@ -187,7 +187,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
             $errors = LightnCandy::getContext()['error'] ?? [];
 
             throw new TemplateCompilationException(
-                sprintf(
+                \sprintf(
                     'Error during template compilation: "%s"',
                     implode('", "', \is_array($errors) ? $errors : [$errors])
                 ),
@@ -233,7 +233,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
         /** @var string|null $writeResult */
         $writeResult = GeneralUtility::writeFileToTypo3tempDir($path, '<?php ' . $compileResult);
         if ($writeResult !== null) {
-            throw new TemplateCompilationException(sprintf('Cannot prepare compiled render function: %s', $writeResult), 1614705397);
+            throw new TemplateCompilationException(\sprintf('Cannot prepare compiled render function: %s', $writeResult), 1614705397);
         }
 
         // Build callable

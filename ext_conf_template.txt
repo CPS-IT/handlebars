@@ -1,14 +1,14 @@
-# cat=features/blockHelper/enable; type=boolean; label=Block helper: Enable globally (applies to the default Handlebars renderer)
+# cat=helpers/enable/10; type=boolean; label=Block helper: Enable globally (applies to the default Handlebars renderer)
 features.blockHelper.enable = 1
 
-# cat=features/contentHelper/enable; type=boolean; label=Content helper: Enable globally (applies to the default Handlebars renderer)
+# cat=helpers/enable/20; type=boolean; label=Content helper: Enable globally (applies to the default Handlebars renderer)
 features.contentHelper.enable = 1
 
-# cat=features/extendHelper/enable; type=boolean; label=Extend helper: Enable globally (applies to the default Handlebars renderer)
+# cat=helpers/enable/30; type=boolean; label=Extend helper: Enable globally (applies to the default Handlebars renderer)
 features.extendHelper.enable = 1
 
-# cat=features/renderHelper/enable; type=boolean; label=Render helper: Enable globally (applies to the default Handlebars renderer)
+# cat=helpers/enable/40; type=boolean; label=Render helper: Enable globally (applies to the default Handlebars renderer)
 features.renderHelper.enable = 1
 
-# cat=features/flatTemplateResolver/enable; type=boolean; label=Flat template resolver: Enable globally (applies to the default Handlebars renderer)
+# cat=template/enable/10; type=boolean; label=Flat template resolver: Enable globally (applies to the default Handlebars renderer)
 features.flatTemplateResolver.enable = 0

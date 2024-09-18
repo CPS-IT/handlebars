@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Traits;
 
 use Fr\Typo3Handlebars\Exception\InvalidHelperException;
-use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -38,22 +37,17 @@ trait HandlebarsHelperTrait
     /**
      * @var array<string, callable>
      */
-    protected $helpers = [];
+    protected array $helpers = [];
 
-    /**
-     * @param mixed $function
-     */
-    public function registerHelper(string $name, $function): void
+    public function registerHelper(string $name, mixed $function): void
     {
         try {
             $this->helpers[$name] = $this->resolveHelperFunction($function);
         } catch (InvalidHelperException | \ReflectionException $exception) {
-            if ($this->logger instanceof LoggerInterface) {
-                $this->logger->critical(
-                    'Error while registering Handlebars helper "' . $name . '".',
-                    ['name' => $name, 'function' => $function, 'exception' => $exception]
-                );
-            }
+            $this->logger->critical(
+                'Error while registering Handlebars helper "' . $name . '".',
+                ['name' => $name, 'function' => $function, 'exception' => $exception]
+            );
         }
     }
 
@@ -66,11 +60,10 @@ trait HandlebarsHelperTrait
     }
 
     /**
-     * @param mixed $function
      * @throws InvalidHelperException
      * @throws \ReflectionException
      */
-    protected function resolveHelperFunction($function): callable
+    protected function resolveHelperFunction(mixed $function): callable
     {
         // Try to resolve the Helper function in this order:
         //
@@ -147,11 +140,10 @@ trait HandlebarsHelperTrait
     }
 
     /**
-     * @param mixed $helperFunction
      * @codeCoverageIgnore
      * @deprecated use resolveHelperFunction() instead and check for thrown exceptions
      */
-    protected function isValidHelper($helperFunction): bool
+    protected function isValidHelper(mixed $helperFunction): bool
     {
         trigger_error(
             \sprintf(
@@ -165,7 +157,7 @@ trait HandlebarsHelperTrait
 
         try {
             return (bool)$this->resolveHelperFunction($helperFunction);
-        } catch (InvalidHelperException | \ReflectionException $e) {
+        } catch (InvalidHelperException | \ReflectionException) {
             return false;
         }
     }

@@ -43,20 +43,12 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
 {
     public const TYPE = 'extbase_controller';
 
-    /**
-     * @var ContainerBuilder
-     */
-    private $container;
+    private readonly Definition $viewResolverDefinition;
 
-    /**
-     * @var Definition
-     */
-    private $viewResolverDefinition;
-
-    public function __construct(ContainerBuilder $container)
-    {
-        $this->container = $container;
-        $this->viewResolverDefinition = $container->getDefinition(HandlebarsViewResolver::class);
+    public function __construct(
+        private readonly ContainerBuilder $container,
+    ) {
+        $this->viewResolverDefinition = $this->container->getDefinition(HandlebarsViewResolver::class);
         $this->validateService(HandlebarsViewResolver::class);
     }
 
@@ -140,7 +132,7 @@ final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInt
         }
         if (isset($configuration['actions']) && !\is_string($configuration['actions']) && $configuration['actions'] !== null) {
             throw new \InvalidArgumentException(
-                \sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', \gettype($configuration['actions'])),
+                \sprintf('Actions for extbase controllers must be configured as comma-separated list, %s given.', \get_debug_type($configuration['actions'])),
                 1632814413
             );
         }

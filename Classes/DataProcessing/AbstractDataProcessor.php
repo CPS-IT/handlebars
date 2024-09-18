@@ -44,35 +44,16 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
     use ErrorHandlingTrait;
     use LoggerAwareTrait;
 
-    /**
-     * @var ContentObjectRenderer
-     */
-    public $cObj;
-
-    /**
-     * @var string
-     */
-    protected $content;
+    protected ?ConfigurationManagerInterface $configurationManager = null;
+    protected ?ContentObjectRenderer $contentObjectRenderer = null;
+    protected ?PresenterInterface $presenter = null;
+    protected ?DataProviderInterface $provider = null;
+    protected string $content = '';
 
     /**
      * @var array<string|int, mixed>
      */
-    protected $configuration;
-
-    /**
-     * @var PresenterInterface
-     */
-    protected $presenter;
-
-    /**
-     * @var DataProviderInterface
-     */
-    protected $provider;
-
-    /**
-     * @var ConfigurationManagerInterface
-     */
-    protected $configurationManager;
+    protected array $configuration = [];
 
     /**
      * @todo Move to constructor with next BC break
@@ -113,9 +94,9 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
         return $this;
     }
 
-    public function setContentObjectRenderer(ContentObjectRenderer $cObj): self
+    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer): self
     {
-        $this->cObj = $cObj;
+        $this->contentObjectRenderer = $contentObjectRenderer;
         return $this;
     }
 
@@ -132,13 +113,13 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
      */
     protected function initializeConfigurationManager(): void
     {
-        if ($this->configurationManager !== null && $this->cObj !== null) {
+        if ($this->configurationManager !== null && $this->contentObjectRenderer !== null) {
             $fullConfiguration = $this->configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
             );
             // setConfiguration() resets extensionName and pluginName
             $this->configurationManager->setConfiguration($fullConfiguration);
-            $this->configurationManager->setContentObject($this->cObj);
+            $this->configurationManager->setContentObject($this->contentObjectRenderer);
         }
     }
 

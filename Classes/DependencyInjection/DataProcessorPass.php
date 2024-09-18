@@ -38,21 +38,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class DataProcessorPass implements CompilerPassInterface
 {
-    /**
-     * @var string
-     */
-    private $processorTagName;
-
-    /**
-     * @var string
-     */
-    private $compatibilityTagName;
-
-    public function __construct(string $processorTagName, string $compatibilityTagName)
-    {
-        $this->processorTagName = $processorTagName;
-        $this->compatibilityTagName = $compatibilityTagName;
-    }
+    public function __construct(
+        private readonly string $processorTagName,
+        private readonly string $compatibilityTagName,
+    ) {}
 
     public function process(ContainerBuilder $container): void
     {

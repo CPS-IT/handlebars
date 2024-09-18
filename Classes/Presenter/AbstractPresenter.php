@@ -33,13 +33,7 @@ use Fr\Typo3Handlebars\Renderer\RendererInterface;
  */
 abstract class AbstractPresenter implements PresenterInterface
 {
-    /**
-     * @var RendererInterface
-     */
-    protected $renderer;
-
-    public function __construct(RendererInterface $renderer)
-    {
-        $this->renderer = $renderer;
-    }
+    public function __construct(
+        protected readonly RendererInterface $renderer,
+    ) {}
 }

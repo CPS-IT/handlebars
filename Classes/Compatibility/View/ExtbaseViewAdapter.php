@@ -37,19 +37,13 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 class ExtbaseViewAdapter implements ViewInterface
 {
     /**
-     * @var DataProcessorInterface
-     */
-    protected $processor;
-
-    /**
      * @var array<string, mixed>
      */
-    protected $renderData = [];
+    protected array $renderData = [];
 
-    public function __construct(DataProcessorInterface $processor)
-    {
-        $this->processor = $processor;
-    }
+    public function __construct(
+        protected readonly DataProcessorInterface $processor,
+    ) {}
 
     public function assign($key, $value): self
     {

@@ -40,25 +40,14 @@ use Symfony\Component\DependencyInjection\Reference;
 final class HandlebarsHelperPass implements CompilerPassInterface
 {
     /**
-     * @var string
-     */
-    private $helperTagName;
-
-    /**
-     * @var string
-     */
-    private $rendererTagName;
-
-    /**
      * @var Definition[]
      */
-    private $rendererDefinitions = [];
+    private array $rendererDefinitions = [];
 
-    public function __construct(string $helperTagName, string $rendererTagName)
-    {
-        $this->helperTagName = $helperTagName;
-        $this->rendererTagName = $rendererTagName;
-    }
+    public function __construct(
+        private readonly string $helperTagName,
+        private readonly string $rendererTagName,
+    ) {}
 
     public function process(ContainerBuilder $container): void
     {

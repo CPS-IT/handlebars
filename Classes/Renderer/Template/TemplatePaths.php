@@ -24,8 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
 use Fr\Typo3Handlebars\Configuration\Extension;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -35,33 +34,22 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class TemplatePaths implements ContainerAwareInterface
+class TemplatePaths
 {
-    use ContainerAwareTrait;
-
     public const TEMPLATES = 'template_root_paths';
     public const PARTIALS = 'partial_root_paths';
 
     /**
-     * @var ConfigurationManagerInterface
-     */
-    protected $configurationManager;
-
-    /**
-     * @var string
-     */
-    protected $type;
-
-    /**
      * @var string[]
      */
-    protected $templatePaths;
+    protected ?array $templatePaths = null;
 
-    public function __construct(ConfigurationManagerInterface $configurationManager, string $type = self::TEMPLATES)
-    {
-        $this->configurationManager = $configurationManager;
-        $this->type = $type;
-    }
+    public function __construct(
+        protected readonly ConfigurationManagerInterface $configurationManager,
+        // @todo check if this works as expected
+        protected readonly ParameterBagInterface $parameterBag,
+        protected readonly string $type = self::TEMPLATES,
+    ) {}
 
     /**
      * @return string[]
@@ -88,12 +76,13 @@ class TemplatePaths implements ContainerAwareInterface
      */
     protected function getTemplatePathsFromContainer(string $type): array
     {
-        if ($this->container === null) {
+        $parameterName = 'handlebars.' . $type;
+
+        if (!$this->parameterBag->has($parameterName)) {
             return [];
         }
 
-        $parameterName = 'handlebars.' . $type;
-        $templatePathsParameter = $this->container->getParameter($parameterName);
+        $templatePathsParameter = $this->parameterBag->get($parameterName);
 
         return \is_array($templatePathsParameter) ? $templatePathsParameter : [$templatePathsParameter];
     }

@@ -24,8 +24,8 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -38,19 +38,9 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 class HandlebarsViewResolver extends GenericViewResolver
 {
     /**
-     * @var array<string, array<string, DataProcessorInterface>>
+     * @var array<class-string, array<string, DataProcessorInterface>>
      */
-    protected $processorMap = [];
-
-    /**
-     * @var ConfigurationManagerInterface
-     */
-    protected $configurationManager;
-
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
-    {
-        $this->configurationManager = $configurationManager;
-    }
+    protected array $processorMap = [];
 
     public function resolve(string $controllerObjectName, string $actionName, string $format): ViewInterface
     {
@@ -86,7 +76,7 @@ class HandlebarsViewResolver extends GenericViewResolver
             return null;
         }
 
-        $contentObjectRenderer = $this->configurationManager->getContentObject();
+        $contentObjectRenderer = $this->getRequest()->getAttribute('currentContentObject');
         if ($contentObjectRenderer !== null && method_exists($processor, 'setContentObjectRenderer')) {
             $processor->setContentObjectRenderer($contentObjectRenderer);
         }
@@ -101,5 +91,10 @@ class HandlebarsViewResolver extends GenericViewResolver
     {
         $this->processorMap = $processorMap;
         return $this;
+    }
+
+    protected function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

@@ -34,29 +34,13 @@ use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
 class BeforeRenderingEvent
 {
     /**
-     * @var string
+     * @param array<string|int, mixed> $data
      */
-    private $templatePath;
-
-    /**
-     * @var array<mixed, mixed>
-     */
-    private $data;
-
-    /**
-     * @var HandlebarsRenderer
-     */
-    private $renderer;
-
-    /**
-     * @param array<mixed, mixed> $data
-     */
-    public function __construct(string $templatePath, array $data, HandlebarsRenderer $renderer)
-    {
-        $this->templatePath = $templatePath;
-        $this->data = $data;
-        $this->renderer = $renderer;
-    }
+    public function __construct(
+        private readonly string $templatePath,
+        private array $data,
+        private readonly HandlebarsRenderer $renderer,
+    ) {}
 
     public function getTemplatePath(): string
     {
@@ -64,7 +48,7 @@ class BeforeRenderingEvent
     }
 
     /**
-     * @return array<mixed, mixed>
+     * @return array<string|int, mixed>
      */
     public function getData(): array
     {
@@ -72,7 +56,7 @@ class BeforeRenderingEvent
     }
 
     /**
-     * @param array<mixed, mixed> $data
+     * @param array<string|int, mixed> $data
      */
     public function setData(array $data): self
     {

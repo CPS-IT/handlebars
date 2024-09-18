@@ -33,27 +33,11 @@ use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
  */
 class AfterRenderingEvent
 {
-    /**
-     * @var string
-     */
-    private $templatePath;
-
-    /**
-     * @var string
-     */
-    private $content;
-
-    /**
-     * @var HandlebarsRenderer
-     */
-    private $renderer;
-
-    public function __construct(string $templatePath, string $content, HandlebarsRenderer $renderer)
-    {
-        $this->templatePath = $templatePath;
-        $this->content = $content;
-        $this->renderer = $renderer;
-    }
+    public function __construct(
+        private readonly string $templatePath,
+        private string $content,
+        private readonly HandlebarsRenderer $renderer,
+    ) {}
 
     public function getTemplatePath(): string
     {

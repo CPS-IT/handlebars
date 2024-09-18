@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\DebugUtility;
 class VarDumpHelper implements HelperInterface
 {
     /**
-     * @param array<mixed, mixed> $context
+     * @param array<string|int, mixed> $context
      */
     public static function evaluate(array $context): void
     {

@@ -43,20 +43,20 @@ final class HandlebarsExtension extends Extension
     /**
      * @var string[]
      */
-    private $templateRootPaths = [];
+    private array $templateRootPaths = [];
 
     /**
      * @var string[]
      */
-    private $partialRootPaths = [];
+    private array $partialRootPaths = [];
 
     /**
-     * @var array<mixed, mixed>
+     * @var array<string|int, mixed>
      */
-    private $defaultData = [];
+    private array $defaultData = [];
 
     /**
-     * @param array<mixed, mixed>[] $configs
+     * @param array<string|int, mixed>[] $configs
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
@@ -71,7 +71,7 @@ final class HandlebarsExtension extends Extension
     }
 
     /**
-     * @param array<mixed, mixed>[] $configs
+     * @param array<string|int, mixed>[] $configs
      */
     private function parseConfiguration(array $configs): void
     {
@@ -82,8 +82,8 @@ final class HandlebarsExtension extends Extension
     }
 
     /**
-     * @param array<mixed, mixed>[] $configs
-     * @return array<mixed, mixed>
+     * @param array<string|int, mixed>[] $configs
+     * @return array<string|int, mixed>
      */
     private function mergeConfigs(array $configs, string $configKey): array
     {

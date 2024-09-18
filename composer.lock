@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c322008db15f43e04411a756453c50c3",
+    "content-hash": "c0636f17a8f05f1bad94ac1ad73531b2",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -10210,40 +10210,40 @@
         },
         {
             "name": "typo3/coding-standards",
-            "version": "v0.7.1",
+            "version": "v0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TYPO3/coding-standards.git",
-                "reference": "b53fc46dc3fc997f98c96bc630d24c1e12028646"
+                "reference": "d99bdb92e5647bedc3d05e4aef1ab4d1808a17b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TYPO3/coding-standards/zipball/b53fc46dc3fc997f98c96bc630d24c1e12028646",
-                "reference": "b53fc46dc3fc997f98c96bc630d24c1e12028646",
+                "url": "https://api.github.com/repos/TYPO3/coding-standards/zipball/d99bdb92e5647bedc3d05e4aef1ab4d1808a17b1",
+                "reference": "d99bdb92e5647bedc3d05e4aef1ab4d1808a17b1",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "friendsofphp/php-cs-fixer": "^3.11",
-                "php": "^8.0",
-                "symfony/console": "^4.4.30 || ^5.3.7 || ^6.0",
-                "symfony/filesystem": "^4.4 || ^5.0 || ^6.0"
+                "friendsofphp/php-cs-fixer": "^3.49",
+                "php": "^8.1",
+                "symfony/console": "^6.4 || ^7.0",
+                "symfony/filesystem": "^6.4 || ^7.0"
             },
             "require-dev": {
-                "composer/package-versions-deprecated": "^1.11.99.4",
-                "ergebnis/composer-normalize": "*",
+                "composer/package-versions-deprecated": "^1.11.99.5",
+                "ergebnis/composer-normalize": "^2.28",
                 "keradus/cli-executor": "^1.5",
-                "maglnet/composer-require-checker": "*",
-                "nikic/php-parser": "^4.13.1",
-                "overtrue/phplint": "^3.0",
-                "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-phpunit": "^1.0",
-                "phpstan/phpstan-strict-rules": "^1.0",
-                "phpstan/phpstan-symfony": "^1.0",
-                "phpunit/phpunit": "^9.5.18",
-                "symfony/finder": ">=4.4",
-                "symfony/process": ">=4.4"
+                "maglnet/composer-require-checker": "^4.7.1",
+                "overtrue/phplint": "^9.0",
+                "phpstan/extension-installer": "^1.3.1",
+                "phpstan/phpstan": "^1.11.3",
+                "phpstan/phpstan-deprecation-rules": "^1.2.0",
+                "phpstan/phpstan-phpunit": "^1.4.0",
+                "phpstan/phpstan-strict-rules": "^1.6.0",
+                "phpstan/phpstan-symfony": "^1.4.3",
+                "phpunit/phpunit": "^10.1.3",
+                "symfony/finder": "^6.4 || ^7.0",
+                "symfony/process": "^6.4 || ^7.0"
             },
             "bin": [
                 "t3-cs",
@@ -10252,7 +10252,7 @@
             "type": "coding-standards",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "0.7.x-dev"
+                    "dev-main": "0.8.x-dev"
                 }
             },
             "autoload": {
@@ -10289,7 +10289,7 @@
                 "issues": "https://github.com/TYPO3/coding-standards/issues",
                 "source": "https://github.com/TYPO3/coding-standards"
             },
-            "time": "2022-12-20T16:02:01+00:00"
+            "time": "2024-06-03T14:17:54+00:00"
         },
         {
             "name": "typo3/testing-framework",

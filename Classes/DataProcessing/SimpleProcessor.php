@@ -50,7 +50,7 @@ class SimpleProcessor implements DataProcessorInterface
     {
         try {
             $templatePath = $this->getTemplatePath($configuration);
-            return $this->renderer->render($templatePath, $this->contentObjectRenderer->data);
+            return $this->renderer->render($templatePath, $this->contentObjectRenderer?->data ?? []);
         } catch (InvalidTemplateFileException $exception) {
             $this->handleError($exception);
             return '';

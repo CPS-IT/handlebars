@@ -85,7 +85,7 @@ class HandlebarsViewResolver extends GenericViewResolver
     }
 
     /**
-     * @param array<string, array<string, DataProcessorInterface>> $processorMap
+     * @param array<class-string, array<string, DataProcessorInterface>> $processorMap
      */
     public function setProcessorMap(array $processorMap): self
     {

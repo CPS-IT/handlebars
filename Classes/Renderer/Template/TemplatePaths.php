@@ -63,6 +63,9 @@ class TemplatePaths
         return $this->templatePaths;
     }
 
+    /**
+     * @phpstan-assert string[] $this->templatePaths
+     */
     protected function resolveTemplatePaths(): void
     {
         $this->templatePaths = $this->mergeTemplatePaths(

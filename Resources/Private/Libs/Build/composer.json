@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"php": "~7.4.0",
+		"php": "~7.4.0 || ~8.4.0",
 		"symfony/polyfill-php80": "^1.23",
 		"zordius/lightncandy": "^1.2"
 	}

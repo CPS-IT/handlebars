@@ -23,10 +23,11 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Traits;
 
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits\DummyHandlebarsHelperTraitClass;
-use Psr\Log\Test\TestLogger;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Psr\Log;
+use TYPO3\TestingFramework;
 
 /**
  * HandlebarsHelperTraitTest
@@ -34,59 +35,43 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsHelperTraitTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Traits\HandlebarsHelperTrait::class)]
+final class HandlebarsHelperTraitTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var TestLogger
-     */
-    protected $logger;
-
-    /**
-     * @var DummyHandlebarsHelperTraitClass
-     */
-    protected $subject;
+    private Log\Test\TestLogger $logger;
+    private Tests\Unit\Fixtures\Classes\Traits\DummyHandlebarsHelperTraitClass $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->logger = new TestLogger();
-        $this->subject = new DummyHandlebarsHelperTraitClass();
-        $this->subject->setLogger($this->logger);
+        $this->logger = new Log\Test\TestLogger();
+        $this->subject = new Tests\Unit\Fixtures\Classes\Traits\DummyHandlebarsHelperTraitClass($this->logger);
     }
 
-    /**
-     * @test
-     * @dataProvider registerHelperLogsCriticalErrorIfGivenHelperIsInvalidDataProvider
-     * @param mixed $function
-     */
-    public function registerHelperLogsCriticalErrorIfGivenHelperIsInvalid($function): void
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('registerHelperLogsCriticalErrorIfGivenHelperIsInvalidDataProvider')]
+    public function registerHelperLogsCriticalErrorIfGivenHelperIsInvalid(mixed $function): void
     {
         $this->subject->registerHelper('foo', $function);
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) use ($function) {
-            static::assertSame('Error while registering Handlebars helper "foo".', $logRecord['message']);
-            static::assertSame('foo', $logRecord['context']['name']);
-            static::assertSame($function, $logRecord['context']['function']);
+            self::assertSame('Error while registering Handlebars helper "foo".', $logRecord['message']);
+            self::assertSame('foo', $logRecord['context']['name']);
+            self::assertSame($function, $logRecord['context']['function']);
             return true;
         }));
         self::assertSame([], $this->subject->getHelpers());
     }
 
-    /**
-     * @test
-     * @dataProvider registerHelperRegistersHelperCorrectlyDataProvider
-     * @param mixed $function
-     * @param string|callable $expectedCallable
-     */
-    public function registerHelperRegistersHelperCorrectly($function, $expectedCallable): void
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('registerHelperRegistersHelperCorrectlyDataProvider')]
+    public function registerHelperRegistersHelperCorrectly(mixed $function, string|callable $expectedCallable): void
     {
         $this->subject->registerHelper('foo', $function);
         self::assertEquals(['foo' => $expectedCallable], $this->subject->getHelpers());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function registerHelperOverridesAvailableHelper(): void
     {
         $this->subject->registerHelper('foo', 'trim');
@@ -96,9 +81,7 @@ class HandlebarsHelperTraitTest extends UnitTestCase
         self::assertSame(['foo' => 'strtolower'], $this->subject->getHelpers());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getHelpersReturnsRegisteredHelpers(): void
     {
         self::assertSame([], $this->subject->getHelpers());
@@ -108,53 +91,53 @@ class HandlebarsHelperTraitTest extends UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array<mixed>>
+     * @return \Generator<string, array{mixed}>
      */
-    public function registerHelperLogsCriticalErrorIfGivenHelperIsInvalidDataProvider(): \Generator
+    public static function registerHelperLogsCriticalErrorIfGivenHelperIsInvalidDataProvider(): \Generator
     {
         yield 'null value' => [null];
         yield 'non-callable function as string' => ['foo_baz'];
-        yield 'non-callable class method' => [DummyHelper::class . '::foo'];
-        yield 'non-callable class method in array syntax' => [[new DummyHelper(), 'foo']];
-        yield 'non-callable private class method' => [DummyHelper::class . '::executeInternal'];
+        yield 'non-callable class method' => [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::foo'];
+        yield 'non-callable class method in array syntax' => [[new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'foo']];
+        yield 'non-callable private class method' => [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::executeInternal'];
     }
 
     /**
-     * @return \Generator<string, array<mixed>>
+     * @return \Generator<string, array{mixed, mixed}>
      */
-    public function registerHelperRegistersHelperCorrectlyDataProvider(): \Generator
+    public static function registerHelperRegistersHelperCorrectlyDataProvider(): \Generator
     {
         yield 'callable function as string' => [
             'trim',
             'trim',
         ];
         yield 'invokable class as string' => [
-            DummyHelper::class,
-            new DummyHelper(),
+            Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class,
+            new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(),
         ];
         yield 'invokable class as object' => [
-            new DummyHelper(),
-            new DummyHelper(),
+            new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(),
+            new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(),
         ];
         yield 'callable static class method' => [
-            DummyHelper::class . '::staticExecute',
-            [DummyHelper::class, 'staticExecute'],
+            Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::staticExecute',
+            [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'staticExecute'],
         ];
         yield 'callable non-static class method' => [
-            DummyHelper::class . '::execute',
-            [new DummyHelper(), 'execute'],
+            Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::execute',
+            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
         ];
         yield 'callable static class method in array syntax' => [
-            [DummyHelper::class, 'staticExecute'],
-            [DummyHelper::class, 'staticExecute'],
+            [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'staticExecute'],
+            [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'staticExecute'],
         ];
         yield 'callable non-static class method in array syntax' => [
-            [DummyHelper::class, 'execute'],
-            [new DummyHelper(), 'execute'],
+            [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'execute'],
+            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
         ];
         yield 'callable non-static class method in initialized array syntax' => [
-            [new DummyHelper(), 'execute'],
-            [new DummyHelper(), 'execute'],
+            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
+            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
         ];
     }
 }

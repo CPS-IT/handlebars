@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Data\Response;
 
-use Fr\Typo3Handlebars\Data\Response\SimpleProviderResponse;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * SimpleProviderResponseTest
@@ -32,22 +33,18 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class SimpleProviderResponseTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Data\Response\SimpleProviderResponse::class)]
+final class SimpleProviderResponseTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var SimpleProviderResponse
-     */
-    protected $subject;
+    private Src\Data\Response\SimpleProviderResponse $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->subject = new SimpleProviderResponse(['foo' => 'baz']);
+        $this->subject = new Src\Data\Response\SimpleProviderResponse(['foo' => 'baz']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function objectCanBeAccessedAsArray(): void
     {
         // Testing offsetExists
@@ -69,9 +66,7 @@ class SimpleProviderResponseTest extends UnitTestCase
         self::assertNull($this->subject['baz']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function toArrayReturnsObjectData(): void
     {
         self::assertSame(['foo' => 'baz'], $this->subject->toArray());

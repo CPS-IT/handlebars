@@ -40,7 +40,7 @@ class VarDumpHelper implements HelperInterface
     {
         \ob_start();
 
-        DebugUtility::debug($context);
+        DebugUtility::debug($context['_this']);
 
         return (string)\ob_get_clean();
     }

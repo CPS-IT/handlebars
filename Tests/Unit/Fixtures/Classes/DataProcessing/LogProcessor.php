@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing;
 
-use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\DataProcessing;
 
 /**
  * LogProcessor
@@ -32,7 +32,7 @@ use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class LogProcessor implements DataProcessorInterface
+final readonly class LogProcessor implements DataProcessing\DataProcessorInterface
 {
     public function process(string $content, array $configuration): string
     {

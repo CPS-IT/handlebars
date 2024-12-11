@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Template;
 
-use Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * HandlebarsTemplateResolverTest
@@ -33,130 +34,111 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsTemplateResolverTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Renderer\Template\HandlebarsTemplateResolver::class)]
+final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
-    /**
-     * @var HandlebarsTemplateResolver
-     */
-    protected $subject;
+    private Src\Renderer\Template\HandlebarsTemplateResolver $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        /** @phpstan-ignore-next-line subject */
-        $this->subject = $this->getTemplateResolver();
+        $templateResolver = $this->getTemplateResolver();
+
+        self::assertInstanceOf(Src\Renderer\Template\HandlebarsTemplateResolver::class, $templateResolver);
+
+        $this->subject = $templateResolver;
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfTemplateRootPathHasInvalidType(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613727984);
 
-        /** @phpstan-ignore-next-line */
-        new HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths([null]));
+        /* @phpstan-ignore argument.type */
+        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths([null]));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfTemplateRootPathIsNotResolvable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613728252);
 
-        new HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths(['EXT:foo/baz']));
+        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths(['EXT:foo/baz']));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfFileExtensionHasInvalidType(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613727952);
 
-        /** @phpstan-ignore-next-line */
-        new HandlebarsTemplateResolver($this->getTemplatePaths(), [true]);
+        /* @phpstan-ignore argument.type */
+        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), [true]);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfFileExtensionStartsWithADot(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613727713);
 
-        new HandlebarsTemplateResolver($this->getTemplatePaths(), ['.foo']);
+        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), ['.foo']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfFileExtensionIsInvalid(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1613727593);
 
-        new HandlebarsTemplateResolver($this->getTemplatePaths(), ['foo?!']);
+        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), ['foo?!']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getTemplateRootPathsReturnsTemplateRootPaths(): void
     {
-        self::assertSame([$this->getTemplateRootPath()], $this->subject->getTemplateRootPaths());
+        self::assertSame([$this->templateRootPath], $this->subject->getTemplateRootPaths());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function setTemplateRootPathsAppliesSortedTemplateRootPaths(): void
     {
         $templateRootPaths = [
-            20 => $this->getTemplateRootPath() . '/',
-            10 => $this->getTemplateRootPath() . '/foo',
+            20 => $this->templateRootPath . '/',
+            10 => $this->templateRootPath . '/foo',
         ];
         $this->subject->setTemplateRootPaths($templateRootPaths);
 
         $expected = [
-            $this->getTemplateRootPath() . '/foo',
-            $this->getTemplateRootPath(),
+            $this->templateRootPath . '/foo',
+            $this->templateRootPath,
         ];
         self::assertSame($expected, $this->subject->getTemplateRootPaths());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getSupportedFileExtensionsReturnsSupportedFileExtensions(): void
     {
         $this->subject->setSupportedFileExtensions(['hbs']);
         self::assertSame(['hbs'], $this->subject->getSupportedFileExtensions());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function setSupportedFileExtensionsSetsDefaultFileExtensionsIfGivenFileExtensionsAreEmpty(): void
     {
         $this->subject->setSupportedFileExtensions([]);
         self::assertSame(
-            HandlebarsTemplateResolver::DEFAULT_FILE_EXTENSIONS,
-            $this->subject->getSupportedFileExtensions()
+            Src\Renderer\Template\HandlebarsTemplateResolver::DEFAULT_FILE_EXTENSIONS,
+            $this->subject->getSupportedFileExtensions(),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function supportsIndicatesSupportOfGivenFileExtensionByResolver(): void
     {
         self::assertFalse($this->subject->supports('jpeg'));
@@ -165,24 +147,20 @@ class HandlebarsTemplateResolverTest extends UnitTestCase
         self::assertFalse($this->subject->supports('HBS'));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function resolveTemplatePathResolvesRelateTemplatePathCorrectly(): void
     {
         $templatePath = 'DummyTemplate';
-        $expected = $this->getTemplateRootPath() . '/DummyTemplate.hbs';
+        $expected = $this->templateRootPath . '/DummyTemplate.hbs';
 
         self::assertSame($expected, $this->subject->resolveTemplatePath($templatePath));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function resolveTemplatePathResolvesAbsoluteTemplatePathCorrectly(): void
     {
         $templatePath = \dirname(__DIR__, 2) . '/Fixtures/Templates/DummyTemplate.hbs';
-        $expected = $this->getTemplateRootPath() . '/DummyTemplate.hbs';
+        $expected = $this->templateRootPath . '/DummyTemplate.hbs';
 
         self::assertSame($expected, $this->subject->resolveTemplatePath($templatePath));
     }

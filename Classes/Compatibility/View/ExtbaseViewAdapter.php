@@ -73,6 +73,7 @@ class ExtbaseViewAdapter extends AbstractTemplateView
 
         if ($renderingContext instanceof RenderingContext) {
             $request = $renderingContext->getRequest();
+            $actionName ??= $renderingContext->getControllerAction();
         }
         if ($request instanceof Request) {
             $controller = $request->getControllerObjectName();

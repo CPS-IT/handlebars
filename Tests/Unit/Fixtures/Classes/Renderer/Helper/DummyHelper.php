@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Helper;
 
-use Fr\Typo3Handlebars\Renderer\Helper\HelperInterface;
+use Fr\Typo3Handlebars\Renderer;
 
 /**
  * DummyHelper
@@ -32,7 +32,7 @@ use Fr\Typo3Handlebars\Renderer\Helper\HelperInterface;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyHelper implements HelperInterface
+final readonly class DummyHelper implements Renderer\Helper\HelperInterface
 {
     public function __invoke(): string
     {
@@ -49,7 +49,7 @@ final class DummyHelper implements HelperInterface
         return 'foo';
     }
 
-    /* @phpstan-ignore-next-line */
+    /* @phpstan-ignore method.unused */
     private function executeInternal(): string
     {
         return 'foo';

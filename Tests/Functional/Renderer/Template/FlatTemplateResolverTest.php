@@ -37,7 +37,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Template\FlatTemplateResolver::class)]
 final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
-    use Tests\Unit\HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
         'test_extension',
@@ -49,6 +49,7 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     {
         parent::setUp();
 
+        $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
     }
 
@@ -57,7 +58,7 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     {
         $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Templates/main-layout--variant.hbs';
 
-        self::assertSame($expected, $this->templateResolver->resolveTemplatePath('@main-layout--variant'));
+        self::assertSame($expected, $this->getTemplateResolver()->resolveTemplatePath('@main-layout--variant'));
     }
 
     #[Framework\Attributes\Test]
@@ -65,11 +66,6 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     {
         $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Templates/main-layout.hbs';
 
-        self::assertSame($expected, $this->templateResolver->resolveTemplatePath('@main-layout--non-existing-variant'));
-    }
-
-    public function getTemplateRootPath(): string
-    {
-        return 'EXT:test_extension/Resources/Templates/';
+        self::assertSame($expected, $this->getTemplateResolver()->resolveTemplatePath('@main-layout--non-existing-variant'));
     }
 }

@@ -23,18 +23,19 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Presenter;
 
-use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
-use Fr\Typo3Handlebars\Presenter\AbstractPresenter;
+use Fr\Typo3Handlebars\Data;
+use Fr\Typo3Handlebars\Presenter;
 
 /**
  * DummyPresenter
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-final class DummyPresenter extends AbstractPresenter
+final class DummyPresenter extends Presenter\AbstractPresenter
 {
-    public function present(ProviderResponseInterface $data): string
+    public function present(Data\Response\ProviderResponseInterface $data): string
     {
         return json_encode($data->toArray()) ?: '';
     }

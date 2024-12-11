@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes;
 
-use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
+use TYPO3Fluid\Fluid;
 
 /**
  * DummyView
@@ -32,9 +32,42 @@ use TYPO3\CMS\Extbase\Mvc\View\AbstractView;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyView extends AbstractView
+final readonly class DummyView implements Fluid\View\ViewInterface
 {
+    public function assign(string $key, mixed $value): self
+    {
+        // Intentionally left blank.
+
+        return $this;
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    public function assignMultiple(array $values): self
+    {
+        // Intentionally left blank.
+
+        return $this;
+    }
+
     public function render(): string
+    {
+        return '';
+    }
+
+    /**
+     * @param array<string, mixed> $variables
+     */
+    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): string
+    {
+        return '';
+    }
+
+    /**
+     * @param array<string, mixed> $variables
+     */
+    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false): string
     {
         return '';
     }

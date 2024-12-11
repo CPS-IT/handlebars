@@ -23,20 +23,14 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer;
 
-use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
-use Fr\Typo3Handlebars\Exception\TemplateCompilationException;
-use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
-use Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Log\Test\TestLogger;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Psr\Log;
+use Symfony\Component\EventDispatcher;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Frontend;
+use TYPO3\TestingFramework;
 
 /**
  * HandlebarsRendererTest
@@ -44,48 +38,36 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsRendererTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Renderer\HandlebarsRenderer::class)]
+final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsCacheTrait;
-    use HandlebarsTemplateResolverTrait;
+    use Tests\Unit\HandlebarsCacheTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
-    /**
-     * @var TestLogger
-     */
-    protected $logger;
-
-    /**
-     * @var HandlebarsRenderer
-     */
-    protected $subject;
-
-    /**
-     * @var TypoScriptFrontendController&MockObject
-     */
-    protected $tsfeMock;
+    private Log\Test\TestLogger $logger;
+    private Src\Renderer\HandlebarsRenderer $subject;
+    private Frontend\Controller\TypoScriptFrontendController&Framework\MockObject\MockObject $tsfeMock;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->renewSubject();
-        $this->tsfeMock = $this->createMock(TypoScriptFrontendController::class);
+        $this->tsfeMock = $this->createMock(Frontend\Controller\TypoScriptFrontendController::class);
 
         $GLOBALS['TSFE'] = $this->tsfeMock;
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderLogsCriticalErrorIfGivenTemplateIsNotAvailable(): void
     {
         self::assertSame('', $this->subject->render('foo.baz'));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var TemplateNotFoundException $exception */
+            /** @var Src\Exception\TemplateNotFoundException $exception */
             $exception = $logRecord['context']['exception'];
-            static::assertInstanceOf(TemplateNotFoundException::class, $exception);
-            static::assertSame(1606217089, $exception->getCode());
-            static::assertStringEndsWith('foo.baz', $exception->getTemplateFile());
+            self::assertInstanceOf(Src\Exception\TemplateNotFoundException::class, $exception);
+            self::assertSame(1606217089, $exception->getCode());
+            self::assertStringEndsWith('foo.baz', $exception->getTemplateFile());
             return true;
         }));
     }
@@ -96,58 +78,57 @@ class HandlebarsRendererTest extends UnitTestCase
      */
     public function renderLogsCriticalErrorIfGivenTemplateIsNotReadable(): void
     {
-        $this->templateResolver = new DummyTemplateResolver();
+        $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver();
         $this->suppressNextError(E_WARNING);
         self::assertSame('', $this->renewSubject()->render('foo.baz'));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var InvalidTemplateFileException $exception */
+            /** @var Src\Exception\InvalidTemplateFileException $exception */
             $exception = $logRecord['context']['exception'];
-            static::assertInstanceOf(InvalidTemplateFileException::class, $exception);
-            static::assertSame(1606217313, $exception->getCode());
-            static::assertStringEndsWith('foo.baz', $exception->getTemplateFile());
+            self::assertInstanceOf(Src\Exception\InvalidTemplateFileException::class, $exception);
+            self::assertSame(1606217313, $exception->getCode());
+            self::assertStringEndsWith('foo.baz', $exception->getTemplateFile());
             return true;
         }));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderUsesGivenTemplatePathIfItIsNotAvailableWithinTemplateRootPaths(): void
     {
         self::assertSame('', $this->subject->render($this->templateRootPath . '/DummyTemplateEmpty'));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderReturnsEmptyStringIfGivenTemplateIsEmpty(): void
     {
         self::assertSame('', $this->subject->render('DummyTemplateEmpty'));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderMergesDefaultDataWithGivenData(): void
     {
-        $this->subject->registerHelper('varDump', VarDumpHelper::class . '::evaluate');
+        $this->subject->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class . '::evaluate');
         $this->subject->setDefaultData([
             'foo' => 'baz',
         ]);
 
-        $expected = print_r([
-            'foo' => 'baz',
-            'another' => 'foo',
-        ], true);
+        Core\Utility\DebugUtility::useAnsiColor(false);
+
+        $expected = <<<EOF
+Debug
+array(2 items)
+   foo => "baz" (3 chars)
+   another => "foo" (3 chars)
+EOF;
+
         self::assertSame(
-            trim($expected),
-            trim($this->subject->render('DummyTemplateVariables', ['another' => 'foo']))
+            \trim($expected),
+            \trim($this->subject->render('DummyTemplateVariables', ['another' => 'foo'])),
         );
+
+        Core\Utility\DebugUtility::useAnsiColor(true);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderUsesCachedCompileResult(): void
     {
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
@@ -162,27 +143,23 @@ class HandlebarsRendererTest extends UnitTestCase
         self::assertSame('foo', $this->subject->render('DummyTemplate'));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderLogsCriticalErrorIfTemplateCompilationFails(): void
     {
         self::assertSame(
             '',
-            $this->renewSubject(DummyRenderer::class)->render('DummyTemplateErroneous')
+            $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render('DummyTemplateErroneous')
         );
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var TemplateCompilationException $exception */
+            /** @var Src\Exception\TemplateCompilationException $exception */
             $exception = $logRecord['context']['exception'];
-            static::assertInstanceOf(TemplateCompilationException::class, $exception);
-            static::assertSame(1614620212, $exception->getCode());
+            self::assertInstanceOf(Src\Exception\TemplateCompilationException::class, $exception);
+            self::assertSame(1614620212, $exception->getCode());
             return true;
         }));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderDoesNotStoreRenderedTemplateInCacheIfDebugModeIsEnabled(): void
     {
         // Test with TypoScript config.debug = 1
@@ -197,9 +174,7 @@ class HandlebarsRendererTest extends UnitTestCase
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderDoesNotStoreRenderedTemplateInCacheIfCachingIsDisabled(): void
     {
         $this->tsfeMock->no_cache = true;
@@ -207,9 +182,7 @@ class HandlebarsRendererTest extends UnitTestCase
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderLogsCriticalErrorIfRenderingClosurePreparationFails(): void
     {
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
@@ -223,86 +196,79 @@ class HandlebarsRendererTest extends UnitTestCase
 
         self::assertSame('', $this->subject->render('DummyTemplate'));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var TemplateCompilationException $exception */
+            /** @var Src\Exception\TemplateCompilationException $exception */
             $exception = $logRecord['context']['exception'];
-            static::assertInstanceOf(TemplateCompilationException::class, $exception);
-            static::assertSame('Got invalid compile result from compiler.', $exception->getMessage());
-            static::assertSame(1639405571, $exception->getCode());
+            self::assertInstanceOf(Src\Exception\TemplateCompilationException::class, $exception);
+            self::assertSame('Got invalid compile result from compiler.', $exception->getMessage());
+            self::assertSame(1639405571, $exception->getCode());
             return true;
         }));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderReturnsRenderedTemplate(): void
     {
         self::assertSame(
             'Hello, foo!',
-            trim($this->subject->render('DummyTemplate', ['name' => 'foo']))
+            \trim($this->subject->render('DummyTemplate', ['name' => 'foo']))
         );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderResolvesPartialsCorrectlyUsingPartialResolver(): void
     {
         self::assertSame(
             'Hello, foo!' . PHP_EOL . 'Welcome, foo, I am the partial!',
-            trim($this->subject->render('DummyTemplateWithPartial', ['name' => 'foo']))
+            \trim($this->subject->render('DummyTemplateWithPartial', ['name' => 'foo']))
         );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function resolvePartialReturnsNullIfNoPartialResolverIsRegistered(): void
     {
-        $subject = new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver());
+        $subject = new Src\Renderer\HandlebarsRenderer(
+            $this->getCache(),
+            new EventDispatcher\EventDispatcher(),
+            $this->logger,
+            $this->getTemplateResolver(),
+        );
 
         self::assertNull($subject->resolvePartial([], 'foo'));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function resolvePartialThrowsExceptionIfPartialResolverCannotResolveGivenPartial(): void
     {
-        $this->expectException(TemplateNotFoundException::class);
+        $this->expectException(Src\Exception\TemplateNotFoundException::class);
         $this->expectExceptionCode(1606217089);
 
         $this->subject->resolvePartial([], 'foo');
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function resolvePartialResolvesGivenPartialUsingPartialResolver(): void
     {
         self::assertSame(
             'Welcome, {{ name }}, I am the partial!',
-            trim($this->subject->resolvePartial([], 'DummyPartial') ?: '')
+            \trim($this->subject->resolvePartial([], 'DummyPartial') ?: '')
         );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getDefaultDataReturnsDefaultRenderData(): void
     {
         $this->subject->setDefaultData(['foo' => 'baz']);
         self::assertSame(['foo' => 'baz'], $this->subject->getDefaultData());
     }
 
-    protected function assertCacheIsEmptyForTemplate(string $template): void
+    private function assertCacheIsEmptyForTemplate(string $template): void
     {
         self::assertNull(
             $this->getCache()->get(file_get_contents($this->templateRootPath . DIRECTORY_SEPARATOR . $template) ?: '')
         );
     }
 
-    protected function assertCacheIsNotEmptyForTemplate(string $template): void
+    private function assertCacheIsNotEmptyForTemplate(string $template): void
     {
         self::assertNotNull(
             $this->getCache()->get(file_get_contents($this->templateRootPath . DIRECTORY_SEPARATOR . $template) ?: '')
@@ -316,23 +282,24 @@ class HandlebarsRendererTest extends UnitTestCase
     }
 
     /**
-     * @param class-string<HandlebarsRenderer> $rendererClass
+     * @param class-string<Src\Renderer\HandlebarsRenderer> $rendererClass
      */
-    protected function renewSubject(string $rendererClass = HandlebarsRenderer::class): HandlebarsRenderer
+    private function renewSubject(string $rendererClass = Src\Renderer\HandlebarsRenderer::class): Src\Renderer\HandlebarsRenderer
     {
-        $this->logger = new TestLogger();
-        $this->subject = new $rendererClass($this->getCache(), new EventDispatcher(), $this->getTemplateResolver(), $this->getPartialResolver());
-        $this->subject->setLogger($this->logger);
+        $this->logger = new Log\Test\TestLogger();
 
-        return $this->subject;
+        return $this->subject = new $rendererClass(
+            $this->getCache(),
+            new EventDispatcher\EventDispatcher(),
+            $this->logger,
+            $this->getTemplateResolver(),
+            $this->getPartialResolver(),
+        );
     }
 
-    protected function suppressNextError(int $errorLevels): void
+    private function suppressNextError(int $errorLevels): void
     {
-        /** @phpstan-ignore-next-line */
-        set_error_handler(function () {
-            // Restore error handler on next error
-            restore_error_handler();
-        }, $errorLevels);
+        // Restore error handler on next error
+        \set_error_handler(static fn() => \restore_error_handler(), $errorLevels);
     }
 }

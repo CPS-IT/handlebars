@@ -23,9 +23,11 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Traits;
 
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits\DummyContentObjectRendererAwareTraitClass;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use TYPO3\CMS\Frontend;
+use TYPO3\TestingFramework;
 
 /**
  * ContentObjectRendererAwareTraitTest
@@ -33,34 +35,28 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ContentObjectRendererAwareTraitTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Traits\ContentObjectRendererAwareTrait::class)]
+final class ContentObjectRendererAwareTraitTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var DummyContentObjectRendererAwareTraitClass
-     */
-    protected $subject;
+    private Tests\Unit\Fixtures\Classes\Traits\DummyContentObjectRendererAwareTraitClass $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = new DummyContentObjectRendererAwareTraitClass();
+        $this->subject = new Tests\Unit\Fixtures\Classes\Traits\DummyContentObjectRendererAwareTraitClass();
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function setContentObjectRendererSetsContentObjectRenderer(): void
     {
-        $contentObjectRenderer = new ContentObjectRenderer();
+        $contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
         $this->subject->setContentObjectRenderer($contentObjectRenderer);
 
         self::assertSame($contentObjectRenderer, $this->subject->getContentObjectRenderer());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function assertContentObjectRendererIsAvailableThrowsExceptionIfContentObjectRendererIsNotAvailable(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -69,12 +65,10 @@ class ContentObjectRendererAwareTraitTest extends UnitTestCase
         $this->subject->testAssertContentObjectRendererIsAvailable();
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function assertContentObjectRendererIsAvailableSucceedsIfContentObjectRendererIsAvailable(): void
     {
-        $contentObjectRenderer = new ContentObjectRenderer();
+        $contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
         $this->subject->setContentObjectRenderer($contentObjectRenderer);
 
         $this->subject->testAssertContentObjectRendererIsAvailable();

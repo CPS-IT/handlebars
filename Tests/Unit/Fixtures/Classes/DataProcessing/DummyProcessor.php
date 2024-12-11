@@ -23,36 +23,36 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing;
 
-use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
-use Fr\Typo3Handlebars\Exception\UnableToPresentException;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use Fr\Typo3Handlebars\Data;
+use Fr\Typo3Handlebars\DataProcessing;
+use Fr\Typo3Handlebars\Exception;
+use Fr\Typo3Handlebars\Presenter;
+use PHPUnit\Framework;
+use TYPO3\CMS\Frontend;
 
 /**
  * DummyProcessor
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-final class DummyProcessor extends AbstractDataProcessor
+final class DummyProcessor extends DataProcessing\AbstractDataProcessor
 {
-    /**
-     * @var bool
-     */
-    public $shouldThrowException = false;
-
-    /**
-     * @var bool
-     */
-    public $shouldInitializeConfigurationManager = false;
+    public bool $shouldThrowException = false;
+    public bool $shouldInitializeConfigurationManager = false;
 
     protected function render(): string
     {
         if ($this->shouldThrowException) {
-            throw new UnableToPresentException();
+            throw new Exception\UnableToPresentException();
         }
         if ($this->shouldInitializeConfigurationManager) {
             $this->initializeConfigurationManager();
         }
+
+        Framework\Assert::assertInstanceOf(Data\DataProviderInterface::class, $this->provider);
+        Framework\Assert::assertInstanceOf(Presenter\PresenterInterface::class, $this->presenter);
 
         $content = $this->content . $this->presenter->present($this->provider->get([]));
         if ($this->configuration !== []) {
@@ -62,8 +62,11 @@ final class DummyProcessor extends AbstractDataProcessor
         return $content;
     }
 
-    public function getContentObjectRenderer(): ?ContentObjectRenderer
+    /**
+     * @impure
+     */
+    public function getContentObjectRenderer(): ?Frontend\ContentObject\ContentObjectRenderer
     {
-        return $this->cObj;
+        return $this->contentObjectRenderer;
     }
 }

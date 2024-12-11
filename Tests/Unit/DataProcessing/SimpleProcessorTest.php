@@ -23,19 +23,14 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\DataProcessing;
 
-use Fr\Typo3Handlebars\DataProcessing\SimpleProcessor;
-use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
-use Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Log\Test\TestLogger;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Psr\Log;
+use Symfony\Component\EventDispatcher;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Frontend;
+use TYPO3\TestingFramework;
 
 /**
  * SimpleProcessorTest
@@ -43,77 +38,64 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class SimpleProcessorTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\DataProcessing\SimpleProcessor::class)]
+final class SimpleProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsCacheTrait;
-    use HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
+    use Tests\Unit\HandlebarsCacheTrait;
 
-    /**
-     * @var ContentObjectRenderer&MockObject
-     */
-    protected $contentObjectRendererMock;
-
-    /**
-     * @var TestLogger
-     */
-    protected $logger;
-
-    /**
-     * @var HandlebarsRenderer
-     */
-    protected $renderer;
-
-    /**
-     * @var SimpleProcessor
-     */
-    protected $subject;
+    private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
+    private Log\Test\TestLogger $logger;
+    private Src\Renderer\HandlebarsRenderer $renderer;
+    private Src\DataProcessing\SimpleProcessor $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->contentObjectRendererMock = $this->createMock(ContentObjectRenderer::class);
-        $this->logger = new TestLogger();
-        $this->renderer = new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver());
-        $this->subject = new SimpleProcessor($this->renderer);
-        $this->subject->cObj = $this->contentObjectRendererMock;
-        $this->subject->setLogger($this->logger);
+        $this->contentObjectRendererMock = $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class);
+        $this->logger = new Log\Test\TestLogger();
+        $this->renderer = new Src\Renderer\HandlebarsRenderer(
+            $this->getCache(),
+            new EventDispatcher\EventDispatcher(),
+            $this->logger,
+            $this->getTemplateResolver(),
+        );
+        $this->subject = new Src\DataProcessing\SimpleProcessor($this->logger, $this->renderer);
+        $this->subject->setContentObjectRenderer($this->contentObjectRendererMock);
 
-        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest();
-        $GLOBALS['TSFE'] = $this->createMock(TypoScriptFrontendController::class);
+        $GLOBALS['TYPO3_REQUEST'] = new Core\Http\ServerRequest();
+        $GLOBALS['TSFE'] = $this->createMock(Frontend\Controller\TypoScriptFrontendController::class);
     }
 
     /**
-     * @test
-     * @dataProvider processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider
      * @param array<string, array<string, string|null>> $configuration
      */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider')]
     public function processThrowsExceptionIfTemplatePathIsNotConfigured(array $configuration): void
     {
         self::assertSame('', $this->subject->process('', $configuration));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $expectedMessage = 'Data processing for ' . \get_class($this->subject) . ' failed.';
-            static::assertSame($expectedMessage, $logRecord['message']);
-            static::assertInstanceOf(InvalidTemplateFileException::class, $logRecord['context']['exception']);
-            static::assertSame(1606834398, $logRecord['context']['exception']->getCode());
+            $expectedMessage = 'Data processing for ' . $this->subject::class . ' failed.';
+            self::assertSame($expectedMessage, $logRecord['message']);
+            self::assertInstanceOf(Src\Exception\InvalidTemplateFileException::class, $logRecord['context']['exception']);
+            self::assertSame(1606834398, $logRecord['context']['exception']->getCode());
             return true;
         }));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function processReturnsRenderedTemplate(): void
     {
-        $this->renderer->registerHelper('varDump', VarDumpHelper::class . '::evaluate');
+        $this->renderer->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class . '::evaluate');
 
-        $data = [
+        $this->contentObjectRendererMock->data = [
             'uid' => 1,
             'pid' => 0,
             'title' => 'foo',
             'comment' => 'baz',
         ];
-        $this->contentObjectRendererMock->data = $data;
 
         $configuration = [
             'userFunc.' => [
@@ -121,26 +103,26 @@ class SimpleProcessorTest extends UnitTestCase
             ],
         ];
 
-        $expected = print_r($data, true);
+        Core\Utility\DebugUtility::useAnsiColor(false);
+
+        $expected = <<<EOF
+Debug
+array(4 items)
+   uid => 1 (integer)
+   pid => 0 (integer)
+   title => "foo" (3 chars)
+   comment => "baz" (3 chars)
+EOF;
+
         self::assertSame(trim($expected), trim($this->subject->process('', $configuration)));
-    }
 
-    /**
-     * @test
-     */
-    public function setContentObjectRendererAppliesContentObjectRenderer(): void
-    {
-        $contentObjectRenderer = new ContentObjectRenderer();
-
-        $this->subject->setContentObjectRenderer($contentObjectRenderer);
-
-        self::assertSame($contentObjectRenderer, $this->subject->cObj);
+        Core\Utility\DebugUtility::useAnsiColor(true);
     }
 
     /**
      * @return \Generator<string, array<mixed>>
      */
-    public function processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider(): \Generator
+    public static function processThrowsExceptionIfTemplatePathIsNotConfiguredDataProvider(): \Generator
     {
         yield 'empty array' => [[]];
         yield 'missing template path' => [['userFunc.' => []]];
@@ -151,6 +133,10 @@ class SimpleProcessorTest extends UnitTestCase
     protected function tearDown(): void
     {
         self::assertTrue($this->clearCache(), 'Unable to clear Handlebars cache.');
+
+        unset($GLOBALS['TYPO3_REQUEST']);
+        unset($GLOBALS['TSFE']);
+
         parent::tearDown();
     }
 }

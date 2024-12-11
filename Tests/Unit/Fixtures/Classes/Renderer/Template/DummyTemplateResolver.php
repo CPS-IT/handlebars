@@ -23,9 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
 
-use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
+use Fr\Typo3Handlebars\Renderer;
+use org\bovigo\vfs;
 
 /**
  * DummyTemplateResolver
@@ -33,16 +32,13 @@ use org\bovigo\vfs\vfsStreamDirectory;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class DummyTemplateResolver implements TemplateResolverInterface
+final readonly class DummyTemplateResolver implements Renderer\Template\TemplateResolverInterface
 {
-    /**
-     * @var vfsStreamDirectory
-     */
-    private $root;
+    private vfs\vfsStreamDirectory $root;
 
     public function __construct()
     {
-        $this->root = vfsStream::setup(uniqid('ext_handlebars_test_'));
+        $this->root = vfs\vfsStream::setup(uniqid('ext_handlebars_test_'));
     }
 
     public function getSupportedFileExtensions(): array
@@ -57,6 +53,6 @@ final class DummyTemplateResolver implements TemplateResolverInterface
 
     public function resolveTemplatePath(string $templatePath): string
     {
-        return vfsStream::newFile($templatePath, 0000)->at($this->root)->url();
+        return vfs\vfsStream::newFile($templatePath, 0000)->at($this->root)->url();
     }
 }

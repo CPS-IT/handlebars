@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\DependencyInjection\Extension;
 
-use Fr\Typo3Handlebars\DependencyInjection\Extension\HandlebarsExtension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use Symfony\Component\DependencyInjection;
+use TYPO3\TestingFramework;
 
 /**
  * HandlebarsExtensionTest
@@ -33,29 +34,27 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsExtensionTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\DependencyInjection\Extension\HandlebarsExtension::class)]
+final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var HandlebarsExtension
-     */
-    protected $subject;
+    private Src\DependencyInjection\Extension\HandlebarsExtension $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = new HandlebarsExtension();
+        $this->subject = new Src\DependencyInjection\Extension\HandlebarsExtension();
     }
 
     /**
-     * @test
-     * @dataProvider loadAddsResolvedParametersToContainerDataProvider
      * @param array<int, mixed>[] $configs
      * @param array<string, mixed> $expectedParameters
      */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('loadAddsResolvedParametersToContainerDataProvider')]
     public function loadAddsResolvedParametersToContainer(array $configs, array $expectedParameters): void
     {
-        $container = new ContainerBuilder();
+        $container = new DependencyInjection\ContainerBuilder();
 
         $this->subject->load($configs, $container);
 
@@ -68,7 +67,7 @@ class HandlebarsExtensionTest extends UnitTestCase
     /**
      * @return \Generator<string, array<mixed>>
      */
-    public function loadAddsResolvedParametersToContainerDataProvider(): \Generator
+    public static function loadAddsResolvedParametersToContainerDataProvider(): \Generator
     {
         $firstRootPaths = [
             10 => 'EXT:foo/baz',
@@ -87,9 +86,9 @@ class HandlebarsExtensionTest extends UnitTestCase
         yield 'no configs' => [
             [],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
             ],
         ];
         yield 'default data' => [
@@ -107,12 +106,12 @@ class HandlebarsExtensionTest extends UnitTestCase
                 ],
             ],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [
                     'foo' => 'yay',
                     'baz' => 'foo',
                 ],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
             ],
         ];
         yield 'template root paths' => [
@@ -129,9 +128,9 @@ class HandlebarsExtensionTest extends UnitTestCase
                 ],
             ],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => $expectedRootPaths,
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => $expectedRootPaths,
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
             ],
         ];
         yield 'partial root paths' => [
@@ -148,9 +147,9 @@ class HandlebarsExtensionTest extends UnitTestCase
                 ],
             ],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => $expectedRootPaths,
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => $expectedRootPaths,
             ],
         ];
     }

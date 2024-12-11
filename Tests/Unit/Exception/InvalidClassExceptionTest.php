@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Exception;
 
-use Fr\Typo3Handlebars\Exception\InvalidClassException;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * InvalidClassExceptionTest
@@ -32,28 +33,25 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class InvalidClassExceptionTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Exception\InvalidClassException::class)]
+final class InvalidClassExceptionTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @test
-     */
-    public static function createReturnsExceptionForGivenClassName(): void
+    #[Framework\Attributes\Test]
+    public function createReturnsExceptionForGivenClassName(): void
     {
-        $actual = InvalidClassException::create(__CLASS__);
+        $actual = Src\Exception\InvalidClassException::create(self::class);
 
-        self::assertInstanceOf(InvalidClassException::class, $actual);
-        self::assertSame(\sprintf('The class "%s" does not exist.', __CLASS__), $actual->getMessage());
+        self::assertInstanceOf(Src\Exception\InvalidClassException::class, $actual);
+        self::assertSame(\sprintf('The class "%s" does not exist.', self::class), $actual->getMessage());
         self::assertSame(1638182580, $actual->getCode());
     }
 
-    /**
-     * @test
-     */
-    public static function forServiceReturnsExceptionForGivenServiceId(): void
+    #[Framework\Attributes\Test]
+    public function forServiceReturnsExceptionForGivenServiceId(): void
     {
-        $actual = InvalidClassException::forService('foo');
+        $actual = Src\Exception\InvalidClassException::forService('foo');
 
-        self::assertInstanceOf(InvalidClassException::class, $actual);
+        self::assertInstanceOf(Src\Exception\InvalidClassException::class, $actual);
         self::assertSame('Class name of service "foo" cannot be resolved or does not exist.', $actual->getMessage());
         self::assertSame(1638183576, $actual->getCode());
     }

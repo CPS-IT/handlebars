@@ -21,14 +21,15 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Compatibility\View;
+namespace Fr\Typo3Handlebars\Tests\Functional\Compatibility\View;
 
-use Fr\Typo3Handlebars\Compatibility\View\ExtbaseViewAdapter;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\LogProcessor;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyController;
-use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Fluid;
+use TYPO3\TestingFramework;
 
 /**
  * ExtbaseViewAdapterTest
@@ -36,41 +37,35 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ExtbaseViewAdapterTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Compatibility\View\ExtbaseViewAdapter::class)]
+final class ExtbaseViewAdapterTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected bool $initializeDatabase = false;
 
-    /**
-     * @var LogProcessor
-     */
-    protected $processor;
-
-    /**
-     * @var ExtbaseViewAdapter
-     */
-    protected $subject;
+    private Extbase\Mvc\Request $request;
+    private Src\Compatibility\View\ExtbaseViewAdapter $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->request = new Request(DummyController::class);
-        $this->request->setControllerActionName('dummy');
+        $extbaseRequestParameters = new Extbase\Mvc\ExtbaseRequestParameters(Tests\Unit\Fixtures\Classes\DummyController::class);
+        $extbaseRequestParameters->setControllerAliasToClassNameMapping(['Dummy' => Tests\Unit\Fixtures\Classes\DummyController::class]);
+        $extbaseRequestParameters->setControllerName('Dummy');
+        $serverRequest = new Core\Http\ServerRequest('https://typo3-testing.local/');
+        $serverRequest = $serverRequest->withAttribute('extbase', $extbaseRequestParameters);
 
-        $controllerContext = new ControllerContext();
-        $controllerContext->setRequest($this->request);
+        $this->request = new Extbase\Mvc\Request($serverRequest);
+        $this->subject = new Src\Compatibility\View\ExtbaseViewAdapter(
+            new Tests\Unit\Fixtures\Classes\DataProcessing\LogProcessor(),
+        );
 
-        $this->processor = new LogProcessor();
-        $this->subject = new ExtbaseViewAdapter($this->processor);
-        $this->subject->setControllerContext($controllerContext);
+        $renderingContext = $this->subject->getRenderingContext();
+        self::assertInstanceOf(Fluid\Core\Rendering\RenderingContext::class, $renderingContext);
+        $renderingContext->setRequest($this->request);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function assignAddsVariableToViewConfiguration(): void
     {
         $this->subject->assign('foo', 'baz');
@@ -84,9 +79,7 @@ class ExtbaseViewAdapterTest extends UnitTestCase
         self::assertSame($expected, $actual['configuration']['extbaseViewConfiguration']['variables']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function assignMultipleAddsVariablesToViewConfiguration(): void
     {
         $this->subject->assignMultiple(['foo' => 'foo', 'baz' => 'baz']);
@@ -101,17 +94,7 @@ class ExtbaseViewAdapterTest extends UnitTestCase
         self::assertSame($expected, $actual['configuration']['extbaseViewConfiguration']['variables']);
     }
 
-    /**
-     * @test
-     */
-    public function canRenderAlwaysReturnsTrue(): void
-    {
-        self::assertTrue($this->subject->canRender(new ControllerContext()));
-    }
-
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function renderPassesAllRelevantConfigurationToTheProcessor(): void
     {
         $this->subject->assign('foo', 'baz');
@@ -120,7 +103,7 @@ class ExtbaseViewAdapterTest extends UnitTestCase
             'content' => '',
             'configuration' => [
                 'extbaseViewConfiguration' => [
-                    'controller' => DummyController::class,
+                    'controller' => Tests\Unit\Fixtures\Classes\DummyController::class,
                     'action' => 'dummy',
                     'request' => $this->request,
                     'variables' => [
@@ -130,21 +113,13 @@ class ExtbaseViewAdapterTest extends UnitTestCase
             ],
         ];
 
-        $actual = $this->subject->render();
+        $actual = $this->subject->render('dummy');
 
-        // Reset request body for TYPO3 v11
+        // Reset request body
         if (method_exists($this->request, 'getBody')) {
             $this->request->getBody()->close();
         }
 
         self::assertEquals($expected, unserialize($actual));
-    }
-
-    /**
-     * @test
-     */
-    public function initializeViewDoesNothing(): void
-    {
-        $this->subject->initializeView();
     }
 }

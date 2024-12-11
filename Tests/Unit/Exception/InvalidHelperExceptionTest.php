@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Exception;
 
-use Fr\Typo3Handlebars\Exception\InvalidHelperException;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * InvalidHelperExceptionTest
@@ -32,42 +33,37 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class InvalidHelperExceptionTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Exception\InvalidHelperException::class)]
+final class InvalidHelperExceptionTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function forFunctionReturnsExceptionForGivenFunction(): void
     {
-        $actual = InvalidHelperException::forFunction('foo');
+        $actual = Src\Exception\InvalidHelperException::forFunction('foo');
 
-        self::assertInstanceOf(InvalidHelperException::class, $actual);
+        self::assertInstanceOf(Src\Exception\InvalidHelperException::class, $actual);
         self::assertSame('The helper function "foo" is invalid.', $actual->getMessage());
         self::assertSame(1637339290, $actual->getCode());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function forUnsupportedTypeReturnsExceptionForTypeOfGivenArgument(): void
     {
-        $actual = InvalidHelperException::forUnsupportedType(null);
+        $actual = Src\Exception\InvalidHelperException::forUnsupportedType(null);
 
-        self::assertInstanceOf(InvalidHelperException::class, $actual);
-        self::assertSame('Only callables, strings and arrays can be defined as helpers, "NULL" given.', $actual->getMessage());
+        self::assertInstanceOf(Src\Exception\InvalidHelperException::class, $actual);
+        self::assertSame('Only callables, strings and arrays can be defined as helpers, "null" given.', $actual->getMessage());
         self::assertSame(1637339694, $actual->getCode());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function forInvalidCallableReturnsExceptionForGivenCallable(): void
     {
-        /* @phpstan-ignore-next-line */
-        $actual = InvalidHelperException::forInvalidCallable(['foo', null]);
+        /* @phpstan-ignore argument.type */
+        $actual = Src\Exception\InvalidHelperException::forInvalidCallable(['foo', null]);
 
-        self::assertInstanceOf(InvalidHelperException::class, $actual);
-        self::assertSame('The helper function with callable [string, NULL] is not valid.', $actual->getMessage());
+        self::assertInstanceOf(Src\Exception\InvalidHelperException::class, $actual);
+        self::assertSame('The helper function with callable [string, null] is not valid.', $actual->getMessage());
         self::assertSame(1638180355, $actual->getCode());
     }
 }

@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Cache;
 
-use Fr\Typo3Handlebars\Cache\NullCache;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * NullCacheTest
@@ -32,22 +33,17 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class NullCacheTest extends UnitTestCase
+final class NullCacheTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var NullCache
-     */
-    protected $subject;
+    private Src\Cache\NullCache $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->subject = new NullCache();
+        $this->subject = new Src\Cache\NullCache();
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getReturnsNull(): void
     {
         self::assertNull($this->subject->get('foo'));

@@ -23,12 +23,11 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\DependencyInjection;
 
-use Fr\Typo3Handlebars\DependencyInjection\ProcessingBridge;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Data\DummyProvider;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Presenter\DummyPresenter;
-use Symfony\Component\DependencyInjection\Definition;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Symfony\Component\DependencyInjection;
+use TYPO3\TestingFramework;
 
 /**
  * ProcessingBridgeTest
@@ -36,56 +35,60 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ProcessingBridgeTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\DependencyInjection\ProcessingBridge::class)]
+final class ProcessingBridgeTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var ProcessingBridge
-     */
-    protected $subject;
+    private Src\DependencyInjection\ProcessingBridge $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->subject = new ProcessingBridge(DummyProcessor::class, new Definition());
+
+        $this->subject = new Src\DependencyInjection\ProcessingBridge(
+            Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor::class,
+            new DependencyInjection\Definition(),
+        );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfGivenServiceIdIsInvalid(): void
     {
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionCode(1606326944);
 
-        new ProcessingBridge(static::class, new Definition());
+        new Src\DependencyInjection\ProcessingBridge(self::class, new DependencyInjection\Definition());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getPresenterReturnsCorrectlyEvaluatedPresenterReference(): void
     {
-        self::assertSame(DummyPresenter::class, (string)$this->subject->getPresenter());
+        self::assertSame(
+            Tests\Unit\Fixtures\Classes\Presenter\DummyPresenter::class,
+            (string)$this->subject->getPresenter(),
+        );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getProviderReturnsCorrectlyEvaluatedProviderReference(): void
     {
-        self::assertSame(DummyProvider::class, (string)$this->subject->getProvider());
+        self::assertSame(
+            Tests\Unit\Fixtures\Classes\Data\DummyProvider::class,
+            (string)$this->subject->getProvider(),
+        );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function hasMethodCallDefinesWhetherCallForGivenMethodIsRegistered(): void
     {
         self::assertFalse($this->subject->hasMethodCall('foo'));
 
-        $definition = new Definition();
+        $definition = new DependencyInjection\Definition();
         $definition->addMethodCall('foo');
-        $subject = new ProcessingBridge(DummyProcessor::class, $definition);
+        $subject = new Src\DependencyInjection\ProcessingBridge(
+            Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor::class,
+            $definition,
+        );
+
         self::assertTrue($subject->hasMethodCall('foo'));
     }
 }

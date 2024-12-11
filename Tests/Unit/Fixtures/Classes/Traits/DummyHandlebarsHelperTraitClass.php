@@ -23,17 +23,21 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits;
 
-use Fr\Typo3Handlebars\Traits\HandlebarsHelperTrait;
-use Psr\Log\LoggerAwareTrait;
+use Fr\Typo3Handlebars\Traits;
+use Psr\Log;
 
 /**
  * DummyHandlebarsHelperTraitClass
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final class DummyHandlebarsHelperTraitClass
 {
-    use HandlebarsHelperTrait;
-    use LoggerAwareTrait;
+    use Traits\HandlebarsHelperTrait;
+
+    public function __construct(
+        private readonly Log\LoggerInterface $logger,
+    ) {}
 }

@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Event;
 
-use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * BeforeRenderingEventTest
@@ -33,38 +33,35 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class BeforeRenderingEventTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Event\BeforeRenderingEvent::class)]
+final class BeforeRenderingEventTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var BeforeRenderingEvent
-     */
-    protected $subject;
+    private Src\Event\BeforeRenderingEvent $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->subject = new BeforeRenderingEvent('foo', ['foo' => 'baz'], $this->createMock(HandlebarsRenderer::class));
+
+        $this->subject = new Src\Event\BeforeRenderingEvent(
+            'foo',
+            ['foo' => 'baz'],
+            $this->createMock(Src\Renderer\HandlebarsRenderer::class),
+        );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getTemplatePathReturnsTemplatePath(): void
     {
         self::assertSame('foo', $this->subject->getTemplatePath());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getDataReturnsData(): void
     {
         self::assertSame(['foo' => 'baz'], $this->subject->getData());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function setDataModifiesData(): void
     {
         $this->subject->setData(['modified' => 'data']);
@@ -72,11 +69,9 @@ class BeforeRenderingEventTest extends UnitTestCase
         self::assertSame(['modified' => 'data'], $this->subject->getData());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getRendererReturnsRenderer(): void
     {
-        self::assertInstanceOf(HandlebarsRenderer::class, $this->subject->getRenderer());
+        self::assertInstanceOf(Src\Renderer\HandlebarsRenderer::class, $this->subject->getRenderer());
     }
 }

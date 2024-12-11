@@ -23,11 +23,11 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Cache;
 
-use Fr\Typo3Handlebars\Cache\HandlebarsCache;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use TYPO3\CMS\Core;
+use TYPO3\TestingFramework;
 
 /**
  * HandlebarsCacheTest
@@ -35,48 +35,39 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsCacheTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Cache\HandlebarsCache::class)]
+final class HandlebarsCacheTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsCacheTrait;
+    use Tests\Unit\HandlebarsCacheTrait;
 
-    /**
-     * @var FrontendInterface&MockObject
-     */
-    protected $cacheMock;
-
-    /**
-     * @var HandlebarsCache
-     */
-    protected $subject;
+    private Src\Cache\HandlebarsCache $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $cache = $this->getCache();
+        $cacheMock = $this->createMock(Core\Cache\Frontend\FrontendInterface::class);
+        $cacheMock->method('get')->willReturnCallback(
+            static fn(string $entryIdentifier) => $cache->get($entryIdentifier),
+        );
+        $cacheMock->method('set')->willReturnCallback(
+            static function (string $entryIdentifier, mixed $data) use ($cache) {
+                $cache->set($entryIdentifier, $data);
+            },
+        );
 
-        $this->cacheMock = $this->createMock(FrontendInterface::class);
-        $this->cacheMock->method('get')->willReturnCallback(function (string $entryIdentifier) use ($cache) {
-            return $cache->get($entryIdentifier);
-        });
-        $this->cacheMock->method('set')->willReturnCallback(function (string $entryIdentifier, $data) use ($cache) {
-            $cache->set($entryIdentifier, $data);
-        });
-        $this->subject = new HandlebarsCache($this->cacheMock);
+        $this->subject = new Src\Cache\HandlebarsCache($cacheMock);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getReturnsNullIfTemplateIsNotCached(): void
     {
         $this->clearCache();
         self::assertNull($this->subject->get('foo'));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function getReturnsCachedTemplate(): void
     {
         $this->subject->set('foo', 'hello world');

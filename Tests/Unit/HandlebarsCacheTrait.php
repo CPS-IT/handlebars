@@ -23,10 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit;
 
-use Fr\Typo3Handlebars\Cache\CacheInterface;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Cache\DummyCache;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Fr\Typo3Handlebars as Src;
+use TYPO3\CMS\Core;
 
 /**
  * HandlebarsCacheTrait
@@ -36,15 +34,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 trait HandlebarsCacheTrait
 {
-    /**
-     * @var DummyCache
-     */
-    protected $cache;
+    private ?Fixtures\Classes\Cache\DummyCache $cache = null;
 
-    protected function getCache(): CacheInterface
+    protected function getCache(): Src\Cache\CacheInterface
     {
         if ($this->cache === null) {
-            $this->cache = new DummyCache($this->getCachePath());
+            $this->cache = new Fixtures\Classes\Cache\DummyCache($this->getCachePath());
         }
         return $this->cache;
     }
@@ -52,13 +47,13 @@ trait HandlebarsCacheTrait
     protected function clearCache(): bool
     {
         if (file_exists($this->getCachePath())) {
-            return GeneralUtility::rmdir($this->getCachePath(), true);
+            return Core\Utility\GeneralUtility::rmdir($this->getCachePath(), true);
         }
         return true;
     }
 
     protected function getCachePath(): string
     {
-        return Environment::getVarPath() . DIRECTORY_SEPARATOR . 'handlebarsCache';
+        return Core\Core\Environment::getVarPath() . DIRECTORY_SEPARATOR . 'handlebarsCache';
     }
 }

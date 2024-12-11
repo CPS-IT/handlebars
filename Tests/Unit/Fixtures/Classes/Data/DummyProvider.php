@@ -23,25 +23,24 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Data;
 
-use Fr\Typo3Handlebars\Data\DataProviderInterface;
-use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
-use Fr\Typo3Handlebars\Data\Response\SimpleProviderResponse;
+use Fr\Typo3Handlebars\Data;
 
 /**
  * DummyProvider
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-final class DummyProvider implements DataProviderInterface
+final class DummyProvider implements Data\DataProviderInterface
 {
     /**
      * @var array<string, mixed>
      */
-    public $expectedData = [];
+    public array $expectedData = [];
 
-    public function get(array $data): ProviderResponseInterface
+    public function get(array $data): Data\Response\ProviderResponseInterface
     {
-        return new SimpleProviderResponse($this->expectedData);
+        return new Data\Response\SimpleProviderResponse($this->expectedData);
     }
 }

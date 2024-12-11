@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
 
-use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
+use Fr\Typo3Handlebars\Renderer;
 
 /**
  * DummyTemplatePaths
@@ -32,7 +32,7 @@ use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyTemplatePaths extends TemplatePaths
+final class DummyTemplatePaths extends Renderer\Template\TemplatePaths
 {
     /**
      * @param string[] $templatePaths

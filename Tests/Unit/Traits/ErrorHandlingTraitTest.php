@@ -23,9 +23,11 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Traits;
 
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits\DummyErrorHandlingTraitClass;
-use Psr\Log\Test\TestLogger;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Psr\Log;
+use TYPO3\TestingFramework;
 
 /**
  * ErrorHandlingTraitTest
@@ -33,39 +35,30 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ErrorHandlingTraitTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Traits\ErrorHandlingTrait::class)]
+final class ErrorHandlingTraitTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var TestLogger
-     */
-    protected $logger;
-
-    /**
-     * @var DummyErrorHandlingTraitClass
-     */
-    protected $subject;
+    private Log\Test\TestLogger $logger;
+    private Tests\Unit\Fixtures\Classes\Traits\DummyErrorHandlingTraitClass $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->logger = new TestLogger();
-        $this->subject = new DummyErrorHandlingTraitClass();
-        $this->subject->setLogger($this->logger);
+        $this->logger = new Log\Test\TestLogger();
+        $this->subject = new Tests\Unit\Fixtures\Classes\Traits\DummyErrorHandlingTraitClass($this->logger);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function handleErrorLogsLogsCriticalError(): void
     {
         $exception = new \Exception();
 
         $this->subject->doHandleError($exception);
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) use ($exception) {
-            $expectedMessage = 'Data processing for ' . \get_class($this->subject) . ' failed.';
-            static::assertSame($expectedMessage, $logRecord['message']);
-            static::assertSame($exception, $logRecord['context']['exception']);
+            $expectedMessage = 'Data processing for ' . $this->subject::class . ' failed.';
+            self::assertSame($expectedMessage, $logRecord['message']);
+            self::assertSame($exception, $logRecord['context']['exception']);
             return true;
         }));
     }

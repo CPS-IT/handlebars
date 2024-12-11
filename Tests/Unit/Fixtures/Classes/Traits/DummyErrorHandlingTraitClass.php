@@ -23,19 +23,23 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits;
 
-use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
-use Psr\Log\LoggerAwareTrait;
+use Fr\Typo3Handlebars\Traits;
+use Psr\Log\LoggerInterface;
 
 /**
  * DummyErrorHandlingTraitClass
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-final class DummyErrorHandlingTraitClass
+final readonly class DummyErrorHandlingTraitClass
 {
-    use ErrorHandlingTrait;
-    use LoggerAwareTrait;
+    use Traits\ErrorHandlingTrait;
+
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {}
 
     public function doHandleError(\Throwable $error): void
     {

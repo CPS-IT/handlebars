@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Exception;
 
-use Fr\Typo3Handlebars\Exception\UnsupportedTypeException;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * UnsupportedTypeExceptionTest
@@ -32,16 +33,15 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class UnsupportedTypeExceptionTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Exception\UnsupportedTypeException::class)]
+final class UnsupportedTypeExceptionTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function createReturnsExceptionForGivenType(): void
     {
-        $actual = UnsupportedTypeException::create('foo');
+        $actual = Src\Exception\UnsupportedTypeException::create('foo');
 
-        self::assertInstanceOf(UnsupportedTypeException::class, $actual);
+        self::assertInstanceOf(Src\Exception\UnsupportedTypeException::class, $actual);
         self::assertSame('The configured type "foo" is invalid or not supported.', $actual->getMessage());
         self::assertSame(1632813839, $actual->getCode());
     }

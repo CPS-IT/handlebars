@@ -23,21 +23,19 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Cache;
 
-use Fr\Typo3Handlebars\Cache\CacheInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Fr\Typo3Handlebars\Cache;
+use TYPO3\CMS\Core;
 
 /**
  * DummyCache
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-class DummyCache implements CacheInterface
+final readonly class DummyCache implements Cache\CacheInterface
 {
-    /**
-     * @var string
-     */
-    private $basePath;
+    private string $basePath;
 
     public function __construct(string $basePath)
     {
@@ -56,7 +54,7 @@ class DummyCache implements CacheInterface
     public function set(string $template, string $compileResult): void
     {
         $cacheFile = $this->resolveCacheFile($template);
-        GeneralUtility::mkdir_deep(\dirname($cacheFile));
+        Core\Utility\GeneralUtility::mkdir_deep(\dirname($cacheFile));
         file_put_contents($cacheFile, $compileResult);
     }
 

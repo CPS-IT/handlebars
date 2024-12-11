@@ -23,20 +23,21 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Traits;
 
-use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use Fr\Typo3Handlebars\Traits;
+use TYPO3\CMS\Frontend;
 
 /**
  * DummyContentObjectRendererAwareTraitClass
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final class DummyContentObjectRendererAwareTraitClass
 {
-    use ContentObjectRendererAwareTrait;
+    use Traits\ContentObjectRendererAwareTrait;
 
-    public function getContentObjectRenderer(): ?ContentObjectRenderer
+    public function getContentObjectRenderer(): ?Frontend\ContentObject\ContentObjectRenderer
     {
         return $this->contentObjectRenderer;
     }

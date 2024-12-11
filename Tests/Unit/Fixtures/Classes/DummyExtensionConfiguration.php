@@ -35,17 +35,11 @@ use TYPO3\CMS\Core;
 final class DummyExtensionConfiguration extends Core\Configuration\ExtensionConfiguration
 {
     /**
-     * @var array<string, bool>
-     */
-    private array $activatedFeatures;
-
-    /**
      * @param array<string, bool> $activatedFeatures
      */
-    public function __construct(array $activatedFeatures)
-    {
-        $this->activatedFeatures = $activatedFeatures;
-    }
+    public function __construct(
+        private readonly array $activatedFeatures,
+    ) {}
 
     /**
      * @throws Core\Exception

@@ -45,7 +45,7 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
     /**
      * @var array<string, bool>
      */
-    protected array $activatedFeatures = [
+    private array $activatedFeatures = [
         'blockHelper' => false,
         'contentHelper' => false,
         'extendHelper' => false,

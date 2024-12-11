@@ -23,7 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes;
 
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Psr\Http\Message;
+use TYPO3\CMS\Extbase;
 
 /**
  * DummyController
@@ -32,10 +33,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyController extends ActionController
+final class DummyController extends Extbase\Mvc\Controller\ActionController
 {
-    public function dummyAction(): void
+    public function dummyAction(): Message\ResponseInterface
     {
         // Intentionally left blank.
+
+        return $this->htmlResponse();
     }
 }

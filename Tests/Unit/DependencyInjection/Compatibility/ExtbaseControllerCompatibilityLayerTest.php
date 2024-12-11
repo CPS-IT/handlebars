@@ -23,15 +23,11 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\DependencyInjection\Compatibility;
 
-use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
-use Fr\Typo3Handlebars\DependencyInjection\Compatibility\ExtbaseControllerCompatibilityLayer;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\LogProcessor;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyController;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Symfony\Component\DependencyInjection;
+use TYPO3\TestingFramework;
 
 /**
  * ExtbaseControllerCompatibilityLayerTest
@@ -39,32 +35,30 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\DependencyInjection\Compatibility\ExtbaseControllerCompatibilityLayer::class)]
+final class ExtbaseControllerCompatibilityLayerTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var ContainerBuilder
-     */
-    protected $container;
-
-    /**
-     * @var ExtbaseControllerCompatibilityLayer
-     */
-    protected $subject;
+    private DependencyInjection\ContainerBuilder $container;
+    private Src\DependencyInjection\Compatibility\ExtbaseControllerCompatibilityLayer $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->container = new ContainerBuilder();
-        $this->container->setDefinition(HandlebarsViewResolver::class, new Definition(HandlebarsViewResolver::class));
-        $this->container->setDefinition(DummyController::class, new Definition(DummyController::class));
+        $this->container = new DependencyInjection\ContainerBuilder();
+        $this->container->setDefinition(
+            Src\Compatibility\View\HandlebarsViewResolver::class,
+            new DependencyInjection\Definition(Src\Compatibility\View\HandlebarsViewResolver::class),
+        );
+        $this->container->setDefinition(
+            Tests\Unit\Fixtures\Classes\DummyController::class,
+            new DependencyInjection\Definition(Tests\Unit\Fixtures\Classes\DummyController::class),
+        );
 
-        $this->subject = new ExtbaseControllerCompatibilityLayer($this->container);
+        $this->subject = new Src\DependencyInjection\Compatibility\ExtbaseControllerCompatibilityLayer($this->container);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideThrowsExceptionOnMissingController(): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -73,9 +67,7 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
         $this->subject->provide('foo', []);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideThrowsExceptionOnMissingControllerDefinition(): void
     {
         $this->expectException(\OutOfBoundsException::class);
@@ -84,51 +76,43 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
         $this->subject->provide('foo', ['controller' => 'foo']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideThrowsExceptionOnInvalidControllerDefinition(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1632814520);
 
-        $this->container->setDefinition('foo', new Definition());
+        $this->container->setDefinition('foo', new DependencyInjection\Definition());
         $this->subject->provide('foo', ['controller' => 'foo']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideThrowsExceptionOnUnsupportedController(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1632814592);
 
-        $this->container->setDefinition('foo', new Definition(\Exception::class));
+        $this->container->setDefinition('foo', new DependencyInjection\Definition(\Exception::class));
         $this->subject->provide('foo', ['controller' => 'foo']);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideThrowsExceptionOnInvalidActions(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionCode(1632814413);
 
-        $this->container->setDefinition('foo', new Definition(DummyController::class));
+        $this->container->setDefinition('foo', new DependencyInjection\Definition(Tests\Unit\Fixtures\Classes\DummyController::class));
         $this->subject->provide('foo', ['controller' => 'foo', 'actions' => false]);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideAddsProcessorMapToViewResolverAndInjectsViewResolverIntoController(): void
     {
-        $processorServiceId = DummyProcessor::class;
-        $processorReference = new Reference($processorServiceId);
+        $processorServiceId = Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor::class;
+        $processorReference = new DependencyInjection\Reference($processorServiceId);
         $configuration = [
-            'controller' => DummyController::class,
+            'controller' => Tests\Unit\Fixtures\Classes\DummyController::class,
             'actions' => 'foo,baz',
         ];
 
@@ -139,7 +123,7 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
                 'setProcessorMap',
                 [
                     [
-                        DummyController::class => [
+                        Tests\Unit\Fixtures\Classes\DummyController::class => [
                             'foo' => $processorReference,
                             'baz' => $processorReference,
                         ],
@@ -151,37 +135,35 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
             [
                 'injectViewResolver',
                 [
-                    new Reference(HandlebarsViewResolver::class),
+                    new DependencyInjection\Reference(Src\Compatibility\View\HandlebarsViewResolver::class),
                 ],
             ],
         ];
 
         self::assertEquals(
             $expectedViewResolverMethodCalls,
-            $this->container->getDefinition(HandlebarsViewResolver::class)->getMethodCalls()
+            $this->container->getDefinition(Src\Compatibility\View\HandlebarsViewResolver::class)->getMethodCalls()
         );
         self::assertEquals(
             $expectedControllerMethodCalls,
-            $this->container->getDefinition(DummyController::class)->getMethodCalls()
+            $this->container->getDefinition(Tests\Unit\Fixtures\Classes\DummyController::class)->getMethodCalls()
         );
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function provideMergesPreconfiguredProcessorMapWithNewProcessorMap(): void
     {
-        $firstProcessorServiceId = DummyProcessor::class;
-        $firstProcessorReference = new Reference($firstProcessorServiceId);
+        $firstProcessorServiceId = Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor::class;
+        $firstProcessorReference = new DependencyInjection\Reference($firstProcessorServiceId);
         $firstConfiguration = [
-            'controller' => DummyController::class,
+            'controller' => Tests\Unit\Fixtures\Classes\DummyController::class,
             'actions' => 'foo,baz',
         ];
 
-        $secondProcessorServiceId = LogProcessor::class;
-        $secondProcessorReference = new Reference($secondProcessorServiceId);
+        $secondProcessorServiceId = Tests\Unit\Fixtures\Classes\DataProcessing\LogProcessor::class;
+        $secondProcessorReference = new DependencyInjection\Reference($secondProcessorServiceId);
         $secondConfiguration = [
-            'controller' => DummyController::class,
+            'controller' => Tests\Unit\Fixtures\Classes\DummyController::class,
         ];
 
         $this->subject->provide($firstProcessorServiceId, $firstConfiguration);
@@ -193,7 +175,7 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
                 'setProcessorMap',
                 [
                     [
-                        DummyController::class => [
+                        Tests\Unit\Fixtures\Classes\DummyController::class => [
                             'foo' => $firstProcessorReference,
                             'baz' => $firstProcessorReference,
                             '_all' => $secondProcessorReference,
@@ -207,18 +189,18 @@ class ExtbaseControllerCompatibilityLayerTest extends UnitTestCase
             1 => [
                 'injectViewResolver',
                 [
-                    new Reference(HandlebarsViewResolver::class),
+                    new DependencyInjection\Reference(Src\Compatibility\View\HandlebarsViewResolver::class),
                 ],
             ],
         ];
 
         self::assertEquals(
             $expectedViewResolverMethodCalls,
-            $this->container->getDefinition(HandlebarsViewResolver::class)->getMethodCalls()
+            $this->container->getDefinition(Src\Compatibility\View\HandlebarsViewResolver::class)->getMethodCalls()
         );
         self::assertEquals(
             $expectedControllerMethodCalls,
-            $this->container->getDefinition(DummyController::class)->getMethodCalls()
+            $this->container->getDefinition(Tests\Unit\Fixtures\Classes\DummyController::class)->getMethodCalls()
         );
     }
 }

@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer;
 
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
+use Fr\Typo3Handlebars\Renderer;
 use LightnCandy\LightnCandy;
 
 /**
@@ -31,8 +31,9 @@ use LightnCandy\LightnCandy;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-final class DummyRenderer extends HandlebarsRenderer
+final class DummyRenderer extends Renderer\HandlebarsRenderer
 {
     protected function getCompileFlags(): int
     {

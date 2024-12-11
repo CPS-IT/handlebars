@@ -33,15 +33,15 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class ProcessorCompatibility
+final readonly class ProcessorCompatibility
 {
     /**
      * @param array<string, mixed> $tagAttributes
      */
     public function __construct(
-        private readonly string $serviceId,
-        private readonly array $tagAttributes,
-        private readonly ContainerBuilder $container,
+        private string $serviceId,
+        private array $tagAttributes,
+        private ContainerBuilder $container,
     ) {
         $this->validate();
     }

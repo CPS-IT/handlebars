@@ -40,20 +40,21 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\ExtendHelper::class)]
 final class ExtendHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
-    use Tests\Unit\HandlebarsTemplateResolverTrait;
-
-    protected bool $initializeDatabase = false;
+    use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
         'test_extension',
     ];
 
-    protected Src\Renderer\HandlebarsRenderer $renderer;
+    protected bool $initializeDatabase = false;
+
+    private Src\Renderer\HandlebarsRenderer $renderer;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
@@ -125,10 +126,5 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
         unset($json['_layoutStack']);
 
         self::assertSame($expected, $json);
-    }
-
-    public function getTemplateRootPath(): string
-    {
-        return 'EXT:test_extension/Resources/Templates/';
     }
 }

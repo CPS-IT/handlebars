@@ -23,19 +23,14 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\DataProcessing;
 
-use Fr\Typo3Handlebars\Exception\UnableToPresentException;
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Data\DummyProvider;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Presenter\DummyPresenter;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsCacheTrait;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use Psr\Log\Test\TestLogger;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use Psr\Log;
+use Symfony\Component\EventDispatcher;
+use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Frontend;
+use TYPO3\TestingFramework;
 
 /**
  * AbstractDataProcessorTest
@@ -43,70 +38,55 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class AbstractDataProcessorTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\DataProcessing\AbstractDataProcessor::class)]
+final class AbstractDataProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsCacheTrait;
-    use HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
+    use Tests\Unit\HandlebarsCacheTrait;
 
-    /**
-     * @var TestLogger
-     */
-    protected $logger;
-
-    /**
-     * @var DummyConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var DummyPresenter
-     */
-    protected $presenter;
-
-    /**
-     * @var DummyProvider
-     */
-    protected $provider;
-
-    /**
-     * @var DummyProcessor
-     */
-    protected $subject;
+    private Log\Test\TestLogger $logger;
+    private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
+    private Tests\Unit\Fixtures\Classes\Presenter\DummyPresenter $presenter;
+    private Tests\Unit\Fixtures\Classes\Data\DummyProvider $provider;
+    private Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->logger = new TestLogger();
-        $this->configurationManager = new DummyConfigurationManager();
-        $this->presenter = new DummyPresenter(new HandlebarsRenderer($this->getCache(), new EventDispatcher(), $this->getTemplateResolver()));
-        $this->provider = new DummyProvider();
-        $this->subject = new DummyProcessor();
+        $this->logger = new Log\Test\TestLogger();
+        $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
+        $this->presenter = new Tests\Unit\Fixtures\Classes\Presenter\DummyPresenter(
+            new Src\Renderer\HandlebarsRenderer(
+                $this->getCache(),
+                new EventDispatcher\EventDispatcher(),
+                $this->logger,
+                $this->getTemplateResolver(),
+            ),
+        );
+        $this->provider = new Tests\Unit\Fixtures\Classes\Data\DummyProvider();
+        $this->subject = new Tests\Unit\Fixtures\Classes\DataProcessing\DummyProcessor();
         $this->subject->setPresenter($this->presenter);
         $this->subject->setProvider($this->provider);
         $this->subject->setLogger($this->logger);
         $this->subject->injectConfigurationManager($this->configurationManager);
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function processLogsCriticalErrorIfRenderingFails(): void
     {
         $this->subject->shouldThrowException = true;
 
         self::assertSame('', $this->subject->process('', []));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $expectedMessage = 'Data processing for ' . \get_class($this->subject) . ' failed.';
-            static::assertSame($expectedMessage, $logRecord['message']);
-            static::assertInstanceOf(UnableToPresentException::class, $logRecord['context']['exception']);
+            $expectedMessage = 'Data processing for ' . $this->subject::class . ' failed.';
+            self::assertSame($expectedMessage, $logRecord['message']);
+            self::assertInstanceOf(Src\Exception\UnableToPresentException::class, $logRecord['context']['exception']);
             return true;
         }));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function processReturnsRenderedContent(): void
     {
         $this->provider->expectedData = ['foo' => 'baz'];
@@ -120,32 +100,38 @@ class AbstractDataProcessorTest extends UnitTestCase
         self::assertSame($expected, $this->subject->process('', ['another' => 'foo']));
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function processInitializesConfigurationManager(): void
     {
-        $contentObjectRenderer = new ContentObjectRenderer();
+        $contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
 
         $this->configurationManager->setConfiguration(['foo' => 'baz']);
 
-        self::assertSame(['foo' => 'baz'], $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT));
+        self::assertSame(
+            ['foo' => 'baz'],
+            $this->configurationManager->getConfiguration(
+                Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+            ),
+        );
         self::assertNull($this->configurationManager->getContentObject());
 
         $this->subject->shouldInitializeConfigurationManager = true;
         $this->subject->setContentObjectRenderer($contentObjectRenderer);
         $this->subject->process('', []);
 
-        self::assertSame(['foo' => 'baz'], $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT));
+        self::assertSame(
+            ['foo' => 'baz'],
+            $this->configurationManager->getConfiguration(
+                Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
+            ),
+        );
         self::assertSame($contentObjectRenderer, $this->configurationManager->getContentObject());
     }
 
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function setContentObjectRendererAppliesContentObjectRenderer(): void
     {
-        $contentObjectRenderer = new ContentObjectRenderer();
+        $contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
 
         $this->subject->setContentObjectRenderer($contentObjectRenderer);
 

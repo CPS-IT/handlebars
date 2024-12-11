@@ -39,7 +39,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\ContentHelper::class)]
 final class ContentHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
-    use Tests\Unit\HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
     protected bool $initializeDatabase = false;
 
@@ -47,13 +47,14 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
         'test_extension',
     ];
 
-    protected Src\Renderer\HandlebarsRenderer $renderer;
-    protected Log\Test\TestLogger $logger;
+    private Src\Renderer\HandlebarsRenderer $renderer;
+    private Log\Test\TestLogger $logger;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
         $this->logger = new Log\Test\TestLogger();
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
@@ -132,10 +133,5 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     {
         yield 'without second block' => [false, ''];
         yield 'with second block' => [true, 'main block\n+[ ]+second block'];
-    }
-
-    public function getTemplateRootPath(): string
-    {
-        return 'EXT:test_extension/Resources/Templates/';
     }
 }

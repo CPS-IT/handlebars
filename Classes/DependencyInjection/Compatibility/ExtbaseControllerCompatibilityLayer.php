@@ -39,14 +39,14 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInterface
+final readonly class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInterface
 {
     public const TYPE = 'extbase_controller';
 
-    private readonly Definition $viewResolverDefinition;
+    private Definition $viewResolverDefinition;
 
     public function __construct(
-        private readonly ContainerBuilder $container,
+        private ContainerBuilder $container,
     ) {
         $this->viewResolverDefinition = $this->container->getDefinition(HandlebarsViewResolver::class);
         $this->validateService(HandlebarsViewResolver::class);

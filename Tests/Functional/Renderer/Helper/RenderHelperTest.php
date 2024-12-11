@@ -42,23 +42,22 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\RenderHelper::class)]
 final class RenderHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
-    use Tests\Unit\HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
-        'handlebars',
         'test_extension',
     ];
 
     protected bool $initializeDatabase = false;
 
-    protected Src\Renderer\HandlebarsRenderer $renderer;
-    protected Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
-    protected Src\Renderer\Helper\RenderHelper $subject;
+    private Src\Renderer\HandlebarsRenderer $renderer;
+    private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
@@ -69,12 +68,14 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
         $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
         $this->contentObjectRenderer->start([]);
         $this->contentObjectRenderer->setRequest(new Core\Http\ServerRequest());
-        $this->subject = new Src\Renderer\Helper\RenderHelper(
+
+        $subject = new Src\Renderer\Helper\RenderHelper(
             $this->renderer,
             new Core\TypoScript\TypoScriptService(),
             $this->contentObjectRenderer,
         );
-        $this->renderer->registerHelper('render', [$this->subject, 'evaluate']);
+
+        $this->renderer->registerHelper('render', [$subject, 'evaluate']);
     }
 
     #[Framework\Attributes\Test]
@@ -149,10 +150,5 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
 
         self::assertJson($content);
         self::assertSame($expected, json_decode($content, true));
-    }
-
-    public function getTemplateRootPath(): string
-    {
-        return 'EXT:test_extension/Resources/Templates/';
     }
 }

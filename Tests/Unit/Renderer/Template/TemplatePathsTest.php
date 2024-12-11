@@ -23,10 +23,10 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Template;
 
-use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * TemplatePathsTest
@@ -34,36 +34,31 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class TemplatePathsTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Renderer\Template\TemplatePaths::class)]
+final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
-    /**
-     * @var DummyConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var TemplatePaths
-     */
-    protected $subject;
+    private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
+    private Src\Renderer\Template\TemplatePaths $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->configurationManager = new DummyConfigurationManager();
-        $this->subject = new TemplatePaths($this->configurationManager, $this->getViewConfiguration());
+
+        $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
+        $this->subject = new Src\Renderer\Template\TemplatePaths($this->configurationManager, $this->getViewConfiguration());
     }
 
     /**
-     * @test
-     * @dataProvider getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider
      * @param array<string, array<mixed>> $typoScriptConfiguration
      * @param string[] $expected
      */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider')]
     public function getMergesConfigurationFromContainerWithTypoScriptConfiguration(
         array $typoScriptConfiguration,
-        array $expected
+        array $expected,
     ): void {
         $this->configurationManager->setConfiguration($typoScriptConfiguration);
 
@@ -73,12 +68,12 @@ class TemplatePathsTest extends UnitTestCase
     /**
      * @return \Generator<string, array<mixed>>
      */
-    public function getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider(): \Generator
+    public static function getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider(): \Generator
     {
         yield 'no TypoScript configuration' => [
             [],
             [
-                10 => $this->getTemplateRootPath(),
+                10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
             ],
         ];
         yield 'TypoScript configuration with identical keys' => [

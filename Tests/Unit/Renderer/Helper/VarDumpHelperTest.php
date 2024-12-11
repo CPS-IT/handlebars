@@ -23,9 +23,10 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
-use Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper;
-use TYPO3\CMS\Core\Utility\DebugUtility;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use Fr\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use TYPO3\CMS\Core;
+use TYPO3\TestingFramework;
 
 /**
  * VarDumpHelperTest
@@ -33,15 +34,13 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class VarDumpHelperTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Renderer\Helper\VarDumpHelper::class)]
+final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @test
-     */
+    #[Framework\Attributes\Test]
     public function evaluateReturnsDumpedContext(): void
     {
-        DebugUtility::usePlainTextOutput(true);
-        DebugUtility::useAnsiColor(false);
+        Core\Utility\DebugUtility::useAnsiColor(false);
 
         $context = [
             '_this' => [
@@ -52,10 +51,11 @@ class VarDumpHelperTest extends UnitTestCase
         $expected = <<<EOF
 Debug
 array(1 item)
-   _this => array(1 item)
-      foo => "baz" (3 chars)
+   foo => "baz" (3 chars)
 EOF;
 
-        self::assertSame($expected, VarDumpHelper::evaluate($context));
+        self::assertSame($expected, Src\Renderer\Helper\VarDumpHelper::evaluate($context));
+
+        Core\Utility\DebugUtility::useAnsiColor(true);
     }
 }

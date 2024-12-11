@@ -36,11 +36,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @internal
  * @codeCoverageIgnore
  */
-final class DataProcessorPass implements CompilerPassInterface
+final readonly class DataProcessorPass implements CompilerPassInterface
 {
     public function __construct(
-        private readonly string $processorTagName,
-        private readonly string $compatibilityTagName,
+        private string $processorTagName,
+        private string $compatibilityTagName,
     ) {}
 
     public function process(ContainerBuilder $container): void

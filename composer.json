@@ -29,7 +29,7 @@
 		"typo3/cms-extbase": "^12.4",
 		"typo3/cms-fluid": "^12.4",
 		"typo3/cms-frontend": "^12.4",
-		"typo3fluid/fluid": "^2.15",
+		"typo3fluid/fluid": "^2.15 || ^4.0",
 		"zordius/lightncandy": "^1.2"
 	},
 	"require-dev": {

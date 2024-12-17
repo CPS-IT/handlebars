@@ -24,6 +24,7 @@ declare(strict_types=1);
 return [
     'directories' => [
         '.build',
+        '.ddev',
         '.git',
         '.github',
         'resources\\/private\\/libs\\/build',

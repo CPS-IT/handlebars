@@ -23,13 +23,28 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection;
 
+use Fr\Typo3Handlebars\Attribute\AsHelper;
 use Fr\Typo3Handlebars\DependencyInjection\Extension\HandlebarsExtension;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $container): void {
     $container->registerExtension(new HandlebarsExtension());
     $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
-    $container->addCompilerPass(new HandlebarsHelperPass('handlebars.helper', 'handlebars.renderer'));
+    $container->addCompilerPass(new HandlebarsHelperPass(AsHelper::TAG_NAME, 'handlebars.renderer'));
     $container->addCompilerPass(new FeatureRegistrationPass(), priority: 30);
+
+    $container->registerAttributeForAutoconfiguration(
+        AsHelper::class,
+        static function (ChildDefinition $definition, AsHelper $attribute, \Reflector $reflector): void {
+            $definition->addTag(
+                AsHelper::TAG_NAME,
+                [
+                    'identifier' => $attribute->identifier,
+                    'method' => $attribute->method ?? ($reflector instanceof \ReflectionMethod ? $reflector->getName() : '__invoke'),
+                ],
+            );
+        },
+    );
 };

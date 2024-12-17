@@ -38,13 +38,6 @@ services:
     arguments:
       $type: 'partial_root_paths'
 
-  # Handlebars Helper
-  Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper:
-    tags:
-      - name: handlebars.helper
-        identifier: 'varDump'
-        method: 'evaluate'
-
   # Cache
   cache.handlebars:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface

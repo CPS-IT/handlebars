@@ -27,6 +27,7 @@ use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
 use Fr\Typo3Handlebars\Renderer\RendererInterface;
 use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -35,6 +36,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[Autoconfigure(public: true)]
 class SimpleProcessor implements DataProcessorInterface
 {
     use ErrorHandlingTrait;

@@ -25,6 +25,7 @@ namespace Fr\Typo3Handlebars\Compatibility\View;
 
 use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
 use TYPO3Fluid\Fluid\View\ViewInterface;
@@ -35,6 +36,7 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[Autoconfigure(public: true)]
 class HandlebarsViewResolver extends GenericViewResolver
 {
     /**

@@ -9,7 +9,7 @@
 	],
 	"baseBranches": [
 		"main",
-		"0.8.x"
+		"1.x"
 	],
 	"constraints": {
 		"php": "8.2.*"

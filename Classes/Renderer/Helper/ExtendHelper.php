@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
 
 /**
@@ -32,12 +33,13 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#extend-partial-context-keyvalue-
  */
-class ExtendHelper implements HelperInterface
+final readonly class ExtendHelper implements HelperInterface
 {
     public function __construct(
-        protected readonly Renderer\RendererInterface $renderer,
+        private Renderer\RendererInterface $renderer,
     ) {}
 
+    #[Attribute\AsHelper('extend')]
     public function evaluate(string $name): string
     {
         // Get helper options

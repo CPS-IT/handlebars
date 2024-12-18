@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\DataProcessing;
 use Fr\Typo3Handlebars\Exception;
 use Fr\Typo3Handlebars\Renderer;
@@ -37,17 +38,18 @@ use TYPO3\CMS\Frontend;
  * @license GPL-2.0-or-later
  * @see https://github.com/frctl/fractal/blob/main/packages/handlebars/src/helpers/render.js
  */
-class RenderHelper implements HelperInterface
+final readonly class RenderHelper implements HelperInterface
 {
     public function __construct(
-        protected readonly Renderer\RendererInterface $renderer,
-        protected readonly Core\TypoScript\TypoScriptService $typoScriptService,
-        protected readonly Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
+        private Renderer\RendererInterface $renderer,
+        private Core\TypoScript\TypoScriptService $typoScriptService,
+        private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ) {}
 
     /**
      * @throws Exception\InvalidConfigurationException
      */
+    #[Attribute\AsHelper('render')]
     public function evaluate(string $name): SafeString
     {
         // Get helper options

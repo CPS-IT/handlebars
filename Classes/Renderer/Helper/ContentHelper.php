@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
 use Psr\Log;
 
@@ -33,16 +34,17 @@ use Psr\Log;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#content-name-modeappendprependreplace
  */
-class ContentHelper implements HelperInterface
+final readonly class ContentHelper implements HelperInterface
 {
     public function __construct(
-        protected readonly Log\LoggerInterface $logger,
+        private Log\LoggerInterface $logger,
     ) {}
 
     /**
      * @param array<string, mixed> $options
      * @return string|bool
      */
+    #[Attribute\AsHelper('content')]
     public function evaluate(string $name, array $options)
     {
         $data = $options['_this'];

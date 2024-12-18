@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Exception;
 use Fr\Typo3Handlebars\Renderer;
 
@@ -33,12 +34,13 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#block-name
  */
-class BlockHelper implements HelperInterface
+final readonly class BlockHelper implements HelperInterface
 {
     /**
      * @param array<string, mixed> $options
      * @throws Exception\UnsupportedTypeException
      */
+    #[Attribute\AsHelper('block')]
     public function evaluate(string $name, array $options): string
     {
         $data = $options['_this'];

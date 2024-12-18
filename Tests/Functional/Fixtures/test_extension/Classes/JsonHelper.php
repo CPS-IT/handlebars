@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\TestExtension;
 
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
 use LightnCandy\SafeString;
 
@@ -37,6 +38,7 @@ final class JsonHelper implements Renderer\Helper\HelperInterface
     /**
      * @param array<string, mixed> $context
      */
+    #[Attribute\AsHelper('jsonEncode')]
     public function encode(array $context): SafeString
     {
         return new SafeString(json_encode($context['_this'], JSON_THROW_ON_ERROR));

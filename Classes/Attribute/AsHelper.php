@@ -21,26 +21,21 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\TestExtension;
-
-use Fr\Typo3Handlebars\Attribute;
-use Fr\Typo3Handlebars\Renderer;
-use LightnCandy\SafeString;
+namespace Fr\Typo3Handlebars\Attribute;
 
 /**
- * JsonHelper
+ * AsHelper
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class JsonHelper implements Renderer\Helper\HelperInterface
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
+final readonly class AsHelper
 {
-    /**
-     * @param array<string, mixed> $context
-     */
-    #[Attribute\AsHelper('jsonEncode')]
-    public function encode(array $context): SafeString
-    {
-        return new SafeString(json_encode($context['_this'], JSON_THROW_ON_ERROR));
-    }
+    public const TAG_NAME = 'handlebars.helper';
+
+    public function __construct(
+        public string $identifier,
+        public ?string $method = null,
+    ) {}
 }

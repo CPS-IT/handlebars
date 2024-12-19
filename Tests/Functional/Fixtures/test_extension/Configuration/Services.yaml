@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Fr\Typo3Handlebars\TestExtension\:
+    resource: '../Classes/*'

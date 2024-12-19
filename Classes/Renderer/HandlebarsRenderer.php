@@ -38,6 +38,9 @@ use LightnCandy\Partial;
 use LightnCandy\Runtime;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -47,6 +50,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[AsAlias('handlebars.renderer')]
+#[Autoconfigure(tags: ['handlebars.renderer'])]
 class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
 {
     use HandlebarsHelperTrait;
@@ -57,11 +62,15 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
      * @param array<string|int, mixed> $defaultData
      */
     public function __construct(
+        #[Autowire('@handlebars.cache')]
         protected readonly CacheInterface $cache,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly LoggerInterface $logger,
+        #[Autowire('@handlebars.template_resolver')]
         protected readonly TemplateResolverInterface $templateResolver,
+        #[Autowire('@handlebars.partial_resolver')]
         protected readonly ?TemplateResolverInterface $partialResolver = null,
+        #[Autowire('%handlebars.default_data%')]
         protected array $defaultData = [],
     ) {
         $this->debugMode = $this->isDebugModeEnabled();

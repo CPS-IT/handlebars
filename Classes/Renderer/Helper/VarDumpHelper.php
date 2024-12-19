@@ -23,7 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
-use TYPO3\CMS\Core\Utility\DebugUtility;
+use Fr\Typo3Handlebars\Attribute;
+use TYPO3\CMS\Core;
 
 /**
  * VarDumpHelper
@@ -31,16 +32,17 @@ use TYPO3\CMS\Core\Utility\DebugUtility;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class VarDumpHelper implements HelperInterface
+final readonly class VarDumpHelper implements HelperInterface
 {
     /**
      * @param array<string|int, mixed> $context
      */
+    #[Attribute\AsHelper('varDump')]
     public static function evaluate(array $context): string
     {
         \ob_start();
 
-        DebugUtility::debug($context['_this']);
+        Core\Utility\DebugUtility::debug($context['_this']);
 
         return (string)\ob_get_clean();
     }

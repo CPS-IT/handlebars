@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
 use Fr\Typo3Handlebars\Configuration\Extension;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -51,6 +52,10 @@ class TemplatePaths
      */
     public function __construct(
         protected readonly ConfigurationManagerInterface $configurationManager,
+        #[Autowire([
+            self::TEMPLATES => '%handlebars.template_root_paths%',
+            self::PARTIALS => '%handlebars.partial_root_paths%',
+        ])]
         protected readonly array $viewConfiguration = [],
         protected readonly string $type = self::TEMPLATES,
     ) {}

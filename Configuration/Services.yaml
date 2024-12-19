@@ -9,18 +9,12 @@ services:
     exclude:
       - '../Classes/DependencyInjection/*'
 
-  # Renderer
-  handlebars.renderer:
-    class: 'Fr\Typo3Handlebars\Renderer\HandlebarsRenderer'
-    arguments:
-      $templateResolver: '@handlebars.template_resolver'
-      $partialResolver: '@handlebars.partial_resolver'
-      $cache: '@handlebars.cache'
-      $defaultData: '%handlebars.default_data%'
-    tags: ['handlebars.renderer']
-
+  Fr\Typo3Handlebars\Cache\CacheInterface:
+    alias: 'handlebars.cache'
   Fr\Typo3Handlebars\Renderer\RendererInterface:
     alias: 'handlebars.renderer'
+  Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface:
+    alias: 'handlebars.template_resolver'
 
   # Template
   handlebars.template_resolver:
@@ -33,15 +27,8 @@ services:
     arguments:
       $templateRootPaths: '@handlebars.template_paths.partial_root_paths'
 
-  Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface:
-    alias: 'handlebars.template_resolver'
-
   handlebars.template_paths:
     class: 'Fr\Typo3Handlebars\Renderer\Template\TemplatePaths'
-    arguments:
-      $viewConfiguration:
-        template_root_paths: '%handlebars.template_root_paths%'
-        partial_root_paths: '%handlebars.partial_root_paths%'
   handlebars.template_paths.template_root_paths:
     parent: 'handlebars.template_paths'
     arguments:
@@ -51,34 +38,11 @@ services:
     arguments:
       $type: 'partial_root_paths'
 
-  # Data processor
-  Fr\Typo3Handlebars\DataProcessing\SimpleProcessor:
-    public: true
-
-  # Handlebars Helper
-  Fr\Typo3Handlebars\Renderer\Helper\VarDumpHelper:
-    tags:
-      - name: handlebars.helper
-        identifier: 'varDump'
-        method: 'evaluate'
-
   # Cache
-  handlebars.cache:
-    class: 'Fr\Typo3Handlebars\Cache\HandlebarsCache'
-    arguments:
-      $cache: '@cache.handlebars'
-
-  Fr\Typo3Handlebars\Cache\CacheInterface:
-    alias: 'handlebars.cache'
-
   cache.handlebars:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['handlebars']
-
-  # Compatibility
-  Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver:
-    public: true
 
 handlebars:
   default_data: []

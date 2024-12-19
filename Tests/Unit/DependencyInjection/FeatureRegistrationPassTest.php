@@ -26,6 +26,7 @@ namespace Fr\Typo3Handlebars\Tests\Unit\DependencyInjection;
 use Fr\Typo3Handlebars as Src;
 use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
+use Psr\Container;
 use Psr\Log;
 use Symfony\Component\Config;
 use Symfony\Component\DependencyInjection;
@@ -135,6 +136,9 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
         $container->register(Core\TypoScript\TypoScriptService::class);
         $container->register(Frontend\ContentObject\ContentObjectRenderer::class);
         $container->register(Log\LoggerInterface::class, Log\NullLogger::class);
+
+        // Aliases
+        $container->setAlias(Container\ContainerInterface::class, 'service_container');
 
         // Provide dummy extension configuration class
         $dummyExtensionConfiguration = new Tests\Unit\Fixtures\Classes\DummyExtensionConfiguration($this->activatedFeatures);

@@ -34,34 +34,34 @@ use Psr\Log;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#content-name-modeappendprependreplace
  */
+#[Attribute\AsHelper('content')]
 final readonly class ContentHelper implements HelperInterface
 {
     public function __construct(
         private Log\LoggerInterface $logger,
     ) {}
 
-    /**
-     * @param array<string, mixed> $options
-     * @return string|bool
-     */
-    #[Attribute\AsHelper('content')]
-    public function evaluate(string $name, array $options)
+    public function render(Context\HelperContext $context): ?bool
     {
-        $data = $options['_this'];
-        $mode = $options['hash']['mode'] ?? Renderer\Component\Layout\HandlebarsLayoutAction::REPLACE;
-        $layoutStack = $this->getLayoutStack($options);
+        $name = $context[0];
+        $mode = $context['mode'] ?? Renderer\Component\Layout\HandlebarsLayoutAction::REPLACE;
+        $layoutStack = $this->getLayoutStack($context);
 
         // Early return if "content" helper is requested outside of an "extend" helper block
         if (empty($layoutStack)) {
-            $this->logger->error('Handlebars layout helper "content" can only be used within an "extend" helper block!', ['name' => $name]);
-            return '';
+            $this->logger->error(
+                'Handlebars layout helper "content" can only be used within an "extend" helper block!',
+                ['name' => $name],
+            );
+
+            return $context->isBlockHelper() ? null : false;
         }
 
         // Get upper layout from stack
         $layout = end($layoutStack);
 
         // Usage in conditional context: Test whether given required block is registered
-        if (!\is_callable($options['fn'] ?? '')) {
+        if (!$context->isBlockHelper()) {
             if (!$layout->isParsed()) {
                 $layout->parse();
             }
@@ -70,34 +70,32 @@ final readonly class ContentHelper implements HelperInterface
         }
 
         // Add concrete action for the requested block
-        $action = new Renderer\Component\Layout\HandlebarsLayoutAction($data, $options['fn'], $mode);
+        $action = new Renderer\Component\Layout\HandlebarsLayoutAction($context, $mode);
         $layout->addAction($name, $action);
 
         // This helper does not return any content, it's just here to register layout actions
-        return '';
+        return null;
     }
 
     /**
-     * @param array<string, mixed> $options
      * @return Renderer\Component\Layout\HandlebarsLayout[]
      */
-    protected function getLayoutStack(array $options): array
+    protected function getLayoutStack(Context\HelperContext $context): array
     {
-        // Fetch layout stack from current context
-        if (isset($options['_this']['_layoutStack'])) {
-            return $options['_this']['_layoutStack'];
-        }
+        $renderingContext = $context->renderingContext;
+        $contextStack = $context->contextStack;
 
-        // Early return if only context is currently processed
-        if (!isset($options['contexts'])) {
-            return [];
+        // Fetch layout stack from current context
+        if (isset($renderingContext['_layoutStack'])) {
+            return $renderingContext['_layoutStack'];
         }
 
         // Fetch layout stack from previous contexts
-        while (!empty($options['contexts'])) {
-            $context = array_pop($options['contexts']);
-            if (isset($context['_layoutStack'])) {
-                return $context['_layoutStack'];
+        while (!$contextStack->isEmpty()) {
+            $currentContext = $contextStack->pop();
+
+            if (isset($currentContext['_layoutStack'])) {
+                return $currentContext['_layoutStack'];
             }
         }
 

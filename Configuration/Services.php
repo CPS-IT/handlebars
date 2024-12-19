@@ -25,6 +25,7 @@ namespace Fr\Typo3Handlebars\DependencyInjection;
 
 use Fr\Typo3Handlebars\Attribute\AsHelper;
 use Fr\Typo3Handlebars\DependencyInjection\Extension\HandlebarsExtension;
+use Fr\Typo3Handlebars\Renderer\Helper\HelperInterface;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -42,7 +43,15 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
                 AsHelper::TAG_NAME,
                 [
                     'identifier' => $attribute->identifier,
-                    'method' => $attribute->method ?? ($reflector instanceof \ReflectionMethod ? $reflector->getName() : '__invoke'),
+                    'method' => $attribute->method ?? (
+                        $reflector instanceof \ReflectionMethod
+                        ? $reflector->getName()
+                        : (
+                            $reflector instanceof \ReflectionClass && $reflector->implementsInterface(HelperInterface::class)
+                            ? 'render'
+                            : '__invoke'
+                        )
+                    ),
                 ],
             );
         },

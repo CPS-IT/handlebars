@@ -33,14 +33,11 @@ use LightnCandy\SafeString;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[Attribute\AsHelper('jsonEncode')]
 final class JsonHelper implements Renderer\Helper\HelperInterface
 {
-    /**
-     * @param array<string, mixed> $context
-     */
-    #[Attribute\AsHelper('jsonEncode')]
-    public function encode(array $context): SafeString
+    public function render(Renderer\Helper\Context\HelperContext $context): SafeString
     {
-        return new SafeString(json_encode($context['_this'], JSON_THROW_ON_ERROR));
+        return new SafeString(json_encode($context->renderingContext, JSON_THROW_ON_ERROR));
     }
 }

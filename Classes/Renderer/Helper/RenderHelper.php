@@ -38,6 +38,7 @@ use TYPO3\CMS\Frontend;
  * @license GPL-2.0-or-later
  * @see https://github.com/frctl/fractal/blob/main/packages/handlebars/src/helpers/render.js
  */
+#[Attribute\AsHelper('render')]
 final readonly class RenderHelper implements HelperInterface
 {
     public function __construct(
@@ -46,29 +47,24 @@ final readonly class RenderHelper implements HelperInterface
         private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ) {}
 
-    /**
-     * @throws Exception\InvalidConfigurationException
-     */
-    #[Attribute\AsHelper('render')]
-    public function evaluate(string $name): SafeString
+    public function render(Context\HelperContext $context): SafeString
     {
-        // Get helper options
-        $arguments = \func_get_args();
+        $name = $context[0];
+        $arguments = $context->arguments;
         array_shift($arguments);
-        $options = array_pop($arguments);
 
         // Resolve data
-        $rootData = $options['data']['root'];
-        $merge = (bool)($options['hash']['merge'] ?? false);
-        $renderUncached = (bool)($options['hash']['uncached'] ?? false);
+        $rootData = $context->data['root'];
+        $merge = (bool)($context['merge'] ?? false);
+        $renderUncached = (bool)($context['uncached'] ?? false);
 
         // Fetch custom context
         // ====================
         // Custom contexts can be defined as helper argument, e.g.
         // {{render '@foo' customContext}}
-        $context = reset($arguments);
-        if (!\is_array($context)) {
-            $context = [];
+        $subContext = reset($arguments);
+        if (!\is_array($subContext)) {
+            $subContext = [];
         }
 
         // Fetch default context
@@ -82,17 +78,17 @@ final readonly class RenderHelper implements HelperInterface
         // Use default context as new context if no custom context is given, otherwise
         // merge both contexts in case merge=true is passed as helper option, e.g.
         // {{render '@foo' customContext merge=true}}
-        if ($context === []) {
-            $context = $defaultContext;
+        if ($subContext === []) {
+            $subContext = $defaultContext;
         } elseif ($merge) {
-            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($defaultContext, $context);
-            $context = $defaultContext;
+            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($defaultContext, $subContext);
+            $subContext = $defaultContext;
         }
 
         if ($renderUncached) {
-            $content = $this->registerUncachedTemplateBlock($name, $context);
+            $content = $this->registerUncachedTemplateBlock($name, $subContext);
         } else {
-            $content = $this->renderer->render($name, $context);
+            $content = $this->renderer->render($name, $subContext);
         }
 
         return new SafeString($content);
@@ -107,7 +103,7 @@ final readonly class RenderHelper implements HelperInterface
         $processorClass = $context['_processor'] ?? null;
 
         // Check whether the required data processor is valid
-        if (!\is_string($processorClass) || !\in_array(DataProcessing\DataProcessorInterface::class, class_implements($processorClass) ?: [])) {
+        if (!\is_string($processorClass) || !\is_a($processorClass, DataProcessing\DataProcessorInterface::class, true)) {
             throw Exception\InvalidConfigurationException::create('_processor');
         }
 

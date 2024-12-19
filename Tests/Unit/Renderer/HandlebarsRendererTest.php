@@ -106,7 +106,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     #[Framework\Attributes\Test]
     public function renderMergesDefaultDataWithGivenData(): void
     {
-        $this->subject->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class . '::evaluate');
+        $this->subject->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class);
         $this->subject->setDefaultData([
             'foo' => 'baz',
         ]);

@@ -62,8 +62,8 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
             new Log\NullLogger(),
             $this->templateResolver,
         );
-        $this->renderer->registerHelper('extend', [new Src\Renderer\Helper\ExtendHelper($this->renderer), 'evaluate']);
-        $this->renderer->registerHelper('jsonEncode', [new TestExtension\JsonHelper(), 'encode']);
+        $this->renderer->registerHelper('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));
+        $this->renderer->registerHelper('jsonEncode', new TestExtension\JsonHelper());
     }
 
     #[Framework\Attributes\Test]

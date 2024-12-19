@@ -63,9 +63,9 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
             $this->logger,
             $this->templateResolver,
         );
-        $this->renderer->registerHelper('extend', [new Src\Renderer\Helper\ExtendHelper($this->renderer), 'evaluate']);
-        $this->renderer->registerHelper('content', [new Src\Renderer\Helper\ContentHelper($this->logger), 'evaluate']);
-        $this->renderer->registerHelper('block', [new Src\Renderer\Helper\BlockHelper(), 'evaluate']);
+        $this->renderer->registerHelper('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));
+        $this->renderer->registerHelper('content', new Src\Renderer\Helper\ContentHelper($this->logger));
+        $this->renderer->registerHelper('block', new Src\Renderer\Helper\BlockHelper());
     }
 
     #[Framework\Attributes\Test]

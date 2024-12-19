@@ -29,4 +29,7 @@ namespace Fr\Typo3Handlebars\Renderer\Helper;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface HelperInterface {}
+interface HelperInterface
+{
+    public function render(Context\HelperContext $context): mixed;
+}

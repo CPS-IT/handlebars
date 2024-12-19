@@ -75,7 +75,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
             $this->contentObjectRenderer,
         );
 
-        $this->renderer->registerHelper('render', [$subject, 'evaluate']);
+        $this->renderer->registerHelper('render', $subject);
     }
 
     #[Framework\Attributes\Test]

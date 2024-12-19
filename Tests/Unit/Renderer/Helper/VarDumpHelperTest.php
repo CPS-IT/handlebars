@@ -37,16 +37,33 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\VarDumpHelper::class)]
 final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
 {
+    private Src\Renderer\Helper\VarDumpHelper $subject;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->subject = new Src\Renderer\Helper\VarDumpHelper();
+    }
+
     #[Framework\Attributes\Test]
     public function evaluateReturnsDumpedContext(): void
     {
         Core\Utility\DebugUtility::useAnsiColor(false);
 
-        $context = [
-            '_this' => [
-                'foo' => 'baz',
-            ],
+        $renderingContext = [
+            'foo' => 'baz',
         ];
+        $data = [];
+        $stack = [];
+
+        $context = new Src\Renderer\Helper\Context\HelperContext(
+            [],
+            [],
+            new Src\Renderer\Helper\Context\RenderingContextStack($stack),
+            $renderingContext,
+            $data,
+        );
 
         $expected = <<<EOF
 Debug
@@ -54,7 +71,7 @@ array(1 item)
    foo => "baz" (3 chars)
 EOF;
 
-        self::assertSame($expected, Src\Renderer\Helper\VarDumpHelper::evaluate($context));
+        self::assertSame($expected, $this->subject->render($context));
 
         Core\Utility\DebugUtility::useAnsiColor(true);
     }

@@ -23,8 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Traits;
 
-use Fr\Typo3Handlebars\Exception\InvalidHelperException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Fr\Typo3Handlebars\Exception;
+use Fr\Typo3Handlebars\Renderer;
+use TYPO3\CMS\Core;
 
 /**
  * HandlebarsHelperTrait
@@ -35,24 +36,30 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 trait HandlebarsHelperTrait
 {
     /**
-     * @var array<string, callable>
+     * @var array<string, callable(Renderer\Helper\Context\HelperContext): mixed>
      */
     protected array $helpers = [];
 
     public function registerHelper(string $name, mixed $function): void
     {
         try {
-            $this->helpers[$name] = $this->resolveHelperFunction($function);
-        } catch (InvalidHelperException | \ReflectionException $exception) {
+            $this->helpers[$name] = $this->decorateHelperFunction(
+                $this->resolveHelperFunction($function),
+            );
+        } catch (Exception\InvalidHelperException | \ReflectionException $exception) {
             $this->logger->critical(
                 'Error while registering Handlebars helper "' . $name . '".',
-                ['name' => $name, 'function' => $function, 'exception' => $exception]
+                [
+                    'name' => $name,
+                    'function' => $function,
+                    'exception' => $exception,
+                ],
             );
         }
     }
 
     /**
-     * @return array<string, callable>
+     * @return array<string, callable(Renderer\Helper\Context\HelperContext): mixed>
      */
     public function getHelpers(): array
     {
@@ -60,7 +67,7 @@ trait HandlebarsHelperTrait
     }
 
     /**
-     * @throws InvalidHelperException
+     * @throws Exception\InvalidHelperException
      * @throws \ReflectionException
      */
     protected function resolveHelperFunction(mixed $function): callable
@@ -68,10 +75,15 @@ trait HandlebarsHelperTrait
         // Try to resolve the Helper function in this order:
         //
         // 1. callable
+        // ├─ a. as string
+        // └─ b. as closure or first class callable syntax
         // 2. invokable class
         // ├─ a. as string (class-name)
         // └─ b. as object
-        // 3. class method
+        // 3. class implementing Helper interface
+        // ├─ a. as string (class-name)
+        // └─ b. as object
+        // 4. class method
         // ├─ a. as string => class-name::method-name
         // ├─ b. as array => [class-name, method-name]
         // └─ c. as initialized array => [object, method-name]
@@ -80,43 +92,60 @@ trait HandlebarsHelperTrait
         $methodName = null;
 
         if (\is_string($function) && !str_contains($function, '::')) {
-            // 1. callable
+            // 1a. callable as string
             if (\is_callable($function)) {
                 return $function;
             }
 
             // 2a. invokable class as string
-            if (class_exists($function) && \is_callable($callable = GeneralUtility::makeInstance($function))) {
+            if (class_exists($function) && \is_callable($callable = Core\Utility\GeneralUtility::makeInstance($function))) {
                 return $callable;
+            }
+
+            // 3a. class implementing Helper interface as string
+            if (class_exists($function) && \is_a($function, Renderer\Helper\HelperInterface::class, true)) {
+                return Core\Utility\GeneralUtility::makeInstance($function)->render(...);
             }
         }
 
-        // 2b. invokable class as object
-        if (\is_object($function) && \is_callable($function)) {
+        if (\is_callable($function)) {
+            // 1b. callable as closure or first class callable syntax
             return $function;
         }
 
-        // 3a. class method as string
+        if (\is_object($function)) {
+            // 2b. invokable class as object
+            if (\is_callable($function)) {
+                return $function;
+            }
+
+            // 3b. class implementing Helper interface as object
+            if ($function instanceof Renderer\Helper\HelperInterface) {
+                return $function->render(...);
+            }
+        }
+
+        // 4a. class method as string
         if (\is_string($function) && str_contains($function, '::')) {
             [$className, $methodName] = explode('::', $function, 2);
         }
 
-        // 3b. class method as array
-        // 3c. class method as initialized array
+        // 4b. class method as array
+        // 4c. class method as initialized array
         if (\is_array($function) && \count($function) === 2) {
             [$className, $methodName] = $function;
         }
 
         // Early return if either class name or method name cannot be resolved
         if ($className === null || $methodName === null) {
-            throw InvalidHelperException::forUnsupportedType($function);
+            throw Exception\InvalidHelperException::forUnsupportedType($function);
         }
 
         // Early return if method is not public
         $reflectionClass = new \ReflectionClass($className);
         $reflectionMethod = $reflectionClass->getMethod($methodName);
         if (!$reflectionMethod->isPublic()) {
-            throw InvalidHelperException::forFunction($className . '::' . $methodName);
+            throw Exception\InvalidHelperException::forFunction($className . '::' . $methodName);
         }
 
         // Check if method can be called statically
@@ -128,7 +157,7 @@ trait HandlebarsHelperTrait
         // Instantiate class if not done yet
         /** @var class-string $className */
         if (\is_string($className)) {
-            $className = GeneralUtility::makeInstance($className);
+            $className = Core\Utility\GeneralUtility::makeInstance($className);
         }
 
         $callable = [$className, $methodName];
@@ -136,7 +165,20 @@ trait HandlebarsHelperTrait
             return $callable;
         }
 
-        throw InvalidHelperException::forInvalidCallable($callable);
+        throw Exception\InvalidHelperException::forInvalidCallable($callable);
+    }
+
+    /**
+     * @return callable(\Fr\Typo3Handlebars\Renderer\Helper\Context\HelperContext): mixed
+     */
+    protected function decorateHelperFunction(callable $function): callable
+    {
+        return static function () use ($function) {
+            $arguments = \func_get_args();
+            $context = Renderer\Helper\Context\HelperContext::fromRuntimeCall($arguments);
+
+            return $function($context);
+        };
     }
 
     /**
@@ -150,14 +192,14 @@ trait HandlebarsHelperTrait
                 'The method "%s" is deprecated and will be removed with 0.9.0. ' .
                 'Use "%s::resolveHelperFunction()" instead and check for thrown exceptions.',
                 __METHOD__,
-                __TRAIT__
+                __TRAIT__,
             ),
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         try {
             return (bool)$this->resolveHelperFunction($helperFunction);
-        } catch (InvalidHelperException | \ReflectionException) {
+        } catch (Exception\InvalidHelperException | \ReflectionException) {
             return false;
         }
     }

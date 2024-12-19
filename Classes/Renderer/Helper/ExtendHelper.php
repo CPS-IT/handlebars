@@ -40,12 +40,11 @@ final readonly class ExtendHelper implements HelperInterface
     ) {}
 
     #[Attribute\AsHelper('extend')]
-    public function evaluate(string $name): string
+    public function render(Context\HelperContext $context): string
     {
-        // Get helper options
-        $arguments = \func_get_args();
+        $name = $context[0];
+        $arguments = $context->arguments;
         array_shift($arguments);
-        $options = array_pop($arguments);
 
         // Custom context is optional
         $customContext = [];
@@ -54,18 +53,16 @@ final readonly class ExtendHelper implements HelperInterface
         }
 
         // Create new handlebars layout item
-        $fn = \is_callable($options['fn'] ?? '') ? $options['fn'] : static fn(): string => '';
+        $fn = static fn(): string => $context->renderChildren() ?? '';
         $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($fn);
 
         // Add layout to layout stack
-        $data = &$options['_this'];
-        if (!isset($data['_layoutStack'])) {
-            $data['_layoutStack'] = [];
-        }
-        $data['_layoutStack'][] = $handlebarsLayout;
+        $renderingStack = &$context->renderingContext;
+        $renderingStack['_layoutStack'] ??= [];
+        $renderingStack['_layoutStack'][] = $handlebarsLayout;
 
         // Merge data with supplied data
-        $renderData = array_replace_recursive($options['_this'], $customContext, $options['hash']);
+        $renderData = array_replace_recursive($renderingStack, $customContext, $context->hash);
 
         // Render layout with merged data
         return $this->renderer->render($name, $renderData);

@@ -34,6 +34,11 @@ use Fr\Typo3Handlebars\Renderer;
  */
 final readonly class DummyHelper implements Renderer\Helper\HelperInterface
 {
+    public function render(Renderer\Helper\Context\HelperContext $context): string
+    {
+        return 'foo';
+    }
+
     public function __invoke(): string
     {
         return 'foo';

@@ -88,7 +88,7 @@ final class SimpleProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function processReturnsRenderedTemplate(): void
     {
-        $this->renderer->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class . '::evaluate');
+        $this->renderer->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class);
 
         $this->contentObjectRendererMock->data = [
             'uid' => 1,

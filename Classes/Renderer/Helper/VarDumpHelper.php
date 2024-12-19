@@ -34,15 +34,12 @@ use TYPO3\CMS\Core;
  */
 final readonly class VarDumpHelper implements HelperInterface
 {
-    /**
-     * @param array<string|int, mixed> $context
-     */
     #[Attribute\AsHelper('varDump')]
-    public static function evaluate(array $context): string
+    public function render(Context\HelperContext $context): string
     {
         \ob_start();
 
-        Core\Utility\DebugUtility::debug($context['_this']);
+        Core\Utility\DebugUtility::debug($context->renderingContext);
 
         return (string)\ob_get_clean();
     }

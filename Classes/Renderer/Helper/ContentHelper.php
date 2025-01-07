@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
-use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
 use Psr\Log;
 
@@ -34,7 +33,6 @@ use Psr\Log;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#content-name-modeappendprependreplace
  */
-#[Attribute\AsHelper('content')]
 final readonly class ContentHelper implements HelperInterface
 {
     private const DEFAULT_MODE = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;

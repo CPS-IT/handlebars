@@ -65,12 +65,12 @@ final class FeatureRegistrationPass implements DependencyInjection\Compiler\Comp
     /**
      * @param class-string<Renderer\Helper\HelperInterface> $className
      */
-    private function activateHelper(string $name, string $className, string $methodName = 'evaluate'): void
+    private function activateHelper(string $name, string $className): void
     {
         $definition = $this->container->getDefinition($className);
         $definition->addTag('handlebars.helper', [
             'identifier' => $name,
-            'method' => $methodName,
+            'method' => 'render',
         ]);
     }
 

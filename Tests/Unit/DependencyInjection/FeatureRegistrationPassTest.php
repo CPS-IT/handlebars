@@ -117,7 +117,7 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
         $serviceIds = $container->findTaggedServiceIds('handlebars.helper');
         $expectedConfiguration = [
             'identifier' => $name,
-            'method' => 'evaluate',
+            'method' => 'render',
         ];
 
         self::assertArrayHasKey($className, $serviceIds);

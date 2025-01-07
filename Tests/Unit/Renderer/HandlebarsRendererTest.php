@@ -45,6 +45,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     use Tests\HandlebarsTemplateResolverTrait;
 
     private Log\Test\TestLogger $logger;
+    private Src\Renderer\Helper\HelperRegistry $helperRegistry;
     private Src\Renderer\HandlebarsRenderer $subject;
     private Frontend\Controller\TypoScriptFrontendController&Framework\MockObject\MockObject $tsfeMock;
 
@@ -72,10 +73,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         }));
     }
 
-    /**
-     * @test
-     * @
-     */
+    #[Framework\Attributes\Test]
     public function renderLogsCriticalErrorIfGivenTemplateIsNotReadable(): void
     {
         $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver();
@@ -106,7 +104,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     #[Framework\Attributes\Test]
     public function renderMergesDefaultDataWithGivenData(): void
     {
-        $this->subject->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class);
+        $this->helperRegistry->add('varDump', Src\Renderer\Helper\VarDumpHelper::class);
         $this->subject->setDefaultData([
             'foo' => 'baz',
         ]);
@@ -229,6 +227,7 @@ EOF;
         $subject = new Src\Renderer\HandlebarsRenderer(
             $this->getCache(),
             new EventDispatcher\EventDispatcher(),
+            $this->helperRegistry,
             $this->logger,
             $this->getTemplateResolver(),
         );
@@ -287,10 +286,12 @@ EOF;
     private function renewSubject(string $rendererClass = Src\Renderer\HandlebarsRenderer::class): Src\Renderer\HandlebarsRenderer
     {
         $this->logger = new Log\Test\TestLogger();
+        $this->helperRegistry = new Src\Renderer\Helper\HelperRegistry($this->logger);
 
         return $this->subject = new $rendererClass(
             $this->getCache(),
             new EventDispatcher\EventDispatcher(),
+            $this->helperRegistry,
             $this->logger,
             $this->getTemplateResolver(),
             $this->getPartialResolver(),

@@ -46,7 +46,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->skip([
         FirstClassCallableRector::class => [
             __DIR__ . '/Tests/Functional/Renderer/Helper/RenderHelperTest.php',
-            __DIR__ . '/Tests/Unit/Traits/HandlebarsHelperTraitTest.php',
+            __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
         ],
 
         // @todo Remove once code is rewritten

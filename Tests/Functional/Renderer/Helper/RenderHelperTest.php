@@ -57,11 +57,14 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     {
         parent::setUp();
 
+        $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
+
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
             new EventDispatcher\EventDispatcher(),
+            $helperRegistry,
             new Log\NullLogger(),
             $this->templateResolver,
         );
@@ -75,7 +78,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
             $this->contentObjectRenderer,
         );
 
-        $this->renderer->registerHelper('render', $subject);
+        $helperRegistry->add('render', $subject);
     }
 
     #[Framework\Attributes\Test]

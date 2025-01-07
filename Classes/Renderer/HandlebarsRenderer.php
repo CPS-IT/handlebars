@@ -30,8 +30,8 @@ use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
 use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
 use Fr\Typo3Handlebars\Exception\TemplateCompilationException;
 use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
+use Fr\Typo3Handlebars\Renderer\Helper\HelperRegistry;
 use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
-use Fr\Typo3Handlebars\Traits\HandlebarsHelperTrait;
 use LightnCandy\Context;
 use LightnCandy\LightnCandy;
 use LightnCandy\Partial;
@@ -52,10 +52,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 #[AsAlias('handlebars.renderer')]
 #[Autoconfigure(tags: ['handlebars.renderer'])]
-class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
+class HandlebarsRenderer implements RendererInterface
 {
-    use HandlebarsHelperTrait;
-
     protected readonly bool $debugMode;
 
     /**
@@ -65,6 +63,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
         #[Autowire('@handlebars.cache')]
         protected readonly CacheInterface $cache,
         protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly HelperRegistry $helperRegistry,
         protected readonly LoggerInterface $logger,
         #[Autowire('@handlebars.template_resolver')]
         protected readonly TemplateResolverInterface $templateResolver,
@@ -122,7 +121,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
         // Render content
         $content = $renderer($beforeRenderingEvent->getData(), [
             'debug' => Runtime::DEBUG_TAGS_HTML,
-            'helpers' => $this->helpers,
+            'helpers' => $this->helperRegistry->getAll(),
         ]);
 
         // Dispatch after rendering event
@@ -235,7 +234,7 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface
      */
     protected function getHelperStubs(): array
     {
-        return array_fill_keys(array_keys($this->helpers), true);
+        return array_fill_keys(array_keys($this->helperRegistry->getAll()), true);
     }
 
     /**

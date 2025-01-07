@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
 
 use Fr\Typo3Handlebars\Renderer;
+use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
 use org\bovigo\vfs;
 
 /**
@@ -32,27 +33,37 @@ use org\bovigo\vfs;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class DummyTemplateResolver implements Renderer\Template\TemplateResolverInterface
+final class DummyTemplateResolver extends Renderer\Template\BaseTemplateResolver
 {
-    private vfs\vfsStreamDirectory $root;
+    private readonly vfs\vfsStreamDirectory $root;
 
     public function __construct()
     {
         $this->root = vfs\vfsStream::setup(uniqid('ext_handlebars_test_'));
     }
 
-    public function getSupportedFileExtensions(): array
+    public function resolvePartialPath(string $partialPath): string
     {
-        return [];
-    }
-
-    public function supports(string $fileExtension): bool
-    {
-        return true;
+        return vfs\vfsStream::newFile($partialPath, 0000)->at($this->root)->url();
     }
 
     public function resolveTemplatePath(string $templatePath): string
     {
         return vfs\vfsStream::newFile($templatePath, 0000)->at($this->root)->url();
+    }
+
+    public function resolveFilename(string $path, ?string $rootPath = null, ?string $extension = null): string
+    {
+        return parent::resolveFilename($path, $rootPath, $extension);
+    }
+
+    public function resolveTemplatePaths(TemplatePaths $templatePaths): array
+    {
+        return parent::resolveTemplatePaths($templatePaths);
+    }
+
+    public function resolveSupportedFileExtensions(array $supportedFileExtensions): array
+    {
+        return parent::resolveSupportedFileExtensions($supportedFileExtensions);
     }
 }

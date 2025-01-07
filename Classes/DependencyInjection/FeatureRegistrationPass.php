@@ -77,7 +77,6 @@ final class FeatureRegistrationPass implements DependencyInjection\Compiler\Comp
     private function activateFlatTemplateResolver(): void
     {
         $this->container->getDefinition('handlebars.template_resolver')->setClass(Renderer\Template\FlatTemplateResolver::class);
-        $this->container->getDefinition('handlebars.partial_resolver')->setClass(Renderer\Template\FlatTemplateResolver::class);
     }
 
     private function isFeatureEnabled(string $featureName): bool

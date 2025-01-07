@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,28 +21,31 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Exception;
+namespace Fr\Typo3Handlebars\Renderer\Template\Path;
+
+use Symfony\Component\DependencyInjection;
 
 /**
- * InvalidTemplateFileException
+ * PathProvider
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
- * @codeCoverageIgnore
  */
-final class InvalidTemplateFileException extends \RuntimeException
+#[DependencyInjection\Attribute\AutoconfigureTag('handlebars.template_path_provider')]
+interface PathProvider
 {
-    public function __construct(
-        private readonly string $templateFile = '',
-        int $code = 0,
-        ?\Throwable $previous = null,
-    ) {
-        $message = \sprintf('The requested template file "%s" is invalid or could not be read.', $this->templateFile);
-        parent::__construct($message, $code, $previous);
-    }
+    public const PARTIALS = 'partialRootPaths';
+    public const TEMPLATES = 'templateRootPaths';
 
-    public function getTemplateFile(): string
-    {
-        return $this->templateFile;
-    }
+    /**
+     * @return array<int, string>
+     */
+    public function getPartialRootPaths(): array;
+
+    /**
+     * @return array<int, string>
+     */
+    public function getTemplateRootPaths(): array;
+
+    public static function getPriority(): int;
 }

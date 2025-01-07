@@ -64,11 +64,11 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     {
         self::assertSame('', $this->subject->render('foo.baz'));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\TemplateNotFoundException $exception */
+            /** @var Src\Exception\TemplatePathIsNotResolvable $exception */
             $exception = $logRecord['context']['exception'];
-            self::assertInstanceOf(Src\Exception\TemplateNotFoundException::class, $exception);
-            self::assertSame(1606217089, $exception->getCode());
-            self::assertStringEndsWith('foo.baz', $exception->getTemplateFile());
+            self::assertInstanceOf(Src\Exception\TemplatePathIsNotResolvable::class, $exception);
+            self::assertSame('The template path "foo.baz" cannot be resolved.', $exception->getMessage());
+            self::assertSame(1736254772, $exception->getCode());
             return true;
         }));
     }
@@ -222,24 +222,11 @@ EOF;
     }
 
     #[Framework\Attributes\Test]
-    public function resolvePartialReturnsNullIfNoPartialResolverIsRegistered(): void
-    {
-        $subject = new Src\Renderer\HandlebarsRenderer(
-            $this->getCache(),
-            new EventDispatcher\EventDispatcher(),
-            $this->helperRegistry,
-            $this->logger,
-            $this->getTemplateResolver(),
-        );
-
-        self::assertNull($subject->resolvePartial([], 'foo'));
-    }
-
-    #[Framework\Attributes\Test]
     public function resolvePartialThrowsExceptionIfPartialResolverCannotResolveGivenPartial(): void
     {
-        $this->expectException(Src\Exception\TemplateNotFoundException::class);
-        $this->expectExceptionCode(1606217089);
+        $this->expectExceptionObject(
+            new Src\Exception\PartialPathIsNotResolvable('foo'),
+        );
 
         $this->subject->resolvePartial([], 'foo');
     }
@@ -294,7 +281,6 @@ EOF;
             $this->helperRegistry,
             $this->logger,
             $this->getTemplateResolver(),
-            $this->getPartialResolver(),
         );
     }
 

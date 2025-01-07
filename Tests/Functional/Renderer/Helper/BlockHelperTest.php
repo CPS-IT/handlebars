@@ -48,27 +48,27 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     ];
 
     private Src\Renderer\HandlebarsRenderer $renderer;
-    private Log\Test\TestLogger $logger;
 
     protected function setUp(): void
     {
+        $this->allowAdditionalRootPaths();
+
         parent::setUp();
 
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
-        $this->logger = new Log\Test\TestLogger();
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
-            $this->logger,
+            new Log\NullLogger(),
             $this->templateResolver,
         );
 
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));
-        $helperRegistry->add('content', new Src\Renderer\Helper\ContentHelper($this->logger));
+        $helperRegistry->add('content', new Src\Renderer\Helper\ContentHelper(new Log\NullLogger()));
         $helperRegistry->add('block', new Src\Renderer\Helper\BlockHelper());
     }
 

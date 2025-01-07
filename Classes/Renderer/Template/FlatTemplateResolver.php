@@ -33,61 +33,94 @@ use Symfony\Component\Finder;
  * @license GPL-2.0-or-later
  * @see https://fractal.build/guide/core-concepts/naming.html
  */
-class FlatTemplateResolver extends HandlebarsTemplateResolver
+final class FlatTemplateResolver extends BaseTemplateResolver
 {
-    protected const VARIANT_SEPARATOR = '--';
+    private const MAX_FILE_DEPTH = 30;
+    private const VARIANT_SEPARATOR = '--';
+
+    private readonly HandlebarsTemplateResolver $fallbackResolver;
 
     /**
      * @var array<string, Finder\SplFileInfo>
      */
-    protected array $flattenedTemplates = [];
-    protected int $depth = 30;
+    private readonly array $flattenedPartials;
 
+    /**
+     * @var array<string, Finder\SplFileInfo>
+     */
+    private readonly array $flattenedTemplates;
+
+    /**
+     * @param list<string> $supportedFileExtensions
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
     public function __construct(
-        TemplatePaths $templateRootPaths,
+        TemplatePaths $templatePaths,
         array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS,
     ) {
-        parent::__construct($templateRootPaths, $supportedFileExtensions);
-        $this->buildTemplateMap();
+        $this->fallbackResolver = new HandlebarsTemplateResolver($templatePaths, $supportedFileExtensions);
+        [$this->templateRootPaths, $this->partialRootPaths] = $this->resolveTemplatePaths($templatePaths);
+        $this->supportedFileExtensions = $this->resolveSupportedFileExtensions($supportedFileExtensions);
+        $this->flattenedPartials = $this->buildPathMap($this->partialRootPaths);
+        $this->flattenedTemplates = $this->buildPathMap($this->templateRootPaths);
+    }
+
+    public function resolvePartialPath(string $partialPath): string
+    {
+        return $this->resolvePath($partialPath, $this->flattenedPartials)
+            ?? $this->fallbackResolver->resolvePartialPath($partialPath);
     }
 
     public function resolveTemplatePath(string $templatePath): string
     {
+        return $this->resolvePath($templatePath, $this->flattenedTemplates)
+            ?? $this->fallbackResolver->resolveTemplatePath($templatePath);
+    }
+
+    /**
+     * @param array<string, Finder\SplFileInfo> $flattenedFiles
+     */
+    private function resolvePath(string $path, array $flattenedFiles): ?string
+    {
         // Use default path resolving if path is not prefixed by "@"
-        if (!str_starts_with($templatePath, '@')) {
-            return parent::resolveTemplatePath($templatePath);
+        if (!str_starts_with($path, '@')) {
+            return null;
         }
 
         // Strip "@" prefix from given template path
-        $templateName = ltrim($templatePath, '@');
+        $templateName = ltrim($path, '@');
 
         // Return filename if template exists
-        if (isset($this->flattenedTemplates[$templateName])) {
-            return $this->flattenedTemplates[$templateName]->getPathname();
+        if (isset($flattenedFiles[$templateName])) {
+            return $flattenedFiles[$templateName]->getPathname();
         }
 
         // Strip off template variant
         if (str_contains($templateName, self::VARIANT_SEPARATOR)) {
             [$templateName] = explode(self::VARIANT_SEPARATOR, $templateName, 2);
 
-            if (isset($this->flattenedTemplates[$templateName])) {
-                return $this->flattenedTemplates[$templateName]->getPathname();
+            if (isset($flattenedFiles[$templateName])) {
+                return $flattenedFiles[$templateName]->getPathname();
             }
         }
 
-        throw new Exception\TemplateNotFoundException($templateName, 1628256108);
+        return null;
     }
 
-    protected function buildTemplateMap(): void
+    /**
+     * @param list<string> $rootPaths
+     * @return array<string, Finder\SplFileInfo>
+     */
+    private function buildPathMap(array $rootPaths): array
     {
-        // Reset flattened templates
-        $this->flattenedTemplates = [];
+        $flattenedPaths = [];
 
         // Instantiate finder
         $finder = new Finder\Finder();
         $finder->files();
         $finder->name([...$this->buildExtensionPatterns()]);
-        $finder->depth(sprintf('< %d', $this->depth));
+        $finder->depth(sprintf('< %d', self::MAX_FILE_DEPTH));
 
         // Explicitly sort files and directories by name in order to streamline ordering
         // with logic used in Fractal to ensure that the first occurrence of a flattened
@@ -96,40 +129,40 @@ class FlatTemplateResolver extends HandlebarsTemplateResolver
         $finder->sortByName();
 
         // Build template map
-        foreach ($this->templateRootPaths as $templateRootPath) {
-            $path = $this->resolveFilename($templateRootPath);
+        foreach (array_reverse($rootPaths) as $rootPath) {
+            $path = $this->resolveFilename($rootPath);
             $pathFinder = clone $finder;
             $pathFinder->in($path);
 
             foreach ($pathFinder as $file) {
-                if ($this->isFirstOccurrenceInTemplateRoot($file)) {
-                    $this->registerTemplate($file);
+                if ($this->isFirstOccurrenceInRootPaths($flattenedPaths, $file)) {
+                    $flattenedPaths[$this->resolveFlatFilename($file)] = $file;
                 }
             }
         }
+
+        return $flattenedPaths;
     }
 
-    protected function isFirstOccurrenceInTemplateRoot(Finder\SplFileInfo $file): bool
+    /**
+     * @param array<string, Finder\SplFileInfo> $flattenedPaths
+     */
+    private function isFirstOccurrenceInRootPaths(array $flattenedPaths, Finder\SplFileInfo $file): bool
     {
         $filename = $this->resolveFlatFilename($file);
 
         // Early return if template is not registered yet
-        if (!isset($this->flattenedTemplates[$filename])) {
+        if (!isset($flattenedPaths[$filename])) {
             return true;
         }
 
         // In order to streamline template file flattening with logic used in Fractal,
         // we always use the first flat file occurrence as resolved template, but provide
         // the option to override exactly this file within other template root paths.
-        return $this->flattenedTemplates[$filename]->getRelativePathname() === $file->getRelativePathname();
+        return $flattenedPaths[$filename]->getRelativePathname() === $file->getRelativePathname();
     }
 
-    protected function registerTemplate(Finder\SplFileInfo $file): void
-    {
-        $this->flattenedTemplates[$this->resolveFlatFilename($file)] = $file;
-    }
-
-    protected function resolveFlatFilename(Finder\SplFileInfo $file): string
+    private function resolveFlatFilename(Finder\SplFileInfo $file): string
     {
         return pathinfo($file->getPathname(), PATHINFO_FILENAME);
     }
@@ -137,7 +170,7 @@ class FlatTemplateResolver extends HandlebarsTemplateResolver
     /**
      * @return \Generator<string>
      */
-    protected function buildExtensionPatterns(): \Generator
+    private function buildExtensionPatterns(): \Generator
     {
         foreach ($this->supportedFileExtensions as $extension) {
             yield sprintf('*.%s', $extension);

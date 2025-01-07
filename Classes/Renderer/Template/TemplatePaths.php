@@ -23,10 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
-use Fr\Typo3Handlebars\Configuration\Extension;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use Symfony\Component\DependencyInjection;
 
 /**
  * TemplatePaths
@@ -34,86 +31,69 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class TemplatePaths
+final class TemplatePaths
 {
-    public const TEMPLATES = 'template_root_paths';
-    public const PARTIALS = 'partial_root_paths';
-
     /**
-     * @var string[]
+     * @var array<int, string>|null
      */
-    protected ?array $templatePaths = null;
+    private ?array $partialRootPaths = null;
 
     /**
-     * @param array{
-     *     partial_root_paths?: array<int, string>,
-     *     template_root_paths?: array<int, string>,
-     * } $viewConfiguration
+     * @var array<int, string>|null
+     */
+    private ?array $templateRootPaths = null;
+
+    /**
+     * @param iterable<Path\PathProvider> $pathProviders
      */
     public function __construct(
-        protected readonly ConfigurationManagerInterface $configurationManager,
-        #[Autowire([
-            self::TEMPLATES => '%handlebars.template_root_paths%',
-            self::PARTIALS => '%handlebars.partial_root_paths%',
-        ])]
-        protected readonly array $viewConfiguration = [],
-        protected readonly string $type = self::TEMPLATES,
+        #[DependencyInjection\Attribute\AutowireIterator('handlebars.template_path_provider', defaultPriorityMethod: 'getPriority')]
+        private readonly iterable $pathProviders,
     ) {}
 
     /**
-     * @return string[]
+     * @return array<int, string>
      */
-    public function get(): array
+    public function getPartialRootPaths(): array
     {
-        if ($this->templatePaths === null) {
-            $this->resolveTemplatePaths();
+        if ($this->partialRootPaths === null) {
+            $this->partialRootPaths = $this->resolvePaths(
+                static fn(Path\PathProvider $pathProvider) => $pathProvider->getPartialRootPaths(),
+            );
         }
 
-        return $this->templatePaths;
+        return $this->partialRootPaths;
     }
 
     /**
-     * @phpstan-assert string[] $this->templatePaths
+     * @return array<int, string>
      */
-    protected function resolveTemplatePaths(): void
+    public function getTemplateRootPaths(): array
     {
-        $this->templatePaths = $this->mergeTemplatePaths(
-            $this->getTemplatePathsFromViewConfiguration($this->type),
-            $this->getTemplatePathsFromTypoScriptConfiguration($this->type)
-        );
+        if ($this->templateRootPaths === null) {
+            $this->templateRootPaths = $this->resolvePaths(
+                static fn(Path\PathProvider $pathProvider) => $pathProvider->getTemplateRootPaths(),
+            );
+        }
+
+        return $this->templateRootPaths;
     }
 
     /**
-     * @return string[]
+     * @param callable(Path\PathProvider): array<int, string> $mapFunction
+     * @return array<int, string>
      */
-    protected function getTemplatePathsFromViewConfiguration(string $type): array
+    private function resolvePaths(callable $mapFunction): array
     {
-        return $this->viewConfiguration[$type] ?? [];
-    }
+        $paths = [];
 
-    /**
-     * @return string[]
-     */
-    protected function getTemplatePathsFromTypoScriptConfiguration(string $type): array
-    {
-        $configurationType = GeneralUtility::underscoredToLowerCamelCase($type);
-        $typoScriptConfiguration = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
-            Extension::NAME
-        );
+        foreach ($this->pathProviders as $pathProvider) {
+            $paths[] = $mapFunction($pathProvider);
+        }
 
-        return $typoScriptConfiguration['view'][$configurationType] ?? [];
-    }
+        $mergedPaths = array_replace(...$paths);
+        ksort($mergedPaths);
 
-    /**
-     * @param string[] ...$templatePaths
-     * @return string[]
-     */
-    protected function mergeTemplatePaths(array ...$templatePaths): array
-    {
-        $mergedTemplatePaths = array_replace(...$templatePaths);
-        ksort($mergedTemplatePaths);
-
-        return $mergedTemplatePaths;
+        return $mergedPaths;
     }
 }

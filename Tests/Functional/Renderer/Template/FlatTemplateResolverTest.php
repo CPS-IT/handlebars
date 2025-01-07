@@ -47,10 +47,82 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
 
     protected function setUp(): void
     {
+        $this->allowAdditionalRootPaths();
+
         parent::setUp();
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
+        $this->partialRootPath = 'EXT:test_extension/Resources/Partials/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function constructorIgnoresSubsequentPartialsWithSameName(): void
+    {
+        $viewConfiguration = $this->getViewConfiguration();
+        $viewConfiguration[Src\Renderer\Template\Path\PathProvider::PARTIALS][5] = 'EXT:test_extension/Resources/Partials2/';
+
+        $subject = new Src\Renderer\Template\FlatTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Src\Renderer\Template\Path\GlobalPathProvider($viewConfiguration),
+            ]),
+        );
+
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Partials2/foo.hbs';
+
+        self::assertSame($expected, $subject->resolvePartialPath('@foo'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function constructorIgnoresSubsequentTemplatesWithSameName(): void
+    {
+        $viewConfiguration = $this->getViewConfiguration();
+        $viewConfiguration[Src\Renderer\Template\Path\PathProvider::TEMPLATES][5] = 'EXT:test_extension/Resources/Templates2/';
+
+        $subject = new Src\Renderer\Template\FlatTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Src\Renderer\Template\Path\GlobalPathProvider($viewConfiguration),
+            ]),
+        );
+
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Templates2/foo.hbs';
+
+        self::assertSame($expected, $subject->resolveTemplatePath('@foo'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathRespectsPartialVariant(): void
+    {
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Partials/foo--variant.hbs';
+
+        self::assertSame($expected, $this->getTemplateResolver()->resolvePartialPath('@foo--variant'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathReturnsBasePartialForNonExistingPartialVariant(): void
+    {
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Partials/foo.hbs';
+
+        self::assertSame($expected, $this->getTemplateResolver()->resolvePartialPath('@foo--non-existing-variant'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathFallsBackToDefaultResolverIfPartialPathDoesNotContainLeadingReferenceCharacter(): void
+    {
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Partials/foo.hbs';
+
+        // foo vs @foo
+        self::assertSame($expected, $this->getTemplateResolver()->resolvePartialPath('foo'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathFallsBackToDefaultResolverIfPartialPathCannotBeResolved(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\PartialPathIsNotResolvable('@baz'),
+        );
+
+        $this->getTemplateResolver()->resolvePartialPath('@baz');
     }
 
     #[Framework\Attributes\Test]
@@ -67,5 +139,24 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
         $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Templates/main-layout.hbs';
 
         self::assertSame($expected, $this->getTemplateResolver()->resolveTemplatePath('@main-layout--non-existing-variant'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathFallsBackToDefaultResolverIfTemplatePathDoesNotContainLeadingReferenceCharacter(): void
+    {
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Templates/main-layout.hbs';
+
+        // main-layout vs @main-layout
+        self::assertSame($expected, $this->getTemplateResolver()->resolveTemplatePath('main-layout'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathFallsBackToDefaultResolverIfTemplatePathCannotBeResolved(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\TemplatePathIsNotResolvable('@baz'),
+        );
+
+        $this->getTemplateResolver()->resolveTemplatePath('@baz');
     }
 }

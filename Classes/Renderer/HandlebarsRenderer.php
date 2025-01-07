@@ -28,8 +28,9 @@ use Fr\Typo3Handlebars\Cache\NullCache;
 use Fr\Typo3Handlebars\Event\AfterRenderingEvent;
 use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
 use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
+use Fr\Typo3Handlebars\Exception\PartialPathIsNotResolvable;
 use Fr\Typo3Handlebars\Exception\TemplateCompilationException;
-use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
+use Fr\Typo3Handlebars\Exception\TemplatePathIsNotResolvable;
 use Fr\Typo3Handlebars\Renderer\Helper\HelperRegistry;
 use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
 use LightnCandy\Context;
@@ -67,8 +68,6 @@ class HandlebarsRenderer implements RendererInterface
         protected readonly LoggerInterface $logger,
         #[Autowire('@handlebars.template_resolver')]
         protected readonly TemplateResolverInterface $templateResolver,
-        #[Autowire('@handlebars.partial_resolver')]
-        protected readonly ?TemplateResolverInterface $partialResolver = null,
         #[Autowire('%handlebars.default_data%')]
         protected array $defaultData = [],
     ) {
@@ -79,7 +78,7 @@ class HandlebarsRenderer implements RendererInterface
     {
         try {
             return $this->processRendering($templatePath, $data);
-        } catch (InvalidTemplateFileException | TemplateCompilationException | TemplateNotFoundException $exception) {
+        } catch (InvalidTemplateFileException | TemplateCompilationException | TemplatePathIsNotResolvable $exception) {
             $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
 
             return '';
@@ -88,9 +87,9 @@ class HandlebarsRenderer implements RendererInterface
 
     /**
      * @param array<string|int, mixed> $data
-     * @throws InvalidTemplateFileException if template file is invalid
-     * @throws TemplateCompilationException if template compilation fails and errors are not yet handled by compiler
-     * @throws TemplateNotFoundException if template could not be found
+     * @throws InvalidTemplateFileException
+     * @throws TemplateCompilationException
+     * @throws TemplatePathIsNotResolvable
      */
     protected function processRendering(string $templatePath, array $data): string
     {
@@ -183,7 +182,7 @@ class HandlebarsRenderer implements RendererInterface
         return [
             'flags' => $this->getCompileFlags(),
             'helpers' => $this->getHelperStubs(),
-            'partialresolver' => $this->partialResolver !== null ? $this->resolvePartial(...) : false,
+            'partialresolver' => $this->resolvePartial(...),
         ];
     }
 
@@ -240,7 +239,7 @@ class HandlebarsRenderer implements RendererInterface
     /**
      * Resolve path to given partial using partial resolver.
      *
-     * Tries to resolve the given partial using the {@see $partialResolver}. If
+     * Tries to resolve the given partial using the {@see $templateResolver}. If
      * no partial resolver is registered, `null` is returned. Otherwise, the
      * partials' file contents are returned. Returning `null` will be handled as
      * "partial not found" by the renderer.
@@ -250,14 +249,11 @@ class HandlebarsRenderer implements RendererInterface
      * @param array<string, mixed> $context Current context of compiler progress, see {@see Context::create()}
      * @param string $name Name of the partial to be resolved
      * @return string|null Partial file contents if partial could be resolved, `null` otherwise
-     * @throws TemplateNotFoundException if partial could not be found
+     * @throws PartialPathIsNotResolvable
      */
-    public function resolvePartial(/** @noinspection PhpUnusedParameterInspection */ array $context, string $name): ?string
+    public function resolvePartial(array $context, string $name): ?string
     {
-        if ($this->partialResolver === null) {
-            return null;
-        }
-        return file_get_contents($this->partialResolver->resolveTemplatePath($name)) ?: null;
+        return file_get_contents($this->templateResolver->resolvePartialPath($name)) ?: null;
     }
 
     /**

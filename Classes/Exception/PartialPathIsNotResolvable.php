@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,25 +24,18 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Exception;
 
 /**
- * InvalidTemplateFileException
+ * PartialPathIsNotResolvable
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
- * @codeCoverageIgnore
  */
-final class InvalidTemplateFileException extends \RuntimeException
+final class PartialPathIsNotResolvable extends Exception
 {
-    public function __construct(
-        private readonly string $templateFile = '',
-        int $code = 0,
-        ?\Throwable $previous = null,
-    ) {
-        $message = \sprintf('The requested template file "%s" is invalid or could not be read.', $this->templateFile);
-        parent::__construct($message, $code, $previous);
-    }
-
-    public function getTemplateFile(): string
+    public function __construct(string $path)
     {
-        return $this->templateFile;
+        parent::__construct(
+            \sprintf('The partial path "%s" cannot be resolved.', $path),
+            1736254715,
+        );
     }
 }

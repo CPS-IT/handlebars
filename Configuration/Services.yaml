@@ -19,24 +19,6 @@ services:
   # Template
   handlebars.template_resolver:
     class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
-    arguments:
-      $templateRootPaths: '@handlebars.template_paths.template_root_paths'
-
-  handlebars.partial_resolver:
-    class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
-    arguments:
-      $templateRootPaths: '@handlebars.template_paths.partial_root_paths'
-
-  handlebars.template_paths:
-    class: 'Fr\Typo3Handlebars\Renderer\Template\TemplatePaths'
-  handlebars.template_paths.template_root_paths:
-    parent: 'handlebars.template_paths'
-    arguments:
-      $type: 'template_root_paths'
-  handlebars.template_paths.partial_root_paths:
-    parent: 'handlebars.template_paths'
-    arguments:
-      $type: 'partial_root_paths'
 
   # Cache
   cache.handlebars:
@@ -47,5 +29,5 @@ services:
 handlebars:
   default_data: []
   template:
-    template_root_paths: []
-    partial_root_paths: []
+    templateRootPaths: []
+    partialRootPaths: []

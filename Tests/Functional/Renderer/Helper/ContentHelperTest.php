@@ -41,17 +41,19 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
 {
     use Tests\HandlebarsTemplateResolverTrait;
 
-    protected bool $initializeDatabase = false;
-
     protected array $testExtensionsToLoad = [
         'test_extension',
     ];
+
+    protected bool $initializeDatabase = false;
 
     private Src\Renderer\HandlebarsRenderer $renderer;
     private Log\Test\TestLogger $logger;
 
     protected function setUp(): void
     {
+        $this->allowAdditionalRootPaths();
+
         parent::setUp();
 
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());

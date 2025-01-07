@@ -57,9 +57,6 @@ class HandlebarsRenderer implements RendererInterface
 {
     protected readonly bool $debugMode;
 
-    /**
-     * @param array<string|int, mixed> $rootContext
-     */
     public function __construct(
         #[Autowire('@handlebars.cache')]
         protected readonly CacheInterface $cache,
@@ -68,8 +65,7 @@ class HandlebarsRenderer implements RendererInterface
         protected readonly LoggerInterface $logger,
         #[Autowire('@handlebars.template_resolver')]
         protected readonly TemplateResolverInterface $templateResolver,
-        #[Autowire('%handlebars.variables%')]
-        protected array $rootContext = [],
+        protected readonly Variables\VariableBag $variableBag,
     ) {
         $this->debugMode = $this->isDebugModeEnabled();
     }
@@ -106,8 +102,8 @@ class HandlebarsRenderer implements RendererInterface
             return '';
         }
 
-        // Merge render data with root context
-        $mergedVariables = array_merge($this->rootContext, $variables);
+        // Merge variables with default variables
+        $mergedVariables = array_merge($this->variableBag->get(), $variables);
 
         // Compile template
         $compileResult = $this->compile($template);
@@ -254,23 +250,6 @@ class HandlebarsRenderer implements RendererInterface
     public function resolvePartial(array $context, string $name): ?string
     {
         return file_get_contents($this->templateResolver->resolvePartialPath($name)) ?: null;
-    }
-
-    /**
-     * @return array<string|int, mixed>
-     */
-    public function getRootContext(): array
-    {
-        return $this->rootContext;
-    }
-
-    /**
-     * @param array<string|int, mixed> $rootContext
-     */
-    public function setRootContext(array $rootContext): self
-    {
-        $this->rootContext = $rootContext;
-        return $this;
     }
 
     protected function isCachingDisabled(): bool

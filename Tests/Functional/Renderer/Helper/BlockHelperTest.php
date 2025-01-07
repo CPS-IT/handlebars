@@ -65,6 +65,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
             $helperRegistry,
             new Log\NullLogger(),
             $this->templateResolver,
+            new Src\Renderer\Variables\VariableBag([]),
         );
 
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));

@@ -63,6 +63,7 @@ final class AbstractDataProcessorTest extends TestingFramework\Core\Unit\UnitTes
                 new Src\Renderer\Helper\HelperRegistry($this->logger),
                 $this->logger,
                 $this->getTemplateResolver(),
+                new Src\Renderer\Variables\VariableBag([]),
             ),
         );
         $this->provider = new Tests\Unit\Fixtures\Classes\Data\DummyProvider();

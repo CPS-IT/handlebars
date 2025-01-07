@@ -38,7 +38,7 @@ final class HandlebarsExtension extends Extension
 {
     public const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.templateRootPaths';
     public const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partialRootPaths';
-    public const PARAMETER_ROOT_CONTEXT = 'handlebars.rootContext';
+    public const PARAMETER_ROOT_CONTEXT = 'handlebars.variables';
 
     /**
      * @var string[]

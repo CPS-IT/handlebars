@@ -63,6 +63,7 @@ final class SimpleProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
             $this->helperRegistry,
             $this->logger,
             $this->getTemplateResolver(),
+            new Src\Renderer\Variables\VariableBag([]),
         );
         $this->subject = new Src\DataProcessing\SimpleProcessor($this->logger, $this->renderer);
         $this->subject->setContentObjectRenderer($this->contentObjectRendererMock);

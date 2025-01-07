@@ -105,9 +105,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     public function renderMergesVariablesWithGivenVariables(): void
     {
         $this->helperRegistry->add('varDump', Src\Renderer\Helper\VarDumpHelper::class);
-        $this->subject->setRootContext([
-            'foo' => 'baz',
-        ]);
 
         Core\Utility\DebugUtility::useAnsiColor(false);
 
@@ -240,14 +237,6 @@ EOF;
         );
     }
 
-    #[Framework\Attributes\Test]
-    public function getRootContextReturnsDefaultVariables(): void
-    {
-        $this->subject->setRootContext(['foo' => 'baz']);
-
-        self::assertSame(['foo' => 'baz'], $this->subject->getRootContext());
-    }
-
     private function assertCacheIsEmptyForTemplate(string $template): void
     {
         self::assertNull(
@@ -283,6 +272,11 @@ EOF;
             $this->helperRegistry,
             $this->logger,
             $this->getTemplateResolver(),
+            new Src\Renderer\Variables\VariableBag([
+                new Src\Renderer\Variables\GlobalVariableProvider([
+                    'foo' => 'baz',
+                ]),
+            ]),
         );
     }
 

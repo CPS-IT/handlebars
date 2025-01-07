@@ -56,17 +56,17 @@ final class BeforeRenderingEventTest extends TestingFramework\Core\Unit\UnitTest
     }
 
     #[Framework\Attributes\Test]
-    public function getDataReturnsData(): void
+    public function getVariablesReturnsVariables(): void
     {
-        self::assertSame(['foo' => 'baz'], $this->subject->getData());
+        self::assertSame(['foo' => 'baz'], $this->subject->getVariables());
     }
 
     #[Framework\Attributes\Test]
-    public function setDataModifiesData(): void
+    public function setVariablesModifiesVariables(): void
     {
-        $this->subject->setData(['modified' => 'data']);
+        $this->subject->setVariables(['modified' => 'variables']);
 
-        self::assertSame(['modified' => 'data'], $this->subject->getData());
+        self::assertSame(['modified' => 'variables'], $this->subject->getVariables());
     }
 
     #[Framework\Attributes\Test]

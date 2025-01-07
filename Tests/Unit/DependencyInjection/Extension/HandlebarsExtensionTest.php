@@ -86,32 +86,32 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
         yield 'no configs' => [
             [],
             [
-                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
                 Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
                 Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_ROOT_CONTEXT => [],
             ],
         ];
         yield 'default data' => [
             [
                 [
-                    'default_data' => [
+                    'variables' => [
                         'foo' => 'baz',
                     ],
                 ],
                 [
-                    'default_data' => [
+                    'variables' => [
                         'foo' => 'yay',
                         'baz' => 'foo',
                     ],
                 ],
             ],
             [
-                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_ROOT_CONTEXT => [
                     'foo' => 'yay',
                     'baz' => 'foo',
                 ],
-                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
             ],
         ];
         yield 'template root paths' => [
@@ -128,9 +128,9 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
                 ],
             ],
             [
-                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
                 Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => $expectedRootPaths,
                 Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_ROOT_CONTEXT => [],
             ],
         ];
         yield 'partial root paths' => [
@@ -147,9 +147,9 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
                 ],
             ],
             [
-                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
                 Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
                 Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => $expectedRootPaths,
+                Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_ROOT_CONTEXT => [],
             ],
         ];
     }

@@ -31,8 +31,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  *
  * Defines the following configuration structure for the {@see HandlebarsExtension}:
  *
- * - defaultData:
- *   - [data]: any default data passed to the renderer
+ * - variables:
+ *   - [data]: any default variable passed to the renderer
  *
  * - view:
  *   - [templateRootPaths]: numeric array of template root paths
@@ -48,12 +48,12 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('handlebars');
-        $rootNode = $treeBuilder->getRootNode();
 
-        /** @phpstan-ignore-next-line */
-        $rootNode
+        /* @phpstan-ignore method.notFound */
+        $treeBuilder
+            ->getRootNode()
             ->children()
-                ->arrayNode('default_data')
+                ->arrayNode('variables')
                     ->performNoDeepMerging()
                     ->variablePrototype()->end()
                 ->end()

@@ -46,6 +46,7 @@ final class SimpleProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
 
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
     private Log\Test\TestLogger $logger;
+    private Src\Renderer\Helper\HelperRegistry $helperRegistry;
     private Src\Renderer\HandlebarsRenderer $renderer;
     private Src\DataProcessing\SimpleProcessor $subject;
 
@@ -55,9 +56,11 @@ final class SimpleProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $this->contentObjectRendererMock = $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->logger = new Log\Test\TestLogger();
+        $this->helperRegistry = new Src\Renderer\Helper\HelperRegistry($this->logger);
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             $this->getCache(),
             new EventDispatcher\EventDispatcher(),
+            $this->helperRegistry,
             $this->logger,
             $this->getTemplateResolver(),
         );
@@ -88,7 +91,7 @@ final class SimpleProcessorTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function processReturnsRenderedTemplate(): void
     {
-        $this->renderer->registerHelper('varDump', Src\Renderer\Helper\VarDumpHelper::class);
+        $this->helperRegistry->add('varDump', Src\Renderer\Helper\VarDumpHelper::class);
 
         $this->contentObjectRendererMock->data = [
             'uid' => 1,

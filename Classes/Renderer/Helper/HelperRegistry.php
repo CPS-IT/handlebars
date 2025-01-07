@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,26 +21,30 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Traits;
+namespace Fr\Typo3Handlebars\Renderer\Helper;
 
 use Fr\Typo3Handlebars\Exception;
-use Fr\Typo3Handlebars\Renderer;
+use Psr\Log;
 use TYPO3\CMS\Core;
 
 /**
- * HandlebarsHelperTrait
+ * HelperRegistry
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-trait HandlebarsHelperTrait
+final class HelperRegistry implements Core\SingletonInterface
 {
     /**
-     * @var array<string, callable(Renderer\Helper\Context\HelperContext): mixed>
+     * @var array<string, callable(Context\HelperContext): mixed>
      */
-    protected array $helpers = [];
+    private array $helpers = [];
 
-    public function registerHelper(string $name, mixed $function): void
+    public function __construct(
+        private readonly Log\LoggerInterface $logger,
+    ) {}
+
+    public function add(string $name, mixed $function): void
     {
         try {
             $this->helpers[$name] = $this->decorateHelperFunction(
@@ -59,18 +63,35 @@ trait HandlebarsHelperTrait
     }
 
     /**
-     * @return array<string, callable(Renderer\Helper\Context\HelperContext): mixed>
+     * @throws Exception\HelperIsNotRegistered
      */
-    public function getHelpers(): array
+    public function get(string $name): callable
+    {
+        if (!isset($this->helpers[$name])) {
+            throw new Exception\HelperIsNotRegistered($name);
+        }
+
+        return $this->helpers[$name];
+    }
+
+    /**
+     * @return array<string, callable(Context\HelperContext): mixed>
+     */
+    public function getAll(): array
     {
         return $this->helpers;
+    }
+
+    public function has(string $name): bool
+    {
+        return isset($this->helpers[$name]);
     }
 
     /**
      * @throws Exception\InvalidHelperException
      * @throws \ReflectionException
      */
-    protected function resolveHelperFunction(mixed $function): callable
+    private function resolveHelperFunction(mixed $function): callable
     {
         // Try to resolve the Helper function in this order:
         //
@@ -78,8 +99,7 @@ trait HandlebarsHelperTrait
         // ├─ a. as string
         // └─ b. as closure or first class callable syntax
         // 2. invokable class
-        // ├─ a. as string (class-name)
-        // └─ b. as object
+        // └─ a. as string (class-name)
         // 3. class implementing Helper interface
         // ├─ a. as string (class-name)
         // └─ b. as object
@@ -103,7 +123,7 @@ trait HandlebarsHelperTrait
             }
 
             // 3a. class implementing Helper interface as string
-            if (class_exists($function) && \is_a($function, Renderer\Helper\HelperInterface::class, true)) {
+            if (class_exists($function) && \is_a($function, HelperInterface::class, true)) {
                 return Core\Utility\GeneralUtility::makeInstance($function)->render(...);
             }
         }
@@ -113,16 +133,9 @@ trait HandlebarsHelperTrait
             return $function;
         }
 
-        if (\is_object($function)) {
-            // 2b. invokable class as object
-            if (\is_callable($function)) {
-                return $function;
-            }
-
-            // 3b. class implementing Helper interface as object
-            if ($function instanceof Renderer\Helper\HelperInterface) {
-                return $function->render(...);
-            }
+        // 3b. class implementing Helper interface as object
+        if (\is_object($function) && $function instanceof HelperInterface) {
+            return $function->render(...);
         }
 
         // 4a. class method as string
@@ -148,12 +161,6 @@ trait HandlebarsHelperTrait
             throw Exception\InvalidHelperException::forFunction($className . '::' . $methodName);
         }
 
-        // Check if method can be called statically
-        $callable = [$className, $methodName];
-        if ($reflectionMethod->isStatic() && \is_callable($callable)) {
-            return $callable;
-        }
-
         // Instantiate class if not done yet
         /** @var class-string $className */
         if (\is_string($className)) {
@@ -169,38 +176,15 @@ trait HandlebarsHelperTrait
     }
 
     /**
-     * @return callable(\Fr\Typo3Handlebars\Renderer\Helper\Context\HelperContext): mixed
+     * @return callable(Context\HelperContext): mixed
      */
-    protected function decorateHelperFunction(callable $function): callable
+    private function decorateHelperFunction(callable $function): callable
     {
         return static function () use ($function) {
             $arguments = \func_get_args();
-            $context = Renderer\Helper\Context\HelperContext::fromRuntimeCall($arguments);
+            $context = Context\HelperContext::fromRuntimeCall($arguments);
 
             return $function($context);
         };
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * @deprecated use resolveHelperFunction() instead and check for thrown exceptions
-     */
-    protected function isValidHelper(mixed $helperFunction): bool
-    {
-        trigger_error(
-            \sprintf(
-                'The method "%s" is deprecated and will be removed with 0.9.0. ' .
-                'Use "%s::resolveHelperFunction()" instead and check for thrown exceptions.',
-                __METHOD__,
-                __TRAIT__,
-            ),
-            E_USER_DEPRECATED,
-        );
-
-        try {
-            return (bool)$this->resolveHelperFunction($helperFunction);
-        } catch (Exception\InvalidHelperException | \ReflectionException) {
-            return false;
-        }
     }
 }

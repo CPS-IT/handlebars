@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $container): void {
     $container->registerExtension(new HandlebarsExtension());
     $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
-    $container->addCompilerPass(new HandlebarsHelperPass(AsHelper::TAG_NAME, 'handlebars.renderer'));
+    $container->addCompilerPass(new HandlebarsHelperPass(AsHelper::TAG_NAME));
     $container->addCompilerPass(new FeatureRegistrationPass(), priority: 30);
 
     $container->registerAttributeForAutoconfiguration(

@@ -60,6 +60,7 @@ final class AbstractDataProcessorTest extends TestingFramework\Core\Unit\UnitTes
             new Src\Renderer\HandlebarsRenderer(
                 $this->getCache(),
                 new EventDispatcher\EventDispatcher(),
+                new Src\Renderer\Helper\HelperRegistry($this->logger),
                 $this->logger,
                 $this->getTemplateResolver(),
             ),

@@ -37,8 +37,8 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 final class HandlebarsExtension extends Extension
 {
     public const PARAMETER_DEFAULT_DATA = 'handlebars.default_data';
-    public const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.template_root_paths';
-    public const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partial_root_paths';
+    public const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.templateRootPaths';
+    public const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partialRootPaths';
 
     /**
      * @var string[]
@@ -76,9 +76,9 @@ final class HandlebarsExtension extends Extension
     private function parseConfiguration(array $configs): void
     {
         $templateConfig = $this->mergeConfigs($configs, 'template');
-        $this->templateRootPaths = $templateConfig['template_root_paths'] ?? [];
-        $this->partialRootPaths = $templateConfig['partial_root_paths'] ?? [];
         $this->defaultData = $this->mergeConfigs($configs, 'default_data');
+        $this->templateRootPaths = $templateConfig['templateRootPaths'] ?? [];
+        $this->partialRootPaths = $templateConfig['partialRootPaths'] ?? [];
     }
 
     /**

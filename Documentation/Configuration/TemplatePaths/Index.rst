@@ -28,17 +28,17 @@ is by using the :file:`Services.yaml` file:
 
     handlebars:
       template:
-        template_root_paths:
+        templateRootPaths:
           10: EXT:my_extension/Resources/Private/Templates
-        partial_root_paths:
+        partialRootPaths:
           10: EXT:my_extension/Resources/Private/Partials
 
 The `HandlebarsExtension`_
 takes care of all template paths. They will be merged and then added to the
 service container resulting in the following parameters:
 
-* `%handlebars.template_root_paths%`
-* `%handlebars.partial_root_paths%`
+* `%handlebars.templateRootPaths%`
+* `%handlebars.partialRootPaths%`
 
 You can reference those parameters in your custom configuration to use the
 resolved template paths in your services.

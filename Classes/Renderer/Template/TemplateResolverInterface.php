@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
-use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
+use Fr\Typo3Handlebars\Exception;
 
 /**
  * TemplateResolverInterface
@@ -34,26 +34,21 @@ use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
 interface TemplateResolverInterface
 {
     /**
-     * Get list of file extensions supported by this resolver.
-     *
-     * @return string[] List of file extensions supported by this resolver
-     */
-    public function getSupportedFileExtensions(): array;
-
-    /**
      * Check whether given file extension is supported by this resolver.
-     *
-     * @param string $fileExtension File extension to be checked
-     * @return bool `true` if given file extension is supported by this resolver, `false` otherwise
      */
     public function supports(string $fileExtension): bool;
 
     /**
+     * Resolve given partial path to the full partial path including the base partial path.
+     *
+     * @throws Exception\PartialPathIsNotResolvable
+     */
+    public function resolvePartialPath(string $partialPath): string;
+
+    /**
      * Resolve given template path to the full template path including the base template path.
      *
-     * @param string $templatePath Main template path
-     * @return string Fully resolved template file name
-     * @throws TemplateNotFoundException if template could not be found
+     * @throws Exception\TemplatePathIsNotResolvable
      */
     public function resolveTemplatePath(string $templatePath): string;
 }

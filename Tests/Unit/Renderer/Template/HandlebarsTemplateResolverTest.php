@@ -55,105 +55,100 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
     #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfTemplateRootPathHasInvalidType(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionCode(1613727984);
+        $this->expectExceptionObject(
+            new Src\Exception\RootPathIsMalicious(null),
+        );
 
-        /* @phpstan-ignore argument.type */
-        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths([null]));
+        new Src\Renderer\Template\HandlebarsTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                    /* @phpstan-ignore argument.type */
+                    [null],
+                ),
+            ]),
+        );
     }
 
     #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfTemplateRootPathIsNotResolvable(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionCode(1613728252);
+        $this->expectExceptionObject(
+            new Src\Exception\RootPathIsNotResolvable('EXT:foo/baz'),
+        );
 
-        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths()->setTemplatePaths(['EXT:foo/baz']));
+        new Src\Renderer\Template\HandlebarsTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                    ['EXT:foo/baz'],
+                ),
+            ]),
+        );
     }
 
     #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfFileExtensionHasInvalidType(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionCode(1613727952);
+        $this->expectExceptionObject(
+            new Src\Exception\FileExtensionIsMalicious(true),
+        );
 
         /* @phpstan-ignore argument.type */
         new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), [true]);
     }
 
     #[Framework\Attributes\Test]
-    public function constructorThrowsExceptionIfFileExtensionStartsWithADot(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionCode(1613727713);
-
-        new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), ['.foo']);
-    }
-
-    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfFileExtensionIsInvalid(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionCode(1613727593);
+        $this->expectExceptionObject(
+            new Src\Exception\FileExtensionIsInvalid('foo?!'),
+        );
 
         new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), ['foo?!']);
     }
 
     #[Framework\Attributes\Test]
-    public function getTemplateRootPathsReturnsTemplateRootPaths(): void
+    public function resolvePartialPathThrowsExceptionIfPartialPathCannotBeResolved(): void
     {
-        self::assertSame([$this->templateRootPath], $this->subject->getTemplateRootPaths());
-    }
-
-    #[Framework\Attributes\Test]
-    public function setTemplateRootPathsAppliesSortedTemplateRootPaths(): void
-    {
-        $templateRootPaths = [
-            20 => $this->templateRootPath . '/',
-            10 => $this->templateRootPath . '/foo',
-        ];
-        $this->subject->setTemplateRootPaths($templateRootPaths);
-
-        $expected = [
-            $this->templateRootPath . '/foo',
-            $this->templateRootPath,
-        ];
-        self::assertSame($expected, $this->subject->getTemplateRootPaths());
-    }
-
-    #[Framework\Attributes\Test]
-    public function getSupportedFileExtensionsReturnsSupportedFileExtensions(): void
-    {
-        $this->subject->setSupportedFileExtensions(['hbs']);
-        self::assertSame(['hbs'], $this->subject->getSupportedFileExtensions());
-    }
-
-    #[Framework\Attributes\Test]
-    public function setSupportedFileExtensionsSetsDefaultFileExtensionsIfGivenFileExtensionsAreEmpty(): void
-    {
-        $this->subject->setSupportedFileExtensions([]);
-        self::assertSame(
-            Src\Renderer\Template\HandlebarsTemplateResolver::DEFAULT_FILE_EXTENSIONS,
-            $this->subject->getSupportedFileExtensions(),
+        $this->expectExceptionObject(
+            new Src\Exception\PartialPathIsNotResolvable('foo'),
         );
+
+        $this->subject->resolvePartialPath('foo');
     }
 
     #[Framework\Attributes\Test]
-    public function supportsIndicatesSupportOfGivenFileExtensionByResolver(): void
+    public function resolvePartialPathResolvesRelativePartialPathCorrectly(): void
     {
-        self::assertFalse($this->subject->supports('jpeg'));
-        self::assertTrue($this->subject->supports('hbs'));
-        // File extensions are case-sensitive
-        self::assertFalse($this->subject->supports('HBS'));
+        $expected = $this->partialRootPath . '/DummyPartial.hbs';
+
+        self::assertSame($expected, $this->subject->resolvePartialPath('DummyPartial'));
     }
 
     #[Framework\Attributes\Test]
-    public function resolveTemplatePathResolvesRelateTemplatePathCorrectly(): void
+    public function resolvePartialPathResolvesAbsolutePartialPathCorrectly(): void
     {
-        $templatePath = 'DummyTemplate';
+        $templatePath = \dirname(__DIR__, 2) . '/Fixtures/Partials/DummyPartial.hbs';
+        $expected = $this->partialRootPath . '/DummyPartial.hbs';
+
+        self::assertSame($expected, $this->subject->resolvePartialPath($templatePath));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathThrowsExceptionIfTemplatePathCannotBeResolved(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\TemplatePathIsNotResolvable('foo'),
+        );
+
+        $this->subject->resolveTemplatePath('foo');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathResolvesRelativeTemplatePathCorrectly(): void
+    {
         $expected = $this->templateRootPath . '/DummyTemplate.hbs';
 
-        self::assertSame($expected, $this->subject->resolveTemplatePath($templatePath));
+        self::assertSame($expected, $this->subject->resolveTemplatePath('DummyTemplate'));
     }
 
     #[Framework\Attributes\Test]

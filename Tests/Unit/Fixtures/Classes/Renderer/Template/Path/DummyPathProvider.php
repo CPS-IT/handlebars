@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,25 +21,40 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
+namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\Path;
 
 use Fr\Typo3Handlebars\Renderer;
 
 /**
- * DummyTemplatePaths
+ * DummyPathProvider
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyTemplatePaths extends Renderer\Template\TemplatePaths
+final class DummyPathProvider implements Renderer\Template\Path\PathProvider
 {
     /**
-     * @param string[] $templatePaths
+     * @param array<int, string> $templateRootPaths
+     * @param array<int, string> $partialRootPaths
      */
-    public function setTemplatePaths(array $templatePaths): self
+    public function __construct(
+        public array $templateRootPaths = [],
+        public array $partialRootPaths = [],
+    ) {}
+
+    public function getPartialRootPaths(): array
     {
-        $this->templatePaths = $templatePaths;
-        return $this;
+        return $this->partialRootPaths;
+    }
+
+    public function getTemplateRootPaths(): array
+    {
+        return $this->templateRootPaths;
+    }
+
+    public static function getPriority(): int
+    {
+        return 10;
     }
 }

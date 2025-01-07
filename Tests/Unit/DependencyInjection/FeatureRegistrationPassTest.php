@@ -146,7 +146,7 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
 
         // Simulate required services
         $dummyTemplatePathsDefinition = new DependencyInjection\Definition(Src\Renderer\Template\TemplatePaths::class);
-        $dummyTemplatePathsDefinition->addArgument(new Tests\Unit\Fixtures\Classes\DummyConfigurationManager());
+        $dummyTemplatePathsDefinition->addArgument([new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider()]);
         $dummyTemplateResolverDefinition = (new DependencyInjection\Definition('stdClass'))->setPublic(true);
         $dummyTemplateResolverDefinition->addArgument(new DependencyInjection\Reference(Src\Renderer\Template\TemplatePaths::class));
 

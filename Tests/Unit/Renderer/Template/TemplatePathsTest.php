@@ -39,63 +39,104 @@ final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
 {
     use Tests\HandlebarsTemplateResolverTrait;
 
-    private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
+    private Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider $pathProvider;
     private Src\Renderer\Template\TemplatePaths $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
-        $this->subject = new Src\Renderer\Template\TemplatePaths($this->configurationManager, $this->getViewConfiguration());
+        $this->pathProvider = new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider();
+        $this->subject = new Src\Renderer\Template\TemplatePaths([
+            new Src\Renderer\Template\Path\GlobalPathProvider($this->getViewConfiguration()),
+            $this->pathProvider,
+        ]);
     }
 
     /**
-     * @param array<string, array<mixed>> $typoScriptConfiguration
-     * @param string[] $expected
+     * @param array<int, string> $templateRootPaths
+     * @param array<int, string> $expected
      */
     #[Framework\Attributes\Test]
-    #[Framework\Attributes\DataProvider('getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider')]
-    public function getMergesConfigurationFromContainerWithTypoScriptConfiguration(
-        array $typoScriptConfiguration,
+    #[Framework\Attributes\DataProvider('getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider')]
+    public function getTemplateRootPathsMergesConfigurationFromPathProviders(
+        array $templateRootPaths,
         array $expected,
     ): void {
-        $this->configurationManager->setConfiguration($typoScriptConfiguration);
+        $this->pathProvider->templateRootPaths = $templateRootPaths;
 
-        self::assertSame($expected, $this->subject->get());
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
     }
 
     /**
-     * @return \Generator<string, array<mixed>>
+     * @param array<int, string> $partialRootPaths
+     * @param array<int, string> $expected
      */
-    public static function getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider(): \Generator
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('getPartialRootPathsMergesConfigurationFromPathProvidersDataProvider')]
+    public function getPartialRootPathsMergesConfigurationFromPathProviders(
+        array $partialRootPaths,
+        array $expected,
+    ): void {
+        $this->pathProvider->partialRootPaths = $partialRootPaths;
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+    }
+
+    /**
+     * @return \Generator<string, array{array<int, string>, array<int, string>}>
+     */
+    public static function getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
     {
-        yield 'no TypoScript configuration' => [
+        yield 'no view configuration' => [
             [],
             [
                 10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
             ],
         ];
-        yield 'TypoScript configuration with identical keys' => [
+        yield 'view configuration with identical keys' => [
             [
-                'view' => [
-                    'templateRootPaths' => [
-                        '10' => 'foo',
-                    ],
-                ],
+                '10' => 'foo',
             ],
             [
                 10 => 'foo',
             ],
         ];
-        yield 'TypoScript configuration with additional keys' => [
+        yield 'view configuration with additional keys' => [
             [
-                'view' => [
-                    'templateRootPaths' => [
-                        '10' => 'foo',
-                        '20' => 'baz',
-                    ],
-                ],
+                '10' => 'foo',
+                '20' => 'baz',
+            ],
+            [
+                10 => 'foo',
+                20 => 'baz',
+            ],
+        ];
+    }
+
+    /**
+     * @return \Generator<string, array{array<int, string>, array<int, string>}>
+     */
+    public static function getPartialRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
+    {
+        yield 'no view configuration' => [
+            [],
+            [
+                10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+            ],
+        ];
+        yield 'view configuration with identical keys' => [
+            [
+                '10' => 'foo',
+            ],
+            [
+                10 => 'foo',
+            ],
+        ];
+        yield 'view configuration with additional keys' => [
+            [
+                '10' => 'foo',
+                '20' => 'baz',
             ],
             [
                 10 => 'foo',

@@ -35,8 +35,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  *   - [data]: any default data passed to the renderer
  *
  * - template:
- *   - [template_root_paths]: numeric array of template root paths
- *   - [partial_root_paths]: numeric array of partial root paths
+ *   - [templateRootPaths]: numeric array of template root paths
+ *   - [partialRootPaths]: numeric array of partial root paths
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
@@ -59,14 +59,14 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('template')
                     ->children()
-                        ->arrayNode('template_root_paths')
+                        ->arrayNode('templateRootPaths')
                             ->beforeNormalization()
                                 ->always($this->getRootPathNormalizationClosure())
                             ->end()
                             ->performNoDeepMerging()
                             ->variablePrototype()->end()
                         ->end()
-                        ->arrayNode('partial_root_paths')
+                        ->arrayNode('partialRootPaths')
                             ->beforeNormalization()
                                 ->always($this->getRootPathNormalizationClosure())
                             ->end()

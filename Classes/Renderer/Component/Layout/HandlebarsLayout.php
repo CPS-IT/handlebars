@@ -62,7 +62,7 @@ class HandlebarsLayout
     /**
      * @return ($name is null ? array<string, HandlebarsLayoutAction[]> : HandlebarsLayoutAction[])
      */
-    public function getActions(string $name = null): array
+    public function getActions(?string $name = null): array
     {
         if ($name === null) {
             return $this->actions;

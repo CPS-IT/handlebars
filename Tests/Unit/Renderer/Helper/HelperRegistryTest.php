@@ -29,8 +29,6 @@ use PHPUnit\Framework;
 use Psr\Log;
 use TYPO3\TestingFramework;
 
-use function trim;
-
 /**
  * HelperRegistryTest
  *

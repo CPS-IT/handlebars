@@ -37,41 +37,42 @@ trait HandlebarsTemplateResolverTrait
     protected string $partialRootPath = __DIR__ . '/Unit/Fixtures/Partials';
 
     protected ?Renderer\Template\TemplateResolverInterface $templateResolver = null;
-    protected ?Renderer\Template\TemplateResolverInterface $partialResolver = null;
 
     protected function getTemplateResolver(): Renderer\Template\TemplateResolverInterface
     {
         return $this->templateResolver ??= new Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths());
     }
 
-    protected function getPartialResolver(): Renderer\Template\TemplateResolverInterface
+    protected function getTemplatePaths(): Renderer\Template\TemplatePaths
     {
-        return $this->partialResolver ??= new Renderer\Template\HandlebarsTemplateResolver(
-            $this->getTemplatePaths(Renderer\Template\TemplatePaths::PARTIALS),
-        );
-    }
-
-    protected function getTemplatePaths(string $type = Renderer\Template\TemplatePaths::TEMPLATES): Unit\Fixtures\Classes\Renderer\Template\DummyTemplatePaths
-    {
-        return new Unit\Fixtures\Classes\Renderer\Template\DummyTemplatePaths(
-            new Unit\Fixtures\Classes\DummyConfigurationManager(),
-            $this->getViewConfiguration($type),
-            $type,
-        );
+        return new Renderer\Template\TemplatePaths([
+            new Renderer\Template\Path\GlobalPathProvider($this->getViewConfiguration()),
+        ]);
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array{partialRootPaths: array<int, string>, templateRootPaths: array<int, string>}
      */
-    protected function getViewConfiguration(string $type = Renderer\Template\TemplatePaths::TEMPLATES): array
+    protected function getViewConfiguration(): array
     {
-        $templateRootPath = match ($type) {
-            Renderer\Template\TemplatePaths::PARTIALS => $this->partialRootPath,
-            default => $this->templateRootPath,
-        };
-
         return [
-            $type => [10 => $templateRootPath],
+            Renderer\Template\Path\PathProvider::PARTIALS => [10 => $this->partialRootPath],
+            Renderer\Template\Path\PathProvider::TEMPLATES => [10 => $this->templateRootPath],
+        ];
+    }
+
+    protected function allowAdditionalRootPaths(): void
+    {
+        /* @phpstan-ignore property.notFound */
+        $this->configurationToUseInTestInstance = [
+            'BE' => [
+                'lockRootPath' => [
+                    $this->partialRootPath,
+                    $this->templateRootPath,
+                    \dirname($this->partialRootPath),
+                    \dirname($this->templateRootPath),
+                ],
+            ],
         ];
     }
 }

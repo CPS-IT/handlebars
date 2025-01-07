@@ -55,6 +55,8 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
 
     protected function setUp(): void
     {
+        $this->allowAdditionalRootPaths();
+
         parent::setUp();
 
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());

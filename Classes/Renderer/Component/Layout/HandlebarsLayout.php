@@ -51,11 +51,11 @@ class HandlebarsLayout
         ($this->parseFunction)();
     }
 
-    public function addAction(string $name, HandlebarsLayoutAction $action): void
+    public function addAction(HandlebarsLayoutAction $action): void
     {
-        if (!isset($this->actions[$name])) {
-            $this->actions[$name] = [];
-        }
+        $name = $action->getName();
+
+        $this->actions[$name] ??= [];
         $this->actions[$name][] = $action;
     }
 

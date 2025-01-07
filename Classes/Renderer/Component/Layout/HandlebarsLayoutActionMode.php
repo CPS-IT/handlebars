@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2024 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,35 +23,20 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Component\Layout;
 
-use Fr\Typo3Handlebars\Renderer;
-
 /**
- * HandlebarsLayoutAction
+ * HandlebarsLayoutActionMode
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class HandlebarsLayoutAction
+enum HandlebarsLayoutActionMode: string
 {
-    public function __construct(
-        private string $name,
-        private Renderer\Helper\Context\HelperContext $context,
-        private HandlebarsLayoutActionMode $mode = HandlebarsLayoutActionMode::Replace,
-    ) {}
+    case Append = 'append';
+    case Replace = 'replace';
+    case Prepend = 'prepend';
 
-    public function render(string $value): string
+    public static function tryFromCaseInsensitive(string $mode): ?self
     {
-        $renderResult = $this->context->renderChildren($this->context->renderingContext);
-
-        return match ($this->mode) {
-            HandlebarsLayoutActionMode::Append => $value . $renderResult,
-            HandlebarsLayoutActionMode::Prepend => $renderResult . $value,
-            HandlebarsLayoutActionMode::Replace => $renderResult,
-        };
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
+        return self::tryFrom(\strtolower($mode));
     }
 }

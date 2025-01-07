@@ -44,7 +44,6 @@ final readonly class ContentHelper implements HelperInterface
     public function render(Context\HelperContext $context): ?bool
     {
         $name = $context[0];
-        $mode = $context['mode'] ?? Renderer\Component\Layout\HandlebarsLayoutAction::REPLACE;
         $layoutStack = $this->getLayoutStack($context);
 
         // Early return if "content" helper is requested outside of an "extend" helper block
@@ -55,6 +54,14 @@ final readonly class ContentHelper implements HelperInterface
             );
 
             return $context->isBlockHelper() ? null : false;
+        }
+
+        // Get layout action mode
+        if (isset($context['mode'])) {
+            $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::tryFromCaseInsensitive($context['mode'])
+                ?? Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
+        } else {
+            $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
         }
 
         // Get upper layout from stack
@@ -70,8 +77,8 @@ final readonly class ContentHelper implements HelperInterface
         }
 
         // Add concrete action for the requested block
-        $action = new Renderer\Component\Layout\HandlebarsLayoutAction($context, $mode);
-        $layout->addAction($name, $action);
+        $action = new Renderer\Component\Layout\HandlebarsLayoutAction($name, $context, $mode);
+        $layout->addAction($action);
 
         // This helper does not return any content, it's just here to register layout actions
         return null;

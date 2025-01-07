@@ -56,25 +56,24 @@ final class HandlebarsLayoutActionTest extends TestingFramework\Core\Unit\UnitTe
         );
     }
 
-    /**
-     * @param Src\Renderer\Component\Layout\HandlebarsLayoutAction::* $mode
-     */
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('renderReturnsProcessedValueDataProvider')]
-    public function renderReturnsProcessedValue(string $mode, string $expected): void
-    {
-        $subject = new Src\Renderer\Component\Layout\HandlebarsLayoutAction($this->context, $mode);
+    public function renderReturnsProcessedValue(
+        Src\Renderer\Component\Layout\HandlebarsLayoutActionMode $mode,
+        string $expected,
+    ): void {
+        $subject = new Src\Renderer\Component\Layout\HandlebarsLayoutAction('foo', $this->context, $mode);
 
         self::assertSame($expected, $subject->render('foo'));
     }
 
     /**
-     * @return \Generator<string, array{Src\Renderer\Component\Layout\HandlebarsLayoutAction::*, string}>
+     * @return \Generator<string, array{Src\Renderer\Component\Layout\HandlebarsLayoutActionMode, string}>
      */
     public static function renderReturnsProcessedValueDataProvider(): \Generator
     {
-        yield 'replace' => [Src\Renderer\Component\Layout\HandlebarsLayoutAction::REPLACE, 'baz'];
-        yield 'append' => [Src\Renderer\Component\Layout\HandlebarsLayoutAction::APPEND, 'foobaz'];
-        yield 'prepend' => [Src\Renderer\Component\Layout\HandlebarsLayoutAction::PREPEND, 'bazfoo'];
+        yield 'append' => [Src\Renderer\Component\Layout\HandlebarsLayoutActionMode::Append, 'foobaz'];
+        yield 'prepend' => [Src\Renderer\Component\Layout\HandlebarsLayoutActionMode::Prepend, 'bazfoo'];
+        yield 'replace' => [Src\Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace, 'baz'];
     }
 }

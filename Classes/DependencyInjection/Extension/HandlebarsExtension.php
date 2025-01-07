@@ -75,8 +75,8 @@ final class HandlebarsExtension extends Extension
      */
     private function parseConfiguration(array $configs): void
     {
-        $templateConfig = $this->mergeConfigs($configs, 'template');
         $this->defaultData = $this->mergeConfigs($configs, 'default_data');
+        $templateConfig = $this->mergeConfigs($configs, 'view');
         $this->templateRootPaths = $templateConfig['templateRootPaths'] ?? [];
         $this->partialRootPaths = $templateConfig['partialRootPaths'] ?? [];
     }

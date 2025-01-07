@@ -117,12 +117,12 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
         yield 'template root paths' => [
             [
                 [
-                    'template' => [
+                    'view' => [
                         'templateRootPaths' => $firstRootPaths,
                     ],
                 ],
                 [
-                    'template' => [
+                    'view' => [
                         'templateRootPaths' => $secondRootPaths,
                     ],
                 ],
@@ -136,12 +136,12 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
         yield 'partial root paths' => [
             [
                 [
-                    'template' => [
+                    'view' => [
                         'partialRootPaths' => $firstRootPaths,
                     ],
                 ],
                 [
-                    'template' => [
+                    'view' => [
                         'partialRootPaths' => $secondRootPaths,
                     ],
                 ],

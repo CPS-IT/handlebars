@@ -34,7 +34,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * - defaultData:
  *   - [data]: any default data passed to the renderer
  *
- * - template:
+ * - view:
  *   - [templateRootPaths]: numeric array of template root paths
  *   - [partialRootPaths]: numeric array of partial root paths
  *
@@ -57,7 +57,7 @@ final class Configuration implements ConfigurationInterface
                     ->performNoDeepMerging()
                     ->variablePrototype()->end()
                 ->end()
-                ->arrayNode('template')
+                ->arrayNode('view')
                     ->children()
                         ->arrayNode('templateRootPaths')
                             ->beforeNormalization()

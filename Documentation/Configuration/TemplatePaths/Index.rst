@@ -27,7 +27,7 @@ is by using the :file:`Services.yaml` file:
     # Configuration/Services.yaml
 
     handlebars:
-      template:
+      view:
         templateRootPaths:
           10: EXT:my_extension/Resources/Private/Templates
         partialRootPaths:

@@ -28,6 +28,6 @@ services:
 
 handlebars:
   default_data: []
-  template:
+  view:
     templateRootPaths: []
     partialRootPaths: []

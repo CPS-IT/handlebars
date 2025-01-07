@@ -37,6 +37,8 @@ use Psr\Log;
 #[Attribute\AsHelper('content')]
 final readonly class ContentHelper implements HelperInterface
 {
+    private const DEFAULT_MODE = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
+
     public function __construct(
         private Log\LoggerInterface $logger,
     ) {}
@@ -44,6 +46,7 @@ final readonly class ContentHelper implements HelperInterface
     public function render(Context\HelperContext $context): ?bool
     {
         $name = $context[0];
+        $mode = $this->resolveLayoutActionMode($context, $name);
         $layoutStack = $this->getLayoutStack($context);
 
         // Early return if "content" helper is requested outside of an "extend" helper block
@@ -54,14 +57,6 @@ final readonly class ContentHelper implements HelperInterface
             );
 
             return $context->isBlockHelper() ? null : false;
-        }
-
-        // Get layout action mode
-        if (isset($context['mode'])) {
-            $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::tryFromCaseInsensitive($context['mode'])
-                ?? Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
-        } else {
-            $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
         }
 
         // Get upper layout from stack
@@ -87,7 +82,7 @@ final readonly class ContentHelper implements HelperInterface
     /**
      * @return Renderer\Component\Layout\HandlebarsLayout[]
      */
-    protected function getLayoutStack(Context\HelperContext $context): array
+    private function getLayoutStack(Context\HelperContext $context): array
     {
         $renderingContext = $context->renderingContext;
         $contextStack = $context->contextStack;
@@ -107,5 +102,31 @@ final readonly class ContentHelper implements HelperInterface
         }
 
         return [];
+    }
+
+    private function resolveLayoutActionMode(
+        Context\HelperContext $context,
+        string $name,
+    ): Renderer\Component\Layout\HandlebarsLayoutActionMode {
+        if (!isset($context['mode'])) {
+            return self::DEFAULT_MODE;
+        }
+
+        $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::tryFromCaseInsensitive($context['mode']);
+
+        if ($mode === null) {
+            $mode = self::DEFAULT_MODE;
+
+            $this->logger->warning(
+                \sprintf(
+                    'Handlebars layout helper "content" has invalid mode "%s". Falling back to "%s".',
+                    $context['mode'],
+                    $mode->value,
+                ),
+                ['name' => $name],
+            );
+        }
+
+        return $mode;
     }
 }

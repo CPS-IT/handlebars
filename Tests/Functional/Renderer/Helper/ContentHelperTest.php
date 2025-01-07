@@ -115,6 +115,23 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     }
 
     #[Framework\Attributes\Test]
+    public function helperUsesReplaceModeIfInvalidModeIsGiven(): void
+    {
+        $this->renderer->render('@main-layout-extended-with-invalid-mode', [
+            'templateName' => '@main-layout',
+        ]);
+
+        self::assertTrue(
+            $this->logger->hasWarning([
+                'message' => 'Handlebars layout helper "content" has invalid mode "foo". Falling back to "replace".',
+                'context' => [
+                    'name' => 'main',
+                ],
+            ])
+        );
+    }
+
+    #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('helperCanBeCalledToConditionallyRenderBlocksDataProvider')]
     public function helperCanBeCalledToConditionallyRenderBlocks(bool $renderSecondBlock, string $expected): void
     {

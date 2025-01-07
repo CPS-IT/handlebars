@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2024 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,13 @@ use Symfony\Component\EventDispatcher;
 use TYPO3\TestingFramework;
 
 /**
- * ContentHelperTest
+ * BlockHelperTest
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Framework\Attributes\CoversClass(Src\Renderer\Helper\ContentHelper::class)]
-final class ContentHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
+#[Framework\Attributes\CoversClass(Src\Renderer\Helper\BlockHelper::class)]
+final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
     use Tests\HandlebarsTemplateResolverTrait;
 
@@ -69,29 +69,25 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     }
 
     #[Framework\Attributes\Test]
-    public function helperCanBeCalledFromExtendedLayout(): void
+    public function helperCanBeCalledFromMainLayout(): void
     {
-        $actual = trim($this->renderer->render('@main-layout-extended', [
-            'templateName' => '@main-layout',
-        ]));
+        $actual = trim($this->renderer->render('@main-layout'));
         $expected = implode(PHP_EOL, [
             'this is the main block:',
             '',
             '[ ]+main block',
-            '[ ]+injected',
             '',
             'this is the second block:',
             '',
-            '[ ]+injected',
             '[ ]+second block',
             '',
             'this is the third block:',
             '',
-            '[ ]+injected',
+            '[ ]+third block',
             '',
             'this is the fourth block:',
             '',
-            '[ ]+injected',
+            '[ ]+fourth block',
             '',
             'this is the end. bye bye',
         ]);
@@ -100,38 +96,36 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     }
 
     #[Framework\Attributes\Test]
-    public function helperCannotBeCalledOutsideOfExtendedLayout(): void
+    public function helperCanBeCalledFromExtendedLayout(): void
     {
-        $this->renderer->render('@main-layout-content-only');
-
-        self::assertTrue(
-            $this->logger->hasError([
-                'message' => 'Handlebars layout helper "content" can only be used within an "extend" helper block!',
-                'context' => [
-                    'name' => 'main',
-                ],
-            ])
-        );
-    }
-
-    #[Framework\Attributes\Test]
-    #[Framework\Attributes\DataProvider('helperCanBeCalledToConditionallyRenderBlocksDataProvider')]
-    public function helperCanBeCalledToConditionallyRenderBlocks(bool $renderSecondBlock, string $expected): void
-    {
-        $actual = trim($this->renderer->render('@main-layout-extended-with-conditional-contents', [
-            'templateName' => '@main-layout-conditional-block',
-            'renderSecondBlock' => $renderSecondBlock,
+        $actual = trim($this->renderer->render('@main-layout-extended-with-fifth-content', [
+            'templateName' => '@main-layout',
         ]));
+        $expected = implode(PHP_EOL, [
+            'this is the main block:',
+            '',
+            '[ ]+main block',
+            '',
+            'this is the second block:',
+            '',
+            '[ ]+second block',
+            '',
+            'this is the third block:',
+            '',
+            '[ ]+third block',
+            '',
+            'this is the fourth block:',
+            '',
+            '[ ]+fourth block',
+            '',
+            '[ ]+this is the fifth block:',
+            '',
+            '[ ]+fifth block',
+            '[ ]+injected',
+            '',
+            'this is the end. bye bye',
+        ]);
 
         self::assertMatchesRegularExpression('/^' . $expected . '$/', $actual);
-    }
-
-    /**
-     * @return \Generator<string, array{bool, string}>
-     */
-    public static function helperCanBeCalledToConditionallyRenderBlocksDataProvider(): \Generator
-    {
-        yield 'without second block' => [false, ''];
-        yield 'with second block' => [true, 'main block\n+[ ]+second block'];
     }
 }

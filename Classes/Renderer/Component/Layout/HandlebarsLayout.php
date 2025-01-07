@@ -34,18 +34,21 @@ class HandlebarsLayout
     protected bool $parsed = false;
 
     /**
+     * @var array<string, list<HandlebarsLayoutAction>>
+     */
+    protected array $actions = [];
+
+    /**
      * @param callable $parseFunction
-     * @param array<string, HandlebarsLayoutAction[]> $actions
      */
     public function __construct(
         protected $parseFunction,
-        protected array $actions = [],
     ) {}
 
     public function parse(): void
     {
-        ($this->parseFunction)();
         $this->parsed = true;
+        ($this->parseFunction)();
     }
 
     public function addAction(string $name, HandlebarsLayoutAction $action): void
@@ -57,7 +60,7 @@ class HandlebarsLayout
     }
 
     /**
-     * @return array<string, HandlebarsLayoutAction[]>|HandlebarsLayoutAction[]
+     * @return ($name is null ? array<string, HandlebarsLayoutAction[]> : HandlebarsLayoutAction[])
      */
     public function getActions(string $name = null): array
     {
@@ -76,11 +79,5 @@ class HandlebarsLayout
     public function isParsed(): bool
     {
         return $this->parsed;
-    }
-
-    public function setParsed(bool $parsed): self
-    {
-        $this->parsed = $parsed;
-        return $this;
     }
 }

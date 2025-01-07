@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Component\Layout;
 
 use Fr\Typo3Handlebars\Exception;
+use Fr\Typo3Handlebars\Renderer;
 
 /**
  * HandlebarsLayoutAction
@@ -40,13 +41,10 @@ class HandlebarsLayoutAction
     protected readonly string $mode;
 
     /**
-     * @param array<string, mixed> $data
-     * @param callable $renderFunction
      * @throws Exception\UnsupportedTypeException
      */
     public function __construct(
-        protected readonly array $data,
-        protected $renderFunction,
+        protected readonly Renderer\Helper\Context\HelperContext $context,
         string $mode = self::REPLACE,
     ) {
         $this->mode = strtolower($mode);
@@ -60,7 +58,7 @@ class HandlebarsLayoutAction
      */
     public function render(string $value): string
     {
-        $renderResult = ($this->renderFunction)($this->data);
+        $renderResult = $this->context->renderChildren($this->context->renderingContext);
 
         return match ($this->mode) {
             self::APPEND => $value . $renderResult,

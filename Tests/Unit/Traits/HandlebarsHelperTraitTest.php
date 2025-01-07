@@ -65,20 +65,23 @@ final class HandlebarsHelperTraitTest extends TestingFramework\Core\Unit\UnitTes
 
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('registerHelperRegistersHelperCorrectlyDataProvider')]
-    public function registerHelperRegistersHelperCorrectly(mixed $function, string|callable $expectedCallable): void
+    public function registerHelperRegistersHelperCorrectly(mixed $function, callable $expectedCallable): void
     {
         $this->subject->registerHelper('foo', $function);
-        self::assertEquals(['foo' => $expectedCallable], $this->subject->getHelpers());
+
+        $expected = $this->mapExpectedCallable($expectedCallable);
+
+        self::assertEquals(['foo' => $expected], $this->subject->getHelpers());
     }
 
     #[Framework\Attributes\Test]
     public function registerHelperOverridesAvailableHelper(): void
     {
         $this->subject->registerHelper('foo', 'trim');
-        self::assertSame(['foo' => 'trim'], $this->subject->getHelpers());
+        self::assertEquals(['foo' => $this->mapExpectedCallable(trim(...))], $this->subject->getHelpers());
 
         $this->subject->registerHelper('foo', 'strtolower');
-        self::assertSame(['foo' => 'strtolower'], $this->subject->getHelpers());
+        self::assertEquals(['foo' => $this->mapExpectedCallable(strtolower(...))], $this->subject->getHelpers());
     }
 
     #[Framework\Attributes\Test]
@@ -87,7 +90,7 @@ final class HandlebarsHelperTraitTest extends TestingFramework\Core\Unit\UnitTes
         self::assertSame([], $this->subject->getHelpers());
 
         $this->subject->registerHelper('foo', 'strtolower');
-        self::assertSame(['foo' => 'strtolower'], $this->subject->getHelpers());
+        self::assertEquals(['foo' => $this->mapExpectedCallable(strtolower(...))], $this->subject->getHelpers());
     }
 
     /**
@@ -109,7 +112,7 @@ final class HandlebarsHelperTraitTest extends TestingFramework\Core\Unit\UnitTes
     {
         yield 'callable function as string' => [
             'trim',
-            'trim',
+            trim(...),
         ];
         yield 'invokable class as string' => [
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class,
@@ -139,5 +142,18 @@ final class HandlebarsHelperTraitTest extends TestingFramework\Core\Unit\UnitTes
             [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
             [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
         ];
+    }
+
+    /**
+     * @return callable(\Fr\Typo3Handlebars\Renderer\Helper\Context\HelperContext): mixed
+     */
+    private function mapExpectedCallable(callable $expectedCallable): callable
+    {
+        return static function () use ($expectedCallable) {
+            $arguments = \func_get_args();
+            $context = Src\Renderer\Helper\Context\HelperContext::fromRuntimeCall($arguments);
+
+            return $expectedCallable($context);
+        };
     }
 }

@@ -34,18 +34,18 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#block-name
  */
+#[Attribute\AsHelper('block')]
 final readonly class BlockHelper implements HelperInterface
 {
     /**
-     * @param array<string, mixed> $options
      * @throws Exception\UnsupportedTypeException
      */
-    #[Attribute\AsHelper('block')]
-    public function evaluate(string $name, array $options): string
+    public function render(Context\HelperContext $context): string
     {
-        $data = $options['_this'];
-        $actions = $data['_layoutActions'] ?? [];
-        $stack = $data['_layoutStack'] ?? [];
+        $name = $context[0];
+        $renderingContext = $context->renderingContext;
+        $actions = $renderingContext['_layoutActions'] ?? [];
+        $stack = $renderingContext['_layoutStack'] ?? [];
 
         // Parse layouts and fetch all parsed layout actions for the requested block
         while (!empty($stack)) {
@@ -58,12 +58,10 @@ final readonly class BlockHelper implements HelperInterface
         }
 
         // Walk through layout actions and apply them to the rendered block
-        $fn = $options['fn'] ?? static fn() => '';
-
         return array_reduce(
             $actions,
             static fn(string $value, Renderer\Component\Layout\HandlebarsLayoutAction $action): string => $action->render($value),
-            $fn($data),
+            $context->renderChildren($renderingContext) ?? '',
         );
     }
 }

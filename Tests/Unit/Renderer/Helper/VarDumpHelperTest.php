@@ -47,7 +47,7 @@ final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
-    public function evaluateReturnsDumpedContext(): void
+    public function renderReturnsDumpedContext(): void
     {
         Core\Utility\DebugUtility::useAnsiColor(false);
 

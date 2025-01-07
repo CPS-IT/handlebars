@@ -36,9 +36,9 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  */
 final class HandlebarsExtension extends Extension
 {
-    public const PARAMETER_DEFAULT_DATA = 'handlebars.default_data';
     public const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.templateRootPaths';
     public const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partialRootPaths';
+    public const PARAMETER_ROOT_CONTEXT = 'handlebars.rootContext';
 
     /**
      * @var string[]
@@ -53,7 +53,7 @@ final class HandlebarsExtension extends Extension
     /**
      * @var array<string|int, mixed>
      */
-    private array $defaultData = [];
+    private array $rootContext = [];
 
     /**
      * @param array<string|int, mixed>[] $configs
@@ -64,9 +64,9 @@ final class HandlebarsExtension extends Extension
         $this->parseConfiguration($configs);
 
         $container->getParameterBag()->add([
-            self::PARAMETER_DEFAULT_DATA => $this->defaultData,
             self::PARAMETER_TEMPLATE_ROOT_PATHS => $this->templateRootPaths,
             self::PARAMETER_PARTIAL_ROOT_PATHS => $this->partialRootPaths,
+            self::PARAMETER_ROOT_CONTEXT => $this->rootContext,
         ]);
     }
 
@@ -75,10 +75,11 @@ final class HandlebarsExtension extends Extension
      */
     private function parseConfiguration(array $configs): void
     {
-        $this->defaultData = $this->mergeConfigs($configs, 'default_data');
         $templateConfig = $this->mergeConfigs($configs, 'view');
+
         $this->templateRootPaths = $templateConfig['templateRootPaths'] ?? [];
         $this->partialRootPaths = $templateConfig['partialRootPaths'] ?? [];
+        $this->rootContext = $this->mergeConfigs($configs, 'variables');
     }
 
     /**
@@ -88,16 +89,18 @@ final class HandlebarsExtension extends Extension
     private function mergeConfigs(array $configs, string $configKey): array
     {
         $mergedConfig = [];
+
         foreach (array_column($configs, $configKey) as $concreteConfig) {
             ArrayUtility::mergeRecursiveWithOverrule($mergedConfig, $concreteConfig);
         }
+
         return $mergedConfig;
     }
 
     private function reset(): void
     {
-        $this->defaultData = [];
         $this->templateRootPaths = [];
         $this->partialRootPaths = [];
+        $this->rootContext = [];
     }
 }

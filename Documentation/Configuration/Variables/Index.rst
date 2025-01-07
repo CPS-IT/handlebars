@@ -11,7 +11,7 @@ data. This can be, for example, paths to assets or other firmly defined
 content such as e-mail addresses or names/labels/etc.
 
 The standard `HandlebarsRenderer` provides the possibility to specify an
-array :php:`$defaultData` for this purpose. This data is merged with the
+array :php:`$rootContext` for this purpose. This data is merged with the
 concrete render data during each rendering and passed on to the `Renderer`.
 
 ..  _configure-default-data:
@@ -26,11 +26,11 @@ In your :file:`Services.yaml` file, add the following lines:
     # Configuration/Services.yaml
 
     handlebars:
-      default_data:
+      variables:
         publicPath: /assets
         # ...
 
-All data will then be available as service parameter `%handlebars.default_data%`
+All data will then be available as service parameter `%handlebars.variables%`
 within the service container. So you can use it everywhere you need it in
 your :file:`Services.yaml` file.
 

@@ -27,7 +27,7 @@ services:
     arguments: ['handlebars']
 
 handlebars:
-  default_data: []
+  variables: []
   view:
     templateRootPaths: []
     partialRootPaths: []

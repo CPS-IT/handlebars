@@ -34,11 +34,11 @@ use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
 class BeforeRenderingEvent
 {
     /**
-     * @param array<string|int, mixed> $data
+     * @param array<string|int, mixed> $variables
      */
     public function __construct(
         private readonly string $templatePath,
-        private array $data,
+        private array $variables,
         private readonly HandlebarsRenderer $renderer,
     ) {}
 
@@ -50,17 +50,17 @@ class BeforeRenderingEvent
     /**
      * @return array<string|int, mixed>
      */
-    public function getData(): array
+    public function getVariables(): array
     {
-        return $this->data;
+        return $this->variables;
     }
 
     /**
-     * @param array<string|int, mixed> $data
+     * @param array<string|int, mixed> $variables
      */
-    public function setData(array $data): self
+    public function setVariables(array $variables): self
     {
-        $this->data = $data;
+        $this->variables = $variables;
         return $this;
     }
 

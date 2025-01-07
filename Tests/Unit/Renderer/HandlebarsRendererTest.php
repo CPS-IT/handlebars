@@ -102,10 +102,10 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderMergesDefaultDataWithGivenData(): void
+    public function renderMergesVariablesWithGivenVariables(): void
     {
         $this->helperRegistry->add('varDump', Src\Renderer\Helper\VarDumpHelper::class);
-        $this->subject->setDefaultData([
+        $this->subject->setRootContext([
             'foo' => 'baz',
         ]);
 
@@ -241,10 +241,11 @@ EOF;
     }
 
     #[Framework\Attributes\Test]
-    public function getDefaultDataReturnsDefaultRenderData(): void
+    public function getRootContextReturnsDefaultVariables(): void
     {
-        $this->subject->setDefaultData(['foo' => 'baz']);
-        self::assertSame(['foo' => 'baz'], $this->subject->getDefaultData());
+        $this->subject->setRootContext(['foo' => 'baz']);
+
+        self::assertSame(['foo' => 'baz'], $this->subject->getRootContext());
     }
 
     private function assertCacheIsEmptyForTemplate(string $template): void
@@ -264,6 +265,7 @@ EOF;
     protected function tearDown(): void
     {
         self::assertTrue($this->clearCache(), 'Unable to clear Handlebars cache.');
+
         parent::tearDown();
     }
 

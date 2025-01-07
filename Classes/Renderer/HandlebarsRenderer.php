@@ -58,7 +58,7 @@ class HandlebarsRenderer implements RendererInterface
     protected readonly bool $debugMode;
 
     /**
-     * @param array<string|int, mixed> $defaultData
+     * @param array<string|int, mixed> $rootContext
      */
     public function __construct(
         #[Autowire('@handlebars.cache')]
@@ -68,8 +68,8 @@ class HandlebarsRenderer implements RendererInterface
         protected readonly LoggerInterface $logger,
         #[Autowire('@handlebars.template_resolver')]
         protected readonly TemplateResolverInterface $templateResolver,
-        #[Autowire('%handlebars.default_data%')]
-        protected array $defaultData = [],
+        #[Autowire('%handlebars.variables%')]
+        protected array $rootContext = [],
     ) {
         $this->debugMode = $this->isDebugModeEnabled();
     }
@@ -86,12 +86,12 @@ class HandlebarsRenderer implements RendererInterface
     }
 
     /**
-     * @param array<string|int, mixed> $data
+     * @param array<string|int, mixed> $variables
      * @throws InvalidTemplateFileException
      * @throws TemplateCompilationException
      * @throws TemplatePathIsNotResolvable
      */
-    protected function processRendering(string $templatePath, array $data): string
+    protected function processRendering(string $templatePath, array $variables): string
     {
         $fullTemplatePath = $this->templateResolver->resolveTemplatePath($templatePath);
         $template = file_get_contents($fullTemplatePath);
@@ -106,19 +106,19 @@ class HandlebarsRenderer implements RendererInterface
             return '';
         }
 
-        // Merge render data with default data
-        $mergedData = array_merge($this->defaultData, $data);
+        // Merge render data with root context
+        $mergedVariables = array_merge($this->rootContext, $variables);
 
         // Compile template
         $compileResult = $this->compile($template);
         $renderer = $this->prepareCompileResult($compileResult);
 
         // Dispatch before rendering event
-        $beforeRenderingEvent = new BeforeRenderingEvent($fullTemplatePath, $mergedData, $this);
+        $beforeRenderingEvent = new BeforeRenderingEvent($fullTemplatePath, $mergedVariables, $this);
         $this->eventDispatcher->dispatch($beforeRenderingEvent);
 
         // Render content
-        $content = $renderer($beforeRenderingEvent->getData(), [
+        $content = $renderer($beforeRenderingEvent->getVariables(), [
             'debug' => Runtime::DEBUG_TAGS_HTML,
             'helpers' => $this->helperRegistry->getAll(),
         ]);
@@ -259,17 +259,17 @@ class HandlebarsRenderer implements RendererInterface
     /**
      * @return array<string|int, mixed>
      */
-    public function getDefaultData(): array
+    public function getRootContext(): array
     {
-        return $this->defaultData;
+        return $this->rootContext;
     }
 
     /**
-     * @param array<string|int, mixed> $defaultData
+     * @param array<string|int, mixed> $rootContext
      */
-    public function setDefaultData(array $defaultData): self
+    public function setRootContext(array $rootContext): self
     {
-        $this->defaultData = $defaultData;
+        $this->rootContext = $rootContext;
         return $this;
     }
 

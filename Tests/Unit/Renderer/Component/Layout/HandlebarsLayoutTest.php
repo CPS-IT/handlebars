@@ -37,7 +37,6 @@ use TYPO3\TestingFramework;
 final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
 {
     private Src\Renderer\Component\Layout\HandlebarsLayout $subject;
-    private Src\Renderer\Component\Layout\HandlebarsLayoutAction $action;
 
     private bool $parseFunctionInvoked = false;
 
@@ -45,21 +44,8 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         parent::setUp();
 
-        $stack = [];
-        $renderingContext = [];
-        $data = [];
-
         $this->subject = new Src\Renderer\Component\Layout\HandlebarsLayout(
             fn() => $this->parseFunctionInvoked = true,
-        );
-        $this->action = new Src\Renderer\Component\Layout\HandlebarsLayoutAction(
-            new Src\Renderer\Helper\Context\HelperContext(
-                [],
-                [],
-                new Src\Renderer\Helper\Context\RenderingContextStack($stack),
-                $renderingContext,
-                $data,
-            ),
         );
     }
 
@@ -80,12 +66,14 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         self::assertSame([], $this->subject->getActions());
 
-        $this->subject->addAction('foo', $this->action);
+        $action = $this->createAction('foo');
+
+        $this->subject->addAction($action);
 
         self::assertSame(
             [
                 'foo' => [
-                    $this->action,
+                    $action,
                 ],
             ],
             $this->subject->getActions(),
@@ -95,8 +83,8 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function getActionsReturnsAllRegisteredActions(): void
     {
-        $this->subject->addAction('foo', $this->action);
-        $this->subject->addAction('baz', $this->action);
+        $this->subject->addAction($this->createAction('foo'));
+        $this->subject->addAction($this->createAction('baz'));
 
         self::assertSame(['foo', 'baz'], \array_keys($this->subject->getActions()));
     }
@@ -104,10 +92,13 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function getActionsReturnsRegisteredActionsByGivenName(): void
     {
-        $this->subject->addAction('foo', $this->action);
-        $this->subject->addAction('baz', $this->action);
+        $fooAction = $this->createAction('foo');
+        $bazAction = $this->createAction('baz');
 
-        self::assertSame([$this->action], $this->subject->getActions('foo'));
+        $this->subject->addAction($fooAction);
+        $this->subject->addAction($bazAction);
+
+        self::assertSame([$fooAction], $this->subject->getActions('foo'));
         self::assertSame([], $this->subject->getActions('missing'));
     }
 
@@ -116,8 +107,26 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         self::assertFalse($this->subject->hasAction('foo'));
 
-        $this->subject->addAction('foo', $this->action);
+        $this->subject->addAction($this->createAction('foo'));
 
         self::assertTrue($this->subject->hasAction('foo'));
+    }
+
+    private function createAction(string $name): Src\Renderer\Component\Layout\HandlebarsLayoutAction
+    {
+        $stack = [];
+        $renderingContext = [];
+        $data = [];
+
+        return new Src\Renderer\Component\Layout\HandlebarsLayoutAction(
+            $name,
+            new Src\Renderer\Helper\Context\HelperContext(
+                [],
+                [],
+                new Src\Renderer\Helper\Context\RenderingContextStack($stack),
+                $renderingContext,
+                $data,
+            ),
+        );
     }
 }

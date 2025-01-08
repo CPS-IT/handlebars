@@ -32,10 +32,10 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#extend-partial-context-keyvalue-
  */
-final readonly class ExtendHelper implements HelperInterface
+final readonly class ExtendHelper implements Helper
 {
     public function __construct(
-        private Renderer\RendererInterface $renderer,
+        private Renderer\Renderer $renderer,
     ) {}
 
     public function render(Context\HelperContext $context): string

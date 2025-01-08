@@ -39,7 +39,7 @@ class BeforeRenderingEvent
     public function __construct(
         private readonly string $templatePath,
         private array $variables,
-        private readonly Renderer\RendererInterface $renderer,
+        private readonly Renderer\Renderer $renderer,
     ) {}
 
     public function getTemplatePath(): string
@@ -76,7 +76,7 @@ class BeforeRenderingEvent
         return $this;
     }
 
-    public function getRenderer(): Renderer\RendererInterface
+    public function getRenderer(): Renderer\Renderer
     {
         return $this->renderer;
     }

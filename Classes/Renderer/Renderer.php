@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,17 +21,18 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars;
-
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+namespace Fr\Typo3Handlebars\Renderer;
 
 /**
- * ContentObjectRendererAwareInterface
+ * Renderer
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface ContentObjectRendererAwareInterface
+interface Renderer
 {
-    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer): void;
+    /**
+     * @param array<string|int, mixed> $data
+     */
+    public function render(string $templatePath, array $data = []): string;
 }

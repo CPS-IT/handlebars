@@ -33,7 +33,7 @@ use Psr\Log;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#content-name-modeappendprependreplace
  */
-final readonly class ContentHelper implements HelperInterface
+final readonly class ContentHelper implements Helper
 {
     private const DEFAULT_MODE = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
 

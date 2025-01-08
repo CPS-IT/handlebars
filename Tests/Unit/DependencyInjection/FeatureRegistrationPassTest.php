@@ -110,7 +110,7 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
     }
 
     /**
-     * @param class-string<Src\Renderer\Helper\HelperInterface> $className
+     * @param class-string<Src\Renderer\Helper\Helper> $className
      */
     private static function assertHelperIsTagged(DependencyInjection\ContainerBuilder $container, string $className, string $name): void
     {
@@ -153,7 +153,7 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
         $container->setDefinition(Src\Renderer\Template\TemplatePaths::class, $dummyTemplatePathsDefinition);
         $container->setDefinition('handlebars.template_resolver', $dummyTemplateResolverDefinition);
         $container->setDefinition('handlebars.partial_resolver', $dummyTemplateResolverDefinition);
-        $container->setDefinition(Src\Renderer\RendererInterface::class, $dummyTemplateResolverDefinition);
+        $container->setDefinition(Src\Renderer\Renderer::class, $dummyTemplateResolverDefinition);
 
         $container->setParameter(Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS, []);
         $container->setParameter(Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS, []);

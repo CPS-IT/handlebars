@@ -21,19 +21,17 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
+namespace Fr\Typo3Handlebars;
+
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * CompatibilityLayerInterface
+ * ContentObjectRendererAware
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
- * @internal
  */
-interface CompatibilityLayerInterface
+interface ContentObjectRendererAware
 {
-    /**
-     * @param array<string, mixed> $configuration
-     */
-    public function provide(string $processorServiceId, array $configuration): bool;
+    public function setContentObjectRenderer(ContentObjectRenderer $contentObjectRenderer): void;
 }

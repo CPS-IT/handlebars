@@ -21,18 +21,20 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Data\Response;
+namespace Fr\Typo3Handlebars\Data;
+
+use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
 
 /**
- * ProviderResponseInterface
+ * DataProvider
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface ProviderResponseInterface
+interface DataProvider
 {
     /**
-     * @return array<string, mixed>
+     * @param array<string, mixed> $data
      */
-    public function toArray(): array;
+    public function get(array $data): ProviderResponse;
 }

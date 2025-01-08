@@ -123,7 +123,7 @@ final class HelperRegistry implements Core\SingletonInterface
             }
 
             // 3a. class implementing Helper interface as string
-            if (class_exists($function) && \is_a($function, HelperInterface::class, true)) {
+            if (class_exists($function) && \is_a($function, Helper::class, true)) {
                 return Core\Utility\GeneralUtility::makeInstance($function)->render(...);
             }
         }
@@ -134,7 +134,7 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // 3b. class implementing Helper interface as object
-        if (\is_object($function) && $function instanceof HelperInterface) {
+        if (\is_object($function) && $function instanceof Helper) {
             return $function->render(...);
         }
 

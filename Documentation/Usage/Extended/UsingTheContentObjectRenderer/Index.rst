@@ -7,8 +7,8 @@ Using the `ContentObjectRenderer`
 =================================
 
 In some cases, the presence of the current `ContentObjectRenderer` may
-be necessary in the `DataProvider`. For this case an interface
-:php:`Fr\Typo3Handlebars\ContentObjectRendererAwareInterface` is
+be necessary in the `DataProvider`. For this case a
+:php:`Fr\Typo3Handlebars\ContentObjectRendererAware` interface is
 provided, which can be used in combination with the trait
 :php:`Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait`.
 
@@ -54,16 +54,16 @@ Usage
 
         namespace Vendor\Extension\Data;
 
-        use Fr\Typo3Handlebars\ContentObjectRendererAwareInterface;
-        use Fr\Typo3Handlebars\Data\DataProviderInterface;
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+        use Fr\Typo3Handlebars\ContentObjectRendererAware;
+        use Fr\Typo3Handlebars\Data\DataProvider;
+        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
         use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
 
-        class CustomProvider implements DataProviderInterface, ContentObjectRendererAwareInterface
+        class CustomProvider implements DataProvider, ContentObjectRendererAware
         {
             use ContentObjectRendererAwareTrait;
 
-            public function get(array $data): ProviderResponseInterface
+            public function get(array $data): ProviderResponse
             {
                 $this->assertContentObjectRendererIsAvailable();
                 // ...
@@ -81,17 +81,17 @@ Usage
 
          namespace Vendor\Extension\Data;
 
-         use Fr\Typo3Handlebars\ContentObjectRendererAwareInterface;
-         use Fr\Typo3Handlebars\Data\DataProviderInterface;
-         use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+         use Fr\Typo3Handlebars\ContentObjectRendererAware;
+         use Fr\Typo3Handlebars\Data\DataProvider;
+         use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
          use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
         +use Vendor\Extension\Data\Response\CustomProviderResponse;
 
-         class CustomProvider implements DataProviderInterface, ContentObjectRendererAwareInterface
+         class CustomProvider implements DataProvider, ContentObjectRendererAware
          {
              use ContentObjectRendererAwareTrait;
 
-             public function get(array $data): ProviderResponseInterface
+             public function get(array $data): ProviderResponse
              {
                  $this->assertContentObjectRendererIsAvailable();
         -        // ...
@@ -116,5 +116,5 @@ Sources
 
     View the sources on GitHub:
 
-    - `ContentObjectRendererAwareInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/ContentObjectRendererAwareInterface.php>`__
+    - `ContentObjectRendererAware <https://github.com/CPS-IT/handlebars/blob/main/Classes/ContentObjectRendererAware.php>`__
     - `ContentObjectRendererAwareTrait <https://github.com/CPS-IT/handlebars/blob/main/Classes/Traits/ContentObjectRendererAwareTrait.php>`__

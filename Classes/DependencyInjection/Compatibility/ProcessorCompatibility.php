@@ -59,7 +59,7 @@ final readonly class ProcessorCompatibility
     /**
      * @throws UnsupportedTypeException
      */
-    private function buildLayerForType(string $type): CompatibilityLayerInterface
+    private function buildLayerForType(string $type): CompatibilityLayer
     {
         return match ($type) {
             ExtbaseControllerCompatibilityLayer::TYPE => new ExtbaseControllerCompatibilityLayer($this->container),

@@ -31,7 +31,7 @@ namespace Fr\Typo3Handlebars\Data\Response;
  *
  * @implements \ArrayAccess<string, mixed>
  */
-class SimpleProviderResponse implements ProviderResponseInterface, \ArrayAccess
+class SimpleProviderResponse implements ProviderResponse, \ArrayAccess
 {
     /**
      * @param array<string, mixed> $data

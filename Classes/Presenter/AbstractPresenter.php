@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Presenter;
 
-use Fr\Typo3Handlebars\Renderer\RendererInterface;
+use Fr\Typo3Handlebars\Renderer\Renderer;
 
 /**
  * AbstractPresenter
@@ -31,9 +31,9 @@ use Fr\Typo3Handlebars\Renderer\RendererInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-abstract class AbstractPresenter implements PresenterInterface
+abstract class AbstractPresenter implements Presenter
 {
     public function __construct(
-        protected readonly RendererInterface $renderer,
+        protected readonly Renderer $renderer,
     ) {}
 }

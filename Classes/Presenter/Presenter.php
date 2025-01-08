@@ -21,18 +21,17 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\DataProcessing;
+namespace Fr\Typo3Handlebars\Presenter;
+
+use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
 
 /**
- * DataProcessorInterface
+ * Presenter
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface DataProcessorInterface
+interface Presenter
 {
-    /**
-     * @param array<string|int, mixed> $configuration
-     */
-    public function process(string $content, array $configuration): string;
+    public function present(ProviderResponse $data): string;
 }

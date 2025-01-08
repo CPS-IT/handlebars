@@ -33,7 +33,7 @@ use TYPO3\CMS\Core;
  * @license GPL-2.0-or-later
  */
 #[Attribute\AsHelper('varDump')]
-final readonly class VarDumpHelper implements HelperInterface
+final readonly class VarDumpHelper implements Helper
 {
     public function render(Context\HelperContext $context): string
     {

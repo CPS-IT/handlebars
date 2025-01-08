@@ -51,8 +51,8 @@ final class DummyProcessor extends DataProcessing\AbstractDataProcessor
             $this->initializeConfigurationManager();
         }
 
-        Framework\Assert::assertInstanceOf(Data\DataProviderInterface::class, $this->provider);
-        Framework\Assert::assertInstanceOf(Presenter\PresenterInterface::class, $this->presenter);
+        Framework\Assert::assertInstanceOf(Data\DataProvider::class, $this->provider);
+        Framework\Assert::assertInstanceOf(Presenter\Presenter::class, $this->presenter);
 
         $content = $this->content . $this->presenter->present($this->provider->get([]));
         if ($this->configuration !== []) {

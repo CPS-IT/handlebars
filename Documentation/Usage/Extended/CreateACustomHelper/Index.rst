@@ -8,7 +8,7 @@ Create a custom `Helper`
 
 Any `Helper` implemented in the frontend via JavaScript and used in Handlebars
 templates must also be replicated in PHP. For this purpose, the extension
-provides an interface :php:`Fr\Typo3Handlebars\Renderer\Helper\HelperInterface`.
+provides a :php:`Fr\Typo3Handlebars\Renderer\Helper\Helper` interface.
 
 ..  note::
 
@@ -58,9 +58,9 @@ that they implement the method :php:`__invoke()`.
 
     namespace Vendor\Extension\Renderer\Helper;
 
-    use Fr\Typo3Handlebars\Renderer\Helper\HelperInterface;
+    use Fr\Typo3Handlebars\Renderer\Helper\Helper;
 
-    class GreetHelper implements HelperInterface
+    class GreetHelper implements Helper
     {
         public function __invoke(array $context): string
         {
@@ -84,10 +84,10 @@ takes place :ref:`via the service container <automatic-registration>`.
 
     namespace Vendor\Extension\Renderer\Helper;
 
-    use Fr\Typo3Handlebars\Renderer\Helper\HelperInterface;
+    use Fr\Typo3Handlebars\Renderer\Helper\Helper;
     use Vendor\Extension\Domain\Repository\PersonRepository;
 
-    class GreetHelper implements HelperInterface
+    class GreetHelper implements Helper
     {
         private PersonRepository $repository;
 
@@ -158,7 +158,7 @@ this, add the following lines to your :file:`Services.yaml` file:
               # or invokable class
               - registerHelper: ['greet', '@Vendor\Extension\Renderer\Helper\GreetHelper']
 
-          Fr\Typo3Handlebars\Renderer\RendererInterface:
+          Fr\Typo3Handlebars\Renderer\Renderer:
             alias: 'handlebars.renderer_extended'
 
 The `identifier` configuration specifies how the `Helper` should be named and
@@ -202,5 +202,5 @@ Sources
 
     View the sources on GitHub:
 
-    - `HelperInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Helper/HelperInterface.php>`__
+    - `Helper <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Helper/Helper.php>`__
     - `HandlebarsHelperPass <https://github.com/CPS-IT/handlebars/blob/main/Classes/DependencyInjection/HandlebarsHelperPass.php>`__

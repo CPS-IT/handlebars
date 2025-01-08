@@ -9,11 +9,11 @@ services:
     exclude:
       - '../Classes/DependencyInjection/*'
 
-  Fr\Typo3Handlebars\Cache\CacheInterface:
+  Fr\Typo3Handlebars\Cache\Cache:
     alias: 'handlebars.cache'
-  Fr\Typo3Handlebars\Renderer\RendererInterface:
+  Fr\Typo3Handlebars\Renderer\Renderer:
     alias: 'handlebars.renderer'
-  Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface:
+  Fr\Typo3Handlebars\Renderer\Template\TemplateResolver:
     alias: 'handlebars.template_resolver'
 
   # Template

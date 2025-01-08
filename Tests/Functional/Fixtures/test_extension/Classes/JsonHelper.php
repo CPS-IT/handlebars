@@ -34,7 +34,7 @@ use LightnCandy\SafeString;
  * @license GPL-2.0-or-later
  */
 #[Attribute\AsHelper('jsonEncode')]
-final class JsonHelper implements Renderer\Helper\HelperInterface
+final class JsonHelper implements Renderer\Helper\Helper
 {
     public function render(Renderer\Helper\Context\HelperContext $context): SafeString
     {

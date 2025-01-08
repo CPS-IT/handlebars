@@ -29,7 +29,7 @@ namespace Fr\Typo3Handlebars\Cache;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class NullCache implements CacheInterface
+final class NullCache implements Cache
 {
     public function get(string $template): ?string
     {

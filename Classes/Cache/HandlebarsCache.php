@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
  * @license GPL-2.0-or-later
  */
 #[AsAlias('handlebars.cache')]
-class HandlebarsCache implements CacheInterface
+class HandlebarsCache implements Cache
 {
     public function __construct(
         #[Autowire('@cache.handlebars')]

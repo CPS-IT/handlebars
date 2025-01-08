@@ -15,10 +15,9 @@ use case can look.
 Custom `Renderer`
 =================
 
-The interface :php:`Fr\Typo3Handlebars\Renderer\RendererInterface`
-describes a `Renderer`. A distinction must be made as to whether the
-custom `Renderer` is to be used for all components or only for individual
-variants.
+The :php:`Fr\Typo3Handlebars\Renderer\Renderer` interface describes a
+`Renderer`. A distinction must be made as to whether the custom `Renderer`
+is to be used for all components or only for individual variants.
 
 ..  important::
 
@@ -40,7 +39,7 @@ the :file:`Services.yaml` file.
     # Configuration/Services.yaml
 
     services:
-      Fr\Typo3Handlebars\Renderer\RendererInterface:
+      Fr\Typo3Handlebars\Renderer\Renderer:
         alias: 'Vendor\Extension\Renderer\AlternativeRenderer'
 
 ..  warning::
@@ -66,7 +65,7 @@ it replaces the default `Renderer` for the concrete `Presenters`.
 
     The following example is only applicable to `Presenters` that extend the
     `AbstractPresenter`, since it holds the required dependency in its constructor.
-    This is not part of the `PresenterInterface`.
+    This is not part of the `Presenter` interface.
 
 ..  code-block:: yaml
 
@@ -87,7 +86,7 @@ and partials. This is used in the default `Renderer`, but a custom
 `TemplateResolver` can also be used for specific purposes.
 
 To use a custom `TemplateResolver`, a corresponding class is created that
-implements the :php:`Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface`
+implements the :php:`Fr\Typo3Handlebars\Renderer\Template\TemplateResolver`
 interface:
 
 ::
@@ -96,9 +95,9 @@ interface:
 
     namespace Vendor\Extension\Renderer\Template;
 
-    use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
+    use Fr\Typo3Handlebars\Renderer\Template\TemplateResolver;
 
-    class AlternativeTemplateResolver implements TemplateResolverInterface
+    class AlternativeTemplateResolver implements TemplateResolver
     {
         /**
          * @var list<string>
@@ -129,7 +128,7 @@ This is then used in the :file:`Services.yaml` file instead of the standard
     # Configuration/Services.yaml
 
     services:
-      Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface:
+      Fr\Typo3Handlebars\Renderer\Template\TemplateResolver:
         alias: 'Vendor\Extension\Renderer\Template\AlternativeTemplateResolver'
 
 ..  _custom-rendering-components-sources:
@@ -141,6 +140,6 @@ Sources
 
     View the sources on GitHub:
 
-    - `RendererInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/RendererInterface.php>`__
+    - `Renderer <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Renderer.php>`__
     - `HelperAwareInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/HelperAwareInterface.php>`__
-    - `TemplateResolverInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Template/TemplateResolverInterface.php>`__
+    - `TemplateResolver <https://github.com/CPS-IT/handlebars/blob/main/Classes/Renderer/Template/TemplateResolver.php>`__

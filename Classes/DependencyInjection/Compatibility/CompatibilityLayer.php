@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,17 +21,19 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Presenter;
-
-use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 
 /**
- * PresenterInterface
+ * CompatibilityLayer
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-interface PresenterInterface
+interface CompatibilityLayer
 {
-    public function present(ProviderResponseInterface $data): string;
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    public function provide(string $processorServiceId, array $configuration): bool;
 }

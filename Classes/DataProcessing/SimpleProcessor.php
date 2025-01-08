@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\DataProcessing;
 
 use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
-use Fr\Typo3Handlebars\Renderer\RendererInterface;
+use Fr\Typo3Handlebars\Renderer\Renderer;
 use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
@@ -37,7 +37,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @license GPL-2.0-or-later
  */
 #[Autoconfigure(public: true)]
-class SimpleProcessor implements DataProcessorInterface
+class SimpleProcessor implements DataProcessor
 {
     use ErrorHandlingTrait;
 
@@ -45,7 +45,7 @@ class SimpleProcessor implements DataProcessorInterface
 
     public function __construct(
         protected readonly LoggerInterface $logger,
-        protected readonly RendererInterface $renderer,
+        protected readonly Renderer $renderer,
     ) {}
 
     public function process(string $content, array $configuration): string

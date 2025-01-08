@@ -32,7 +32,7 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @internal
  */
-final readonly class DummyHelper implements Renderer\Helper\HelperInterface
+final readonly class DummyHelper implements Renderer\Helper\Helper
 {
     public function render(Renderer\Helper\Context\HelperContext $context): string
     {

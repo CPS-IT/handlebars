@@ -76,25 +76,36 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithoutCustomContext(): void
     {
-        $actual = trim($this->renderer->render('@simple-layout-extended'));
-        $expected = [];
+        $actual = trim(
+            $this->renderer->render(
+                new Src\Renderer\Template\View\HandlebarsView('@simple-layout-extended'),
+            ),
+        );
 
         self::assertJson($actual);
 
         $json = json_decode($actual, true);
         unset($json['_layoutStack']);
 
-        self::assertSame($expected, $json);
+        self::assertSame([], $json);
     }
 
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithCustomContext(): void
     {
-        $actual = trim($this->renderer->render('@simple-layout-extended-with-context', [
-            'customContext' => [
-                'foo' => 'baz',
-            ],
-        ]));
+        $actual = trim(
+            $this->renderer->render(
+                new Src\Renderer\Template\View\HandlebarsView(
+                    '@simple-layout-extended-with-context',
+                    [
+                        'customContext' => [
+                            'foo' => 'baz',
+                        ],
+                    ],
+                ),
+            ),
+        );
+
         $expected = [
             'customContext' => [
                 'foo' => 'baz',
@@ -113,12 +124,19 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperReplacesVariablesCorrectlyInAllContexts(): void
     {
-        $actual = trim($this->renderer->render('@simple-layout-extended-with-context', [
-            'foo' => 123,
-            'customContext' => [
-                'foo' => 456,
-            ],
-        ]));
+        $actual = trim(
+            $this->renderer->render(
+                new Src\Renderer\Template\View\HandlebarsView(
+                    '@simple-layout-extended-with-context',
+                    [
+                        'foo' => 123,
+                        'customContext' => [
+                            'foo' => 456,
+                        ],
+                    ],
+                ),
+            ),
+        );
 
         $expected = [
             'foo' => 456,

@@ -76,7 +76,10 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     #[Framework\Attributes\Test]
     public function helperCanBeCalledFromMainLayout(): void
     {
-        $actual = trim($this->renderer->render('@main-layout'));
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView('@main-layout'),
+        );
+
         $expected = implode(PHP_EOL, [
             'this is the main block:',
             '',
@@ -97,15 +100,21 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
             'this is the end. bye bye',
         ]);
 
-        self::assertMatchesRegularExpression('/^' . $expected . '$/', $actual);
+        self::assertMatchesRegularExpression('/^' . $expected . '$/', trim($actual));
     }
 
     #[Framework\Attributes\Test]
     public function helperCanBeCalledFromExtendedLayout(): void
     {
-        $actual = trim($this->renderer->render('@main-layout-extended-with-fifth-content', [
-            'templateName' => '@main-layout',
-        ]));
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@main-layout-extended-with-fifth-content',
+                [
+                    'templateName' => '@main-layout',
+                ],
+            ),
+        );
+
         $expected = implode(PHP_EOL, [
             'this is the main block:',
             '',
@@ -131,6 +140,6 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
             'this is the end. bye bye',
         ]);
 
-        self::assertMatchesRegularExpression('/^' . $expected . '$/', $actual);
+        self::assertMatchesRegularExpression('/^' . $expected . '$/', trim($actual));
     }
 }

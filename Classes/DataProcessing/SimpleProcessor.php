@@ -25,6 +25,7 @@ namespace Fr\Typo3Handlebars\DataProcessing;
 
 use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
 use Fr\Typo3Handlebars\Renderer\Renderer;
+use Fr\Typo3Handlebars\Renderer\Template\View\HandlebarsView;
 use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
@@ -51,8 +52,12 @@ class SimpleProcessor implements DataProcessor
     public function process(string $content, array $configuration): string
     {
         try {
-            $templatePath = $this->getTemplatePath($configuration);
-            return $this->renderer->render($templatePath, $this->contentObjectRenderer?->data ?? []);
+            $view = new HandlebarsView(
+                $this->getTemplatePath($configuration),
+                $this->contentObjectRenderer?->data ?? [],
+            );
+
+            return $this->renderer->render($view);
         } catch (InvalidTemplateFileException $exception) {
             $this->handleError($exception);
             return '';

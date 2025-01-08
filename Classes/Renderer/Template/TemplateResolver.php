@@ -42,13 +42,15 @@ interface TemplateResolver
      * Resolve given partial path to the full partial path including the base partial path.
      *
      * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
      */
-    public function resolvePartialPath(string $partialPath): string;
+    public function resolvePartialPath(string $partialPath, ?string $format = null): string;
 
     /**
      * Resolve given template path to the full template path including the base template path.
      *
+     * @throws Exception\TemplateFormatIsNotSupported
      * @throws Exception\TemplatePathIsNotResolvable
      */
-    public function resolveTemplatePath(string $templatePath): string;
+    public function resolveTemplatePath(string $templatePath, ?string $format = null): string;
 }

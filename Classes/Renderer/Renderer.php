@@ -31,8 +31,5 @@ namespace Fr\Typo3Handlebars\Renderer;
  */
 interface Renderer
 {
-    /**
-     * @param array<string|int, mixed> $data
-     */
-    public function render(string $templatePath, array $data = []): string;
+    public function render(Template\View\HandlebarsView $view): string;
 }

@@ -87,11 +87,16 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithDefaultContext(): void
     {
-        $actual = $this->renderer->render('@render-default-context', [
-            '@foo' => [
-                'renderedContent' => 'Hello world!',
-            ],
-        ]);
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@render-default-context',
+                [
+                    '@foo' => [
+                        'renderedContent' => 'Hello world!',
+                    ],
+                ],
+            ),
+        );
 
         self::assertSame('Hello world!', trim($actual));
     }
@@ -99,11 +104,16 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithCustomContext(): void
     {
-        $actual = $this->renderer->render('@render-custom-context', [
-            'renderData' => [
-                'renderedContent' => 'Hello world!',
-            ],
-        ]);
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@render-custom-context',
+                [
+                    'renderData' => [
+                        'renderedContent' => 'Hello world!',
+                    ],
+                ],
+            ),
+        );
 
         self::assertSame('Hello world!', trim($actual));
     }
@@ -111,14 +121,19 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithMergedContext(): void
     {
-        $actual = $this->renderer->render('@render-merged-context', [
-            '@foo' => [
-                'renderedContent' => 'Hello world!',
-            ],
-            'renderData' => [
-                'renderedContent' => 'Lorem ipsum',
-            ],
-        ]);
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@render-merged-context',
+                [
+                    '@foo' => [
+                        'renderedContent' => 'Hello world!',
+                    ],
+                    'renderData' => [
+                        'renderedContent' => 'Lorem ipsum',
+                    ],
+                ],
+            ),
+        );
 
         self::assertSame('Lorem ipsum', trim($actual));
     }
@@ -135,12 +150,17 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
         );
         $GLOBALS['TSFE']->cObj = $this->contentObjectRenderer;
 
-        $actual = $GLOBALS['TSFE']->content = $this->renderer->render('@render-uncached', [
-            'renderData' => [
-                '_processor' => TestExtension\DummyNonCacheableProcessor::class,
-                'foo' => 'baz',
-            ],
-        ]);
+        $actual = $GLOBALS['TSFE']->content = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@render-uncached',
+                [
+                    'renderData' => [
+                        '_processor' => TestExtension\DummyNonCacheableProcessor::class,
+                        'foo' => 'baz',
+                    ],
+                ],
+            ),
+        );
 
         self::assertMatchesRegularExpression('#^<!--INT_SCRIPT.[^-]+-->$#', trim($actual));
 

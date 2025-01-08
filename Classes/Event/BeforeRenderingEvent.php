@@ -37,14 +37,14 @@ final class BeforeRenderingEvent
      * @param array<string|int, mixed> $variables
      */
     public function __construct(
-        private readonly string $templatePath,
+        private readonly Renderer\Template\View\HandlebarsView $view,
         private array $variables,
         private readonly Renderer\Renderer $renderer,
     ) {}
 
-    public function getTemplatePath(): string
+    public function getView(): Renderer\Template\View\HandlebarsView
     {
-        return $this->templatePath;
+        return $this->view;
     }
 
     /**

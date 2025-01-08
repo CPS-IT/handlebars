@@ -60,9 +60,55 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfGivenTemplateIsNotAvailable(): void
+    public function renderLogsCriticalErrorIfTemplateCompilationFails(): void
     {
-        self::assertSame('', $this->subject->render('foo.baz'));
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateErroneous');
+
+        self::assertSame(
+            '',
+            $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render($view),
+        );
+        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
+            /** @var Src\Exception\TemplateCompilationException $exception */
+            $exception = $logRecord['context']['exception'];
+
+            self::assertInstanceOf(Src\Exception\TemplateCompilationException::class, $exception);
+            self::assertSame(1614620212, $exception->getCode());
+
+            return true;
+        }));
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderLogsCriticalErrorIfTemplateFilsIsInvalid(): void
+    {
+        $view = new Src\Renderer\Template\View\HandlebarsView('foo.baz');
+
+        $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver();
+
+        $this->suppressNextError(E_WARNING);
+
+        self::assertSame('', $this->renewSubject()->render($view));
+        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
+            $exception = $logRecord['context']['exception'];
+
+            self::assertInstanceOf(Src\Exception\TemplateFileIsInvalid::class, $exception);
+            self::assertSame(1736333208, $exception->getCode());
+            self::assertMatchesRegularExpression(
+                '/^The template file "[^"]+\/foo\.baz" is invalid or does not exist\.$/',
+                $exception->getMessage(),
+            );
+
+            return true;
+        }));
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderLogsCriticalErrorIfTemplatePathIsNotResolvable(): void
+    {
+        $view = new Src\Renderer\Template\View\HandlebarsView('foo.baz');
+
+        self::assertSame('', $this->subject->render($view));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
             /** @var Src\Exception\TemplatePathIsNotResolvable $exception */
             $exception = $logRecord['context']['exception'];
@@ -74,17 +120,22 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfGivenTemplateIsNotReadable(): void
+    public function renderLogsCriticalErrorIfGivenViewIsNotProperlyInitialized(): void
     {
-        $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver();
-        $this->suppressNextError(E_WARNING);
-        self::assertSame('', $this->renewSubject()->render('foo.baz'));
+        $view = new Src\Renderer\Template\View\HandlebarsView();
+
+        self::assertSame('', $this->subject->render($view));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\InvalidTemplateFileException $exception */
+            /** @var Src\Exception\ViewIsNotProperlyInitialized $exception */
             $exception = $logRecord['context']['exception'];
-            self::assertInstanceOf(Src\Exception\InvalidTemplateFileException::class, $exception);
-            self::assertSame(1606217313, $exception->getCode());
-            self::assertStringEndsWith('foo.baz', $exception->getTemplateFile());
+
+            self::assertInstanceOf(Src\Exception\ViewIsNotProperlyInitialized::class, $exception);
+            self::assertSame(
+                'The Handlebars view is not properly initialized. Provide either template path or template source.',
+                $exception->getMessage(),
+            );
+            self::assertSame(1736332788, $exception->getCode());
+
             return true;
         }));
     }
@@ -92,13 +143,17 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     #[Framework\Attributes\Test]
     public function renderUsesGivenTemplatePathIfItIsNotAvailableWithinTemplateRootPaths(): void
     {
-        self::assertSame('', $this->subject->render($this->templateRootPath . '/DummyTemplateEmpty'));
+        $view = new Src\Renderer\Template\View\HandlebarsView($this->templateRootPath . '/DummyTemplateEmpty');
+
+        self::assertSame('', $this->subject->render($view));
     }
 
     #[Framework\Attributes\Test]
     public function renderReturnsEmptyStringIfGivenTemplateIsEmpty(): void
     {
-        self::assertSame('', $this->subject->render('DummyTemplateEmpty'));
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateEmpty');
+
+        self::assertSame('', $this->subject->render($view));
     }
 
     #[Framework\Attributes\Test]
@@ -115,9 +170,11 @@ array(2 items)
    another => "foo" (3 chars)
 EOF;
 
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateVariables', ['another' => 'foo']);
+
         self::assertSame(
             \trim($expected),
-            \trim($this->subject->render('DummyTemplateVariables', ['another' => 'foo'])),
+            \trim($this->subject->render($view)),
         );
 
         Core\Utility\DebugUtility::useAnsiColor(true);
@@ -135,45 +192,36 @@ EOF;
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
 
-        self::assertSame('foo', $this->subject->render('DummyTemplate'));
-    }
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
 
-    #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfTemplateCompilationFails(): void
-    {
-        self::assertSame(
-            '',
-            $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render('DummyTemplateErroneous')
-        );
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\TemplateCompilationException $exception */
-            $exception = $logRecord['context']['exception'];
-            self::assertInstanceOf(Src\Exception\TemplateCompilationException::class, $exception);
-            self::assertSame(1614620212, $exception->getCode());
-            return true;
-        }));
+        self::assertSame('foo', $this->subject->render($view));
     }
 
     #[Framework\Attributes\Test]
     public function renderDoesNotStoreRenderedTemplateInCacheIfDebugModeIsEnabled(): void
     {
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+
         // Test with TypoScript config.debug = 1
         $this->tsfeMock->config = ['config' => ['debug' => '1']];
-        $this->renewSubject()->render('DummyTemplate');
+        $this->renewSubject()->render($view);
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
 
         // Test with TYPO3_CONF_VARS
         $this->tsfeMock->config = [];
         $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
-        $this->renewSubject()->render('DummyTemplate');
+        $this->renewSubject()->render($view);
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }
 
     #[Framework\Attributes\Test]
     public function renderDoesNotStoreRenderedTemplateInCacheIfCachingIsDisabled(): void
     {
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+
         $this->tsfeMock->no_cache = true;
-        $this->subject->render('DummyTemplate');
+        $this->subject->render($view);
+
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }
 
@@ -189,7 +237,9 @@ EOF;
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
 
-        self::assertSame('', $this->subject->render('DummyTemplate'));
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+
+        self::assertSame('', $this->subject->render($view));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
             /** @var Src\Exception\TemplateCompilationException $exception */
             $exception = $logRecord['context']['exception'];
@@ -203,18 +253,22 @@ EOF;
     #[Framework\Attributes\Test]
     public function renderReturnsRenderedTemplate(): void
     {
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate', ['name' => 'foo']);
+
         self::assertSame(
             'Hello, foo!',
-            \trim($this->subject->render('DummyTemplate', ['name' => 'foo']))
+            \trim($this->subject->render($view)),
         );
     }
 
     #[Framework\Attributes\Test]
     public function renderResolvesPartialsCorrectlyUsingPartialResolver(): void
     {
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateWithPartial', ['name' => 'foo']);
+
         self::assertSame(
             'Hello, foo!' . PHP_EOL . 'Welcome, foo, I am the partial!',
-            \trim($this->subject->render('DummyTemplateWithPartial', ['name' => 'foo']))
+            \trim($this->subject->render($view)),
         );
     }
 

@@ -43,16 +43,19 @@ final class AfterRenderingEventTest extends TestingFramework\Core\Unit\UnitTestC
         parent::setUp();
 
         $this->subject = new Src\Event\AfterRenderingEvent(
-            'foo',
+            new Src\Renderer\Template\View\HandlebarsView('foo'),
             'baz',
             $this->createMock(Src\Renderer\HandlebarsRenderer::class),
         );
     }
 
     #[Framework\Attributes\Test]
-    public function getTemplatePathReturnsTemplatePath(): void
+    public function getViewReturnsHandlebarsView(): void
     {
-        self::assertSame('foo', $this->subject->getTemplatePath());
+        self::assertEquals(
+            new Src\Renderer\Template\View\HandlebarsView('foo'),
+            $this->subject->getView(),
+        );
     }
 
     #[Framework\Attributes\Test]

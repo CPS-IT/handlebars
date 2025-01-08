@@ -61,11 +61,11 @@ class HandlebarsRenderer implements Renderer
         $this->debugMode = $this->isDebugModeEnabled();
     }
 
-    public function render(string $templatePath, array $data = []): string
+    public function render(Template\View\HandlebarsView $view): string
     {
         try {
-            return $this->processRendering($templatePath, $data);
-        } catch (Exception\InvalidTemplateFileException | Exception\TemplateCompilationException | Exception\TemplatePathIsNotResolvable $exception) {
+            return $this->processRendering($view);
+        } catch (Exception\TemplateCompilationException | Exception\TemplateFileIsInvalid | Exception\TemplateFormatIsNotSupported | Exception\TemplatePathIsNotResolvable | Exception\ViewIsNotProperlyInitialized $exception) {
             $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
 
             return '';
@@ -73,45 +73,36 @@ class HandlebarsRenderer implements Renderer
     }
 
     /**
-     * @param array<string|int, mixed> $variables
-     * @throws Exception\InvalidTemplateFileException
-     * @throws Exception\TemplateCompilationException
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
      * @throws Exception\TemplatePathIsNotResolvable
+     * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function processRendering(string $templatePath, array $variables): string
+    protected function processRendering(Template\View\HandlebarsView $view): string
     {
-        $fullTemplatePath = $this->templateResolver->resolveTemplatePath($templatePath);
-        $template = file_get_contents($fullTemplatePath);
-
-        // Throw exception if template file is invalid
-        if ($template === false) {
-            throw new Exception\InvalidTemplateFileException($fullTemplatePath, 1606217313);
-        }
+        $compileResult = $this->compile($view);
 
         // Early return if template is empty
-        if (trim($template) === '') {
+        if ($compileResult === null) {
             return '';
         }
 
         // Merge variables with default variables
-        $mergedVariables = array_merge($this->variableBag->get(), $variables);
-
-        // Compile template
-        $compileResult = $this->compile($template);
-        $renderer = $this->prepareCompileResult($compileResult);
+        $mergedVariables = array_merge($this->variableBag->get(), $view->getVariables());
 
         // Dispatch before rendering event
-        $beforeRenderingEvent = new Event\BeforeRenderingEvent($fullTemplatePath, $mergedVariables, $this);
+        $beforeRenderingEvent = new Event\BeforeRenderingEvent($view, $mergedVariables, $this);
         $this->eventDispatcher->dispatch($beforeRenderingEvent);
 
         // Render content
+        $renderer = $this->prepareCompileResult($compileResult);
         $content = $renderer($beforeRenderingEvent->getVariables(), [
             'debug' => Runtime::DEBUG_TAGS_HTML,
             'helpers' => $this->helperRegistry->getAll(),
         ]);
 
         // Dispatch after rendering event
-        $afterRenderingEvent = new Event\AfterRenderingEvent($fullTemplatePath, $content, $this);
+        $afterRenderingEvent = new Event\AfterRenderingEvent($view, $content, $this);
         $this->eventDispatcher->dispatch($afterRenderingEvent);
 
         return $afterRenderingEvent->getContent();
@@ -120,16 +111,25 @@ class HandlebarsRenderer implements Renderer
     /**
      * Compile given template by LightnCandy compiler.
      *
-     * @param string $template Raw template to be compiled
-     * @return string The compiled template
-     * @throws Exception\TemplateCompilationException() if template compilation fails and errors are not yet handled by compiler
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
+     * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function compile(string $template): string
+    protected function compile(Template\View\HandlebarsView $view): ?string
     {
+        $template = $view->getTemplate($this->templateResolver);
+
+        // Early return if template is empty
+        if (\trim($template) === '') {
+            return null;
+        }
+
         // Disable cache if debugging is enabled or caching is disabled
-        $cache = $this->cache;
         if ($this->debugMode || $this->isCachingDisabled()) {
             $cache = new Cache\NullCache();
+        } else {
+            $cache = $this->cache;
         }
 
         // Get compile result from cache
@@ -239,6 +239,7 @@ class HandlebarsRenderer implements Renderer
      * @param string $name Name of the partial to be resolved
      * @return string|null Partial file contents if partial could be resolved, `null` otherwise
      * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
      */
     public function resolvePartial(array $context, string $name): ?string
     {

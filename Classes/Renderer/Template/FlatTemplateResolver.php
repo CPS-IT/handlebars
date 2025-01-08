@@ -66,26 +66,37 @@ final class FlatTemplateResolver extends BaseTemplateResolver
         $this->flattenedTemplates = $this->buildPathMap($this->templateRootPaths);
     }
 
-    public function resolvePartialPath(string $partialPath): string
+    public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
-        return $this->resolvePath($partialPath, $this->flattenedPartials)
-            ?? $this->fallbackResolver->resolvePartialPath($partialPath);
+        return $this->resolvePath($partialPath, $this->flattenedPartials, $format)
+            ?? $this->fallbackResolver->resolvePartialPath($partialPath, $format);
     }
 
-    public function resolveTemplatePath(string $templatePath): string
+    public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
-        return $this->resolvePath($templatePath, $this->flattenedTemplates)
-            ?? $this->fallbackResolver->resolveTemplatePath($templatePath);
+        return $this->resolvePath($templatePath, $this->flattenedTemplates, $format)
+            ?? $this->fallbackResolver->resolveTemplatePath($templatePath, $format);
     }
 
     /**
      * @param array<string, Finder\SplFileInfo> $flattenedFiles
+     * @throws Exception\TemplateFormatIsNotSupported
      */
-    private function resolvePath(string $path, array $flattenedFiles): ?string
+    private function resolvePath(string $path, array $flattenedFiles, ?string $format = null): ?string
     {
+        // Throw exception if given format is not supported
+        if ($format !== null && !\in_array($format, $this->supportedFileExtensions, true)) {
+            throw new Exception\TemplateFormatIsNotSupported($format);
+        }
+
         // Use default path resolving if path is not prefixed by "@"
         if (!str_starts_with($path, '@')) {
             return null;
+        }
+
+        // Append format if requested
+        if ($format !== null) {
+            $path .= '.' . $format;
         }
 
         // Strip "@" prefix from given template path
@@ -138,6 +149,10 @@ final class FlatTemplateResolver extends BaseTemplateResolver
                 if ($this->isFirstOccurrenceInRootPaths($flattenedPaths, $file)) {
                     $flattenedPaths[$this->resolveFlatFilename($file)] = $file;
                 }
+
+                if ($this->isFirstOccurrenceInRootPaths($flattenedPaths, $file, true)) {
+                    $flattenedPaths[$this->resolveFlatFilename($file, true)] = $file;
+                }
             }
         }
 
@@ -147,9 +162,12 @@ final class FlatTemplateResolver extends BaseTemplateResolver
     /**
      * @param array<string, Finder\SplFileInfo> $flattenedPaths
      */
-    private function isFirstOccurrenceInRootPaths(array $flattenedPaths, Finder\SplFileInfo $file): bool
-    {
-        $filename = $this->resolveFlatFilename($file);
+    private function isFirstOccurrenceInRootPaths(
+        array $flattenedPaths,
+        Finder\SplFileInfo $file,
+        bool $withExtension = false,
+    ): bool {
+        $filename = $this->resolveFlatFilename($file, $withExtension);
 
         // Early return if template is not registered yet
         if (!isset($flattenedPaths[$filename])) {
@@ -162,9 +180,16 @@ final class FlatTemplateResolver extends BaseTemplateResolver
         return $flattenedPaths[$filename]->getRelativePathname() === $file->getRelativePathname();
     }
 
-    private function resolveFlatFilename(Finder\SplFileInfo $file): string
+    private function resolveFlatFilename(Finder\SplFileInfo $file, bool $withExtension = false): string
     {
-        return pathinfo($file->getPathname(), PATHINFO_FILENAME);
+        $pathname = $file->getPathname();
+        $filename = pathinfo($pathname, PATHINFO_FILENAME);
+
+        if ($withExtension) {
+            $filename = $filename . '.' . pathinfo($pathname, PATHINFO_EXTENSION);
+        }
+
+        return $filename;
     }
 
     /**

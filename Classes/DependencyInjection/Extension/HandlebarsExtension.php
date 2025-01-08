@@ -23,9 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection\Extension;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
+use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 
 /**
  * HandlebarsExtension
@@ -34,7 +33,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class HandlebarsExtension extends Extension
+final class HandlebarsExtension extends DependencyInjection\Extension\Extension
 {
     public const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.templateRootPaths';
     public const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partialRootPaths';
@@ -58,7 +57,7 @@ final class HandlebarsExtension extends Extension
     /**
      * @param array<string|int, mixed>[] $configs
      */
-    public function load(array $configs, ContainerBuilder $container): void
+    public function load(array $configs, DependencyInjection\ContainerBuilder $container): void
     {
         $this->reset();
         $this->parseConfiguration($configs);
@@ -91,7 +90,7 @@ final class HandlebarsExtension extends Extension
         $mergedConfig = [];
 
         foreach (array_column($configs, $configKey) as $concreteConfig) {
-            ArrayUtility::mergeRecursiveWithOverrule($mergedConfig, $concreteConfig);
+            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($mergedConfig, $concreteConfig);
         }
 
         return $mergedConfig;

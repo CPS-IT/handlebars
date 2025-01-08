@@ -23,10 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
-use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3\CMS\Fluid\View\AbstractTemplateView;
+use Fr\Typo3Handlebars\DataProcessing;
+use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Fluid;
 
 /**
  * ExtbaseViewAdapter
@@ -34,15 +33,15 @@ use TYPO3\CMS\Fluid\View\AbstractTemplateView;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class ExtbaseViewAdapter extends AbstractTemplateView
+final class ExtbaseViewAdapter extends Fluid\View\AbstractTemplateView
 {
     /**
      * @var array<string, mixed>
      */
-    protected array $renderData = [];
+    private array $renderData = [];
 
     public function __construct(
-        protected readonly DataProcessor $processor,
+        private readonly DataProcessing\DataProcessor $processor,
     ) {
         parent::__construct();
     }
@@ -71,11 +70,11 @@ class ExtbaseViewAdapter extends AbstractTemplateView
         $controller = null;
         $request = null;
 
-        if ($renderingContext instanceof RenderingContext) {
+        if ($renderingContext instanceof Fluid\Core\Rendering\RenderingContext) {
             $request = $renderingContext->getRequest();
             $actionName ??= $renderingContext->getControllerAction();
         }
-        if ($request instanceof Request) {
+        if ($request instanceof Extbase\Mvc\Request) {
             $controller = $request->getControllerObjectName();
         }
 

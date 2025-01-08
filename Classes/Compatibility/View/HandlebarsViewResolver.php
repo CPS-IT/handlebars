@@ -23,12 +23,12 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
-use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
-use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver;
-use TYPO3Fluid\Fluid\View\ViewInterface;
+use Fr\Typo3Handlebars\DataProcessing;
+use Psr\Http\Message;
+use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
+use TYPO3Fluid\Fluid;
 
 /**
  * HandlebarsViewResolver
@@ -36,15 +36,15 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Autoconfigure(public: true)]
-class HandlebarsViewResolver extends GenericViewResolver
+#[DependencyInjection\Attribute\Autoconfigure(public: true)]
+final class HandlebarsViewResolver extends Extbase\Mvc\View\GenericViewResolver
 {
     /**
-     * @var array<class-string, array<string, DataProcessor>>
+     * @var array<class-string, array<string, DataProcessing\DataProcessor>>
      */
-    protected array $processorMap = [];
+    private array $processorMap = [];
 
-    public function resolve(string $controllerObjectName, string $actionName, string $format): ViewInterface
+    public function resolve(string $controllerObjectName, string $actionName, string $format): Fluid\View\ViewInterface
     {
         if (!$this->hasProcessor($controllerObjectName, $actionName)) {
             return parent::resolve($controllerObjectName, $actionName, $format);
@@ -53,19 +53,19 @@ class HandlebarsViewResolver extends GenericViewResolver
         return $this->buildView($controllerObjectName, $actionName);
     }
 
-    protected function buildView(string $controllerClassName, string $actionName): ExtbaseViewAdapter
+    private function buildView(string $controllerClassName, string $actionName): ExtbaseViewAdapter
     {
         $processor = $this->getProcessor($controllerClassName, $actionName);
 
-        return GeneralUtility::makeInstance(ExtbaseViewAdapter::class, $processor);
+        return Core\Utility\GeneralUtility::makeInstance(ExtbaseViewAdapter::class, $processor);
     }
 
-    protected function hasProcessor(string $controllerClassName, string $actionName): bool
+    private function hasProcessor(string $controllerClassName, string $actionName): bool
     {
         return $this->getProcessor($controllerClassName, $actionName) !== null;
     }
 
-    protected function getProcessor(string $controllerClassName, string $actionName): ?DataProcessor
+    private function getProcessor(string $controllerClassName, string $actionName): ?DataProcessing\DataProcessor
     {
         if (!\array_key_exists($controllerClassName, $this->processorMap)) {
             return null;
@@ -87,7 +87,7 @@ class HandlebarsViewResolver extends GenericViewResolver
     }
 
     /**
-     * @param array<class-string, array<string, DataProcessor>> $processorMap
+     * @param array<class-string, array<string, DataProcessing\DataProcessor>> $processorMap
      */
     public function setProcessorMap(array $processorMap): self
     {
@@ -95,7 +95,7 @@ class HandlebarsViewResolver extends GenericViewResolver
         return $this;
     }
 
-    protected function getRequest(): ServerRequestInterface
+    private function getRequest(): Message\ServerRequestInterface
     {
         return $GLOBALS['TYPO3_REQUEST'];
     }

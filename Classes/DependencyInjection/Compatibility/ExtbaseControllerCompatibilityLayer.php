@@ -23,14 +23,12 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 
-use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
-use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
-use Fr\Typo3Handlebars\Exception\InvalidClassException;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use Fr\Typo3Handlebars\Compatibility;
+use Fr\Typo3Handlebars\DataProcessing;
+use Fr\Typo3Handlebars\Exception;
+use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
 
 /**
  * ExtbaseControllerCompatibilityLayer
@@ -43,13 +41,13 @@ final readonly class ExtbaseControllerCompatibilityLayer implements Compatibilit
 {
     public const TYPE = 'extbase_controller';
 
-    private Definition $viewResolverDefinition;
+    private DependencyInjection\Definition $viewResolverDefinition;
 
     public function __construct(
-        private ContainerBuilder $container,
+        private DependencyInjection\ContainerBuilder $container,
     ) {
-        $this->viewResolverDefinition = $this->container->getDefinition(HandlebarsViewResolver::class);
-        $this->validateService(HandlebarsViewResolver::class);
+        $this->viewResolverDefinition = $this->container->getDefinition(Compatibility\View\HandlebarsViewResolver::class);
+        $this->validateService(Compatibility\View\HandlebarsViewResolver::class);
     }
 
     public function provide(string $processorServiceId, array $configuration): bool
@@ -64,8 +62,8 @@ final readonly class ExtbaseControllerCompatibilityLayer implements Compatibilit
         // Validate controller class name
         $this->validateService($controller);
 
-        $actions = GeneralUtility::trimExplode(',', $configuration['actions'] ?? '_all', true);
-        $actionMap = array_fill_keys($actions, new Reference($processorServiceId));
+        $actions = Core\Utility\GeneralUtility::trimExplode(',', $configuration['actions'] ?? '_all', true);
+        $actionMap = array_fill_keys($actions, new DependencyInjection\Reference($processorServiceId));
 
         // Merge and apply processor map
         $processorMap = $this->buildProcessorMap($controllerClassName, $actionMap);
@@ -76,15 +74,15 @@ final readonly class ExtbaseControllerCompatibilityLayer implements Compatibilit
 
         // Apply processor map and register method call
         $controllerDefinition->removeMethodCall('injectViewResolver');
-        $controllerDefinition->addMethodCall('injectViewResolver', [new Reference($viewResolverClassName)]);
+        $controllerDefinition->addMethodCall('injectViewResolver', [new DependencyInjection\Reference($viewResolverClassName)]);
 
         return true;
     }
 
     /**
      * @param class-string $controllerClassName
-     * @param array<string, Reference> $actionMap
-     * @return array<string, array<string, DataProcessor>>
+     * @param array<string, DependencyInjection\Reference> $actionMap
+     * @return array<string, array<string, DataProcessing\DataProcessor>>
      */
     private function buildProcessorMap(string $controllerClassName, array $actionMap): array
     {
@@ -124,9 +122,9 @@ final readonly class ExtbaseControllerCompatibilityLayer implements Compatibilit
                 1632814520
             );
         }
-        if (!\in_array(ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()) ?: [])) {
+        if (!\in_array(Extbase\Mvc\Controller\ActionController::class, class_parents($this->container->getDefinition($configuration['controller'])->getClass()) ?: [])) {
             throw new \InvalidArgumentException(
-                \sprintf('Only extbase controllers extending from "%s" are supported, found in: %s', ActionController::class, $configuration['controller']),
+                \sprintf('Only extbase controllers extending from "%s" are supported, found in: %s', Extbase\Mvc\Controller\ActionController::class, $configuration['controller']),
                 1632814592
             );
         }
@@ -145,10 +143,10 @@ final readonly class ExtbaseControllerCompatibilityLayer implements Compatibilit
         $className = $definition->getClass();
 
         if ($className === null) {
-            throw InvalidClassException::forService($serviceId);
+            throw Exception\InvalidClassException::forService($serviceId);
         }
         if (!class_exists($className)) {
-            throw InvalidClassException::create($className);
+            throw Exception\InvalidClassException::create($className);
         }
     }
 }

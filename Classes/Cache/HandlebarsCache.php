@@ -23,9 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Cache;
 
-use Symfony\Component\DependencyInjection\Attribute\AsAlias;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 
 /**
  * HandlebarsCache
@@ -33,12 +32,12 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[AsAlias('handlebars.cache')]
-class HandlebarsCache implements Cache
+#[DependencyInjection\Attribute\AsAlias('handlebars.cache')]
+final readonly class HandlebarsCache implements Cache
 {
     public function __construct(
-        #[Autowire('@cache.handlebars')]
-        protected readonly FrontendInterface $cache,
+        #[DependencyInjection\Attribute\Autowire('@cache.handlebars')]
+        private Core\Cache\Frontend\FrontendInterface $cache,
     ) {}
 
     public function get(string $template): ?string

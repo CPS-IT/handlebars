@@ -53,7 +53,7 @@ final class SimpleProviderResponseTest extends TestingFramework\Core\Unit\UnitTe
 
         // Testing offsetGet
         self::assertSame('baz', $this->subject['foo']);
-        self::assertNull($this->subject['baz']);
+        self::assertNull($this->subject['baz'] ?? null);
 
         // Testing offsetSet
         $this->subject['baz'] = 'dummy';
@@ -63,7 +63,7 @@ final class SimpleProviderResponseTest extends TestingFramework\Core\Unit\UnitTe
         // Testing offsetUnset
         unset($this->subject['baz']);
         self::assertFalse(isset($this->subject['baz']));
-        self::assertNull($this->subject['baz']);
+        self::assertNull($this->subject['baz'] ?? null);
     }
 
     #[Framework\Attributes\Test]

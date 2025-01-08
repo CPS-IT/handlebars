@@ -35,9 +35,9 @@ use TYPO3\CMS\Core;
  */
 final class HandlebarsExtension extends DependencyInjection\Extension\Extension
 {
-    public const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.templateRootPaths';
-    public const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partialRootPaths';
-    public const PARAMETER_ROOT_CONTEXT = 'handlebars.variables';
+    private const PARAMETER_TEMPLATE_ROOT_PATHS = 'handlebars.templateRootPaths';
+    private const PARAMETER_PARTIAL_ROOT_PATHS = 'handlebars.partialRootPaths';
+    private const PARAMETER_ROOT_CONTEXT = 'handlebars.variables';
 
     /**
      * @var string[]

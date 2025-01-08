@@ -152,11 +152,10 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
 
         $container->setDefinition(Src\Renderer\Template\TemplatePaths::class, $dummyTemplatePathsDefinition);
         $container->setDefinition('handlebars.template_resolver', $dummyTemplateResolverDefinition);
-        $container->setDefinition('handlebars.partial_resolver', $dummyTemplateResolverDefinition);
         $container->setDefinition(Src\Renderer\Renderer::class, $dummyTemplateResolverDefinition);
 
-        $container->setParameter(Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS, []);
-        $container->setParameter(Src\DependencyInjection\Extension\HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS, []);
+        $container->setParameter('handlebars.templateRootPaths', []);
+        $container->setParameter('handlebars.partialRootPaths', []);
 
         $container->addCompilerPass(new Src\DependencyInjection\FeatureRegistrationPass());
         $container->addCompilerPass(new Core\DependencyInjection\PublicServicePass('handlebars.helper'));

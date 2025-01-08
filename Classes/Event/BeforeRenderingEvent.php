@@ -31,7 +31,7 @@ use Fr\Typo3Handlebars\Renderer;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class BeforeRenderingEvent
+final class BeforeRenderingEvent
 {
     /**
      * @param array<string|int, mixed> $variables

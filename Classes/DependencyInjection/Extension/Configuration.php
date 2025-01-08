@@ -23,8 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection\Extension;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config;
 
 /**
  * HandlebarsExtension configuration structure.
@@ -43,11 +42,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * @internal
  * @codeCoverageIgnore
  */
-final class Configuration implements ConfigurationInterface
+final readonly class Configuration implements Config\Definition\ConfigurationInterface
 {
-    public function getConfigTreeBuilder(): TreeBuilder
+    public function getConfigTreeBuilder(): Config\Definition\Builder\TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('handlebars');
+        $treeBuilder = new Config\Definition\Builder\TreeBuilder('handlebars');
 
         /* @phpstan-ignore method.notFound */
         $treeBuilder

@@ -29,20 +29,20 @@ namespace Fr\Typo3Handlebars\Renderer\Component\Layout;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsLayout
+final class HandlebarsLayout
 {
-    protected bool $parsed = false;
+    private bool $parsed = false;
 
     /**
      * @var array<string, list<HandlebarsLayoutAction>>
      */
-    protected array $actions = [];
+    private array $actions = [];
 
     /**
      * @param callable $parseFunction
      */
     public function __construct(
-        protected $parseFunction,
+        private $parseFunction,
     ) {}
 
     public function parse(): void

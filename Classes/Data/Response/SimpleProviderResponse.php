@@ -29,42 +29,20 @@ namespace Fr\Typo3Handlebars\Data\Response;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  *
- * @implements \ArrayAccess<string, mixed>
+ * @extends \ArrayObject<string, mixed>
  */
-class SimpleProviderResponse implements ProviderResponse, \ArrayAccess
+class SimpleProviderResponse extends \ArrayObject implements ProviderResponse
 {
     /**
      * @param array<string, mixed> $data
      */
-    public function __construct(
-        protected array $data = [],
-    ) {}
-
-    public function offsetExists($offset): bool
+    public function __construct(array $data = [])
     {
-        return \array_key_exists($offset, $this->data);
-    }
-
-    public function offsetGet($offset): mixed
-    {
-        if ($this->offsetExists($offset)) {
-            return $this->data[$offset];
-        }
-        return null;
-    }
-
-    public function offsetSet($offset, mixed $value): void
-    {
-        $this->data[$offset] = $value;
-    }
-
-    public function offsetUnset($offset): void
-    {
-        unset($this->data[$offset]);
+        parent::__construct($data);
     }
 
     public function toArray(): array
     {
-        return $this->data;
+        return $this->getArrayCopy();
     }
 }

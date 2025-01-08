@@ -23,8 +23,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 
-use Fr\Typo3Handlebars\Exception\UnsupportedTypeException;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Fr\Typo3Handlebars\Exception;
+use Symfony\Component\DependencyInjection;
 
 /**
  * ProcessorCompatibility
@@ -41,7 +41,7 @@ final readonly class ProcessorCompatibility
     public function __construct(
         private string $serviceId,
         private array $tagAttributes,
-        private ContainerBuilder $container,
+        private DependencyInjection\ContainerBuilder $container,
     ) {
         $this->validate();
     }
@@ -57,13 +57,13 @@ final readonly class ProcessorCompatibility
     }
 
     /**
-     * @throws UnsupportedTypeException
+     * @throws Exception\UnsupportedTypeException
      */
     private function buildLayerForType(string $type): CompatibilityLayer
     {
         return match ($type) {
             ExtbaseControllerCompatibilityLayer::TYPE => new ExtbaseControllerCompatibilityLayer($this->container),
-            default => throw UnsupportedTypeException::create($type),
+            default => throw Exception\UnsupportedTypeException::create($type),
         };
     }
 

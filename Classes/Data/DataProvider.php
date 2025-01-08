@@ -23,8 +23,6 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Data;
 
-use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
-
 /**
  * DataProvider
  *
@@ -36,5 +34,5 @@ interface DataProvider
     /**
      * @param array<string, mixed> $data
      */
-    public function get(array $data): ProviderResponse;
+    public function get(array $data): Response\ProviderResponse;
 }

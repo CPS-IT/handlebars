@@ -23,8 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Configuration;
 
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core;
 
 /**
  * Extension
@@ -33,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @license GPL-2.0-or-later
  * @codeCoverageIgnore
  */
-final class Extension
+final readonly class Extension
 {
     public const KEY = 'handlebars';
     public const NAME = 'Handlebars';
@@ -61,12 +60,12 @@ final class Extension
     public static function loadVendorLibraries(): void
     {
         // Vendor libraries are already available in Composer mode
-        if (Environment::isComposerMode()) {
+        if (Core\Core\Environment::isComposerMode()) {
             return;
         }
 
-        $vendorPharFile = GeneralUtility::getFileAbsFileName('EXT:handlebars/Resources/Private/Libs/vendors.phar');
-        if (file_exists($vendorPharFile)) {
+        $vendorPharFile = Core\Utility\GeneralUtility::getFileAbsFileName('EXT:handlebars/Resources/Private/Libs/vendors.phar');
+        if (is_file($vendorPharFile)) {
             require_once 'phar://' . $vendorPharFile . '/vendor/autoload.php';
         }
     }

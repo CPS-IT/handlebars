@@ -67,6 +67,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
             $helperRegistry,
             $this->logger,
             $this->templateResolver,
+            new Src\Renderer\Variables\VariableBag([]),
         );
 
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));

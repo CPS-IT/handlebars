@@ -66,6 +66,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
             $helperRegistry,
             new Log\NullLogger(),
             $this->templateResolver,
+            new Src\Renderer\Variables\VariableBag([]),
         );
 
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));

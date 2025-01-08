@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Template\Path;
 
 use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use TYPO3\TestingFramework;
 
@@ -36,14 +37,14 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Template\Path\TypoScriptPathProvider::class)]
 final class TypoScriptPathProviderTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    private Src\Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
+    private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
     private Src\Renderer\Template\Path\TypoScriptPathProvider $subject;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->configurationManager = new Src\Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
+        $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
         $this->subject = new Src\Renderer\Template\Path\TypoScriptPathProvider($this->configurationManager);
     }
 

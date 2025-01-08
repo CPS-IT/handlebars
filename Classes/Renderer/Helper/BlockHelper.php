@@ -33,7 +33,7 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#block-name
  */
-final readonly class BlockHelper implements HelperInterface
+final readonly class BlockHelper implements Helper
 {
     /**
      * @throws Exception\UnsupportedTypeException

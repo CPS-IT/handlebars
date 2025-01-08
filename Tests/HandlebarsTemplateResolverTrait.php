@@ -36,9 +36,9 @@ trait HandlebarsTemplateResolverTrait
     protected string $templateRootPath = __DIR__ . '/Unit/Fixtures/Templates';
     protected string $partialRootPath = __DIR__ . '/Unit/Fixtures/Partials';
 
-    protected ?Renderer\Template\TemplateResolverInterface $templateResolver = null;
+    protected ?Renderer\Template\TemplateResolver $templateResolver = null;
 
-    protected function getTemplateResolver(): Renderer\Template\TemplateResolverInterface
+    protected function getTemplateResolver(): Renderer\Template\TemplateResolver
     {
         return $this->templateResolver ??= new Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths());
     }

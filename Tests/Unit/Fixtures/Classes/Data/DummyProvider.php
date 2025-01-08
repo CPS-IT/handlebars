@@ -32,14 +32,14 @@ use Fr\Typo3Handlebars\Data;
  * @license GPL-2.0-or-later
  * @internal
  */
-final class DummyProvider implements Data\DataProviderInterface
+final class DummyProvider implements Data\DataProvider
 {
     /**
      * @var array<string, mixed>
      */
     public array $expectedData = [];
 
-    public function get(array $data): Data\Response\ProviderResponseInterface
+    public function get(array $data): Data\Response\ProviderResponse
     {
         return new Data\Response\SimpleProviderResponse($this->expectedData);
     }

@@ -33,7 +33,7 @@ use TYPO3\CMS\Core;
  * @license GPL-2.0-or-later
  * @internal
  */
-final readonly class DummyCache implements Cache\CacheInterface
+final readonly class DummyCache implements Cache\Cache
 {
     private string $basePath;
 

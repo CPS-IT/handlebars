@@ -22,7 +22,7 @@ in the :file:`Services.yaml` file.
 
     The following examples are only applicable to `DataProcessors` that
     extend the `AbstractDataProcessor`, since it provides the necessary
-    methods. These are not part of the `DataProcessorInterface`.
+    methods. These are not part of the `DataProcessor` interface.
 
 ..  _example-1-shared-presenter:
 

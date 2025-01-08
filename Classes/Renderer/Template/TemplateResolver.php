@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,34 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Helper;
+namespace Fr\Typo3Handlebars\Renderer\Template;
+
+use Fr\Typo3Handlebars\Exception;
 
 /**
- * HelperInterface
+ * TemplateResolver
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface HelperInterface
+interface TemplateResolver
 {
-    public function render(Context\HelperContext $context): mixed;
+    /**
+     * Check whether given file extension is supported by this resolver.
+     */
+    public function supports(string $fileExtension): bool;
+
+    /**
+     * Resolve given partial path to the full partial path including the base partial path.
+     *
+     * @throws Exception\PartialPathIsNotResolvable
+     */
+    public function resolvePartialPath(string $partialPath): string;
+
+    /**
+     * Resolve given template path to the full template path including the base template path.
+     *
+     * @throws Exception\TemplatePathIsNotResolvable
+     */
+    public function resolveTemplatePath(string $templatePath): string;
 }

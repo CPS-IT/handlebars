@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DependencyInjection;
 
-use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
 use Fr\Typo3Handlebars\DependencyInjection\Compatibility\ProcessorCompatibility;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -45,7 +45,7 @@ final readonly class DataProcessorPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container): void
     {
-        $container->registerForAutoconfiguration(DataProcessorInterface::class)->addTag($this->processorTagName);
+        $container->registerForAutoconfiguration(DataProcessor::class)->addTag($this->processorTagName);
 
         foreach ($container->findTaggedServiceIds($this->processorTagName) as $id => $tags) {
             $service = $container->findDefinition($id);

@@ -63,7 +63,7 @@ final class FeatureRegistrationPass implements DependencyInjection\Compiler\Comp
     }
 
     /**
-     * @param class-string<Renderer\Helper\HelperInterface> $className
+     * @param class-string<Renderer\Helper\Helper> $className
      */
     private function activateHelper(string $name, string $className): void
     {

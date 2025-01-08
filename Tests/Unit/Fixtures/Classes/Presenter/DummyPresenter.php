@@ -35,7 +35,7 @@ use Fr\Typo3Handlebars\Presenter;
  */
 final class DummyPresenter extends Presenter\AbstractPresenter
 {
-    public function present(Data\Response\ProviderResponseInterface $data): string
+    public function present(Data\Response\ProviderResponse $data): string
     {
         return json_encode($data->toArray()) ?: '';
     }

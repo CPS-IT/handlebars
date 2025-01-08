@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\DataProcessing;
 
-use Fr\Typo3Handlebars\Data\DataProviderInterface;
+use Fr\Typo3Handlebars\Data\DataProvider;
 use Fr\Typo3Handlebars\Exception\UnableToPresentException;
-use Fr\Typo3Handlebars\Presenter\PresenterInterface;
+use Fr\Typo3Handlebars\Presenter\Presenter;
 use Fr\Typo3Handlebars\Traits\ErrorHandlingTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -39,15 +39,15 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAwareInterface
+abstract class AbstractDataProcessor implements DataProcessor, LoggerAwareInterface
 {
     use ErrorHandlingTrait;
     use LoggerAwareTrait;
 
     protected ?ConfigurationManagerInterface $configurationManager = null;
     protected ?ContentObjectRenderer $contentObjectRenderer = null;
-    protected ?PresenterInterface $presenter = null;
-    protected ?DataProviderInterface $provider = null;
+    protected ?Presenter $presenter = null;
+    protected ?DataProvider $provider = null;
     protected string $content = '';
 
     /**
@@ -79,7 +79,7 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
     /**
      * @required
      */
-    public function setPresenter(PresenterInterface $presenter): DataProcessorInterface
+    public function setPresenter(Presenter $presenter): DataProcessor
     {
         $this->presenter = $presenter;
         return $this;
@@ -88,7 +88,7 @@ abstract class AbstractDataProcessor implements DataProcessorInterface, LoggerAw
     /**
      * @required
      */
-    public function setProvider(DataProviderInterface $provider): DataProcessorInterface
+    public function setProvider(DataProvider $provider): DataProcessor
     {
         $this->provider = $provider;
         return $this;

@@ -21,18 +21,15 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Renderer;
+namespace Fr\Typo3Handlebars\Renderer\Helper;
 
 /**
- * RendererInterface
+ * Helper
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface RendererInterface
+interface Helper
 {
-    /**
-     * @param array<string|int, mixed> $data
-     */
-    public function render(string $templatePath, array $data = []): string;
+    public function render(Context\HelperContext $context): mixed;
 }

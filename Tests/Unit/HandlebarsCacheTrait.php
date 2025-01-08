@@ -36,7 +36,7 @@ trait HandlebarsCacheTrait
 {
     private ?Fixtures\Classes\Cache\DummyCache $cache = null;
 
-    protected function getCache(): Src\Cache\CacheInterface
+    protected function getCache(): Src\Cache\Cache
     {
         if ($this->cache === null) {
             $this->cache = new Fixtures\Classes\Cache\DummyCache($this->getCachePath());

@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
-use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,7 +40,7 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 class HandlebarsViewResolver extends GenericViewResolver
 {
     /**
-     * @var array<class-string, array<string, DataProcessorInterface>>
+     * @var array<class-string, array<string, DataProcessor>>
      */
     protected array $processorMap = [];
 
@@ -65,7 +65,7 @@ class HandlebarsViewResolver extends GenericViewResolver
         return $this->getProcessor($controllerClassName, $actionName) !== null;
     }
 
-    protected function getProcessor(string $controllerClassName, string $actionName): ?DataProcessorInterface
+    protected function getProcessor(string $controllerClassName, string $actionName): ?DataProcessor
     {
         if (!\array_key_exists($controllerClassName, $this->processorMap)) {
             return null;
@@ -87,7 +87,7 @@ class HandlebarsViewResolver extends GenericViewResolver
     }
 
     /**
-     * @param array<class-string, array<string, DataProcessorInterface>> $processorMap
+     * @param array<class-string, array<string, DataProcessor>> $processorMap
      */
     public function setProcessorMap(array $processorMap): self
     {

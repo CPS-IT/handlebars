@@ -59,7 +59,8 @@ Example
 
 #.  Create a new `DataProcessor`
 
-    Each `DataProcessor` must implement :php:`Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface`.
+    Each `DataProcessor` must implement the
+    :php:`Fr\Typo3Handlebars\DataProcessing\DataProcessor` interface.
 
     There's already a default `DataProcessor` in place that provides some
     basic logic and is required in case you want to develop components
@@ -125,8 +126,8 @@ Example
 #.  Create a new `DataProvider`
 
     Next, a `DataProvider` must be created that prepares the module's data and makes
-    it available to the `DataProcessor` again. Each `DataProvider` must implement
-    :php:`Fr\Typo3Handlebars\Data\DataProviderInterface`.
+    it available to the `DataProcessor` again. Each `DataProvider` must implement the
+    :php:`Fr\Typo3Handlebars\Data\DataProvider` interface.
 
     ::
 
@@ -134,13 +135,13 @@ Example
 
         namespace Vendor\Extension\Data;
 
-        use Fr\Typo3Handlebars\Data\DataProviderInterface;
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+        use Fr\Typo3Handlebars\Data\DataProvider;
+        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
         use Vendor\Extension\Data\Response\HeaderProviderResponse;
 
-        class HeaderProvider implements DataProviderInterface
+        class HeaderProvider implements DataProvider
         {
-            public function get(array $data): ProviderResponseInterface
+            public function get(array $data): ProviderResponse
             {
                 return (new HeaderProviderResponse($data['header']))
                     ->setHeaderLayout((int)$data['header_layout'])
@@ -159,9 +160,9 @@ Example
 
         namespace Vendor\Extension\Data\Response;
 
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
 
-        class HeaderProviderResponse implements ProviderResponseInterface
+        class HeaderProviderResponse implements ProviderResponse
         {
             public const LAYOUT_DEFAULT = 0;
 
@@ -199,9 +200,9 @@ Example
 #.  Create a new `Presenter`
 
     To complete the rendering process, a new `Presenter` called `HeaderPresenter`
-    must be created. It must implement the :php:`Fr\Typo3Handlebars\Presenter\PresenterInterface`;
-    furthermore, an :php:`Fr\Typo3Handlebars\Presenter\AbstractPresenter` is already
-    available with the default `Renderer` already specified as a dependency.
+    must be created. It must implement the :php:`Fr\Typo3Handlebars\Presenter\Presenter`
+    interface; furthermore, an :php:`Fr\Typo3Handlebars\Presenter\AbstractPresenter` is
+    already available with the default `Renderer` already specified as a dependency.
 
     ::
 
@@ -209,13 +210,13 @@ Example
 
         namespace Vendor\Extension\Presenter;
 
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponseInterface;
+        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
         use Fr\Typo3Handlebars\Exception\UnableToPresentException;
         use Fr\Typo3Handlebars\Presenter\AbstractPresenter;
 
         class HeaderPresenter extends AbstractPresenter
         {
-            public function present(ProviderResponseInterface $data): string
+            public function present(ProviderResponse $data): string
             {
                 if (!($data instanceof HeaderProviderResponse)) {
                     throw new UnableToPresentException(
@@ -271,9 +272,9 @@ Sources
 
     View the sources on GitHub:
 
-    - `DataProcessorInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/DataProcessorInterface.php>`__
+    - `DataProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/DataProcessor.php>`__
     - `AbstractDataProcessor <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/AbstractDataProcessor.php>`__
-    - `DataProviderInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/DataProviderInterface.php>`__
-    - `ProviderResponseInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/Response/ProviderResponseInterface.php>`__
-    - `PresenterInterface <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/PresenterInterface.php>`__
+    - `DataProvider <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/DataProvider.php>`__
+    - `ProviderResponse <https://github.com/CPS-IT/handlebars/blob/main/Classes/Data/Response/ProviderResponse.php>`__
+    - `Presenter <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/Presenter.php>`__
     - `AbstractPresenter <https://github.com/CPS-IT/handlebars/blob/main/Classes/Presenter/AbstractPresenter.php>`__

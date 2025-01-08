@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Compatibility\View;
 
-use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3\CMS\Fluid\View\AbstractTemplateView;
@@ -42,7 +42,7 @@ class ExtbaseViewAdapter extends AbstractTemplateView
     protected array $renderData = [];
 
     public function __construct(
-        protected readonly DataProcessorInterface $processor,
+        protected readonly DataProcessor $processor,
     ) {
         parent::__construct();
     }

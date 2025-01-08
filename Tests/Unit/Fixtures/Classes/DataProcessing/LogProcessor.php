@@ -32,7 +32,7 @@ use Fr\Typo3Handlebars\DataProcessing;
  * @license GPL-2.0-or-later
  * @internal
  */
-final readonly class LogProcessor implements DataProcessing\DataProcessorInterface
+final readonly class LogProcessor implements DataProcessing\DataProcessor
 {
     public function process(string $content, array $configuration): string
     {

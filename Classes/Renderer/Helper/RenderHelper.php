@@ -37,10 +37,10 @@ use TYPO3\CMS\Frontend;
  * @license GPL-2.0-or-later
  * @see https://github.com/frctl/fractal/blob/main/packages/handlebars/src/helpers/render.js
  */
-final readonly class RenderHelper implements HelperInterface
+final readonly class RenderHelper implements Helper
 {
     public function __construct(
-        private Renderer\RendererInterface $renderer,
+        private Renderer\Renderer $renderer,
         private Core\TypoScript\TypoScriptService $typoScriptService,
         private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ) {}
@@ -101,7 +101,7 @@ final readonly class RenderHelper implements HelperInterface
         $processorClass = $context['_processor'] ?? null;
 
         // Check whether the required data processor is valid
-        if (!\is_string($processorClass) || !\is_a($processorClass, DataProcessing\DataProcessorInterface::class, true)) {
+        if (!\is_string($processorClass) || !\is_a($processorClass, DataProcessing\DataProcessor::class, true)) {
             throw Exception\InvalidConfigurationException::create('_processor');
         }
 

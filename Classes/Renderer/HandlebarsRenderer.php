@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer;
 
-use Fr\Typo3Handlebars\Cache\CacheInterface;
+use Fr\Typo3Handlebars\Cache\Cache;
 use Fr\Typo3Handlebars\Cache\NullCache;
 use Fr\Typo3Handlebars\Event\AfterRenderingEvent;
 use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
@@ -32,7 +32,7 @@ use Fr\Typo3Handlebars\Exception\PartialPathIsNotResolvable;
 use Fr\Typo3Handlebars\Exception\TemplateCompilationException;
 use Fr\Typo3Handlebars\Exception\TemplatePathIsNotResolvable;
 use Fr\Typo3Handlebars\Renderer\Helper\HelperRegistry;
-use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
+use Fr\Typo3Handlebars\Renderer\Template\TemplateResolver;
 use LightnCandy\Context;
 use LightnCandy\LightnCandy;
 use LightnCandy\Partial;
@@ -53,18 +53,18 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 #[AsAlias('handlebars.renderer')]
 #[Autoconfigure(tags: ['handlebars.renderer'])]
-class HandlebarsRenderer implements RendererInterface
+class HandlebarsRenderer implements Renderer
 {
     protected readonly bool $debugMode;
 
     public function __construct(
         #[Autowire('@handlebars.cache')]
-        protected readonly CacheInterface $cache,
+        protected readonly Cache $cache,
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly HelperRegistry $helperRegistry,
         protected readonly LoggerInterface $logger,
         #[Autowire('@handlebars.template_resolver')]
-        protected readonly TemplateResolverInterface $templateResolver,
+        protected readonly TemplateResolver $templateResolver,
         protected readonly Variables\VariableBag $variableBag,
     ) {
         $this->debugMode = $this->isDebugModeEnabled();

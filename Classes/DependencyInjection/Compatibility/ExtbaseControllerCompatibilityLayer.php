@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\DependencyInjection\Compatibility;
 
 use Fr\Typo3Handlebars\Compatibility\View\HandlebarsViewResolver;
-use Fr\Typo3Handlebars\DataProcessing\DataProcessorInterface;
+use Fr\Typo3Handlebars\DataProcessing\DataProcessor;
 use Fr\Typo3Handlebars\Exception\InvalidClassException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -39,7 +39,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  * @license GPL-2.0-or-later
  * @internal
  */
-final readonly class ExtbaseControllerCompatibilityLayer implements CompatibilityLayerInterface
+final readonly class ExtbaseControllerCompatibilityLayer implements CompatibilityLayer
 {
     public const TYPE = 'extbase_controller';
 
@@ -84,7 +84,7 @@ final readonly class ExtbaseControllerCompatibilityLayer implements Compatibilit
     /**
      * @param class-string $controllerClassName
      * @param array<string, Reference> $actionMap
-     * @return array<string, array<string, DataProcessorInterface>>
+     * @return array<string, array<string, DataProcessor>>
      */
     private function buildProcessorMap(string $controllerClassName, array $actionMap): array
     {

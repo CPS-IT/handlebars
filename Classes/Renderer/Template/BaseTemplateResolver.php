@@ -32,7 +32,7 @@ use TYPO3\CMS\Core;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-abstract class BaseTemplateResolver implements TemplateResolverInterface
+abstract class BaseTemplateResolver implements TemplateResolver
 {
     protected const DEFAULT_FILE_EXTENSIONS = ['hbs', 'handlebars', 'html'];
 

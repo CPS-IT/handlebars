@@ -61,7 +61,6 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
 
         self::assertSame([], $container->findTaggedServiceIds('handlebars.helper'));
         self::assertNotInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.template_resolver'));
-        self::assertNotInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.partial_resolver'));
     }
 
     #[Framework\Attributes\Test]
@@ -90,7 +89,6 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
 
         self::assertSame([], $container->findTaggedServiceIds('handlebars.helper'));
         self::assertInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.template_resolver'));
-        self::assertInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.partial_resolver'));
     }
 
     #[Framework\Attributes\Test]
@@ -106,7 +104,6 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
 
         self::assertSame([], $container->findTaggedServiceIds('handlebars.helper'));
         self::assertNotInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.template_resolver'));
-        self::assertNotInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.partial_resolver'));
     }
 
     /**

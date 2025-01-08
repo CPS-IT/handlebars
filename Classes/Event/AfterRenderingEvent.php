@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Event;
 
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
+use Fr\Typo3Handlebars\Renderer;
 
 /**
  * AfterRenderingEvent
@@ -36,7 +36,7 @@ class AfterRenderingEvent
     public function __construct(
         private readonly string $templatePath,
         private string $content,
-        private readonly HandlebarsRenderer $renderer,
+        private readonly Renderer\RendererInterface $renderer,
     ) {}
 
     public function getTemplatePath(): string
@@ -55,7 +55,7 @@ class AfterRenderingEvent
         return $this;
     }
 
-    public function getRenderer(): HandlebarsRenderer
+    public function getRenderer(): Renderer\RendererInterface
     {
         return $this->renderer;
     }

@@ -88,7 +88,7 @@ final class TemplatePaths
         $paths = [];
 
         foreach ($this->pathProviders as $pathProvider) {
-            $paths[] = $mapFunction($pathProvider);
+            \array_unshift($paths, $mapFunction($pathProvider));
         }
 
         $mergedPaths = array_replace(...$paths);

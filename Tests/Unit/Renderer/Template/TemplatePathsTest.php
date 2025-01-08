@@ -48,8 +48,8 @@ final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $this->pathProvider = new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider();
         $this->subject = new Src\Renderer\Template\TemplatePaths([
-            new Src\Renderer\Template\Path\GlobalPathProvider($this->getViewConfiguration()),
             $this->pathProvider,
+            new Src\Renderer\Template\Path\GlobalPathProvider($this->getViewConfiguration()),
         ]);
     }
 

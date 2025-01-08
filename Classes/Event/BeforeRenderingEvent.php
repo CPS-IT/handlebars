@@ -64,6 +64,18 @@ class BeforeRenderingEvent
         return $this;
     }
 
+    public function addVariable(string $name, mixed $value): self
+    {
+        $this->variables[$name] = $value;
+        return $this;
+    }
+
+    public function removeVariable(string $name): self
+    {
+        unset($this->variables[$name]);
+        return $this;
+    }
+
     public function getRenderer(): HandlebarsRenderer
     {
         return $this->renderer;

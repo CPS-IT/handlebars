@@ -70,6 +70,29 @@ final class BeforeRenderingEventTest extends TestingFramework\Core\Unit\UnitTest
     }
 
     #[Framework\Attributes\Test]
+    public function addVariableAddsSingleVariable(): void
+    {
+        $this->subject->addVariable('foo', 'boo');
+        $this->subject->addVariable('baz', 'foo');
+
+        self::assertSame(
+            [
+                'foo' => 'boo',
+                'baz' => 'foo',
+            ],
+            $this->subject->getVariables(),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function removeVariableRemoveSingleVariable(): void
+    {
+        $this->subject->removeVariable('foo');
+
+        self::assertSame([], $this->subject->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
     public function getRendererReturnsRenderer(): void
     {
         self::assertInstanceOf(Src\Renderer\HandlebarsRenderer::class, $this->subject->getRenderer());

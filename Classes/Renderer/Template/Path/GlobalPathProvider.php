@@ -70,6 +70,11 @@ final readonly class GlobalPathProvider implements PathProvider
         return $this->templateRootPaths;
     }
 
+    public function isCacheable(): bool
+    {
+        return true;
+    }
+
     public static function getPriority(): int
     {
         return 0;

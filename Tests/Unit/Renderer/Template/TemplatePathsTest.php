@@ -54,21 +54,6 @@ final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     /**
-     * @param array<int, string> $templateRootPaths
-     * @param array<int, string> $expected
-     */
-    #[Framework\Attributes\Test]
-    #[Framework\Attributes\DataProvider('getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider')]
-    public function getTemplateRootPathsMergesConfigurationFromPathProviders(
-        array $templateRootPaths,
-        array $expected,
-    ): void {
-        $this->pathProvider->templateRootPaths = $templateRootPaths;
-
-        self::assertSame($expected, $this->subject->getTemplateRootPaths());
-    }
-
-    /**
      * @param array<int, string> $partialRootPaths
      * @param array<int, string> $expected
      */
@@ -83,15 +68,118 @@ final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
         self::assertSame($expected, $this->subject->getPartialRootPaths());
     }
 
+    #[Framework\Attributes\Test]
+    public function getPartialRootPathsCachesRootPathsIfAllPathProvidersAreCacheable(): void
+    {
+        $this->pathProvider->partialRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+
+        $this->pathProvider->partialRootPaths = [
+            20 => 'baz',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialRootPathsDoesNotCacheRootPathsIfAnyPathProviderIsNonCacheable(): void
+    {
+        $this->pathProvider->cacheable = false;
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+
+        $this->pathProvider->partialRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+    }
+
+    /**
+     * @param array<int, string> $templateRootPaths
+     * @param array<int, string> $expected
+     */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider')]
+    public function getTemplateRootPathsMergesConfigurationFromPathProviders(
+        array $templateRootPaths,
+        array $expected,
+    ): void {
+        $this->pathProvider->templateRootPaths = $templateRootPaths;
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getTemplateRootPathsCachesRootPathsIfAllPathProvidersAreCacheable(): void
+    {
+        $this->pathProvider->templateRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+
+        $this->pathProvider->templateRootPaths = [
+            20 => 'baz',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getTemplateRootPathsDoesNotCacheRootPathsIfAnyPathProviderIsNonCacheable(): void
+    {
+        $this->pathProvider->cacheable = false;
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+
+        $this->pathProvider->templateRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+    }
+
     /**
      * @return \Generator<string, array{array<int, string>, array<int, string>}>
      */
-    public static function getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
+    public static function getPartialRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
     {
         yield 'no view configuration' => [
             [],
             [
-                10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+                10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
             ],
         ];
         yield 'view configuration with identical keys' => [
@@ -117,12 +205,12 @@ final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
     /**
      * @return \Generator<string, array{array<int, string>, array<int, string>}>
      */
-    public static function getPartialRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
+    public static function getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
     {
         yield 'no view configuration' => [
             [],
             [
-                10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+                10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
             ],
         ];
         yield 'view configuration with identical keys' => [

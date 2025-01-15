@@ -41,14 +41,9 @@ final class FlatTemplateResolver extends BaseTemplateResolver
     private readonly HandlebarsTemplateResolver $fallbackResolver;
 
     /**
-     * @var array<string, Finder\SplFileInfo>
+     * @var array<string, array<string, Finder\SplFileInfo>>
      */
-    private readonly array $flattenedPartials;
-
-    /**
-     * @var array<string, Finder\SplFileInfo>
-     */
-    private readonly array $flattenedTemplates;
+    private array $flattenedRootPaths = [];
 
     /**
      * @param list<string> $supportedFileExtensions
@@ -56,25 +51,38 @@ final class FlatTemplateResolver extends BaseTemplateResolver
      * @throws Exception\RootPathIsNotResolvable
      */
     public function __construct(
-        TemplatePaths $templatePaths,
+        private readonly TemplatePaths $templatePaths,
         array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS,
     ) {
         $this->fallbackResolver = new HandlebarsTemplateResolver($templatePaths, $supportedFileExtensions);
-        [$this->templateRootPaths, $this->partialRootPaths] = $this->resolveTemplatePaths($templatePaths);
         $this->supportedFileExtensions = $this->resolveSupportedFileExtensions($supportedFileExtensions);
-        $this->flattenedPartials = $this->buildPathMap($this->partialRootPaths);
-        $this->flattenedTemplates = $this->buildPathMap($this->templateRootPaths);
     }
 
+    /**
+     * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
+     */
     public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
-        return $this->resolvePath($partialPath, $this->flattenedPartials, $format)
+        $flattenedPartials = $this->buildPathMap($this->templatePaths->getPartialRootPaths());
+
+        return $this->resolvePath($partialPath, $flattenedPartials, $format)
             ?? $this->fallbackResolver->resolvePartialPath($partialPath, $format);
     }
 
+    /**
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
+     */
     public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
-        return $this->resolvePath($templatePath, $this->flattenedTemplates, $format)
+        $flattenedTemplates = $this->buildPathMap($this->templatePaths->getTemplateRootPaths());
+
+        return $this->resolvePath($templatePath, $flattenedTemplates, $format)
             ?? $this->fallbackResolver->resolveTemplatePath($templatePath, $format);
     }
 
@@ -120,11 +128,20 @@ final class FlatTemplateResolver extends BaseTemplateResolver
     }
 
     /**
-     * @param list<string> $rootPaths
+     * @param array<int, string> $rootPaths
      * @return array<string, Finder\SplFileInfo>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
      */
     private function buildPathMap(array $rootPaths): array
     {
+        $hash = \sha1((string)\json_encode($rootPaths));
+
+        if (isset($this->flattenedRootPaths[$hash])) {
+            return $this->flattenedRootPaths[$hash];
+        }
+
+        $normalizedRootPaths = $this->normalizeRootPaths($rootPaths);
         $flattenedPaths = [];
 
         // Instantiate finder
@@ -140,7 +157,7 @@ final class FlatTemplateResolver extends BaseTemplateResolver
         $finder->sortByName();
 
         // Build template map
-        foreach (array_reverse($rootPaths) as $rootPath) {
+        foreach (array_reverse($normalizedRootPaths) as $rootPath) {
             $path = $this->resolveFilename($rootPath);
             $pathFinder = clone $finder;
             $pathFinder->in($path);
@@ -156,7 +173,7 @@ final class FlatTemplateResolver extends BaseTemplateResolver
             }
         }
 
-        return $flattenedPaths;
+        return $this->flattenedRootPaths[$hash] = $flattenedPaths;
     }
 
     /**

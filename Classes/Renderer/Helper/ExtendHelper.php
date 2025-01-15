@@ -60,9 +60,11 @@ final readonly class ExtendHelper implements Helper
         $renderingContext['_layoutStack'][] = $handlebarsLayout;
 
         // Merge data with supplied data
-        $renderData = array_replace_recursive($renderingContext, $customContext, $context->hash);
+        $variables = array_replace_recursive($renderingContext, $customContext, $context->hash);
 
         // Render layout with merged data
-        return $this->renderer->render($name, $renderData);
+        return $this->renderer->render(
+            new Renderer\Template\View\HandlebarsView($name, $variables),
+        );
     }
 }

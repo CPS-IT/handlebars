@@ -78,9 +78,15 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\Test]
     public function helperCanBeCalledFromExtendedLayout(): void
     {
-        $actual = trim($this->renderer->render('@main-layout-extended', [
-            'templateName' => '@main-layout',
-        ]));
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@main-layout-extended',
+                [
+                    'templateName' => '@main-layout',
+                ],
+            ),
+        );
+
         $expected = implode(PHP_EOL, [
             'this is the main block:',
             '',
@@ -103,13 +109,15 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
             'this is the end. bye bye',
         ]);
 
-        self::assertMatchesRegularExpression('/^' . $expected . '$/', $actual);
+        self::assertMatchesRegularExpression('/^' . $expected . '$/', trim($actual));
     }
 
     #[Framework\Attributes\Test]
     public function helperCannotBeCalledOutsideOfExtendedLayout(): void
     {
-        $this->renderer->render('@main-layout-content-only');
+        $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView('@main-layout-content-only'),
+        );
 
         self::assertTrue(
             $this->logger->hasError([
@@ -124,9 +132,14 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\Test]
     public function helperUsesReplaceModeIfInvalidModeIsGiven(): void
     {
-        $this->renderer->render('@main-layout-extended-with-invalid-mode', [
-            'templateName' => '@main-layout',
-        ]);
+        $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@main-layout-extended-with-invalid-mode',
+                [
+                    'templateName' => '@main-layout',
+                ],
+            ),
+        );
 
         self::assertTrue(
             $this->logger->hasWarning([
@@ -142,12 +155,17 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\DataProvider('helperCanBeCalledToConditionallyRenderBlocksDataProvider')]
     public function helperCanBeCalledToConditionallyRenderBlocks(bool $renderSecondBlock, string $expected): void
     {
-        $actual = trim($this->renderer->render('@main-layout-extended-with-conditional-contents', [
-            'templateName' => '@main-layout-conditional-block',
-            'renderSecondBlock' => $renderSecondBlock,
-        ]));
+        $actual = $this->renderer->render(
+            new Src\Renderer\Template\View\HandlebarsView(
+                '@main-layout-extended-with-conditional-contents',
+                [
+                    'templateName' => '@main-layout-conditional-block',
+                    'renderSecondBlock' => $renderSecondBlock,
+                ],
+            ),
+        );
 
-        self::assertMatchesRegularExpression('/^' . $expected . '$/', $actual);
+        self::assertMatchesRegularExpression('/^' . $expected . '$/', trim($actual));
     }
 
     /**

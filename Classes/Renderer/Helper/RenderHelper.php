@@ -86,7 +86,9 @@ final readonly class RenderHelper implements Helper
         if ($renderUncached) {
             $content = $this->registerUncachedTemplateBlock($name, $subContext);
         } else {
-            $content = $this->renderer->render($name, $subContext);
+            $content = $this->renderer->render(
+                new Renderer\Template\View\HandlebarsView($name, $subContext),
+            );
         }
 
         return new SafeString($content);

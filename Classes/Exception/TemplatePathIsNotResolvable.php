@@ -31,10 +31,16 @@ namespace Fr\Typo3Handlebars\Exception;
  */
 final class TemplatePathIsNotResolvable extends Exception
 {
-    public function __construct(string $path)
+    public function __construct(string $path, ?string $format = null)
     {
+        if ($format !== null) {
+            $formatMessage = \sprintf(' with format "%s"', $format);
+        } else {
+            $formatMessage = '';
+        }
+
         parent::__construct(
-            \sprintf('The template path "%s" cannot be resolved.', $path),
+            \sprintf('The template path "%s"%s cannot be resolved.', $path, $formatMessage),
             1736254772,
         );
     }

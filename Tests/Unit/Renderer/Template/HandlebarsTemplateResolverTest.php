@@ -107,6 +107,24 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
     }
 
     #[Framework\Attributes\Test]
+    public function resolvePartialPathThrowsExceptionIfGivenFormatIsNotSupported(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\TemplateFormatIsNotSupported('baz'),
+        );
+
+        $this->subject->resolvePartialPath('DummyPartial', 'baz');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathRespectsFormat(): void
+    {
+        $expected = $this->partialRootPath . '/DummyPartial.html';
+
+        self::assertSame($expected, $this->subject->resolvePartialPath('DummyPartial', 'html'));
+    }
+
+    #[Framework\Attributes\Test]
     public function resolvePartialPathThrowsExceptionIfPartialPathCannotBeResolved(): void
     {
         $this->expectExceptionObject(
@@ -131,6 +149,24 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
         $expected = $this->partialRootPath . '/DummyPartial.hbs';
 
         self::assertSame($expected, $this->subject->resolvePartialPath($templatePath));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathThrowsExceptionIfGivenFormatIsNotSupported(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\TemplateFormatIsNotSupported('baz'),
+        );
+
+        $this->subject->resolveTemplatePath('DummyTemplate', 'baz');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathRespectsFormat(): void
+    {
+        $expected = $this->templateRootPath . '/DummyTemplate.html';
+
+        self::assertSame($expected, $this->subject->resolveTemplatePath('DummyTemplate', 'html'));
     }
 
     #[Framework\Attributes\Test]

@@ -116,6 +116,24 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function resolvePartialPathThrowsExceptionIfGivenFormatIsNotSupported(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\TemplateFormatIsNotSupported('foo'),
+        );
+
+        $this->getTemplateResolver()->resolvePartialPath('@foo', 'foo');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathRespectsFormat(): void
+    {
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Partials/foo.html';
+
+        self::assertSame($expected, $this->getTemplateResolver()->resolvePartialPath('@foo', 'html'));
+    }
+
+    #[Framework\Attributes\Test]
     public function resolvePartialPathFallsBackToDefaultResolverIfPartialPathCannotBeResolved(): void
     {
         $this->expectExceptionObject(
@@ -148,6 +166,24 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
 
         // main-layout vs @main-layout
         self::assertSame($expected, $this->getTemplateResolver()->resolveTemplatePath('main-layout'));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathThrowsExceptionIfGivenFormatIsNotSupported(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\TemplateFormatIsNotSupported('foo'),
+        );
+
+        $this->getTemplateResolver()->resolveTemplatePath('@foo', 'foo');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathRespectsFormat(): void
+    {
+        $expected = $this->instancePath . '/typo3conf/ext/test_extension/Resources/Templates/foo.html';
+
+        self::assertSame($expected, $this->getTemplateResolver()->resolveTemplatePath('@foo', 'html'));
     }
 
     #[Framework\Attributes\Test]

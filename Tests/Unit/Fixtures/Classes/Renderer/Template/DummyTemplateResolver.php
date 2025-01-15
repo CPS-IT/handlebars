@@ -42,12 +42,12 @@ final class DummyTemplateResolver extends Renderer\Template\BaseTemplateResolver
         $this->root = vfs\vfsStream::setup(uniqid('ext_handlebars_test_'));
     }
 
-    public function resolvePartialPath(string $partialPath): string
+    public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
         return vfs\vfsStream::newFile($partialPath, 0000)->at($this->root)->url();
     }
 
-    public function resolveTemplatePath(string $templatePath): string
+    public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
         return vfs\vfsStream::newFile($templatePath, 0000)->at($this->root)->url();
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,42 +21,21 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Event;
-
-use Fr\Typo3Handlebars\Renderer;
+namespace Fr\Typo3Handlebars\Exception;
 
 /**
- * AfterRenderingEvent
+ * TemplateFormatIsNotSupported
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class AfterRenderingEvent
+final class TemplateFormatIsNotSupported extends Exception
 {
-    public function __construct(
-        private readonly Renderer\Template\View\HandlebarsView $view,
-        private string $content,
-        private readonly Renderer\Renderer $renderer,
-    ) {}
-
-    public function getView(): Renderer\Template\View\HandlebarsView
+    public function __construct(string $format)
     {
-        return $this->view;
-    }
-
-    public function getContent(): string
-    {
-        return $this->content;
-    }
-
-    public function setContent(string $content): self
-    {
-        $this->content = $content;
-        return $this;
-    }
-
-    public function getRenderer(): Renderer\Renderer
-    {
-        return $this->renderer;
+        parent::__construct(
+            sprintf('The format "%s" is not supported by this template resolver.', $format),
+            1736349135,
+        );
     }
 }

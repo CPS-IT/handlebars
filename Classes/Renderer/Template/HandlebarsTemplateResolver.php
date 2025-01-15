@@ -46,35 +46,47 @@ final class HandlebarsTemplateResolver extends BaseTemplateResolver
         $this->supportedFileExtensions = $this->resolveSupportedFileExtensions($supportedFileExtensions);
     }
 
-    public function resolvePartialPath(string $partialPath): string
+    public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
-        return $this->resolvePath($partialPath, $this->partialRootPaths)
-            ?? throw new Exception\PartialPathIsNotResolvable($partialPath);
+        return $this->resolvePath($partialPath, $this->partialRootPaths, $format)
+            ?? throw new Exception\PartialPathIsNotResolvable($partialPath, $format);
     }
 
-    public function resolveTemplatePath(string $templatePath): string
+    public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
-        return $this->resolvePath($templatePath, $this->templateRootPaths)
-            ?? throw new Exception\TemplatePathIsNotResolvable($templatePath);
+        return $this->resolvePath($templatePath, $this->templateRootPaths, $format)
+            ?? throw new Exception\TemplatePathIsNotResolvable($templatePath, $format);
     }
 
     /**
      * @param list<string> $rootPaths
+     * @throws Exception\TemplateFormatIsNotSupported
      */
-    private function resolvePath(string $path, array $rootPaths): ?string
+    private function resolvePath(string $path, array $rootPaths, ?string $format = null): ?string
     {
+        $fileExtensions = $this->supportedFileExtensions;
         $filename = $path;
 
+        if ($format !== null) {
+            // Throw exception if given format is not supported
+            if (!in_array($format, $fileExtensions, true)) {
+                throw new Exception\TemplateFormatIsNotSupported($format);
+            }
+
+            $fileExtensions = [$format];
+        }
+
         foreach (array_reverse($rootPaths) as $rootPath) {
-            foreach ($this->supportedFileExtensions as $extension) {
+            foreach ($fileExtensions as $extension) {
                 $possibleFilename = $this->resolveFilename($path, $rootPath, $extension);
+
                 if (is_file($possibleFilename)) {
                     return $possibleFilename;
                 }
             }
         }
 
-        if (is_file($possibleFilename = $this->resolveFilename($filename))) {
+        if ($format === null && is_file($possibleFilename = $this->resolveFilename($filename))) {
             return $possibleFilename;
         }
 

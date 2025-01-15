@@ -5,7 +5,7 @@
 	"type": "typo3-cms-extension",
 	"version": "1.0.0",
 	"require": {
-		"typo3/cms-core": "*"
+		"typo3/cms-core": "12.4.25"
 	},
 	"autoload": {
 		"psr-4": {

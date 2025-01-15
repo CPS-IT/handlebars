@@ -12,5 +12,26 @@
 	],
 	"constraints": {
 		"php": "8.2.*"
-	}
+	},
+	"packageRules": [
+		{
+			"extends": [
+				":disableRenovate"
+			],
+			"matchDatasources": [
+				"packagist"
+			],
+			"matchPackageNames": [
+				"cpsit/typo3-handlebars-test-extension"
+			]
+		},
+		{
+			"extends": [
+				":disableRenovate"
+			],
+			"matchFileNames": [
+				"Tests/Functional/Fixtures/test_extension/**"
+			]
+		}
+	]
 }

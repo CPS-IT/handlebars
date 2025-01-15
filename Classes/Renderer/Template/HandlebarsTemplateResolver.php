@@ -34,6 +34,16 @@ use Fr\Typo3Handlebars\Exception;
 final class HandlebarsTemplateResolver extends BaseTemplateResolver
 {
     /**
+     * @var list<string>
+     */
+    protected array $partialRootPaths = [];
+
+    /**
+     * @var list<string>
+     */
+    protected array $templateRootPaths = [];
+
+    /**
      * @param string[] $supportedFileExtensions
      * @throws Exception\RootPathIsMalicious
      * @throws Exception\RootPathIsNotResolvable

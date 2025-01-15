@@ -53,6 +53,11 @@ final class TypoScriptPathProvider implements PathProvider
         return $this->getViewConfiguration()[self::TEMPLATES] ?? [];
     }
 
+    public function isCacheable(): bool
+    {
+        return true;
+    }
+
     /**
      * @return array{partialRootPaths?: array<int, string>, templateRootPaths?: array<int, string>}
      */

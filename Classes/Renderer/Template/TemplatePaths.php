@@ -56,13 +56,10 @@ final class TemplatePaths
      */
     public function getPartialRootPaths(): array
     {
-        if ($this->partialRootPaths === null) {
-            $this->partialRootPaths = $this->resolvePaths(
-                static fn(Path\PathProvider $pathProvider) => $pathProvider->getPartialRootPaths(),
-            );
-        }
-
-        return $this->partialRootPaths;
+        return $this->resolvePaths(
+            static fn(Path\PathProvider $pathProvider) => $pathProvider->getPartialRootPaths(),
+            $this->partialRootPaths,
+        );
     }
 
     /**
@@ -70,29 +67,44 @@ final class TemplatePaths
      */
     public function getTemplateRootPaths(): array
     {
-        if ($this->templateRootPaths === null) {
-            $this->templateRootPaths = $this->resolvePaths(
-                static fn(Path\PathProvider $pathProvider) => $pathProvider->getTemplateRootPaths(),
-            );
-        }
-
-        return $this->templateRootPaths;
+        return $this->resolvePaths(
+            static fn(Path\PathProvider $pathProvider) => $pathProvider->getTemplateRootPaths(),
+            $this->templateRootPaths,
+        );
     }
 
     /**
      * @param callable(Path\PathProvider): array<int, string> $mapFunction
+     * @param array<int, string>|null $rootPaths
      * @return array<int, string>
      */
-    private function resolvePaths(callable $mapFunction): array
+    private function resolvePaths(callable $mapFunction, ?array &$rootPaths): array
     {
-        $paths = [];
-
-        foreach ($this->pathProviders as $pathProvider) {
-            \array_unshift($paths, $mapFunction($pathProvider));
+        // Early return if root paths are already resolved and cached
+        if ($rootPaths !== null) {
+            return $rootPaths;
         }
 
+        $cacheable = true;
+        $paths = [];
+
+        // Resolve root paths from path providers
+        foreach ($this->pathProviders as $pathProvider) {
+            \array_unshift($paths, $mapFunction($pathProvider));
+
+            if (!$pathProvider->isCacheable()) {
+                $cacheable = false;
+            }
+        }
+
+        // Merge and sort all root paths
         $mergedPaths = array_replace(...$paths);
         ksort($mergedPaths);
+
+        // Cache root paths if possible
+        if ($cacheable) {
+            $rootPaths = $mergedPaths;
+        }
 
         return $mergedPaths;
     }

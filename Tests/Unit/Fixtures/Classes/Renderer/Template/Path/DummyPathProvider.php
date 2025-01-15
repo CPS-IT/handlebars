@@ -41,6 +41,7 @@ final class DummyPathProvider implements Renderer\Template\Path\PathProvider
     public function __construct(
         public array $templateRootPaths = [],
         public array $partialRootPaths = [],
+        public bool $cacheable = true,
     ) {}
 
     public function getPartialRootPaths(): array
@@ -51,6 +52,11 @@ final class DummyPathProvider implements Renderer\Template\Path\PathProvider
     public function getTemplateRootPaths(): array
     {
         return $this->templateRootPaths;
+    }
+
+    public function isCacheable(): bool
+    {
+        return $this->cacheable;
     }
 
     public static function getPriority(): int

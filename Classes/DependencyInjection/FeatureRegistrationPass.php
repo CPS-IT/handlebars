@@ -83,6 +83,11 @@ final class FeatureRegistrationPass implements DependencyInjection\Compiler\Comp
     {
         $configurationPath = sprintf('features/%s/enable', $featureName);
 
+        // Avoid calls to PackageManager during testing
+        if (Core\Core\Environment::getContext()->isTesting()) {
+            return true;
+        }
+
         try {
             return (bool)$this->extensionConfiguration->get(Configuration\Extension::KEY, $configurationPath);
         } catch (Core\Exception) {

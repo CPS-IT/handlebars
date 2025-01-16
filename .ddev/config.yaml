@@ -1,7 +1,7 @@
 name: typo3-ext-handlebars
 type: typo3
 docroot: .Build/web
-php_version: "8.4"
+php_version: "8.3"
 webserver_type: nginx-fpm
 xdebug_enabled: false
 additional_hostnames: []
@@ -9,14 +9,15 @@ additional_fqdns: []
 database:
     type: mariadb
     version: "10.4"
+webimage_extra_packages: [php8.3-pcov]
 use_dns_when_possible: true
 composer_version: "2"
 web_environment:
     - TYPO3_CONTEXT=Development/DDEV
     - typo3DatabaseName=db
     - typo3DatabaseHost=db
-    - typo3DatabaseUsername=db
-    - typo3DatabasePassword=db
+    - typo3DatabaseUsername=root
+    - typo3DatabasePassword=root
 corepack_enable: false
 
 # Key features of DDEV's config.yaml:

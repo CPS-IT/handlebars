@@ -16,6 +16,12 @@ services:
   Fr\Typo3Handlebars\Renderer\Template\TemplateResolver:
     alias: 'handlebars.template_resolver'
 
+  # Content object
+  Fr\Typo3Handlebars\Frontend\ContentObject\HandlebarsTemplateContentObject:
+    tags:
+      - name: frontend.contentobject
+        identifier: 'HANDLEBARSTEMPLATE'
+
   # Template
   handlebars.template_resolver:
     class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'

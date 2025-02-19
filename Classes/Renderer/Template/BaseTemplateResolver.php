@@ -39,16 +39,6 @@ abstract class BaseTemplateResolver implements TemplateResolver
     /**
      * @var list<string>
      */
-    protected array $partialRootPaths = [];
-
-    /**
-     * @var list<string>
-     */
-    protected array $templateRootPaths = [];
-
-    /**
-     * @var list<string>
-     */
     protected array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS;
 
     public function supports(string $fileExtension): bool

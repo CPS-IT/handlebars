@@ -55,6 +55,7 @@ final readonly class ExtendHelper implements Helper
         $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($fn);
 
         // Add layout to layout stack
+        /** @var array<string, mixed> $renderingContext */
         $renderingContext = &$context->renderingContext;
         $renderingContext['_layoutStack'] ??= [];
         $renderingContext['_layoutStack'][] = $handlebarsLayout;

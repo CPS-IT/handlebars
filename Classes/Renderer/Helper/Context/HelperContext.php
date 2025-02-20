@@ -36,7 +36,6 @@ final class HelperContext implements \ArrayAccess
     /**
      * @param list<mixed> $arguments
      * @param array<string, mixed> $hash
-     * @param array<string, mixed> $renderingContext
      * @param array<'root'|int, array<string, mixed>> $data
      * @param callable|null $childrenClosure
      * @param callable|null $inverseClosure
@@ -45,7 +44,7 @@ final class HelperContext implements \ArrayAccess
         public readonly array $arguments, // 1...n-1
         public readonly array $hash, // n['hash']
         public readonly RenderingContextStack $contextStack, // n['contexts']
-        public array &$renderingContext, // n['_this']
+        public mixed &$renderingContext, // n['_this']
         public array &$data, // n['data'] => 'root', ...
         private $childrenClosure = null, // n['fn']
         private $inverseClosure = null, // n['inverse']

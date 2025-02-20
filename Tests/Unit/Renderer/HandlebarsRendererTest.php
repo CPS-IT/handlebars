@@ -201,6 +201,7 @@ EOF;
     public function renderDoesNotStoreRenderedTemplateInCacheIfDebugModeIsEnabled(): void
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+        $view->assign('name', 'foo');
 
         // Test with TypoScript config.debug = 1
         $this->tsfeMock->config = ['config' => ['debug' => '1']];
@@ -223,6 +224,19 @@ EOF;
         $this->subject->render($view);
 
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderThrowsExceptionOnErrorIfDebugModeIsEnabled(): void
+    {
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+
+        $this->expectExceptionObject(
+            new \Exception('Runtime: [name] does not exist'),
+        );
+
+        $this->tsfeMock->config = ['config' => ['debug' => '1']];
+        $this->renewSubject()->render($view);
     }
 
     #[Framework\Attributes\Test]

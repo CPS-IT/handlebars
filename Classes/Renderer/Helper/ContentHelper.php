@@ -82,6 +82,7 @@ final readonly class ContentHelper implements Helper
      */
     private function getLayoutStack(Context\HelperContext $context): array
     {
+        /** @var array<string, mixed> $renderingContext */
         $renderingContext = $context->renderingContext;
         $contextStack = $context->contextStack;
 

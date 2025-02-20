@@ -41,6 +41,7 @@ final readonly class BlockHelper implements Helper
     public function render(Context\HelperContext $context): string
     {
         $name = $context[0];
+        /** @var array<string, mixed> $renderingContext */
         $renderingContext = $context->renderingContext;
         $actions = $renderingContext['_layoutActions'] ?? [];
         $stack = $renderingContext['_layoutStack'] ?? [];

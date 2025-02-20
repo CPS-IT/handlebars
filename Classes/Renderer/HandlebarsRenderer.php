@@ -97,7 +97,7 @@ class HandlebarsRenderer implements Renderer
         // Render content
         $renderer = $this->prepareCompileResult($compileResult);
         $content = $renderer($beforeRenderingEvent->getVariables(), [
-            'debug' => Runtime::DEBUG_TAGS_HTML,
+            'debug' => Runtime::DEBUG_ERROR_EXCEPTION,
             'helpers' => $this->helperRegistry->getAll(),
         ]);
 

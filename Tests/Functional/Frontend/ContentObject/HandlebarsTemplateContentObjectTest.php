@@ -254,6 +254,68 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function renderResolvesAndAppliesMixedVariablesFromConfig(): void
+    {
+        $expected = [
+            'data' => [],
+            'current' => null,
+            'foo' => [
+                'baz' => 'boo',
+            ],
+        ];
+
+        $this->subject->render([
+            'template' => 'foo',
+            'variables.' => [
+                'foo.' => [
+                    'baz' => 'TEXT',
+                    'baz.' => [
+                        'value' => 'boo',
+                    ],
+                ],
+            ],
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderResolvesReferencedVariablesFromConfig(): void
+    {
+        $expected = [
+            'data' => [],
+            'current' => null,
+            'foo' => 'boo',
+        ];
+
+        $astBuilder = new Core\TypoScript\AST\AstBuilder(new Core\EventDispatcher\NoopEventDispatcher());
+        $factory = $this->get(Core\TypoScript\TypoScriptStringFactory::class);
+        $rootNode = $factory->parseFromString('', $astBuilder);
+
+        $frontendTypoScript = new Core\TypoScript\FrontendTypoScript($rootNode, []);
+        $frontendTypoScript->setSetupTree($rootNode);
+        $frontendTypoScript->setSetupArray([
+            'fooContext' => 'TEXT',
+            'fooContext.' => [
+                'value' => 'boo',
+            ],
+        ]);
+
+        $this->contentObjectRenderer->setRequest(
+            $this->contentObjectRenderer->getRequest()->withAttribute('frontend.typoscript', $frontendTypoScript),
+        );
+
+        $this->subject->render([
+            'template' => 'foo',
+            'variables.' => [
+                'foo' => '< fooContext',
+            ],
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
     public function renderCallsDataProcessorsAndAppliesVariables(): void
     {
         $this->contentObjectRenderer->data = [

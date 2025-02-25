@@ -49,7 +49,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
      */
     public function render($conf = []): string
     {
-        if (!is_array($conf)) {
+        if (!\is_array($conf)) {
             $conf = [];
         }
 
@@ -126,17 +126,11 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
      */
     private function resolveVariables(array $config): array
     {
-        $variables = $this->getContentObjectVariables($config);
-
-        // Resolve variables from simple hierarchy (without content objects)
-        $simpleVariables = \array_diff_key(
-            $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['variables.'] ?? []),
-            $variables,
-        );
-
-        // Merge variables
-        if ($simpleVariables !== []) {
-            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($variables, $simpleVariables);
+        // Process content object variables and simple variables
+        if (\is_array($config['variables.'] ?? null)) {
+            $variables = $this->processVariables($config['variables.']);
+        } else {
+            $variables = $this->getContentObjectVariables($config);
         }
 
         // Process variables with configured data processors
@@ -144,11 +138,73 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
             $variables = $this->contentDataProcessor->process($this->cObj, $config, $variables);
         }
 
+        // Make settings available as variables
         if (isset($config['settings.'])) {
             $variables['settings'] = $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['settings.']);
         }
 
         return $variables;
+    }
+
+    /**
+     * @param array<string, mixed> $variables
+     * @return array<string, mixed>
+     */
+    private function processVariables(array $variables): array
+    {
+        $contentObjectRenderer = $this->getContentObjectRenderer();
+        $variablesToProcess = [];
+        $simpleVariables = [];
+
+        foreach ($variables as $name => $value) {
+            if (isset($variablesToProcess[$name])) {
+                continue;
+            }
+
+            // Use sanitized variable name for simple variables
+            $sanitizedName = \rtrim($name, '.');
+
+            // Apply variable as simple variable if it's a complex structure (such as objects)
+            if (!is_string($value) && !\is_array($value)) {
+                $simpleVariables[$sanitizedName] = $value;
+
+                continue;
+            }
+
+            // Register variable for further processing if an appropriate content object is available
+            // or if variable is a reference to another variable (will be resolved later)
+            if (is_string($value) &&
+                ($contentObjectRenderer->getContentObject($value) !== null || str_starts_with($value, '<'))
+            ) {
+                $cObjConfName = $name . '.';
+                $variablesToProcess[$name] = $value;
+
+                if (isset($variables[$cObjConfName])) {
+                    $variablesToProcess[$cObjConfName] = $variables[$cObjConfName];
+                }
+
+                continue;
+            }
+
+            // Apply variable as simple variable if it's a simple construct
+            // (including arrays, which will be processed recursively as they may contain content objects)
+            if (\is_array($value)) {
+                $simpleVariables[$sanitizedName] = $this->processVariables($value);
+
+                unset($simpleVariables[$sanitizedName]['data']);
+                unset($simpleVariables[$sanitizedName]['current']);
+            } else {
+                $simpleVariables[$sanitizedName] = $value;
+            }
+        }
+
+        // Process content object variables
+        $processedVariables = $this->getContentObjectVariables(['variables.' => $variablesToProcess]);
+
+        // Merged processed content object variables with simple variables
+        Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedVariables, $simpleVariables);
+
+        return $processedVariables;
     }
 
     /**

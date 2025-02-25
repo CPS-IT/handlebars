@@ -8,6 +8,7 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/DependencyInjection/*'
+      - '../Classes/Extbase/View/ExtbaseHandlebarsView.php'
 
   Fr\Typo3Handlebars\Cache\Cache:
     alias: 'handlebars.cache'
@@ -31,6 +32,10 @@ services:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['handlebars']
+
+  # Extbase
+  TYPO3\CMS\Extbase\Mvc\View\ViewResolverInterface:
+    alias: 'Fr\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsViewResolver'
 
 handlebars:
   variables: []

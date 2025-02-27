@@ -38,6 +38,7 @@ use TYPO3\TestingFramework;
 final class BaseTemplateResolverTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
     protected array $testExtensionsToLoad = [
+        'handlebars',
         'test_extension',
     ];
 

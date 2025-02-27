@@ -42,6 +42,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
+        'handlebars',
         'test_extension',
     ];
 

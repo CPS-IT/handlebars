@@ -40,6 +40,7 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
+        'handlebars',
         'test_extension',
     ];
 

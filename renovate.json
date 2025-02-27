@@ -31,7 +31,7 @@
 				":disableRenovate"
 			],
 			"matchFileNames": [
-				"Tests/Functional/Fixtures/test_extension/**"
+				"Tests/Functional/Fixtures/Extensions/test_extension/**"
 			]
 		}
 	]

@@ -45,6 +45,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
+        'handlebars',
         'test_extension',
     ];
 

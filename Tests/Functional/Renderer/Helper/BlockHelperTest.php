@@ -44,6 +44,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     protected bool $initializeDatabase = false;
 
     protected array $testExtensionsToLoad = [
+        'handlebars',
         'test_extension',
     ];
 

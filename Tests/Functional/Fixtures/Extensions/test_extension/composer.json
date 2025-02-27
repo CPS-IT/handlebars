@@ -5,6 +5,7 @@
 	"type": "typo3-cms-extension",
 	"version": "1.0.0",
 	"require": {
+		"cpsit/typo3-handlebars": "*",
 		"typo3/cms-core": "*"
 	},
 	"autoload": {

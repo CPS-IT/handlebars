@@ -56,7 +56,7 @@
 	"repositories": [
 		{
 			"type": "path",
-			"url": "Tests/Functional/Fixtures/*"
+			"url": "Tests/Functional/Fixtures/Extensions/*"
 		}
 	],
 	"autoload": {

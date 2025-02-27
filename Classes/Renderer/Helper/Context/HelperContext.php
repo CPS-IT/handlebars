@@ -102,21 +102,27 @@ final class HelperContext implements \ArrayAccess
     public function offsetExists(mixed $offset): bool
     {
         if (is_numeric($offset)) {
-            return isset($this->arguments[$offset]);
+            return array_key_exists($offset, $this->arguments);
         }
 
-        return isset($this->hash[$offset]);
+        return array_key_exists($offset, $this->hash);
     }
 
     public function offsetGet(mixed $offset): mixed
     {
         if (is_numeric($offset)) {
-            return $this->arguments[$offset]
-                ?? throw new \OutOfBoundsException('Argument "' . $offset . '" does not exist.', 1736235839);
+            if (array_key_exists($offset, $this->arguments)) {
+                return $this->arguments[$offset];
+            }
+
+            throw new \OutOfBoundsException('Argument "' . $offset . '" does not exist.', 1736235839);
         }
 
-        return $this->hash[$offset]
-            ?? throw new \OutOfBoundsException('Hash "' . $offset . '" does not exist.', 1736235851);
+        if (array_key_exists($offset, $this->hash)) {
+            return $this->hash[$offset];
+        }
+
+        throw new \OutOfBoundsException('Hash "' . $offset . '" does not exist.', 1736235851);
     }
 
     public function offsetSet(mixed $offset, mixed $value): never

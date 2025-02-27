@@ -57,7 +57,7 @@ final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewRe
         string $format,
         bool $enableFallback = true,
     ): Fluid\View\ViewInterface {
-        $handlebarsConfiguration = $this->resolveHandlebarsConfiguration($controllerObjectName, $actionName);
+        $handlebarsConfiguration = $this->resolveHandlebarsConfiguration($controllerObjectName, $actionName, $format);
 
         if ($handlebarsConfiguration !== null || !$enableFallback) {
             return new ExtbaseHandlebarsView(
@@ -73,8 +73,11 @@ final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewRe
     /**
      * @return array<string, mixed>|null
      */
-    private function resolveHandlebarsConfiguration(string $controllerObjectName, string $actionName): ?array
-    {
+    private function resolveHandlebarsConfiguration(
+        string $controllerObjectName,
+        string $actionName,
+        string $format,
+    ): ?array {
         $configuration = $this->configurationManager->getConfiguration(
             Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
         );
@@ -85,9 +88,15 @@ final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewRe
             return null;
         }
 
+        // Use hbs as default format, can be overridden with TypoScript
+        if ($format === 'html') {
+            $format = 'hbs';
+        }
+
         $handlebarsConfiguration = $configuration['handlebars'] ?? null;
         $defaultConfiguration = [
             'templateName' => $controllerAlias . '/' . $actionName,
+            'format' => $format,
         ];
 
         // Early return if no handlebars configuration is available
@@ -130,6 +139,11 @@ final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewRe
         // Early return if no (valid) template name is given
         if (empty($typoScriptConfiguration['templateName'])) {
             return $defaultConfiguration;
+        }
+
+        // Add format
+        if (!isset($typoScriptConfiguration['format'])) {
+            $typoScriptConfiguration['format'] = $format;
         }
 
         return $typoScriptConfiguration;

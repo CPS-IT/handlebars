@@ -96,6 +96,7 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
             'HANDLEBARSTEMPLATE',
             [
                 'templateName' => 'Foo/baz',
+                'format' => 'hbs',
             ],
         );
 
@@ -140,6 +141,7 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
             'HANDLEBARSTEMPLATE',
             [
                 'templateName' => '@baz',
+                'format' => 'hbs',
             ],
         );
 
@@ -184,6 +186,7 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
             'HANDLEBARSTEMPLATE',
             [
                 'templateName' => 'Foo/baz',
+                'format' => 'hbs',
             ],
         );
 

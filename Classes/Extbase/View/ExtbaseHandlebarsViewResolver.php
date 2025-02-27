@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Extbase\View;
 
 use Psr\Container;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
@@ -35,6 +36,7 @@ use TYPO3Fluid\Fluid;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AsAlias(Extbase\Mvc\View\ViewResolverInterface::class)]
 final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewResolver
 {
     private readonly Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;

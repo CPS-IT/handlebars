@@ -25,14 +25,6 @@
 			"matchPackageNames": [
 				"cpsit/typo3-handlebars-test-extension"
 			]
-		},
-		{
-			"extends": [
-				":disableRenovate"
-			],
-			"matchFileNames": [
-				"Tests/Functional/Fixtures/Extensions/test_extension/**"
-			]
 		}
 	]
 }

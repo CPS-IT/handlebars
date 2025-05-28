@@ -379,6 +379,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     {
         $this->subject->render([
             'template' => 'foo',
+            'headerAssets' => 'HANDLEBARSTEMPLATE',
             'headerAssets.' => [
                 'template' => 'foo header assets',
             ],
@@ -392,6 +393,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     {
         $this->subject->render([
             'template' => 'foo',
+            'footerAssets' => 'HANDLEBARSTEMPLATE',
             'footerAssets.' => [
                 'template' => 'foo footer assets',
             ],

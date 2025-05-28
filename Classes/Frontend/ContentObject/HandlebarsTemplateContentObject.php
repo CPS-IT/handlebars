@@ -75,7 +75,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
 
         $view->assignMultiple($this->resolveVariables($conf));
 
-        $this->renderPageAssetsIntoPageRenderer($conf, $view);
+        $this->renderPageAssetsIntoPageRenderer($conf);
 
         try {
             $content = $this->renderer->render($view);
@@ -210,10 +210,19 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
     /**
      * @param array<string, mixed> $config
      */
-    private function renderPageAssetsIntoPageRenderer(array $config, Renderer\Template\View\HandlebarsView $baseView): void
+    private function renderPageAssetsIntoPageRenderer(array $config): void
     {
-        $headerAssets = $this->renderAssets($config['headerAssets.'] ?? [], $baseView);
-        $footerAssets = $this->renderAssets($config['footerAssets.'] ?? [], $baseView);
+        if (is_string($config['headerAssets'] ?? null) && is_array($config['headerAssets.'] ?? null)) {
+            $headerAssets = $this->cObj?->cObjGetSingle($config['headerAssets'], $config['headerAssets.']) ?? '';
+        } else {
+            $headerAssets = '';
+        }
+
+        if (is_string($config['footerAssets'] ?? null) && is_array($config['footerAssets.'] ?? null)) {
+            $footerAssets = $this->cObj?->cObjGetSingle($config['footerAssets'], $config['footerAssets.']) ?? '';
+        } else {
+            $footerAssets = '';
+        }
 
         if (\trim($headerAssets) !== '') {
             $this->getPageRenderer()->addHeaderData($headerAssets);
@@ -222,20 +231,5 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
         if (\trim($footerAssets) !== '') {
             $this->getPageRenderer()->addFooterData($footerAssets);
         }
-    }
-
-    /**
-     * @param array<string, mixed> $config
-     */
-    private function renderAssets(array $config, Renderer\Template\View\HandlebarsView $baseView): string
-    {
-        if ($config === []) {
-            return '';
-        }
-
-        $view = $this->createView($config);
-        $view->assignMultiple($baseView->getVariables());
-
-        return $this->renderer->render($view);
     }
 }

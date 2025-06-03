@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars as Src;
 use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
@@ -49,9 +50,12 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->subject = new Src\Renderer\Helper\HelperRegistry($this->logger);
     }
 
+    /**
+     * @param array{object, string}|string $function
+     */
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('addLogsCriticalErrorIfGivenHelperIsInvalidDataProvider')]
-    public function addLogsCriticalErrorIfGivenHelperIsInvalid(mixed $function): void
+    public function addLogsCriticalErrorIfGivenHelperIsInvalid(array|string $function): void
     {
         $this->subject->add('foo', $function);
 
@@ -78,16 +82,21 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function addDecoratesHelperFunction(): void
     {
-        $function = static fn(Src\Renderer\Helper\Context\HelperContext $context) => $context[0] . $context['foo'];
+        $function = static fn(Handlebars\HelperOptions $options, string $foo) => $foo . $options->hash['foo'];
 
-        $options = [
-            'hash' => [
+        $scope = [];
+        $data = [];
+        $options = new Handlebars\HelperOptions(
+            'foo',
+            [
                 'foo' => 'baz',
             ],
-            'contexts' => [null],
-            '_this' => [],
-            'data' => [],
-        ];
+            static fn() => '',
+            static fn() => '',
+            0,
+            $scope,
+            $data,
+        );
 
         $this->subject->add('foo', $function);
 
@@ -145,11 +154,10 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array{mixed}>
+     * @return \Generator<string, array{array{object, string}|string}>
      */
     public static function addLogsCriticalErrorIfGivenHelperIsInvalidDataProvider(): \Generator
     {
-        yield 'null value' => [null];
         yield 'non-callable function as string' => ['foo_baz'];
         yield 'non-callable class method' => [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::foo'];
         yield 'non-callable class method in array syntax' => [[new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'foo']];
@@ -212,15 +220,16 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     /**
-     * @return callable(\Fr\Typo3Handlebars\Renderer\Helper\Context\HelperContext): mixed
+     * @return \Closure(mixed..., Handlebars\HelperOptions): mixed
      */
-    private function mapExpectedCallable(callable $expectedCallable): callable
+    private function mapExpectedCallable(callable $expectedCallable): \Closure
     {
         return static function () use ($expectedCallable) {
             $arguments = \func_get_args();
-            $context = Src\Renderer\Helper\Context\HelperContext::fromRuntimeCall($arguments);
+            /** @var Handlebars\HelperOptions $options */
+            $options = \array_pop($arguments);
 
-            return $expectedCallable($context);
+            return $expectedCallable($options, ...$arguments);
         };
     }
 }

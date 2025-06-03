@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\Renderer;
 
 /**
@@ -34,7 +35,7 @@ use Fr\Typo3Handlebars\Renderer;
  */
 final readonly class DummyHelper implements Renderer\Helper\Helper
 {
-    public function render(Renderer\Helper\Context\HelperContext $context): string
+    public function render(Handlebars\HelperOptions $options): string
     {
         return 'foo';
     }

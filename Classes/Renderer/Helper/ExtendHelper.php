@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use DevTheorem\Handlebars\HelperOptions;
 use Fr\Typo3Handlebars\Renderer;
 
 /**
@@ -35,15 +36,12 @@ use Fr\Typo3Handlebars\Renderer;
 final readonly class ExtendHelper implements Helper
 {
     public function __construct(
+        private Renderer\Component\Layout\HandlebarsLayoutStack $layoutStack,
         private Renderer\Renderer $renderer,
     ) {}
 
-    public function render(Context\HelperContext $context): string
+    public function render(HelperOptions $options, string $name = '', mixed ...$arguments): string
     {
-        $name = $context[0];
-        $arguments = $context->arguments;
-        array_shift($arguments);
-
         // Custom context is optional
         $customContext = [];
         if ($arguments !== []) {
@@ -51,21 +49,21 @@ final readonly class ExtendHelper implements Helper
         }
 
         // Create new handlebars layout item
-        $fn = static fn(): string => $context->renderChildren() ?? '';
-        $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($fn);
+        $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($options->fn);
 
         // Add layout to layout stack
-        /** @var array<string, mixed> $renderingContext */
-        $renderingContext = &$context->renderingContext;
-        $renderingContext['_layoutStack'] ??= [];
-        $renderingContext['_layoutStack'][] = $handlebarsLayout;
+        $this->layoutStack->push($handlebarsLayout);
 
         // Merge data with supplied data
-        $variables = array_replace_recursive($renderingContext, $customContext, $context->hash);
+        $variables = array_replace_recursive($options->scope, $customContext, $options->hash);
 
         // Render layout with merged data
-        return $this->renderer->render(
-            new Renderer\Template\View\HandlebarsView($name, $variables),
-        );
+        try {
+            return $this->renderer->render(
+                new Renderer\Template\View\HandlebarsView($name, $variables),
+            );
+        } finally {
+            $this->layoutStack->pop();
+        }
     }
 }

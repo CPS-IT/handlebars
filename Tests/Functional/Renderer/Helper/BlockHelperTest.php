@@ -57,6 +57,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
         parent::setUp();
 
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
+        $layoutStack = new Src\Renderer\Component\Layout\HandlebarsLayoutStack();
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
@@ -69,9 +70,9 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
             new Src\Renderer\Variables\VariableBag([]),
         );
 
-        $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($this->renderer));
-        $helperRegistry->add('content', new Src\Renderer\Helper\ContentHelper(new Log\NullLogger()));
-        $helperRegistry->add('block', new Src\Renderer\Helper\BlockHelper());
+        $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($layoutStack, $this->renderer));
+        $helperRegistry->add('content', new Src\Renderer\Helper\ContentHelper($layoutStack, new Log\NullLogger()));
+        $helperRegistry->add('block', new Src\Renderer\Helper\BlockHelper($layoutStack));
     }
 
     #[Framework\Attributes\Test]

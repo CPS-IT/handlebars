@@ -38,11 +38,8 @@ final class HandlebarsLayout
      */
     private array $actions = [];
 
-    /**
-     * @param callable $parseFunction
-     */
     public function __construct(
-        private $parseFunction,
+        private readonly \Closure $parseFunction,
     ) {}
 
     public function parse(): void

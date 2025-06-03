@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
-use Fr\Typo3Handlebars\Exception;
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\Renderer;
 
 /**
@@ -35,32 +35,33 @@ use Fr\Typo3Handlebars\Renderer;
  */
 final readonly class BlockHelper implements Helper
 {
-    /**
-     * @throws Exception\UnsupportedTypeException
-     */
-    public function render(Context\HelperContext $context): string
+    public function __construct(
+        private Renderer\Component\Layout\HandlebarsLayoutStack $layoutStack,
+    ) {}
+
+    public function render(Handlebars\HelperOptions $options, string $name = ''): string
     {
-        $name = $context[0];
-        /** @var array<string, mixed> $renderingContext */
-        $renderingContext = $context->renderingContext;
-        $actions = $renderingContext['_layoutActions'] ?? [];
-        $stack = $renderingContext['_layoutStack'] ?? [];
+        $actions = [];
+        $stack = $this->layoutStack->reverse();
 
         // Parse layouts and fetch all parsed layout actions for the requested block
-        while (!empty($stack)) {
-            /** @var Renderer\Component\Layout\HandlebarsLayout $layout */
-            $layout = array_shift($stack);
+        while (!$stack->isEmpty()) {
+            $layout = $stack->pop();
+
             if (!$layout->isParsed()) {
                 $layout->parse();
             }
-            $actions = array_merge($actions, $layout->getActions($name));
+
+            foreach ($layout->getActions($name) as $action) {
+                $actions[] = $action;
+            }
         }
 
         // Walk through layout actions and apply them to the rendered block
         return array_reduce(
             $actions,
             static fn(string $value, Renderer\Component\Layout\HandlebarsLayoutAction $action): string => $action->render($value),
-            $context->renderChildren($renderingContext) ?? '',
+            $options->fn($options->scope),
         );
     }
 }

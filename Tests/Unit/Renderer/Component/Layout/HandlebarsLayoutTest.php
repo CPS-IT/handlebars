@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Component\Layout;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars as Src;
 use PHPUnit\Framework;
 use TYPO3\TestingFramework;
@@ -114,16 +115,17 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
 
     private function createAction(string $name): Src\Renderer\Component\Layout\HandlebarsLayoutAction
     {
-        $stack = [];
         $renderingContext = [];
         $data = [];
 
         return new Src\Renderer\Component\Layout\HandlebarsLayoutAction(
             $name,
-            new Src\Renderer\Helper\Context\HelperContext(
+            new Handlebars\HelperOptions(
+                'foo',
                 [],
-                [],
-                new Src\Renderer\Helper\Context\RenderingContextStack($stack),
+                static fn() => '',
+                static fn() => '',
+                0,
                 $renderingContext,
                 $data,
             ),

@@ -23,10 +23,10 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\DataProcessing;
 use Fr\Typo3Handlebars\Exception;
 use Fr\Typo3Handlebars\Renderer;
-use LightnCandy\SafeString;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
@@ -45,16 +45,15 @@ final readonly class RenderHelper implements Helper
         private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ) {}
 
-    public function render(Context\HelperContext $context): SafeString
+    /**
+     * @throws Exception\InvalidConfigurationException
+     */
+    public function render(Handlebars\HelperOptions $options, string $name = '', mixed ...$arguments): Handlebars\SafeString
     {
-        $name = $context[0];
-        $arguments = $context->arguments;
-        array_shift($arguments);
-
         // Resolve data
-        $rootData = $context->data['root'];
-        $merge = (bool)($context['merge'] ?? false);
-        $renderUncached = (bool)($context['uncached'] ?? false);
+        $rootData = $options->data['root'];
+        $merge = (bool)($options->hash['merge'] ?? false);
+        $renderUncached = (bool)($options->hash['uncached'] ?? false);
 
         // Fetch custom context
         // ====================
@@ -91,7 +90,7 @@ final readonly class RenderHelper implements Helper
             );
         }
 
-        return new SafeString($content);
+        return new Handlebars\SafeString($content);
     }
 
     /**

@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\Exception;
 use Psr\Log;
 use TYPO3\CMS\Core;
@@ -36,7 +37,7 @@ use TYPO3\CMS\Core;
 final class HelperRegistry implements Core\SingletonInterface
 {
     /**
-     * @var array<string, callable(Context\HelperContext): mixed>
+     * @var array<string, \Closure(mixed..., Handlebars\HelperOptions): mixed>
      */
     private array $helpers = [];
 
@@ -44,7 +45,10 @@ final class HelperRegistry implements Core\SingletonInterface
         private readonly Log\LoggerInterface $logger,
     ) {}
 
-    public function add(string $name, mixed $function): void
+    /**
+     * @param array{object, string}|array{class-string, string}|callable|string|Helper $function
+     */
+    public function add(string $name, array|callable|string|Helper $function): void
     {
         try {
             $this->helpers[$name] = $this->decorateHelperFunction(
@@ -63,9 +67,10 @@ final class HelperRegistry implements Core\SingletonInterface
     }
 
     /**
+     * @return \Closure(mixed..., Handlebars\HelperOptions): mixed
      * @throws Exception\HelperIsNotRegistered
      */
-    public function get(string $name): callable
+    public function get(string $name): \Closure
     {
         if (!isset($this->helpers[$name])) {
             throw new Exception\HelperIsNotRegistered($name);
@@ -75,7 +80,7 @@ final class HelperRegistry implements Core\SingletonInterface
     }
 
     /**
-     * @return array<string, callable(Context\HelperContext): mixed>
+     * @return array<string, \Closure(mixed..., Handlebars\HelperOptions): mixed>
      */
     public function getAll(): array
     {
@@ -88,10 +93,11 @@ final class HelperRegistry implements Core\SingletonInterface
     }
 
     /**
+     * @param array{object, string}|array{class-string, string}|callable|string|Helper $function
      * @throws Exception\InvalidHelperException
      * @throws \ReflectionException
      */
-    private function resolveHelperFunction(mixed $function): callable
+    private function resolveHelperFunction(array|callable|string|Helper $function): callable
     {
         // Try to resolve the Helper function in this order:
         //
@@ -134,11 +140,12 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // 3b. class implementing Helper interface as object
-        if (\is_object($function) && $function instanceof Helper) {
+        if ($function instanceof Helper) {
             return $function->render(...);
         }
 
         // 4a. class method as string
+        /* @phpstan-ignore booleanAnd.rightAlwaysFalse */
         if (\is_string($function) && str_contains($function, '::')) {
             [$className, $methodName] = explode('::', $function, 2);
         }
@@ -150,6 +157,7 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // Early return if either class name or method name cannot be resolved
+        /* @phpstan-ignore identical.alwaysFalse */
         if ($className === null || $methodName === null) {
             throw Exception\InvalidHelperException::forUnsupportedType($function);
         }
@@ -158,7 +166,7 @@ final class HelperRegistry implements Core\SingletonInterface
         $reflectionClass = new \ReflectionClass($className);
         $reflectionMethod = $reflectionClass->getMethod($methodName);
         if (!$reflectionMethod->isPublic()) {
-            throw Exception\InvalidHelperException::forFunction($className . '::' . $methodName);
+            throw Exception\InvalidHelperException::forFunction($reflectionClass->name . '::' . $methodName);
         }
 
         // Instantiate class if not done yet
@@ -176,15 +184,16 @@ final class HelperRegistry implements Core\SingletonInterface
     }
 
     /**
-     * @return callable(Context\HelperContext): mixed
+     * @return \Closure(mixed..., Handlebars\HelperOptions): mixed
      */
-    private function decorateHelperFunction(callable $function): callable
+    private function decorateHelperFunction(callable $function): \Closure
     {
         return static function () use ($function) {
             $arguments = \func_get_args();
-            $context = Context\HelperContext::fromRuntimeCall($arguments);
+            /** @var Handlebars\HelperOptions $options */
+            $options = array_pop($arguments);
 
-            return $function($context);
+            return $function($options, ...$arguments);
         };
     }
 }

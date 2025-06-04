@@ -60,23 +60,14 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfTemplateCompilationFails(): void
+    public function renderThrowsExceptionIfTemplateCompilationFails(): void
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateErroneous');
 
-        self::assertSame(
-            '',
-            $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render($view),
-        );
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\TemplateCompilationException $exception */
-            $exception = $logRecord['context']['exception'];
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessageMatches('/^Wrong variable naming as \'baz!\'/');
 
-            self::assertInstanceOf(Src\Exception\TemplateCompilationException::class, $exception);
-            self::assertSame(1614620212, $exception->getCode());
-
-            return true;
-        }));
+        $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render($view);
     }
 
     #[Framework\Attributes\Test]
@@ -240,31 +231,6 @@ EOF;
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfRenderingClosurePreparationFails(): void
-    {
-        $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
-        $this->getCache()->set(
-            file_get_contents(
-                $this->getTemplateResolver()->resolveTemplatePath('DummyTemplate')
-            ) ?: '',
-            'return \'foo\';'
-        );
-        $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
-
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
-
-        self::assertSame('', $this->subject->render($view));
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\TemplateCompilationException $exception */
-            $exception = $logRecord['context']['exception'];
-            self::assertInstanceOf(Src\Exception\TemplateCompilationException::class, $exception);
-            self::assertSame('Got invalid compile result from compiler.', $exception->getMessage());
-            self::assertSame(1639405571, $exception->getCode());
-            return true;
-        }));
-    }
-
-    #[Framework\Attributes\Test]
     public function renderReturnsRenderedTemplate(): void
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate', ['name' => 'foo']);
@@ -287,22 +253,19 @@ EOF;
     }
 
     #[Framework\Attributes\Test]
-    public function resolvePartialThrowsExceptionIfPartialResolverCannotResolveGivenPartial(): void
+    public function renderThrowsExceptionIfPartialCannotBeResolved(): void
     {
-        $this->expectExceptionObject(
-            new Src\Exception\PartialPathIsNotResolvable('foo'),
-        );
+        $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyInvalidTemplateResolver();
+        $this->templateResolver->templateMap = [
+            'DummyTemplateWithPartial' => \dirname(__DIR__) . '/Fixtures/Templates/DummyTemplateWithPartial.hbs',
+        ];
 
-        $this->subject->resolvePartial([], 'foo');
-    }
+        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateWithPartial', ['name' => 'foo']);
 
-    #[Framework\Attributes\Test]
-    public function resolvePartialResolvesGivenPartialUsingPartialResolver(): void
-    {
-        self::assertSame(
-            'Welcome, {{ name }}, I am the partial!',
-            \trim($this->subject->resolvePartial([], 'DummyPartial') ?: '')
-        );
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('The partial DummyPartial could not be found');
+
+        $this->renewSubject()->render($view);
     }
 
     private function assertCacheIsEmptyForTemplate(string $template): void

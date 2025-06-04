@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\Attribute;
 use TYPO3\CMS\Core;
 
@@ -35,11 +36,11 @@ use TYPO3\CMS\Core;
 #[Attribute\AsHelper('varDump')]
 final readonly class VarDumpHelper implements Helper
 {
-    public function render(Context\HelperContext $context): string
+    public function render(Handlebars\HelperOptions $options): string
     {
         \ob_start();
 
-        Core\Utility\DebugUtility::debug($context->renderingContext);
+        Core\Utility\DebugUtility::debug($options->scope);
 
         return (string)\ob_get_clean();
     }

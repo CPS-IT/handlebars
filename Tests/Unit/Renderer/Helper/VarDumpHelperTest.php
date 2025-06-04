@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars as Src;
 use PHPUnit\Framework;
 use TYPO3\CMS\Core;
@@ -55,12 +56,13 @@ final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
             'foo' => 'baz',
         ];
         $data = [];
-        $stack = [];
 
-        $context = new Src\Renderer\Helper\Context\HelperContext(
+        $context = new Handlebars\HelperOptions(
+            'foo',
             [],
-            [],
-            new Src\Renderer\Helper\Context\RenderingContextStack($stack),
+            static fn() => '',
+            static fn() => '',
+            0,
             $renderingContext,
             $data,
         );

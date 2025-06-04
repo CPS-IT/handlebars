@@ -38,7 +38,7 @@ final readonly class DummyErrorHandlingTraitClass
     use Traits\ErrorHandlingTrait;
 
     public function __construct(
-        private LoggerInterface $logger,
+        protected LoggerInterface $logger,
     ) {}
 
     public function doHandleError(\Throwable $error): void

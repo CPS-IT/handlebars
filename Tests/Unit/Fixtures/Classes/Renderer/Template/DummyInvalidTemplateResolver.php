@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * Copyright (C) 2025 Elias Häußler <e.haeussler@familie-redlich.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,17 +21,30 @@ declare(strict_types=1);
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Helper;
+namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
 
-use DevTheorem\Handlebars;
+use Fr\Typo3Handlebars\Renderer;
 
 /**
- * Helper
+ * DummyInvalidTemplateResolver
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-interface Helper
+final class DummyInvalidTemplateResolver extends Renderer\Template\BaseTemplateResolver
 {
-    public function render(Handlebars\HelperOptions $options): mixed;
+    /**
+     * @var array<string, string>
+     */
+    public array $templateMap = [];
+
+    public function resolvePartialPath(string $partialPath, ?string $format = null): string
+    {
+        return $this->templateMap[$partialPath] ?? '/foo.hbs';
+    }
+
+    public function resolveTemplatePath(string $templatePath, ?string $format = null): string
+    {
+        return $this->templateMap[$templatePath] ?? '/foo.hbs';
+    }
 }

@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\Renderer;
 use Psr\Log;
 
@@ -38,30 +39,29 @@ final readonly class ContentHelper implements Helper
     private const DEFAULT_MODE = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
 
     public function __construct(
+        private Renderer\Component\Layout\HandlebarsLayoutStack $layoutStack,
         private Log\LoggerInterface $logger,
     ) {}
 
-    public function render(Context\HelperContext $context): ?bool
+    public function render(Handlebars\HelperOptions $options, string $name = ''): ?bool
     {
-        $name = $context[0];
-        $mode = $this->resolveLayoutActionMode($context, $name);
-        $layoutStack = $this->getLayoutStack($context);
+        $mode = $this->resolveLayoutActionMode($options, $name);
 
         // Early return if "content" helper is requested outside of an "extend" helper block
-        if (empty($layoutStack)) {
+        if ($this->layoutStack->isEmpty()) {
             $this->logger->error(
                 'Handlebars layout helper "content" can only be used within an "extend" helper block!',
                 ['name' => $name],
             );
 
-            return $context->isBlockHelper() ? null : false;
+            return $options->fn() ? null : false;
         }
 
         // Get upper layout from stack
-        $layout = end($layoutStack);
+        $layout = $this->layoutStack->last();
 
         // Usage in conditional context: Test whether given required block is registered
-        if (!$context->isBlockHelper()) {
+        if (!$options->fn()) {
             if (!$layout->isParsed()) {
                 $layout->parse();
             }
@@ -70,48 +70,22 @@ final readonly class ContentHelper implements Helper
         }
 
         // Add concrete action for the requested block
-        $action = new Renderer\Component\Layout\HandlebarsLayoutAction($name, $context, $mode);
+        $action = new Renderer\Component\Layout\HandlebarsLayoutAction($name, $options, $mode);
         $layout->addAction($action);
 
         // This helper does not return any content, it's just here to register layout actions
         return null;
     }
 
-    /**
-     * @return Renderer\Component\Layout\HandlebarsLayout[]
-     */
-    private function getLayoutStack(Context\HelperContext $context): array
-    {
-        /** @var array<string, mixed> $renderingContext */
-        $renderingContext = $context->renderingContext;
-        $contextStack = $context->contextStack;
-
-        // Fetch layout stack from current context
-        if (isset($renderingContext['_layoutStack'])) {
-            return $renderingContext['_layoutStack'];
-        }
-
-        // Fetch layout stack from previous contexts
-        while (!$contextStack->isEmpty()) {
-            $currentContext = $contextStack->pop();
-
-            if (isset($currentContext['_layoutStack'])) {
-                return $currentContext['_layoutStack'];
-            }
-        }
-
-        return [];
-    }
-
     private function resolveLayoutActionMode(
-        Context\HelperContext $context,
+        Handlebars\HelperOptions $options,
         string $name,
     ): Renderer\Component\Layout\HandlebarsLayoutActionMode {
-        if (!isset($context['mode'])) {
+        if (!isset($options->hash['mode'])) {
             return self::DEFAULT_MODE;
         }
 
-        $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::tryFromCaseInsensitive($context['mode']);
+        $mode = Renderer\Component\Layout\HandlebarsLayoutActionMode::tryFromCaseInsensitive($options->hash['mode']);
 
         if ($mode === null) {
             $mode = self::DEFAULT_MODE;
@@ -119,7 +93,7 @@ final readonly class ContentHelper implements Helper
             $this->logger->warning(
                 \sprintf(
                     'Handlebars layout helper "content" has invalid mode "%s". Falling back to "%s".',
-                    $context['mode'],
+                    $options->hash['mode'],
                     $mode->value,
                 ),
                 ['name' => $name],

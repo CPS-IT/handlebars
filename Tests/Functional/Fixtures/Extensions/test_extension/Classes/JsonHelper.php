@@ -23,9 +23,9 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\TestExtension;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
-use LightnCandy\SafeString;
 
 /**
  * JsonHelper
@@ -36,8 +36,8 @@ use LightnCandy\SafeString;
 #[Attribute\AsHelper('jsonEncode')]
 final class JsonHelper implements Renderer\Helper\Helper
 {
-    public function render(Renderer\Helper\Context\HelperContext $context): SafeString
+    public function render(Handlebars\HelperOptions $options): Handlebars\SafeString
     {
-        return new SafeString(json_encode($context->renderingContext, JSON_THROW_ON_ERROR));
+        return new Handlebars\SafeString(json_encode($options->scope, JSON_THROW_ON_ERROR));
     }
 }

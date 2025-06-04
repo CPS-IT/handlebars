@@ -23,7 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Component\Layout;
 
-use Fr\Typo3Handlebars\Renderer;
+use DevTheorem\Handlebars;
 
 /**
  * HandlebarsLayoutAction
@@ -35,13 +35,13 @@ final readonly class HandlebarsLayoutAction
 {
     public function __construct(
         private string $name,
-        private Renderer\Helper\Context\HelperContext $context,
+        private Handlebars\HelperOptions $context,
         private HandlebarsLayoutActionMode $mode = HandlebarsLayoutActionMode::Replace,
     ) {}
 
     public function render(string $value): string
     {
-        $renderResult = $this->context->renderChildren($this->context->renderingContext);
+        $renderResult = $this->context->fn($this->context->scope);
 
         return match ($this->mode) {
             HandlebarsLayoutActionMode::Append => $value . $renderResult,

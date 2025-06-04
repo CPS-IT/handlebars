@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Component\Layout;
 
+use DevTheorem\Handlebars;
 use Fr\Typo3Handlebars as Src;
 use PHPUnit\Framework;
 use TYPO3\TestingFramework;
@@ -36,7 +37,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Component\Layout\HandlebarsLayoutAction::class)]
 final class HandlebarsLayoutActionTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    private Src\Renderer\Helper\Context\HelperContext $context;
+    private Handlebars\HelperOptions $options;
 
     public function setUp(): void
     {
@@ -44,15 +45,15 @@ final class HandlebarsLayoutActionTest extends TestingFramework\Core\Unit\UnitTe
 
         $renderingContext = [];
         $data = [];
-        $stack = [];
 
-        $this->context = new Src\Renderer\Helper\Context\HelperContext(
+        $this->options = new Handlebars\HelperOptions(
+            'foo',
             [],
-            [],
-            new Src\Renderer\Helper\Context\RenderingContextStack($stack),
+            static fn() => 'baz',
+            static fn() => 'baz',
+            0,
             $renderingContext,
             $data,
-            static fn() => 'baz'
         );
     }
 
@@ -62,7 +63,7 @@ final class HandlebarsLayoutActionTest extends TestingFramework\Core\Unit\UnitTe
         Src\Renderer\Component\Layout\HandlebarsLayoutActionMode $mode,
         string $expected,
     ): void {
-        $subject = new Src\Renderer\Component\Layout\HandlebarsLayoutAction('foo', $this->context, $mode);
+        $subject = new Src\Renderer\Component\Layout\HandlebarsLayoutAction('foo', $this->options, $mode);
 
         self::assertSame($expected, $subject->render('foo'));
     }

@@ -12,6 +12,6 @@
 	],
 	"require": {
 		"php": "~8.2.0",
-		"zordius/lightncandy": "^1.2"
+		"devtheorem/php-handlebars": "^0.9.8"
 	}
 }

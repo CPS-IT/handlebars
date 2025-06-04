@@ -24,6 +24,7 @@ use Fr\Typo3Handlebars\Renderer;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 trait HandlebarsTemplateResolverTrait
 {

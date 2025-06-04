@@ -34,6 +34,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\ExtendHelper::class)]
 final class ExtendHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
@@ -66,7 +67,9 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
         );
 
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($layoutStack, $this->renderer));
-        $helperRegistry->add('jsonEncode', new TestExtension\JsonHelper());
+        $helperRegistry->add('jsonEncode', new TestExtension\Renderer\Helper\JsonHelper());
+
+        $this->buildServerRequest();
     }
 
     #[Framework\Attributes\Test]

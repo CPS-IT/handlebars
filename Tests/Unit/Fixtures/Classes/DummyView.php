@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes;
 
-use TYPO3Fluid\Fluid;
+use TYPO3\CMS\Core;
 
 /**
  * DummyView
@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid;
  * @license GPL-2.0-or-later
  * @internal
  */
-final readonly class DummyView implements Fluid\View\ViewInterface
+final readonly class DummyView implements Core\View\ViewInterface
 {
     public function assign(string $key, mixed $value): self
     {
@@ -45,23 +45,7 @@ final readonly class DummyView implements Fluid\View\ViewInterface
         return $this;
     }
 
-    public function render(): string
-    {
-        return '';
-    }
-
-    /**
-     * @param array<string, mixed> $variables
-     */
-    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): string
-    {
-        return '';
-    }
-
-    /**
-     * @param array<string, mixed> $variables
-     */
-    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false): string
+    public function render(string $templateFileName = ''): string
     {
         return '';
     }

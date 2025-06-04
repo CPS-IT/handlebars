@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Exception;
 
+use TYPO3\CMS\Core;
 use TYPO3Fluid\Fluid;
 
 /**
@@ -27,7 +28,7 @@ use TYPO3Fluid\Fluid;
  */
 final class ViewIsNotSupported extends Exception
 {
-    public function __construct(Fluid\View\ViewInterface $view)
+    public function __construct(Fluid\View\ViewInterface|Core\View\ViewInterface $view)
     {
         parent::__construct(
             sprintf('The given view "%s" cannot be used to render Handlebars templates.', $view::class),

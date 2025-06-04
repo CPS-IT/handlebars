@@ -18,11 +18,8 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
 use DevTheorem\Handlebars;
-use Fr\Typo3Handlebars\DataProcessing;
-use Fr\Typo3Handlebars\Exception;
 use Fr\Typo3Handlebars\Renderer;
 use TYPO3\CMS\Core;
-use TYPO3\CMS\Frontend;
 
 /**
  * RenderHelper
@@ -35,19 +32,13 @@ final readonly class RenderHelper implements Helper
 {
     public function __construct(
         private Renderer\Renderer $renderer,
-        private Core\TypoScript\TypoScriptService $typoScriptService,
-        private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ) {}
 
-    /**
-     * @throws Exception\InvalidConfigurationException
-     */
     public function render(Handlebars\HelperOptions $options, string $name = '', mixed ...$arguments): Handlebars\SafeString
     {
         // Resolve data
         $rootData = $options->data['root'];
         $merge = (bool)($options->hash['merge'] ?? false);
-        $renderUncached = (bool)($options->hash['uncached'] ?? false);
 
         // Fetch custom context
         // ====================
@@ -76,39 +67,10 @@ final readonly class RenderHelper implements Helper
             $subContext = $defaultContext;
         }
 
-        if ($renderUncached) {
-            $content = $this->registerUncachedTemplateBlock($name, $subContext);
-        } else {
-            $content = $this->renderer->render(
-                new Renderer\Template\View\HandlebarsView($name, $subContext),
-            );
-        }
+        $content = $this->renderer->render(
+            new Renderer\Template\View\HandlebarsView($name, $subContext),
+        );
 
         return new Handlebars\SafeString($content);
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     * @throws Exception\InvalidConfigurationException
-     */
-    protected function registerUncachedTemplateBlock(string $templateName, array $context): string
-    {
-        $processorClass = $context['_processor'] ?? null;
-
-        // Check whether the required data processor is valid
-        if (!\is_string($processorClass) || !\is_a($processorClass, DataProcessing\DataProcessor::class, true)) {
-            throw Exception\InvalidConfigurationException::create('_processor');
-        }
-
-        // Do not pass data processor reference as context to requested data processor
-        unset($context['_processor']);
-
-        return $this->contentObjectRenderer->cObjGetSingle('USER_INT', [
-            'userFunc' => $processorClass . '->process',
-            'userFunc.' => [
-                'templatePath' => $templateName,
-                'context.' => $this->typoScriptService->convertPlainArrayToTypoScriptArray($context),
-            ],
-        ]);
     }
 }

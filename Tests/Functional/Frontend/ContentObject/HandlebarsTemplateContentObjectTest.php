@@ -21,6 +21,7 @@ use Fr\Typo3Handlebars as Src;
 use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
@@ -33,11 +34,13 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Frontend\ContentObject\HandlebarsTemplateContentObject::class)]
 final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
+
     protected array $testExtensionsToLoad = [
         'handlebars',
     ];
 
-    private Tests\Functional\Fixtures\DummyRenderer $renderer;
+    private Tests\Functional\Fixtures\Classes\DummyRenderer $renderer;
     private Src\Renderer\Template\Path\ContentObjectPathProvider $pathProvider;
     private Src\Frontend\ContentObject\HandlebarsTemplateContentObject $subject;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
@@ -47,14 +50,14 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     {
         parent::setUp();
 
-        $request = new Core\Http\ServerRequest('https://typo3-testing.local/');
+        $request = $this->buildServerRequest();
 
-        $this->renderer = new Tests\Functional\Fixtures\DummyRenderer();
+        $this->renderer = new Tests\Functional\Fixtures\Classes\DummyRenderer();
         $this->pathProvider = $this->get(Src\Renderer\Template\Path\ContentObjectPathProvider::class);
         $this->subject = new Src\Frontend\ContentObject\HandlebarsTemplateContentObject(
             $this->get(Frontend\ContentObject\ContentDataProcessor::class),
-            $this->renderer,
             $this->pathProvider,
+            $this->renderer,
             $this->get(Core\TypoScript\TypoScriptService::class),
         );
         $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
@@ -63,6 +66,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
         $this->subject->setRequest($request);
         $this->subject->setContentObjectRenderer($this->contentObjectRenderer);
         $this->contentObjectRenderer->setRequest($request);
+        $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
     }
 
     #[Framework\Attributes\Test]
@@ -286,7 +290,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
         $factory = $this->get(Core\TypoScript\TypoScriptStringFactory::class);
         $rootNode = $factory->parseFromString('', $astBuilder);
 
-        $frontendTypoScript = new Core\TypoScript\FrontendTypoScript($rootNode, []);
+        $frontendTypoScript = new Core\TypoScript\FrontendTypoScript($rootNode, [], [], []);
         $frontendTypoScript->setSetupTree($rootNode);
         $frontendTypoScript->setSetupArray([
             'fooContext' => 'TEXT',

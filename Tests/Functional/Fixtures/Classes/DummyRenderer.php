@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Functional\Fixtures;
+namespace Fr\Typo3Handlebars\Tests\Functional\Fixtures\Classes;
 
 use Fr\Typo3Handlebars\Renderer;
 

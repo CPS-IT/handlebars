@@ -134,10 +134,12 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
 
         // Merge and cache root paths
         if ($this->stack[$this->currentItem][$type]['merged'] === null) {
+            /* @phpstan-ignore assign.propertyType */
             $this->stack[$this->currentItem][$type]['merged'] = $this->stack[0][$type]['current'];
 
             for ($i = 1; $i <= $this->currentItem; $i++) {
                 Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+                    /* @phpstan-ignore assign.propertyType */
                     $this->stack[$this->currentItem][$type]['merged'],
                     $this->stack[$i][$type]['current'],
                 );

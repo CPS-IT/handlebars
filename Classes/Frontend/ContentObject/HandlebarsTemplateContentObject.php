@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Frontend\ContentObject;
 
+use Fr\Typo3Handlebars\Exception;
 use Fr\Typo3Handlebars\Renderer;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
@@ -27,22 +28,21 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class HandlebarsTemplateContentObject extends Frontend\ContentObject\FluidTemplateContentObject
+final class HandlebarsTemplateContentObject extends Frontend\ContentObject\AbstractContentObject
 {
     public function __construct(
-        Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
-        private readonly Renderer\Renderer $renderer,
+        private readonly Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
         private readonly Renderer\Template\Path\ContentObjectPathProvider $pathProvider,
+        private readonly Renderer\Renderer $renderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
-    ) {
-        parent::__construct($contentDataProcessor);
-    }
+    ) {}
 
     /**
      * @param array<string, mixed> $conf
      */
     public function render($conf = []): string
     {
+        /* @phpstan-ignore function.alreadyNarrowedType */
         if (!\is_array($conf)) {
             $conf = [];
         }
@@ -78,7 +78,11 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
             $this->pathProvider->pop();
         }
 
-        return $this->applyStandardWrapToRenderedContent($content, $conf);
+        if (isset($conf['stdWrap.'])) {
+            return $this->cObj?->stdWrap($content, $conf['stdWrap.']) ?? $content;
+        }
+
+        return $content;
     }
 
     /**
@@ -199,6 +203,41 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Fluid
         Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedVariables, $simpleVariables);
 
         return $processedVariables;
+    }
+
+    /**
+     * @param array<string, mixed> $conf
+     * @return array<string, mixed>
+     * @throws Exception\ReservedVariableCannotBeUsed
+     * @see https://github.com/TYPO3/typo3/blob/v13.4.13/typo3/sysext/frontend/Classes/ContentObject/FluidTemplateContentObject.php#L228
+     */
+    private function getContentObjectVariables(array $conf): array
+    {
+        if ($this->cObj === null) {
+            return [];
+        }
+
+        $variables = [];
+        $reservedVariables = ['data', 'current'];
+        $variablesToProcess = (array)($conf['variables.'] ?? []);
+
+        foreach ($variablesToProcess as $variableName => $cObjType) {
+            if (is_array($cObjType)) {
+                continue;
+            }
+
+            if (!in_array($variableName, $reservedVariables, true)) {
+                $cObjConf = $variablesToProcess[$variableName . '.'] ?? [];
+                $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
+            } else {
+                throw new Exception\ReservedVariableCannotBeUsed($variableName);
+            }
+        }
+
+        $variables['data'] = $this->cObj->data;
+        $variables['current'] = $this->cObj->data[$this->cObj->currentValKey] ?? null;
+
+        return $variables;
     }
 
     /**

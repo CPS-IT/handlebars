@@ -33,6 +33,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\ContentHelper::class)]
 final class ContentHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
@@ -69,6 +70,8 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($layoutStack, $this->renderer));
         $helperRegistry->add('content', new Src\Renderer\Helper\ContentHelper($layoutStack, $this->logger));
         $helperRegistry->add('block', new Src\Renderer\Helper\BlockHelper($layoutStack));
+
+        $this->buildServerRequest();
     }
 
     #[Framework\Attributes\Test]

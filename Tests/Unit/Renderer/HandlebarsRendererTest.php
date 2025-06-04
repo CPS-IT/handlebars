@@ -35,22 +35,25 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\HandlebarsRenderer::class)]
 final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use Tests\Unit\HandlebarsCacheTrait;
+    use Tests\FrontendRequestTrait;
+    use Tests\HandlebarsCacheTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
     private Log\Test\TestLogger $logger;
     private Src\Renderer\Helper\HelperRegistry $helperRegistry;
     private Src\Renderer\HandlebarsRenderer $subject;
-    private Frontend\Controller\TypoScriptFrontendController&Framework\MockObject\MockObject $tsfeMock;
+    private Frontend\Cache\CacheInstruction $cacheInstruction;
+    private Core\TypoScript\FrontendTypoScript $frontendTypoScript;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->renewSubject();
-        $this->tsfeMock = $this->createMock(Frontend\Controller\TypoScriptFrontendController::class);
+        $this->buildServerRequest($cacheInstruction, $frontendTypoScript);
 
-        $GLOBALS['TSFE'] = $this->tsfeMock;
+        $this->cacheInstruction = $cacheInstruction;
+        $this->frontendTypoScript = $frontendTypoScript;
     }
 
     #[Framework\Attributes\Test]
@@ -95,11 +98,12 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
 
         self::assertSame('', $this->subject->render($view));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\TemplatePathIsNotResolvable $exception */
             $exception = $logRecord['context']['exception'];
+
             self::assertInstanceOf(Src\Exception\TemplatePathIsNotResolvable::class, $exception);
             self::assertSame('The template path "foo.baz" cannot be resolved.', $exception->getMessage());
             self::assertSame(1736254772, $exception->getCode());
+
             return true;
         }));
     }
@@ -111,7 +115,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
 
         self::assertSame('', $this->subject->render($view));
         self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            /** @var Src\Exception\ViewIsNotProperlyInitialized $exception */
             $exception = $logRecord['context']['exception'];
 
             self::assertInstanceOf(Src\Exception\ViewIsNotProperlyInitialized::class, $exception);
@@ -150,7 +153,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
 
         $expected = <<<EOF
 Debug
-array(2 items)
+array (2 items)
    foo => "baz" (3 chars)
    another => "foo" (3 chars)
 EOF;
@@ -189,12 +192,12 @@ EOF;
         $view->assign('name', 'foo');
 
         // Test with TypoScript config.debug = 1
-        $this->tsfeMock->config = ['config' => ['debug' => '1']];
+        $this->frontendTypoScript->setConfigArray(['debug' => '1']);
         $this->renewSubject()->render($view);
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
 
         // Test with TYPO3_CONF_VARS
-        $this->tsfeMock->config = [];
+        $this->frontendTypoScript->setConfigArray([]);
         $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
         $this->renewSubject()->render($view);
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
@@ -205,7 +208,8 @@ EOF;
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
 
-        $this->tsfeMock->no_cache = true;
+        $this->cacheInstruction->disableCache('testing');
+
         $this->subject->render($view);
 
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
@@ -216,11 +220,12 @@ EOF;
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
 
+        $this->frontendTypoScript->setConfigArray(['debug' => '1']);
+
         $this->expectExceptionObject(
             new \Exception('Runtime: [name] does not exist'),
         );
 
-        $this->tsfeMock->config = ['config' => ['debug' => '1']];
         $this->renewSubject()->render($view);
     }
 

@@ -15,9 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit;
+namespace Fr\Typo3Handlebars\Tests;
 
 use Fr\Typo3Handlebars as Src;
+use Fr\Typo3Handlebars\Tests\Unit\Fixtures;
 use TYPO3\CMS\Core;
 
 /**
@@ -25,6 +26,7 @@ use TYPO3\CMS\Core;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 trait HandlebarsCacheTrait
 {

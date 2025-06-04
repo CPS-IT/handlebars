@@ -25,6 +25,8 @@ use Psr\Log;
 use Symfony\Component\Config;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
@@ -123,10 +125,12 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
         $yamlFileLoader = new DependencyInjection\Loader\YamlFileLoader($container, new Config\FileLocator(\dirname(__DIR__) . '/Fixtures/Services'));
         $yamlFileLoader->load('feature-registration-services.yaml');
 
-        // Constructor arguments of helpers
+        // Constructor arguments
         $container->register(Core\TypoScript\TypoScriptService::class);
         $container->register(Frontend\ContentObject\ContentObjectRenderer::class);
         $container->register(Log\LoggerInterface::class, Log\NullLogger::class);
+        $container->register(Extbase\Configuration\ConfigurationManagerInterface::class, Tests\Unit\Fixtures\Classes\DummyConfigurationManager::class);
+        $container->register(Fluid\View\FluidViewFactory::class);
 
         // Aliases
         $container->setAlias(Container\ContainerInterface::class, 'service_container');

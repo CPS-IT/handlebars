@@ -32,7 +32,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Cache\HandlebarsCache::class)]
 final class HandlebarsCacheTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use Tests\Unit\HandlebarsCacheTrait;
+    use Tests\HandlebarsCacheTrait;
 
     private Src\Cache\HandlebarsCache $subject;
 

@@ -18,10 +18,9 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Controller;
 
 use Fr\Typo3Handlebars\Exception;
-use Fr\Typo3Handlebars\Extbase\View;
+use Fr\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsView;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
-use TYPO3Fluid\Fluid;
 
 /**
  * HandlebarsController
@@ -29,41 +28,15 @@ use TYPO3Fluid\Fluid;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AutoconfigureTag('handlebars.extbase_controller')]
 abstract class HandlebarsController extends Extbase\Mvc\Controller\ActionController
 {
-    protected View\ExtbaseHandlebarsViewResolver $viewResolver;
-
-    public function injectViewResolver(
-        #[DependencyInjection\Attribute\Autowire(service: View\ExtbaseHandlebarsViewResolver::class)]
-        Extbase\Mvc\View\ViewResolverInterface $viewResolver,
-    ): void {
-        parent::injectViewResolver($viewResolver);
-    }
-
-    protected function resolveView(): Fluid\View\ViewInterface
-    {
-        $baseView = parent::resolveView();
-
-        if (!($baseView instanceof Fluid\View\AbstractTemplateView)) {
-            return $baseView;
-        }
-
-        /** @var View\ExtbaseHandlebarsView $view */
-        $view = $this->viewResolver->resolve(
-            $this->request->getControllerObjectName(),
-            $this->request->getControllerActionName(),
-            $this->request->getFormat(),
-            false,
-        );
-        $view->assignMultiple((array)$baseView->getRenderingContext()->getVariableProvider()->getAll());
-        $view->setTemplateNameFromRequest($this->request);
-
-        return $view;
-    }
-
+    /**
+     * @throws Exception\ViewIsNotSupported
+     */
     protected function renderView(?string $templateName = null): string
     {
-        if (!($this->view instanceof View\ExtbaseHandlebarsView)) {
+        if (!($this->view instanceof ExtbaseHandlebarsView)) {
             throw new Exception\ViewIsNotSupported($this->view);
         }
 

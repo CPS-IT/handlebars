@@ -15,12 +15,24 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Exception;
+namespace Fr\Typo3Handlebars\TestExtension\Renderer\Helper;
+
+use DevTheorem\Handlebars;
+use Fr\Typo3Handlebars\Attribute;
+use Fr\Typo3Handlebars\Renderer;
 
 /**
- * UnableToPresentException
+ * JsonHelper
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
-final class UnableToPresentException extends \RuntimeException {}
+#[Attribute\AsHelper('jsonEncode')]
+final class JsonHelper implements Renderer\Helper\Helper
+{
+    public function render(Handlebars\HelperOptions $options): Handlebars\SafeString
+    {
+        return new Handlebars\SafeString(json_encode($options->scope, JSON_THROW_ON_ERROR));
+    }
+}

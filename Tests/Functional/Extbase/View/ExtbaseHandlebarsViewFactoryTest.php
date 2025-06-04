@@ -15,25 +15,34 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Extbase\View;
+namespace Fr\Typo3Handlebars\Tests\Functional\Extbase\View;
 
 use Fr\Typo3Handlebars as Src;
 use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
-use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
 /**
- * ExtbaseHandlebarsViewResolverTest
+ * ExtbaseHandlebarsViewFactoryTest
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Framework\Attributes\CoversClass(Src\Extbase\View\ExtbaseHandlebarsViewResolver::class)]
-final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit\UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Extbase\View\ExtbaseHandlebarsViewFactory::class)]
+final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
+
+    protected bool $initializeDatabase = false;
+
+    protected array $testExtensionsToLoad = [
+        'handlebars',
+    ];
+
     /**
      * @var list<list<mixed>|null>
      */
@@ -41,7 +50,9 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
 
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
     private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
-    private Src\Extbase\View\ExtbaseHandlebarsViewResolver $subject;
+    private Src\Extbase\View\ExtbaseHandlebarsViewFactory $subject;
+    private Extbase\Mvc\Request $request;
+    private Extbase\Mvc\ExtbaseRequestParameters $extbaseRequestParameters;
 
     public function setUp(): void
     {
@@ -49,40 +60,46 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
 
         $this->contentObjectRendererMock = $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class);
 
-        $container = new DependencyInjection\Container();
-        $container->set(Frontend\ContentObject\ContentObjectRenderer::class, $this->contentObjectRendererMock);
-        $container->set(Tests\Unit\Fixtures\Classes\DummyView::class, new Tests\Unit\Fixtures\Classes\DummyView());
-
         $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
         $this->configurationManager->configuration = [
             'controllerConfiguration' => [
-                'Vendor\\Controller\\FooController' => [
+                'Vendor\\Extension\\Controller\\FooController' => [
                     'alias' => 'Foo',
                 ],
             ],
         ];
 
-        $this->subject = new Src\Extbase\View\ExtbaseHandlebarsViewResolver(
-            $container,
+        $this->subject = new Src\Extbase\View\ExtbaseHandlebarsViewFactory(
             $this->configurationManager,
-            new Core\TypoScript\TypoScriptService(),
+            $this->get(Fluid\View\FluidViewFactory::class),
+            $this->get(Core\TypoScript\TypoScriptService::class),
         );
-        $this->subject->setDefaultViewClass(Tests\Unit\Fixtures\Classes\DummyView::class);
+
+        $this->request = $this->buildExtbaseRequest($extbaseRequestParameters);
+        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+        $this->extbaseRequestParameters = $extbaseRequestParameters;
     }
 
     #[Framework\Attributes\Test]
-    public function resolveReturnsFallbackViewIfControllerIsUnknown(): void
+    public function createReturnsFallbackViewIfControllerIsUnknown(): void
     {
+        $this->extbaseRequestParameters->setControllerObjectName('Vendor\\Extension\\Controller\\UnknownController');
+        $this->request = $this->buildExtbaseRequest($this->extbaseRequestParameters);
+
+        $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
+
         self::assertInstanceOf(
-            Tests\Unit\Fixtures\Classes\DummyView::class,
-            $this->subject->resolve('Vendor\\Controller\\UnknownController', 'baz', 'hbs'),
+            Fluid\View\FluidViewAdapter::class,
+            $this->subject->create($data),
         );
     }
 
     #[Framework\Attributes\Test]
-    public function resolveReturnsHandlebarsViewWithDefaultConfigurationIfNoHandlebarsConfigurationIsAvailable(): void
+    public function createReturnsHandlebarsViewWithDefaultConfigurationIfNoHandlebarsConfigurationIsAvailable(): void
     {
-        $actual = $this->subject->resolve('Vendor\\Controller\\FooController', 'baz', 'hbs');
+        $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
+
+        $actual = $this->subject->create($data);
 
         self::assertInstanceOf(Src\Extbase\View\ExtbaseHandlebarsView::class, $actual);
 
@@ -98,7 +115,7 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
     }
 
     #[Framework\Attributes\Test]
-    public function resolveReturnsHandlebarsViewWithProcessedTemplateName(): void
+    public function createReturnsHandlebarsViewWithProcessedTemplateName(): void
     {
         $this->configurationManager->configuration['handlebars'] = [
             'templateName' => [
@@ -139,7 +156,9 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
             ],
         );
 
-        $actual = $this->subject->resolve('Vendor\\Controller\\FooController', 'baz', 'hbs');
+        $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
+
+        $actual = $this->subject->create($data);
 
         self::assertInstanceOf(Src\Extbase\View\ExtbaseHandlebarsView::class, $actual);
 
@@ -147,7 +166,7 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
     }
 
     #[Framework\Attributes\Test]
-    public function resolveReturnsHandlebarsViewWithDefaultConfigurationIfProcessedTemplateNameIsEmpty(): void
+    public function createReturnsHandlebarsViewWithDefaultConfigurationIfProcessedTemplateNameIsEmpty(): void
     {
         $this->configurationManager->configuration['handlebars'] = [
             'templateName' => [
@@ -184,7 +203,9 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
             ],
         );
 
-        $actual = $this->subject->resolve('Vendor\\Controller\\FooController', 'baz', 'hbs');
+        $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
+
+        $actual = $this->subject->create($data);
 
         self::assertInstanceOf(Src\Extbase\View\ExtbaseHandlebarsView::class, $actual);
 
@@ -213,6 +234,7 @@ final class ExtbaseHandlebarsViewResolverTest extends TestingFramework\Core\Unit
             self::fail('No more calls to cObjGetSingle expected.');
         }
 
+        /* @phpstan-ignore assign.propertyType */
         $this->cObjGetSingleCalls[$nextKey] = [$contentObjectName, $contentObjectConfiguration, $return];
 
         if ($nextKey === $count - 1) {

@@ -47,7 +47,6 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
         'contentHelper' => false,
         'extendHelper' => false,
         'renderHelper' => false,
-        'flatTemplateResolver' => false,
     ];
 
     #[Framework\Attributes\Test]
@@ -56,7 +55,6 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
         $container = $this->buildContainer();
 
         self::assertSame([], $container->findTaggedServiceIds('handlebars.helper'));
-        self::assertNotInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.template_resolver'));
     }
 
     #[Framework\Attributes\Test]
@@ -77,29 +75,16 @@ final class FeatureRegistrationPassTest extends TestingFramework\Core\Unit\UnitT
     }
 
     #[Framework\Attributes\Test]
-    public function processActivatesEnabledTemplateResolvers(): void
-    {
-        $this->activatedFeatures['flatTemplateResolver'] = true;
-
-        $container = $this->buildContainer();
-
-        self::assertSame([], $container->findTaggedServiceIds('handlebars.helper'));
-        self::assertInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.template_resolver'));
-    }
-
-    #[Framework\Attributes\Test]
     public function processDoesNotActivateFeaturesIfExtensionConfigurationIsMissing(): void
     {
         unset($this->activatedFeatures['blockHelper']);
         unset($this->activatedFeatures['contentHelper']);
         unset($this->activatedFeatures['extendHelper']);
         unset($this->activatedFeatures['renderHelper']);
-        unset($this->activatedFeatures['flatTemplateResolver']);
 
         $container = $this->buildContainer();
 
         self::assertSame([], $container->findTaggedServiceIds('handlebars.helper'));
-        self::assertNotInstanceOf(Src\Renderer\Template\FlatTemplateResolver::class, $container->get('handlebars.template_resolver'));
     }
 
     /**

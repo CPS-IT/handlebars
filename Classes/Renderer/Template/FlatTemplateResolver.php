@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
 use Fr\Typo3Handlebars\Exception;
+use Symfony\Component\DependencyInjection;
 use Symfony\Component\Finder;
 
 /**
@@ -27,6 +28,7 @@ use Symfony\Component\Finder;
  * @license GPL-2.0-or-later
  * @see https://fractal.build/guide/core-concepts/naming.html
  */
+#[DependencyInjection\Attribute\AsAlias(TemplateResolver::class)]
 final class FlatTemplateResolver extends BaseTemplateResolver
 {
     private const MAX_FILE_DEPTH = 30;

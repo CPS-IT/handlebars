@@ -19,6 +19,7 @@ namespace Fr\Typo3Handlebars\Frontend\ContentObject;
 
 use Fr\Typo3Handlebars\Exception;
 use Fr\Typo3Handlebars\Renderer;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
@@ -28,6 +29,7 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HANDLEBARSTEMPLATE'])]
 final class HandlebarsTemplateContentObject extends Frontend\ContentObject\AbstractContentObject
 {
     public function __construct(

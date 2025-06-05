@@ -62,7 +62,6 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
             new Src\Cache\NullCache(),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
-            $this->logger,
             $this->templateResolver,
             new Src\Renderer\Variables\VariableBag([]),
         );

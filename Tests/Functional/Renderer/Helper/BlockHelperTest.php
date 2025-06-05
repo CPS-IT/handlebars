@@ -60,7 +60,6 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
             new Src\Cache\NullCache(),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
-            new Log\NullLogger(),
             $this->templateResolver,
             new Src\Renderer\Variables\VariableBag([]),
         );

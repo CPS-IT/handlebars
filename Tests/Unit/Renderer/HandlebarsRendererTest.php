@@ -39,7 +39,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     use Tests\HandlebarsCacheTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
-    private Log\Test\TestLogger $logger;
     private Src\Renderer\Helper\HelperRegistry $helperRegistry;
     private Src\Renderer\HandlebarsRenderer $subject;
     private Frontend\Cache\CacheInstruction $cacheInstruction;
@@ -68,64 +67,41 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfTemplateFilsIsInvalid(): void
+    public function renderThrowsExceptionIfTemplateFilsIsInvalid(): void
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('foo.baz');
 
         $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver();
 
-        $this->suppressNextError(E_WARNING);
+        $this->expectException(Src\Exception\TemplateFileIsInvalid::class);
+        $this->expectExceptionMessageMatches('/^The template file "[^"]+\/foo\.baz" is invalid or does not exist\.$/');
+        $this->expectExceptionCode(1736333208);
 
-        self::assertSame('', $this->renewSubject()->render($view));
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $exception = $logRecord['context']['exception'];
-
-            self::assertInstanceOf(Src\Exception\TemplateFileIsInvalid::class, $exception);
-            self::assertSame(1736333208, $exception->getCode());
-            self::assertMatchesRegularExpression(
-                '/^The template file "[^"]+\/foo\.baz" is invalid or does not exist\.$/',
-                $exception->getMessage(),
-            );
-
-            return true;
-        }));
+        $this->renewSubject()->render($view);
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfTemplatePathIsNotResolvable(): void
+    public function renderThrowsExceptionIfTemplatePathIsNotResolvable(): void
     {
         $view = new Src\Renderer\Template\View\HandlebarsView('foo.baz');
 
-        self::assertSame('', $this->subject->render($view));
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $exception = $logRecord['context']['exception'];
+        $this->expectExceptionObject(
+            new Src\Exception\TemplatePathIsNotResolvable('foo.baz')
+        );
 
-            self::assertInstanceOf(Src\Exception\TemplatePathIsNotResolvable::class, $exception);
-            self::assertSame('The template path "foo.baz" cannot be resolved.', $exception->getMessage());
-            self::assertSame(1736254772, $exception->getCode());
-
-            return true;
-        }));
+        $this->renewSubject()->render($view);
     }
 
     #[Framework\Attributes\Test]
-    public function renderLogsCriticalErrorIfGivenViewIsNotProperlyInitialized(): void
+    public function renderThrowsExceptionIfGivenViewIsNotProperlyInitialized(): void
     {
         $view = new Src\Renderer\Template\View\HandlebarsView();
 
-        self::assertSame('', $this->subject->render($view));
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) {
-            $exception = $logRecord['context']['exception'];
+        $this->expectExceptionObject(
+            new Src\Exception\ViewIsNotProperlyInitialized(),
+        );
 
-            self::assertInstanceOf(Src\Exception\ViewIsNotProperlyInitialized::class, $exception);
-            self::assertSame(
-                'The Handlebars view is not properly initialized. Provide either template path or template source.',
-                $exception->getMessage(),
-            );
-            self::assertSame(1736332788, $exception->getCode());
-
-            return true;
-        }));
+        $this->subject->render($view);
     }
 
     #[Framework\Attributes\Test]
@@ -293,14 +269,12 @@ EOF;
      */
     private function renewSubject(string $rendererClass = Src\Renderer\HandlebarsRenderer::class): Src\Renderer\HandlebarsRenderer
     {
-        $this->logger = new Log\Test\TestLogger();
-        $this->helperRegistry = new Src\Renderer\Helper\HelperRegistry($this->logger);
+        $this->helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\Test\TestLogger());
 
         return $this->subject = new $rendererClass(
             $this->getCache(),
             new EventDispatcher\EventDispatcher(),
             $this->helperRegistry,
-            $this->logger,
             $this->getTemplateResolver(),
             new Src\Renderer\Variables\VariableBag([
                 new Src\Renderer\Variables\GlobalVariableProvider([
@@ -308,11 +282,5 @@ EOF;
                 ]),
             ]),
         );
-    }
-
-    private function suppressNextError(int $errorLevels): void
-    {
-        // Restore error handler on next error
-        \set_error_handler(static fn() => \restore_error_handler(), $errorLevels);
     }
 }

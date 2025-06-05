@@ -59,7 +59,6 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
             new Src\Cache\NullCache(),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
-            new Log\NullLogger(),
             $this->templateResolver,
             new Src\Renderer\Variables\VariableBag([]),
         );

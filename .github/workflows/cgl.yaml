@@ -23,26 +23,20 @@ jobs:
         with:
           # @todo Use PHP 8.4 once PHP-CS-Fixer supports PHP 8.4
           php-version: 8.3
-          tools: composer:v2, composer-require-checker, composer-unused
+          tools: composer:v2, cs2pr
           coverage: none
 
       # Validation
       - name: Validate composer.json
-        run: composer validate
+        run: composer validate --strict
 
       # Install dependencies
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v3
-        with:
-          composer-options: --no-scripts --no-plugins
 
-      # Check Composer dependencies
-      - name: Check dependencies
-        run: composer-require-checker check --config-file dependency-checker.json
-      - name: Re-install Composer dependencies
-        uses: ramsey/composer-install@v3
-      - name: Check for unused dependencies
-        run: composer-unused
+      # Analyze
+      - name: Analyze dependencies
+        run: composer analyze:dependencies
 
       # Linting
       - name: Lint composer.json
@@ -50,7 +44,7 @@ jobs:
       - name: Lint Editorconfig
         run: composer lint:editorconfig
       - name: Lint PHP
-        run: composer lint:php
+        run: composer lint:php -- --format checkstyle | cs2pr
       - name: Lint TypoScript
         run: composer lint:typoscript -- --fail-on-warnings
 

@@ -1,5 +1,17 @@
 ..  include:: /Includes.rst.txt
 
+..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
+    :target: https://coveralls.io/github/CPS-IT/handlebars
+
+..  image:: https://api.codeclimate.com/v1/badges/5b2dfdd046fb1a6e04aa/maintainability
+    :target: https://codeclimate.com/github/CPS-IT/handlebars/maintainability
+
+..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
+
+..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
+
 ..  _contributing:
 
 ============
@@ -14,7 +26,9 @@ The development of this extension follows the official
 `TYPO3 coding standards <https://github.com/TYPO3/coding-standards>`__.
 To ensure the stability and cleanliness of the code, various code
 quality tools are used and most components are covered with test
-cases.
+cases. In addition, we use `DDEV <https://ddev.readthedocs.io/en/stable/>`__
+for local development. Make sure to set it up as described below. For
+continuous integration, we use GitHub Actions.
 
 ..  _create-an-issue-first:
 
@@ -56,13 +70,16 @@ Now install all Composer dependencies:
 
 ..  _check-code-quality:
 
+..  code-block:: bash
+
+    # All analyzers
+    composer analyze
+
+    # Specific analyzers
+    composer analyze:dependencies
+
 Check code quality
 ------------------
-
-..  rst-class:: d-inline-block mb-3
-
-..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
 
 ..  code-block:: bash
 
@@ -93,14 +110,6 @@ Check code quality
 
 Run tests
 ---------
-
-..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
-
-..  rst-class:: d-inline-block mb-3
-
-..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
-    :target: https://coveralls.io/github/CPS-IT/handlebars
 
 ..  code-block:: bash
 
@@ -151,5 +160,10 @@ The built docs will be stored in :file:`.Build/docs`.
 Pull Request
 ------------
 
-When you have finished developing your contribution, simply submit a
-pull request on GitHub: https://github.com/CPS-IT/handlebars/pulls
+Once you have finished your work, please **submit a pull request** and describe
+what you've done: https://github.com/CPS-IT/handlebars/pulls
+
+Ideally, your PR references an issue describing the problem
+you're trying to solve. All described code quality tools are automatically
+executed on each pull request for all currently supported PHP versions and TYPO3
+versions.

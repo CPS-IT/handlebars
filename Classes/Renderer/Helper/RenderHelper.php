@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
 use DevTheorem\Handlebars;
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
 use TYPO3\CMS\Core;
 
@@ -28,6 +29,7 @@ use TYPO3\CMS\Core;
  * @license GPL-2.0-or-later
  * @see https://github.com/frctl/fractal/blob/main/packages/handlebars/src/helpers/render.js
  */
+#[Attribute\AsHelper('render')]
 final readonly class RenderHelper implements Helper
 {
     public function __construct(

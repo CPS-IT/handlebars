@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Helper;
 
 use DevTheorem\Handlebars;
+use Fr\Typo3Handlebars\Attribute;
 use Fr\Typo3Handlebars\Renderer;
 
 /**
@@ -27,6 +28,7 @@ use Fr\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @see https://github.com/shannonmoeller/handlebars-layouts#block-name
  */
+#[Attribute\AsHelper('block')]
 final readonly class BlockHelper implements Helper
 {
     public function __construct(

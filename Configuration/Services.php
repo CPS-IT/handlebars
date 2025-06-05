@@ -27,7 +27,6 @@ return static function (
 ): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
     $container->addCompilerPass(new HandlebarsHelperPass(Attribute\AsHelper::TAG_NAME));
-    $container->addCompilerPass(new FeatureRegistrationPass(), priority: 30);
     $container->addCompilerPass(new HandlebarsControllerPass());
 
     $container->registerAttributeForAutoconfiguration(

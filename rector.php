@@ -20,7 +20,6 @@ use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
-use Ssch\TYPO3Rector\TYPO312\v4\MigrateConfigurationManagerGetContentObjectRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
@@ -41,11 +40,6 @@ return static function (RectorConfig $rectorConfig): void {
         FirstClassCallableRector::class => [
             __DIR__ . '/Tests/Functional/Renderer/Helper/RenderHelperTest.php',
             __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
-        ],
-
-        // @todo Remove once code is rewritten
-        MigrateConfigurationManagerGetContentObjectRector::class => [
-            __DIR__ . '/Tests/Unit/DataProcessing/AbstractDataProcessorTest.php',
         ],
     ]);
 };

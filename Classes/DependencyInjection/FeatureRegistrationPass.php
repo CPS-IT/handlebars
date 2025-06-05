@@ -51,9 +51,6 @@ final class FeatureRegistrationPass implements DependencyInjection\Compiler\Comp
         if ($this->isFeatureEnabled('renderHelper')) {
             $this->activateHelper('render', Renderer\Helper\RenderHelper::class);
         }
-        if ($this->isFeatureEnabled('flatTemplateResolver')) {
-            $this->activateFlatTemplateResolver();
-        }
     }
 
     /**
@@ -66,11 +63,6 @@ final class FeatureRegistrationPass implements DependencyInjection\Compiler\Comp
             'identifier' => $name,
             'method' => 'render',
         ]);
-    }
-
-    private function activateFlatTemplateResolver(): void
-    {
-        $this->container->getDefinition('handlebars.template_resolver')->setClass(Renderer\Template\FlatTemplateResolver::class);
     }
 
     private function isFeatureEnabled(string $featureName): bool

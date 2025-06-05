@@ -26,11 +26,11 @@ use TYPO3\CMS\Core;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AsAlias('handlebars.cache')]
+#[DependencyInjection\Attribute\AsAlias(Cache::class)]
 final readonly class HandlebarsCache implements Cache
 {
     public function __construct(
-        #[DependencyInjection\Attribute\Autowire('@cache.handlebars')]
+        #[DependencyInjection\Attribute\Autowire(expression: 'service("TYPO3\\\\CMS\\\\Core\\\\Cache\\\\CacheManager").getCache("handlebars")')]
         private Core\Cache\Frontend\FrontendInterface $cache,
     ) {}
 

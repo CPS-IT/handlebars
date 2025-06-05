@@ -2,36 +2,12 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
-    public: false
 
   Fr\Typo3Handlebars\:
     resource: '../Classes/*'
     exclude:
       - '../Classes/DependencyInjection/*'
       - '../Classes/Extbase/View/ExtbaseHandlebarsView.php'
-
-  Fr\Typo3Handlebars\Cache\Cache:
-    alias: 'handlebars.cache'
-  Fr\Typo3Handlebars\Renderer\Renderer:
-    alias: 'handlebars.renderer'
-  Fr\Typo3Handlebars\Renderer\Template\TemplateResolver:
-    alias: 'handlebars.template_resolver'
-
-  # Content object
-  Fr\Typo3Handlebars\Frontend\ContentObject\HandlebarsTemplateContentObject:
-    tags:
-      - name: frontend.contentobject
-        identifier: 'HANDLEBARSTEMPLATE'
-
-  # Template
-  handlebars.template_resolver:
-    class: 'Fr\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver'
-
-  # Cache
-  cache.handlebars:
-    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
-    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
-    arguments: ['handlebars']
 
 handlebars:
   variables: []

@@ -9,6 +9,3 @@ features.extendHelper.enable = 1
 
 # cat=helpers/enable/40; type=boolean; label=Render helper: Enable globally (applies to the default Handlebars renderer)
 features.renderHelper.enable = 1
-
-# cat=template/enable/10; type=boolean; label=Flat template resolver: Enable globally (applies to the default Handlebars renderer)
-features.flatTemplateResolver.enable = 0

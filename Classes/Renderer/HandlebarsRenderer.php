@@ -34,19 +34,17 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AsAlias('handlebars.renderer')]
+#[DependencyInjection\Attribute\AsAlias(Renderer::class)]
 #[DependencyInjection\Attribute\Autoconfigure(tags: ['handlebars.renderer'])]
 class HandlebarsRenderer implements Renderer
 {
     protected ?bool $debugMode = null;
 
     public function __construct(
-        #[DependencyInjection\Attribute\Autowire('@handlebars.cache')]
         protected readonly Cache\Cache $cache,
         protected readonly EventDispatcher\EventDispatcherInterface $eventDispatcher,
         protected readonly Helper\HelperRegistry $helperRegistry,
         protected readonly Log\LoggerInterface $logger,
-        #[DependencyInjection\Attribute\Autowire('@handlebars.template_resolver')]
         protected readonly Template\TemplateResolver $templateResolver,
         protected readonly Variables\VariableBag $variableBag,
     ) {}

@@ -18,9 +18,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Extbase\View;
 
 use TYPO3\CMS\Core;
-use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
-use TYPO3Fluid\Fluid;
 
 /**
  * ExtbaseHandlebarsView
@@ -28,7 +26,7 @@ use TYPO3Fluid\Fluid;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class ExtbaseHandlebarsView implements Fluid\View\ViewInterface
+final class ExtbaseHandlebarsView implements Core\View\ViewInterface
 {
     /**
      * @param array<string, mixed> $contentObjectConfiguration
@@ -64,27 +62,15 @@ final class ExtbaseHandlebarsView implements Fluid\View\ViewInterface
         return $this;
     }
 
-    public function render(): string
+    public function render(string $templateFileName = ''): string
     {
-        return $this->contentObjectRenderer->cObjGetSingle('HANDLEBARSTEMPLATE', $this->contentObjectConfiguration);
-    }
+        $contentObjectConfiguration = $this->contentObjectConfiguration;
 
-    /**
-     * @param array<string, mixed> $variables
-     */
-    public function renderSection($sectionName, array $variables = [], $ignoreUnknown = false): string
-    {
-        // This is a Fluid feature, sections are not available in Handlebars.
-        return '';
-    }
+        if ($templateFileName !== '') {
+            $contentObjectConfiguration['templateName'] = $templateFileName;
+        }
 
-    /**
-     * @param array<string, mixed> $variables
-     */
-    public function renderPartial($partialName, $sectionName, array $variables, $ignoreUnknown = false): string
-    {
-        // This is a Fluid feature, Handlebars renderer takes care of rendering partials.
-        return '';
+        return $this->contentObjectRenderer->cObjGetSingle('HANDLEBARSTEMPLATE', $contentObjectConfiguration);
     }
 
     public function setTemplateName(string $templateName): self
@@ -92,12 +78,5 @@ final class ExtbaseHandlebarsView implements Fluid\View\ViewInterface
         $this->contentObjectConfiguration['templateName'] = $templateName;
 
         return $this;
-    }
-
-    public function setTemplateNameFromRequest(Extbase\Mvc\RequestInterface $request): self
-    {
-        return $this->setTemplateName(
-            $request->getControllerName() . '/' . $request->getControllerActionName(),
-        );
     }
 }

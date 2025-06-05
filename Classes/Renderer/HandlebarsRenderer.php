@@ -22,8 +22,10 @@ use Fr\Typo3Handlebars\Cache;
 use Fr\Typo3Handlebars\Event;
 use Fr\Typo3Handlebars\Exception;
 use Psr\EventDispatcher;
+use Psr\Http\Message;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -36,7 +38,7 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\Autoconfigure(tags: ['handlebars.renderer'])]
 class HandlebarsRenderer implements Renderer
 {
-    protected readonly bool $debugMode;
+    protected ?bool $debugMode = null;
 
     public function __construct(
         #[DependencyInjection\Attribute\Autowire('@handlebars.cache')]
@@ -47,15 +49,13 @@ class HandlebarsRenderer implements Renderer
         #[DependencyInjection\Attribute\Autowire('@handlebars.template_resolver')]
         protected readonly Template\TemplateResolver $templateResolver,
         protected readonly Variables\VariableBag $variableBag,
-    ) {
-        $this->debugMode = $this->isDebugModeEnabled();
-    }
+    ) {}
 
     public function render(Template\View\HandlebarsView $view): string
     {
         try {
             return $this->processRendering($view);
-        } catch (Exception\TemplateCompilationException | Exception\TemplateFileIsInvalid | Exception\TemplateFormatIsNotSupported | Exception\TemplatePathIsNotResolvable | Exception\ViewIsNotProperlyInitialized $exception) {
+        } catch (Exception\TemplateFileIsInvalid | Exception\TemplateFormatIsNotSupported | Exception\TemplatePathIsNotResolvable | Exception\ViewIsNotProperlyInitialized $exception) {
             $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
 
             return '';
@@ -115,7 +115,7 @@ class HandlebarsRenderer implements Renderer
         }
 
         // Disable cache if debugging is enabled or caching is disabled
-        if ($this->debugMode || $this->isCachingDisabled()) {
+        if ($this->isDebugModeEnabled() || $this->isCachingDisabled()) {
             $cache = new Cache\NullCache();
         } else {
             $cache = $this->cache;
@@ -130,9 +130,7 @@ class HandlebarsRenderer implements Renderer
         $compileResult = Handlebars\Handlebars::precompile($template, $this->getCompileOptions());
 
         // Write compiled template into cache
-        if (!$this->debugMode) {
-            $cache->set($template, $compileResult);
-        }
+        $cache->set($template, $compileResult);
 
         return $compileResult;
     }
@@ -140,7 +138,7 @@ class HandlebarsRenderer implements Renderer
     protected function getCompileOptions(): Handlebars\Options
     {
         return new Handlebars\Options(
-            strict: $this->debugMode,
+            strict: $this->isDebugModeEnabled(),
             helpers: $this->getHelperStubs(),
             partialResolver: fn(Handlebars\Context $context, string $name) => $this->resolvePartial($name),
         );
@@ -189,21 +187,32 @@ class HandlebarsRenderer implements Renderer
 
     protected function isCachingDisabled(): bool
     {
-        $tsfe = $this->getTypoScriptFrontendController();
-        return $tsfe !== null && (bool)$tsfe->no_cache;
+        $cacheInstruction = $this->getServerRequest()->getAttribute('frontend.cache.instruction');
+
+        if ($cacheInstruction instanceof Frontend\Cache\CacheInstruction) {
+            return !$cacheInstruction->isCachingAllowed();
+        }
+
+        return false;
     }
 
     protected function isDebugModeEnabled(): bool
     {
-        $tsfe = $this->getTypoScriptFrontendController();
-        if ($tsfe !== null && (bool)($tsfe->config['config']['debug'] ?? false)) {
+        if ($this->debugMode !== null) {
+            return $this->debugMode;
+        }
+
+        $typoScript = $this->getServerRequest()->getAttribute('frontend.typoscript');
+
+        if ($typoScript instanceof Core\TypoScript\FrontendTypoScript && (bool)($typoScript->getConfigArray()['debug'] ?? false)) {
             return true;
         }
-        return (bool)($GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] ?? false);
+
+        return $this->debugMode = (bool)($GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] ?? false);
     }
 
-    protected function getTypoScriptFrontendController(): ?Frontend\Controller\TypoScriptFrontendController
+    protected function getServerRequest(): Message\ServerRequestInterface
     {
-        return $GLOBALS['TSFE'] ?? null;
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

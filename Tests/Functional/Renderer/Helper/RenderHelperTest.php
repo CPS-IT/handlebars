@@ -18,13 +18,10 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Tests\Functional\Renderer\Helper;
 
 use Fr\Typo3Handlebars as Src;
-use Fr\Typo3Handlebars\TestExtension;
 use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use Psr\Log;
 use Symfony\Component\EventDispatcher;
-use TYPO3\CMS\Core;
-use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
 /**
@@ -36,6 +33,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\RenderHelper::class)]
 final class RenderHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected array $testExtensionsToLoad = [
@@ -46,7 +44,6 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     protected bool $initializeDatabase = false;
 
     private Src\Renderer\HandlebarsRenderer $renderer;
-    private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
 
     protected function setUp(): void
     {
@@ -66,17 +63,12 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
             $this->templateResolver,
             new Src\Renderer\Variables\VariableBag([]),
         );
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
-        $this->contentObjectRenderer->start([]);
-        $this->contentObjectRenderer->setRequest(new Core\Http\ServerRequest());
 
-        $subject = new Src\Renderer\Helper\RenderHelper(
-            $this->renderer,
-            new Core\TypoScript\TypoScriptService(),
-            $this->contentObjectRenderer,
-        );
+        $subject = new Src\Renderer\Helper\RenderHelper($this->renderer);
 
         $helperRegistry->add('render', $subject);
+
+        $this->buildServerRequest();
     }
 
     #[Framework\Attributes\Test]
@@ -131,45 +123,5 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
         );
 
         self::assertSame('Lorem ipsum', trim($actual));
-    }
-
-    #[Framework\Attributes\Test]
-    public function helperCanBeCalledToRenderANonCacheableTemplate(): void
-    {
-        $GLOBALS['TSFE'] = new Frontend\Controller\TypoScriptFrontendController(
-            new Core\Context\Context(),
-            new Core\Site\Entity\Site('foo', 1, []),
-            new Core\Site\Entity\SiteLanguage(1, 'en', new Core\Http\Uri(), []),
-            new Core\Routing\PageArguments(1, 'foo', []),
-            new Frontend\Authentication\FrontendUserAuthentication(),
-        );
-        $GLOBALS['TSFE']->cObj = $this->contentObjectRenderer;
-
-        $actual = $GLOBALS['TSFE']->content = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
-                '@render-uncached',
-                [
-                    'renderData' => [
-                        '_processor' => TestExtension\DummyNonCacheableProcessor::class,
-                        'foo' => 'baz',
-                    ],
-                ],
-            ),
-        );
-
-        self::assertMatchesRegularExpression('#^<!--INT_SCRIPT.[^-]+-->$#', trim($actual));
-
-        $GLOBALS['TSFE']->INTincScript(new Core\Http\ServerRequest());
-        $content = $GLOBALS['TSFE']->content;
-
-        $expected = [
-            'templatePath' => '@foo',
-            'context' => [
-                'foo' => 'baz',
-            ],
-        ];
-
-        self::assertJson($content);
-        self::assertSame($expected, json_decode($content, true));
     }
 }

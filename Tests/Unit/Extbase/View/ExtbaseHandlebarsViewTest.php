@@ -20,7 +20,6 @@ namespace Fr\Typo3Handlebars\Tests\Unit\Extbase\View;
 use Fr\Typo3Handlebars as Src;
 use PHPUnit\Framework;
 use TYPO3\CMS\Core;
-use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
@@ -113,40 +112,12 @@ final class ExtbaseHandlebarsViewTest extends TestingFramework\Core\Unit\UnitTes
     }
 
     #[Framework\Attributes\Test]
-    public function renderSectionReturnsEmptyString(): void
-    {
-        self::assertSame('', $this->subject->renderSection('foo'));
-    }
-
-    #[Framework\Attributes\Test]
-    public function renderPartialReturnsEmptyString(): void
-    {
-        self::assertSame('', $this->subject->renderPartial('foo', 'baz', []));
-    }
-
-    #[Framework\Attributes\Test]
     public function setTemplateNameOverridesTemplateNameInContentObjectConfiguration(): void
     {
         $this->subject->setTemplateName('@baz');
 
         $this->expectContentObjectConfiguration([
             'templateName' => '@baz',
-        ]);
-
-        $this->subject->render();
-    }
-
-    #[Framework\Attributes\Test]
-    public function setTemplateNameFromRequestOverridesExtractedTemplateNameInContentObjectConfiguration(): void
-    {
-        $requestMock = $this->createMock(Extbase\Mvc\RequestInterface::class);
-        $requestMock->method('getControllerName')->willReturn('Foo');
-        $requestMock->method('getControllerActionName')->willReturn('Baz');
-
-        $this->subject->setTemplateNameFromRequest($requestMock);
-
-        $this->expectContentObjectConfiguration([
-            'templateName' => 'Foo/Baz',
         ]);
 
         $this->subject->render();

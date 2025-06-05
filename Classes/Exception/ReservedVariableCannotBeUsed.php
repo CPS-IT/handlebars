@@ -18,9 +18,18 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Exception;
 
 /**
- * TemplateCompilationException
+ * ReservedVariableCannotBeUsed
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class TemplateCompilationException extends \RuntimeException {}
+final class ReservedVariableCannotBeUsed extends Exception
+{
+    public function __construct(string $name)
+    {
+        parent::__construct(
+            sprintf('Cannot use reserved name "%s" as variable name in HANDLEBARSTEMPLATE.', $name),
+            1749035387,
+        );
+    }
+}

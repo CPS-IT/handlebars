@@ -17,8 +17,8 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes;
 
+use Psr\Http\Message;
 use TYPO3\CMS\Extbase;
-use TYPO3\CMS\Frontend;
 
 /**
  * DummyConfigurationManager
@@ -33,18 +33,6 @@ final class DummyConfigurationManager implements Extbase\Configuration\Configura
      * @var array<string, mixed>
      */
     public array $configuration = [];
-
-    private ?Frontend\ContentObject\ContentObjectRenderer $cObj = null;
-
-    public function setContentObject(Frontend\ContentObject\ContentObjectRenderer $contentObject): void
-    {
-        $this->cObj = $contentObject;
-    }
-
-    public function getContentObject(): ?Frontend\ContentObject\ContentObjectRenderer
-    {
-        return $this->cObj;
-    }
 
     /**
      * @return array<string, mixed>
@@ -62,8 +50,8 @@ final class DummyConfigurationManager implements Extbase\Configuration\Configura
         $this->configuration = $configuration;
     }
 
-    public function isFeatureEnabled(string $featureName): bool
+    public function setRequest(Message\ServerRequestInterface $request): void
     {
-        return false;
+        // Intentionally left blank.
     }
 }

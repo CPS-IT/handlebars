@@ -146,6 +146,7 @@ final class HelperRegistry implements Core\SingletonInterface
 
         // 4b. class method as array
         // 4c. class method as initialized array
+        /* @phpstan-ignore identical.alwaysTrue */
         if (\is_array($function) && \count($function) === 2) {
             [$className, $methodName] = $function;
         }
@@ -164,7 +165,6 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // Instantiate class if not done yet
-        /** @var class-string $className */
         if (\is_string($className)) {
             $className = Core\Utility\GeneralUtility::makeInstance($className);
         }

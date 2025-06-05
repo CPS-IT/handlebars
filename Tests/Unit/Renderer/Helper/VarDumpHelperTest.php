@@ -63,7 +63,7 @@ final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $expected = <<<EOF
 Debug
-array(1 item)
+array (1 item)
    foo => "baz" (3 chars)
 EOF;
 

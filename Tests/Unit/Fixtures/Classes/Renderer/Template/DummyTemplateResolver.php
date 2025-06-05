@@ -26,6 +26,7 @@ use org\bovigo\vfs;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final class DummyTemplateResolver extends Renderer\Template\BaseTemplateResolver
 {

@@ -25,6 +25,7 @@ use Psr\Http\Message;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final class TestController extends Controller\HandlebarsController
 {

@@ -24,6 +24,8 @@ Extbase\Utility\ExtensionUtility::configurePlugin(
     [
         Controller\TestController::class => 'defaultTemplate',
     ],
+    [],
+    Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -32,6 +34,8 @@ Extbase\Utility\ExtensionUtility::configurePlugin(
     [
         Controller\TestController::class => 'renderedTemplate',
     ],
+    [],
+    Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -40,4 +44,6 @@ Extbase\Utility\ExtensionUtility::configurePlugin(
     [
         Controller\TestController::class => 'specificTemplate',
     ],
+    [],
+    Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );

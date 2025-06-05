@@ -17,57 +17,66 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Extbase\View;
 
-use Psr\Container;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Frontend;
-use TYPO3Fluid\Fluid;
 
 /**
- * ExtbaseHandlebarsViewResolver
+ * ExtbaseHandlebarsViewFactory
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AsAlias(Extbase\Mvc\View\ViewResolverInterface::class)]
-final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewResolver
+#[DependencyInjection\Attribute\Autoconfigure(public: true)]
+final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFactoryInterface
 {
-    private readonly Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
-
     public function __construct(
-        Container\ContainerInterface $container,
-        private readonly Extbase\Configuration\ConfigurationManagerInterface $configurationManager,
-        private readonly Core\TypoScript\TypoScriptService $typoScriptService,
-    ) {
-        parent::__construct($container);
+        private Extbase\Configuration\ConfigurationManagerInterface $configurationManager,
+        #[DependencyInjection\Attribute\Autowire(service: Fluid\View\FluidViewFactory::class)]
+        private Core\View\ViewFactoryInterface $delegate,
+        private Core\TypoScript\TypoScriptService $typoScriptService,
+    ) {}
 
-        $this->contentObjectRenderer = $container->get(Frontend\ContentObject\ContentObjectRenderer::class);
-    }
-
-    public function resolve(
-        string $controllerObjectName,
-        string $actionName,
-        string $format,
-        bool $enableFallback = true,
-    ): Fluid\View\ViewInterface {
-        $handlebarsConfiguration = $this->resolveHandlebarsConfiguration($controllerObjectName, $actionName, $format);
-
-        if ($handlebarsConfiguration !== null || !$enableFallback) {
-            return new ExtbaseHandlebarsView(
-                $this->contentObjectRenderer,
-                $this->typoScriptService,
-                $handlebarsConfiguration ?? [],
-            );
+    public function create(Core\View\ViewFactoryData $data): Core\View\ViewInterface
+    {
+        if (!($data->request instanceof Extbase\Mvc\RequestInterface)) {
+            return $this->delegate->create($data);
         }
 
-        return parent::resolve($controllerObjectName, $actionName, $format);
+        return $this->resolveView($data) ?? $this->delegate->create($data);
+    }
+
+    private function resolveView(Core\View\ViewFactoryData $data): ?ExtbaseHandlebarsView
+    {
+        /** @var Extbase\Mvc\RequestInterface $request */
+        $request = $data->request;
+        $contentObjectRenderer = $request->getAttribute('currentContentObject');
+
+        if (!($contentObjectRenderer instanceof Frontend\ContentObject\ContentObjectRenderer)) {
+            return null;
+        }
+
+        $contentObjectConfiguration = $this->resolveContentObjectConfiguration(
+            $contentObjectRenderer,
+            $request->getControllerObjectName(),
+            $request->getControllerActionName(),
+            $data->format ?? $request->getFormat(),
+        );
+
+        if ($contentObjectConfiguration !== null) {
+            return new ExtbaseHandlebarsView($contentObjectRenderer, $this->typoScriptService, $contentObjectConfiguration);
+        }
+
+        return null;
     }
 
     /**
      * @return array<string, mixed>|null
      */
-    private function resolveHandlebarsConfiguration(
+    private function resolveContentObjectConfiguration(
+        Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
         string $controllerObjectName,
         string $actionName,
         string $format,
@@ -107,14 +116,14 @@ final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewRe
         ) {
             // Inject custom fields to be referenced in TypoScript when resolving the
             // template name, e.g. in combination with a CASE content object
-            $this->contentObjectRenderer->data['controllerName'] = $controllerAlias;
-            $this->contentObjectRenderer->data['controllerObjectName'] = $controllerObjectName;
-            $this->contentObjectRenderer->data['controllerAction'] = $actionName;
-            $this->contentObjectRenderer->data['controllerNameAndAction'] = $controllerAlias . '::' . $actionName;
+            $contentObjectRenderer->data['controllerName'] = $controllerAlias;
+            $contentObjectRenderer->data['controllerObjectName'] = $controllerObjectName;
+            $contentObjectRenderer->data['controllerAction'] = $actionName;
+            $contentObjectRenderer->data['controllerNameAndAction'] = $controllerAlias . '::' . $actionName;
 
             try {
                 // Resolve template name based on the current controller action
-                $typoScriptConfiguration['templateName'] = $this->contentObjectRenderer->cObjGetSingle(
+                $typoScriptConfiguration['templateName'] = $contentObjectRenderer->cObjGetSingle(
                     $typoScriptConfiguration['templateName'],
                     $typoScriptConfiguration['templateName.'],
                 );
@@ -122,10 +131,10 @@ final class ExtbaseHandlebarsViewResolver extends Extbase\Mvc\View\GenericViewRe
                 // Remove configuration which is solely responsible for template name resolving
                 unset(
                     $typoScriptConfiguration['templateName.'],
-                    $this->contentObjectRenderer->data['controllerName'],
-                    $this->contentObjectRenderer->data['controllerObjectName'],
-                    $this->contentObjectRenderer->data['controllerAction'],
-                    $this->contentObjectRenderer->data['controllerNameAndAction'],
+                    $contentObjectRenderer->data['controllerName'],
+                    $contentObjectRenderer->data['controllerObjectName'],
+                    $contentObjectRenderer->data['controllerAction'],
+                    $contentObjectRenderer->data['controllerNameAndAction'],
                 );
             }
         }

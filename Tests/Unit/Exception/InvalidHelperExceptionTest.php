@@ -35,7 +35,6 @@ final class InvalidHelperExceptionTest extends TestingFramework\Core\Unit\UnitTe
     {
         $actual = Src\Exception\InvalidHelperException::forFunction('foo');
 
-        self::assertInstanceOf(Src\Exception\InvalidHelperException::class, $actual);
         self::assertSame('The helper function "foo" is invalid.', $actual->getMessage());
         self::assertSame(1637339290, $actual->getCode());
     }
@@ -45,7 +44,6 @@ final class InvalidHelperExceptionTest extends TestingFramework\Core\Unit\UnitTe
     {
         $actual = Src\Exception\InvalidHelperException::forUnsupportedType(null);
 
-        self::assertInstanceOf(Src\Exception\InvalidHelperException::class, $actual);
         self::assertSame('Only callables, strings and arrays can be defined as helpers, "null" given.', $actual->getMessage());
         self::assertSame(1637339694, $actual->getCode());
     }
@@ -56,7 +54,6 @@ final class InvalidHelperExceptionTest extends TestingFramework\Core\Unit\UnitTe
         /* @phpstan-ignore argument.type */
         $actual = Src\Exception\InvalidHelperException::forInvalidCallable(['foo', null]);
 
-        self::assertInstanceOf(Src\Exception\InvalidHelperException::class, $actual);
         self::assertSame('The helper function with callable [string, null] is not valid.', $actual->getMessage());
         self::assertSame(1638180355, $actual->getCode());
     }

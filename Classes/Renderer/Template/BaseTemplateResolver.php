@@ -87,6 +87,7 @@ abstract class BaseTemplateResolver implements TemplateResolver
         ksort($rootPaths);
 
         foreach ($rootPaths as $rootPath) {
+            /* @phpstan-ignore function.alreadyNarrowedType */
             if (!\is_string($rootPath)) {
                 throw new Exception\RootPathIsMalicious($rootPath);
             }

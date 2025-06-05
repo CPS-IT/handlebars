@@ -33,6 +33,7 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\BlockHelper::class)]
 final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
     protected bool $initializeDatabase = false;
@@ -67,6 +68,8 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
         $helperRegistry->add('extend', new Src\Renderer\Helper\ExtendHelper($layoutStack, $this->renderer));
         $helperRegistry->add('content', new Src\Renderer\Helper\ContentHelper($layoutStack, new Log\NullLogger()));
         $helperRegistry->add('block', new Src\Renderer\Helper\BlockHelper($layoutStack));
+
+        $this->buildServerRequest();
     }
 
     #[Framework\Attributes\Test]

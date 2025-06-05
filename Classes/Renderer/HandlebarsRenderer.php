@@ -23,7 +23,6 @@ use Fr\Typo3Handlebars\Event;
 use Fr\Typo3Handlebars\Exception;
 use Psr\EventDispatcher;
 use Psr\Http\Message;
-use Psr\Log;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
@@ -44,21 +43,9 @@ class HandlebarsRenderer implements Renderer
         protected readonly Cache\Cache $cache,
         protected readonly EventDispatcher\EventDispatcherInterface $eventDispatcher,
         protected readonly Helper\HelperRegistry $helperRegistry,
-        protected readonly Log\LoggerInterface $logger,
         protected readonly Template\TemplateResolver $templateResolver,
         protected readonly Variables\VariableBag $variableBag,
     ) {}
-
-    public function render(Template\View\HandlebarsView $view): string
-    {
-        try {
-            return $this->processRendering($view);
-        } catch (Exception\TemplateFileIsInvalid | Exception\TemplateFormatIsNotSupported | Exception\TemplatePathIsNotResolvable | Exception\ViewIsNotProperlyInitialized $exception) {
-            $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
-
-            return '';
-        }
-    }
 
     /**
      * @throws Exception\TemplateFileIsInvalid
@@ -66,7 +53,7 @@ class HandlebarsRenderer implements Renderer
      * @throws Exception\TemplatePathIsNotResolvable
      * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function processRendering(Template\View\HandlebarsView $view): string
+    public function render(Template\View\HandlebarsView $view): string
     {
         $compileResult = $this->compile($view);
 

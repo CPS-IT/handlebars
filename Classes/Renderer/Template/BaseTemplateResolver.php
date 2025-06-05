@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Fr\Typo3Handlebars\Renderer\Template;
 
 use Fr\Typo3Handlebars\Exception;
+use Symfony\Component\Filesystem;
 use TYPO3\CMS\Core;
 
 /**
@@ -42,7 +43,9 @@ abstract class BaseTemplateResolver implements TemplateResolver
 
     protected function resolveFilename(string $path, ?string $rootPath = null, ?string $extension = null): string
     {
-        if ($rootPath !== null) {
+        if (Filesystem\Path::isAbsolute($path)) {
+            $filename = $path;
+        } elseif ($rootPath !== null) {
             $filename = $rootPath . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
         } else {
             $filename = $path;

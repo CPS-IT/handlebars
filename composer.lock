@@ -6244,16 +6244,16 @@
         },
         {
             "name": "eliashaeussler/version-bumper",
-            "version": "2.3.1",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eliashaeussler/version-bumper.git",
-                "reference": "21727820f5d25c4c257b511cf4e01b92b737735e"
+                "reference": "e297bf2be0699e6dbffb42223f6e67d5e04251c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eliashaeussler/version-bumper/zipball/21727820f5d25c4c257b511cf4e01b92b737735e",
-                "reference": "21727820f5d25c4c257b511cf4e01b92b737735e",
+                "url": "https://api.github.com/repos/eliashaeussler/version-bumper/zipball/e297bf2be0699e6dbffb42223f6e67d5e04251c4",
+                "reference": "e297bf2be0699e6dbffb42223f6e67d5e04251c4",
                 "shasum": ""
             },
             "require": {
@@ -6276,7 +6276,7 @@
                 "phpstan/extension-installer": "^1.2",
                 "phpstan/phpstan-phpunit": "^2.0",
                 "phpstan/phpstan-symfony": "^2.0",
-                "phpunit/phpunit": "^10.2 || ^11.0"
+                "phpunit/phpunit": "^10.2 || ^11.0 || ^12.0"
             },
             "type": "composer-plugin",
             "extra": {
@@ -6302,9 +6302,9 @@
             "description": "Composer plugin to bump project versions during release preparations",
             "support": {
                 "issues": "https://github.com/eliashaeussler/version-bumper/issues",
-                "source": "https://github.com/eliashaeussler/version-bumper/tree/2.3.1"
+                "source": "https://github.com/eliashaeussler/version-bumper/tree/2.4.0"
             },
-            "time": "2025-02-08T18:05:28+00:00"
+            "time": "2025-06-04T14:11:26+00:00"
         },
         {
             "name": "ergebnis/composer-normalize",
@@ -8629,16 +8629,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.21",
+            "version": "11.5.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "d565e2cdc21a7db9dc6c399c1fc2083b8010f289"
+                "reference": "4cd72faaa8f811e4cc63040cba167757660a5538"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d565e2cdc21a7db9dc6c399c1fc2083b8010f289",
-                "reference": "d565e2cdc21a7db9dc6c399c1fc2083b8010f289",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4cd72faaa8f811e4cc63040cba167757660a5538",
+                "reference": "4cd72faaa8f811e4cc63040cba167757660a5538",
                 "shasum": ""
             },
             "require": {
@@ -8710,7 +8710,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.21"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.22"
             },
             "funding": [
                 {
@@ -8734,7 +8734,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-21T12:35:00+00:00"
+            "time": "2025-06-06T02:48:05+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -10506,16 +10506,16 @@
         },
         {
             "name": "ssch/typo3-rector",
-            "version": "v3.3.0",
+            "version": "v3.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabbelasichon/typo3-rector.git",
-                "reference": "dfcd71519dae730cba7431ff05a8004703adb7d6"
+                "reference": "f5ce5a4b396ffbd1aa82513f5f1a55c7d1a19579"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/dfcd71519dae730cba7431ff05a8004703adb7d6",
-                "reference": "dfcd71519dae730cba7431ff05a8004703adb7d6",
+                "url": "https://api.github.com/repos/sabbelasichon/typo3-rector/zipball/f5ce5a4b396ffbd1aa82513f5f1a55c7d1a19579",
+                "reference": "f5ce5a4b396ffbd1aa82513f5f1a55c7d1a19579",
                 "shasum": ""
             },
             "require": {
@@ -10618,7 +10618,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-05-18T16:11:53+00:00"
+            "time": "2025-06-08T17:02:22+00:00"
         },
         {
             "name": "staabm/side-effects-detector",

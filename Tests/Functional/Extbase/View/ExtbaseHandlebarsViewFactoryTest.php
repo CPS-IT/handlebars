@@ -95,8 +95,33 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
     }
 
     #[Framework\Attributes\Test]
+    public function createReturnsFallbackViewWithDefaultConfigurationIfNoHandlebarsConfigurationIsAvailable(): void
+    {
+        $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
+
+        self::assertInstanceOf(
+            Fluid\View\FluidViewAdapter::class,
+            $this->subject->create($data),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function createReturnsHandlebarsViewWithDefaultConfigurationIfNoHandlebarsConfigurationIsAvailable(): void
     {
+        $extbaseRequestParameters = new Extbase\Mvc\ExtbaseRequestParameters(Src\TestExtension\Controller\TestController::class);
+        $extbaseRequestParameters->setControllerActionName('foo');
+
+        $this->request = $this->buildExtbaseRequest($extbaseRequestParameters);
+        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+
+        $this->configurationManager->configuration = [
+            'controllerConfiguration' => [
+                Src\TestExtension\Controller\TestController::class => [
+                    'alias' => 'Test',
+                ],
+            ],
+        ];
+
         $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
 
         $actual = $this->subject->create($data);
@@ -106,7 +131,7 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
         $this->expectContentObjectConfiguration(
             'HANDLEBARSTEMPLATE',
             [
-                'templateName' => 'Foo/baz',
+                'templateName' => 'Test/foo',
                 'format' => 'hbs',
             ],
         );

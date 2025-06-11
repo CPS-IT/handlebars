@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Extbase\View;
 
+use Fr\Typo3Handlebars\Controller;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
@@ -104,7 +105,11 @@ final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFacto
 
         // Early return if no handlebars configuration is available
         if (!is_array($handlebarsConfiguration)) {
-            return $defaultConfiguration;
+            if (is_a($controllerObjectName, Controller\HandlebarsController::class, true)) {
+                return $defaultConfiguration;
+            }
+
+            return null;
         }
 
         // HANDLEBARSTEMPLATE content object requires TypoScript configuration, so let's convert early

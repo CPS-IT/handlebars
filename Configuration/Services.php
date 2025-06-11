@@ -26,7 +26,7 @@ return static function (
     DependencyInjection\ContainerBuilder $container,
 ): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
-    $container->addCompilerPass(new HandlebarsHelperPass(Attribute\AsHelper::TAG_NAME));
+    $container->addCompilerPass(new HandlebarsHelperPass());
     $container->addCompilerPass(new HandlebarsControllerPass());
 
     $container->registerAttributeForAutoconfiguration(
@@ -43,7 +43,7 @@ return static function (
             }
 
             $definition->addTag(
-                Attribute\AsHelper::TAG_NAME,
+                HandlebarsHelperPass::TAG_NAME,
                 [
                     'identifier' => $attribute->identifier,
                     'method' => $method,

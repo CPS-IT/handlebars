@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Extbase\View;
 
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
@@ -26,6 +27,7 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\Exclude]
 final class ExtbaseHandlebarsView implements Core\View\ViewInterface
 {
     /**

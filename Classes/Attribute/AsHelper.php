@@ -26,8 +26,6 @@ namespace Fr\Typo3Handlebars\Attribute;
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
 final readonly class AsHelper
 {
-    public const TAG_NAME = 'handlebars.helper';
-
     public function __construct(
         public string $identifier,
         public ?string $method = null,

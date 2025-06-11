@@ -122,22 +122,6 @@ final class HandlebarsLayoutStackTest extends TestingFramework\Core\Unit\UnitTes
     }
 
     #[Framework\Attributes\Test]
-    public function reverseReturnsCloneWithReversedLayoutsInStack(): void
-    {
-        $layout1 = new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => '');
-        $layout2 = new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => '');
-
-        $this->subject->push($layout1);
-        $this->subject->push($layout2);
-
-        $actual = $this->subject->reverse();
-
-        self::assertNotSame($this->subject, $actual);
-        self::assertSame([$layout1, $layout2], $this->subject->all());
-        self::assertSame([$layout2, $layout1], $actual->all());
-    }
-
-    #[Framework\Attributes\Test]
     public function resetRemovesAllLayoutsFromStack(): void
     {
         $layout1 = new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => '');
@@ -161,5 +145,20 @@ final class HandlebarsLayoutStackTest extends TestingFramework\Core\Unit\UnitTes
         $this->subject->push($layout);
 
         self::assertFalse($this->subject->isEmpty());
+    }
+
+    #[Framework\Attributes\Test]
+    public function subjectIsIterable(): void
+    {
+        $layout1 = new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => '');
+        $layout2 = new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => '');
+
+        $this->subject->push($layout1);
+        $this->subject->push($layout2);
+
+        self::assertSame(
+            [$layout2, $layout1],
+            \iterator_to_array($this->subject),
+        );
     }
 }

@@ -38,10 +38,9 @@ final readonly class BlockHelper implements Helper
     public function render(Handlebars\HelperOptions $options, string $name = ''): string
     {
         $actions = [];
-        $stack = array_reverse(iterator_to_array($this->layoutStack));
 
         // Parse layouts and fetch all parsed layout actions for the requested block
-        foreach ($stack as $layout) {
+        foreach ($this->layoutStack as $layout) {
             if (!$layout->isParsed()) {
                 $layout->parse();
             }

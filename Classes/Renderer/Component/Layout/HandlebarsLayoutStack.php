@@ -76,14 +76,6 @@ final class HandlebarsLayoutStack implements Core\SingletonInterface, \IteratorA
         return $this->stack;
     }
 
-    public function reverse(): self
-    {
-        $clone = clone $this;
-        $clone->stack = array_reverse($this->stack);
-
-        return $clone;
-    }
-
     public function reset(): void
     {
         $this->stack = [];
@@ -104,6 +96,6 @@ final class HandlebarsLayoutStack implements Core\SingletonInterface, \IteratorA
      */
     public function getIterator(): \Generator
     {
-        yield from $this->stack;
+        yield from array_reverse($this->stack);
     }
 }

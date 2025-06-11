@@ -7,7 +7,6 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/DependencyInjection/*'
-      - '../Classes/Extbase/View/ExtbaseHandlebarsView.php'
 
 handlebars:
   variables: []

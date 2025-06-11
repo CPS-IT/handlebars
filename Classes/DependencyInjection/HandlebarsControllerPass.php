@@ -25,10 +25,11 @@ use Symfony\Component\DependencyInjection;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 final readonly class HandlebarsControllerPass implements DependencyInjection\Compiler\CompilerPassInterface
 {
-    private const TAG_NAME = 'handlebars.extbase_controller';
+    public const TAG_NAME = 'handlebars.extbase_controller';
 
     public function process(DependencyInjection\ContainerBuilder $container): void
     {

@@ -30,16 +30,14 @@ use Symfony\Component\DependencyInjection;
  */
 final readonly class HandlebarsHelperPass implements DependencyInjection\Compiler\CompilerPassInterface
 {
-    public function __construct(
-        private string $helperTagName,
-    ) {}
+    public const TAG_NAME = 'handlebars.helper';
 
     public function process(DependencyInjection\ContainerBuilder $container): void
     {
         $registryDefinition = $container->getDefinition(Renderer\Helper\HelperRegistry::class);
 
         // Register tagged Handlebars helper at all Helper-aware renderers
-        foreach ($container->findTaggedServiceIds($this->helperTagName) as $serviceId => $tags) {
+        foreach ($container->findTaggedServiceIds(self::TAG_NAME) as $serviceId => $tags) {
             foreach (array_filter($tags) as $attributes) {
                 $this->validateTag($serviceId, $attributes);
 
@@ -61,13 +59,13 @@ final readonly class HandlebarsHelperPass implements DependencyInjection\Compile
     {
         if (!\array_key_exists('identifier', $tagAttributes) || (string)$tagAttributes['identifier'] === '') {
             throw new \InvalidArgumentException(
-                \sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
+                \sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
                 1606236820,
             );
         }
         if (!\array_key_exists('method', $tagAttributes) || (string)$tagAttributes['method'] === '') {
             throw new \InvalidArgumentException(
-                \sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
+                \sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
                 1606245140,
             );
         }

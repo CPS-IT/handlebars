@@ -55,6 +55,9 @@
 		"typo3/coding-standards": "^0.8.0",
 		"typo3/testing-framework": "^9.2.0"
 	},
+	"conflict": {
+		"sebastian/comparator": "7.1.0"
+	},
 	"repositories": [
 		{
 			"type": "path",

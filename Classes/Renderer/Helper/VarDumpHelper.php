@@ -30,12 +30,12 @@ use TYPO3\CMS\Core;
 #[Attribute\AsHelper('varDump')]
 final readonly class VarDumpHelper implements Helper
 {
-    public function render(Handlebars\HelperOptions $options): string
+    public function render(Handlebars\HelperOptions $options): Handlebars\SafeString
     {
         \ob_start();
 
         Core\Utility\DebugUtility::debug($options->scope);
 
-        return (string)\ob_get_clean();
+        return new Handlebars\SafeString((string)\ob_get_clean());
     }
 }

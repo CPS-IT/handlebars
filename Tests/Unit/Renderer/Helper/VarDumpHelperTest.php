@@ -67,7 +67,10 @@ array (1 item)
    foo => "baz" (3 chars)
 EOF;
 
-        self::assertSame($expected, $this->subject->render($context));
+        self::assertEquals(
+            new Handlebars\SafeString($expected),
+            $this->subject->render($context),
+        );
 
         Core\Utility\DebugUtility::useAnsiColor(true);
     }

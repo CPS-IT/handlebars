@@ -7,7 +7,7 @@
 	"assignees": [
 		"eliashaeussler"
 	],
-	"baseBranches": [
+	"baseBranchPatterns": [
 		"1.x"
 	],
 	"constraints": {

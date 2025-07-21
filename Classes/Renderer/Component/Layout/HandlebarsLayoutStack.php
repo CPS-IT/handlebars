@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace Fr\Typo3Handlebars\Renderer\Component\Layout;
 
-use IteratorAggregate;
 use TYPO3\CMS\Core;
 
 /**
@@ -25,7 +24,7 @@ use TYPO3\CMS\Core;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
- * @implements IteratorAggregate<HandlebarsLayout>
+ * @implements \IteratorAggregate<HandlebarsLayout>
  */
 final class HandlebarsLayoutStack implements Core\SingletonInterface, \IteratorAggregate
 {

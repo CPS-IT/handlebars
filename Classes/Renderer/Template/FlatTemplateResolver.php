@@ -199,7 +199,7 @@ final class FlatTemplateResolver extends BaseTemplateResolver
         $filename = pathinfo($pathname, PATHINFO_FILENAME);
 
         if ($withExtension) {
-            $filename = $filename . '.' . pathinfo($pathname, PATHINFO_EXTENSION);
+            $filename .= '.' . pathinfo($pathname, PATHINFO_EXTENSION);
         }
 
         return $filename;

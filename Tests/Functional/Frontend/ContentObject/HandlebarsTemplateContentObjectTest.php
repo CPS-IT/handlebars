@@ -314,6 +314,31 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function renderDoesNotApplyEmptyVariablesOnDefinedRemoveIfEmptyConfig(): void
+    {
+        $expected = [
+            'data' => [],
+            'current' => null,
+            'foo' => [],
+        ];
+
+        $this->subject->render([
+            'template' => 'foo',
+            'variables.' => [
+                'foo.' => [
+                    'baz' => 'TEXT',
+                    'baz.' => [
+                        'value' => '',
+                        'removeIfEmpty' => '1',
+                    ],
+                ],
+            ],
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
     public function renderCallsDataProcessorsAndAppliesVariables(): void
     {
         $this->contentObjectRenderer->data = [

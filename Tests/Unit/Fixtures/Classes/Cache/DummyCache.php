@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Cache;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Cache;
 
-use Fr\Typo3Handlebars\Cache;
+use CPSIT\Typo3Handlebars\Cache;
 use TYPO3\CMS\Core;
 
 /**

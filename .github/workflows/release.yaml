@@ -77,7 +77,7 @@ jobs:
           curl -L https://clue.engineering/phar-composer-latest.phar -o phar-composer.phar
           composer install -d $(pwd)/$BUILD_PATH
           php phar-composer.phar build $(pwd)/$BUILD_PATH $(pwd)/$LIB_PATH/vendors.phar
-          echo "\\Fr\\Typo3Handlebars\\Configuration\\Extension::loadVendorLibraries();" >> ext_localconf.php
+          echo "\\CPSIT\\Typo3Handlebars\\Configuration\\Extension::loadVendorLibraries();" >> ext_localconf.php
           rm phar-composer.phar
 
       # Install tailor

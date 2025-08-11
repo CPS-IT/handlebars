@@ -6156,7 +6156,7 @@
             "dist": {
                 "type": "path",
                 "url": "Tests/Functional/Fixtures/Extensions/test_extension",
-                "reference": "6a70641fac4d072691c13072326230d2bed6f22d"
+                "reference": "8895fc11ccd0bf5f80879e5bc53206644a06b016"
             },
             "require": {
                 "cpsit/typo3-handlebars": "*",
@@ -6170,7 +6170,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Fr\\Typo3Handlebars\\TestExtension\\": "Classes/"
+                    "CPSIT\\Typo3Handlebars\\TestExtension\\": "Classes/"
                 }
             },
             "license": [

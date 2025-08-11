@@ -15,11 +15,11 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\DependencyInjection;
+namespace CPSIT\Typo3Handlebars\DependencyInjection;
 
-use Fr\Typo3Handlebars\Attribute;
-use Fr\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsViewFactory;
-use Fr\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\Attribute;
+use CPSIT\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsViewFactory;
+use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
 

@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Configuration;
+namespace CPSIT\Typo3Handlebars\Configuration;
 
 use TYPO3\CMS\Core;
 

@@ -31,7 +31,7 @@ Example:
 
     namespace Vendor\Extension\EventListener;
 
-    use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
+    use CPSIT\Typo3Handlebars\Event\BeforeRenderingEvent;
 
     class BeforeRenderingListener
     {
@@ -62,7 +62,7 @@ Example:
 
     namespace Vendor\Extension\EventListener;
 
-    use Fr\Typo3Handlebars\Event\AfterRenderingEvent;
+    use CPSIT\Typo3Handlebars\Event\AfterRenderingEvent;
 
     class AfterRenderingListener
     {

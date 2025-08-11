@@ -15,11 +15,11 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Helper;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
+use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests;
 use DevTheorem\Handlebars;
-use Fr\Typo3Handlebars as Src;
-use Fr\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use Psr\Log;
 use TYPO3\TestingFramework;

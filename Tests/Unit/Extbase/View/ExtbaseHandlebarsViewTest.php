@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Extbase\View;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\Extbase\View;
 
-use Fr\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars as Src;
 use PHPUnit\Framework;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;

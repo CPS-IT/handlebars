@@ -42,7 +42,7 @@ Usage
 
      namespace Vendor\Extension\DataProcessing;
 
-     use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
+     use CPSIT\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
 
      class HeaderProcessor extends AbstractDataProcessor
      {

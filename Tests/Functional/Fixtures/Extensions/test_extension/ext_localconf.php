@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-use Fr\Typo3Handlebars\TestExtension\Controller;
+use CPSIT\Typo3Handlebars\TestExtension\Controller;
 use TYPO3\CMS\Extbase;
 
 defined('TYPO3') or die();

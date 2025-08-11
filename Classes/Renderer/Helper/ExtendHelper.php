@@ -15,11 +15,11 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Helper;
+namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 
+use CPSIT\Typo3Handlebars\Attribute;
+use CPSIT\Typo3Handlebars\Renderer;
 use DevTheorem\Handlebars\HelperOptions;
-use Fr\Typo3Handlebars\Attribute;
-use Fr\Typo3Handlebars\Renderer;
 
 /**
  * ExtendHelper

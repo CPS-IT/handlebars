@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\TestExtension\Controller;
+namespace CPSIT\Typo3Handlebars\TestExtension\Controller;
 
-use Fr\Typo3Handlebars\Controller;
+use CPSIT\Typo3Handlebars\Controller;
 use Psr\Http\Message;
 
 /**

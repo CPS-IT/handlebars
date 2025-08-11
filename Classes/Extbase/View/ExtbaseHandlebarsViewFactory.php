@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Extbase\View;
+namespace CPSIT\Typo3Handlebars\Extbase\View;
 
-use Fr\Typo3Handlebars\Controller;
+use CPSIT\Typo3Handlebars\Controller;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;

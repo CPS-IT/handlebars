@@ -15,12 +15,12 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer;
+namespace CPSIT\Typo3Handlebars\Renderer;
 
+use CPSIT\Typo3Handlebars\Cache;
+use CPSIT\Typo3Handlebars\Event;
+use CPSIT\Typo3Handlebars\Exception;
 use DevTheorem\Handlebars;
-use Fr\Typo3Handlebars\Cache;
-use Fr\Typo3Handlebars\Event;
-use Fr\Typo3Handlebars\Exception;
 use Psr\EventDispatcher;
 use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;

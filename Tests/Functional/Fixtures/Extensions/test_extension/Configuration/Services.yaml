@@ -3,5 +3,5 @@ services:
     autowire: true
     autoconfigure: true
 
-  Fr\Typo3Handlebars\TestExtension\:
+  CPSIT\Typo3Handlebars\TestExtension\:
     resource: '../Classes/*'

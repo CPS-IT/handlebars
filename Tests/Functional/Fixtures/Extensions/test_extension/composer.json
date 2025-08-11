@@ -10,7 +10,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Fr\\Typo3Handlebars\\TestExtension\\": "Classes/"
+			"CPSIT\\Typo3Handlebars\\TestExtension\\": "Classes/"
 		}
 	},
 	"extra": {

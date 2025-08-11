@@ -15,10 +15,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests;
+namespace CPSIT\Typo3Handlebars\Tests;
 
-use Fr\Typo3Handlebars as Src;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures;
+use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests\Unit\Fixtures;
 use TYPO3\CMS\Core;
 
 /**

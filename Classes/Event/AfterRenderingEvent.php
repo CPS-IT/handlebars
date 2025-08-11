@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Event;
+namespace CPSIT\Typo3Handlebars\Event;
 
-use Fr\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\Renderer;
 
 /**
  * AfterRenderingEvent

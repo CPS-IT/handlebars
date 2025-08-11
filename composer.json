@@ -66,12 +66,12 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"Fr\\Typo3Handlebars\\": "Classes/"
+			"CPSIT\\Typo3Handlebars\\": "Classes/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Fr\\Typo3Handlebars\\Tests\\": "Tests/"
+			"CPSIT\\Typo3Handlebars\\Tests\\": "Tests/"
 		}
 	},
 	"config": {

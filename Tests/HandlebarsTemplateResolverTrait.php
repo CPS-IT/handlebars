@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests;
+namespace CPSIT\Typo3Handlebars\Tests;
 
-use Fr\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\Renderer;
 
 /**
  * HandlebarsTemplateResolverTrait

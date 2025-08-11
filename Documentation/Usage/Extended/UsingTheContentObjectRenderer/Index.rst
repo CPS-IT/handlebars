@@ -8,9 +8,9 @@ Using the `ContentObjectRenderer`
 
 In some cases, the presence of the current `ContentObjectRenderer` may
 be necessary in the `DataProvider`. For this case a
-:php:`Fr\Typo3Handlebars\ContentObjectRendererAware` interface is
+:php:`CPSIT\Typo3Handlebars\ContentObjectRendererAware` interface is
 provided, which can be used in combination with the trait
-:php:`Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait`.
+:php:`CPSIT\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait`.
 
 ..  _content-object-renderer-usage:
 
@@ -32,7 +32,7 @@ Usage
 
         namespace Vendor\Extension\DataProcessing;
 
-        use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
+        use CPSIT\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
 
         class CustomProcessor extends AbstractDataProcessor
         {
@@ -54,10 +54,10 @@ Usage
 
         namespace Vendor\Extension\Data;
 
-        use Fr\Typo3Handlebars\ContentObjectRendererAware;
-        use Fr\Typo3Handlebars\Data\DataProvider;
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
-        use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
+        use CPSIT\Typo3Handlebars\ContentObjectRendererAware;
+        use CPSIT\Typo3Handlebars\Data\DataProvider;
+        use CPSIT\Typo3Handlebars\Data\Response\ProviderResponse;
+        use CPSIT\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
 
         class CustomProvider implements DataProvider, ContentObjectRendererAware
         {
@@ -81,10 +81,10 @@ Usage
 
          namespace Vendor\Extension\Data;
 
-         use Fr\Typo3Handlebars\ContentObjectRendererAware;
-         use Fr\Typo3Handlebars\Data\DataProvider;
-         use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
-         use Fr\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
+         use CPSIT\Typo3Handlebars\ContentObjectRendererAware;
+         use CPSIT\Typo3Handlebars\Data\DataProvider;
+         use CPSIT\Typo3Handlebars\Data\Response\ProviderResponse;
+         use CPSIT\Typo3Handlebars\Traits\ContentObjectRendererAwareTrait;
         +use Vendor\Extension\Data\Response\CustomProviderResponse;
 
          class CustomProvider implements DataProvider, ContentObjectRendererAware

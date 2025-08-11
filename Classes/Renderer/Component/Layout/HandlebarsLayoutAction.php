@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Component\Layout;
+namespace CPSIT\Typo3Handlebars\Renderer\Component\Layout;
 
 use DevTheorem\Handlebars;
 

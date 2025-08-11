@@ -60,12 +60,12 @@ Example
 #.  Create a new `DataProcessor`
 
     Each `DataProcessor` must implement the
-    :php:`Fr\Typo3Handlebars\DataProcessing\DataProcessor` interface.
+    :php:`CPSIT\Typo3Handlebars\DataProcessing\DataProcessor` interface.
 
     There's already a default `DataProcessor` in place that provides some
     basic logic and is required in case you want to develop components
     like described on this page. Just extend your `DataProcessor` from
-    :php:`Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor` and
+    :php:`CPSIT\Typo3Handlebars\DataProcessing\AbstractDataProcessor` and
     implement the abstract method :php:`render()`:
 
     ::
@@ -74,7 +74,7 @@ Example
 
         namespace Vendor\Extension\DataProcessing;
 
-        use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
+        use CPSIT\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
 
         class HeaderProcessor extends AbstractDataProcessor
         {
@@ -127,7 +127,7 @@ Example
 
     Next, a `DataProvider` must be created that prepares the module's data and makes
     it available to the `DataProcessor` again. Each `DataProvider` must implement the
-    :php:`Fr\Typo3Handlebars\Data\DataProvider` interface.
+    :php:`CPSIT\Typo3Handlebars\Data\DataProvider` interface.
 
     ::
 
@@ -135,8 +135,8 @@ Example
 
         namespace Vendor\Extension\Data;
 
-        use Fr\Typo3Handlebars\Data\DataProvider;
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
+        use CPSIT\Typo3Handlebars\Data\DataProvider;
+        use CPSIT\Typo3Handlebars\Data\Response\ProviderResponse;
         use Vendor\Extension\Data\Response\HeaderProviderResponse;
 
         class HeaderProvider implements DataProvider
@@ -160,7 +160,7 @@ Example
 
         namespace Vendor\Extension\Data\Response;
 
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
+        use CPSIT\Typo3Handlebars\Data\Response\ProviderResponse;
 
         class HeaderProviderResponse implements ProviderResponse
         {
@@ -200,8 +200,8 @@ Example
 #.  Create a new `Presenter`
 
     To complete the rendering process, a new `Presenter` called `HeaderPresenter`
-    must be created. It must implement the :php:`Fr\Typo3Handlebars\Presenter\Presenter`
-    interface; furthermore, an :php:`Fr\Typo3Handlebars\Presenter\AbstractPresenter` is
+    must be created. It must implement the :php:`CPSIT\Typo3Handlebars\Presenter\Presenter`
+    interface; furthermore, an :php:`CPSIT\Typo3Handlebars\Presenter\AbstractPresenter` is
     already available with the default `Renderer` already specified as a dependency.
 
     ::
@@ -210,9 +210,9 @@ Example
 
         namespace Vendor\Extension\Presenter;
 
-        use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
-        use Fr\Typo3Handlebars\Exception\UnableToPresentException;
-        use Fr\Typo3Handlebars\Presenter\AbstractPresenter;
+        use CPSIT\Typo3Handlebars\Data\Response\ProviderResponse;
+        use CPSIT\Typo3Handlebars\Exception\UnableToPresentException;
+        use CPSIT\Typo3Handlebars\Presenter\AbstractPresenter;
 
         class HeaderPresenter extends AbstractPresenter
         {

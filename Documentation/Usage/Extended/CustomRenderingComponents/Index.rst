@@ -15,7 +15,7 @@ use case can look.
 Custom `Renderer`
 =================
 
-The :php:`Fr\Typo3Handlebars\Renderer\Renderer` interface describes a
+The :php:`CPSIT\Typo3Handlebars\Renderer\Renderer` interface describes a
 `Renderer`. A distinction must be made as to whether the custom `Renderer`
 is to be used for all components or only for individual variants.
 
@@ -23,7 +23,7 @@ is to be used for all components or only for individual variants.
 
     If you want your custom `Renderer` to be autoconfigured with all globally
     registered `Helpers`, make sure to tag it with `handlebars.renderer` and
-    implement the interface :php:`Fr\Typo3Handlebars\Renderer\HelperAwareInterface`.
+    implement the interface :php:`CPSIT\Typo3Handlebars\Renderer\HelperAwareInterface`.
 
 ..  _global-replacement:
 
@@ -39,7 +39,7 @@ the :file:`Services.yaml` file.
     # Configuration/Services.yaml
 
     services:
-      Fr\Typo3Handlebars\Renderer\Renderer:
+      CPSIT\Typo3Handlebars\Renderer\Renderer:
         alias: 'Vendor\Extension\Renderer\AlternativeRenderer'
 
 ..  warning::
@@ -86,7 +86,7 @@ and partials. This is used in the default `Renderer`, but a custom
 `TemplateResolver` can also be used for specific purposes.
 
 To use a custom `TemplateResolver`, a corresponding class is created that
-implements the :php:`Fr\Typo3Handlebars\Renderer\Template\TemplateResolver`
+implements the :php:`CPSIT\Typo3Handlebars\Renderer\Template\TemplateResolver`
 interface:
 
 ::
@@ -95,7 +95,7 @@ interface:
 
     namespace Vendor\Extension\Renderer\Template;
 
-    use Fr\Typo3Handlebars\Renderer\Template\TemplateResolver;
+    use CPSIT\Typo3Handlebars\Renderer\Template\TemplateResolver;
 
     class AlternativeTemplateResolver implements TemplateResolver
     {
@@ -128,7 +128,7 @@ This is then used in the :file:`Services.yaml` file instead of the standard
     # Configuration/Services.yaml
 
     services:
-      Fr\Typo3Handlebars\Renderer\Template\TemplateResolver:
+      CPSIT\Typo3Handlebars\Renderer\Template\TemplateResolver:
         alias: 'Vendor\Extension\Renderer\Template\AlternativeTemplateResolver'
 
 ..  _custom-rendering-components-sources:

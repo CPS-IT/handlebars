@@ -8,7 +8,7 @@ Create a custom `Helper`
 
 Any `Helper` implemented in the frontend via JavaScript and used in Handlebars
 templates must also be replicated in PHP. For this purpose, the extension
-provides a :php:`Fr\Typo3Handlebars\Renderer\Helper\Helper` interface.
+provides a :php:`CPSIT\Typo3Handlebars\Renderer\Helper\Helper` interface.
 
 ..  note::
 
@@ -58,7 +58,7 @@ that they implement the method :php:`__invoke()`.
 
     namespace Vendor\Extension\Renderer\Helper;
 
-    use Fr\Typo3Handlebars\Renderer\Helper\Helper;
+    use CPSIT\Typo3Handlebars\Renderer\Helper\Helper;
 
     class GreetHelper implements Helper
     {
@@ -84,7 +84,7 @@ takes place :ref:`via the service container <automatic-registration>`.
 
     namespace Vendor\Extension\Renderer\Helper;
 
-    use Fr\Typo3Handlebars\Renderer\Helper\Helper;
+    use CPSIT\Typo3Handlebars\Renderer\Helper\Helper;
     use Vendor\Extension\Domain\Repository\PersonRepository;
 
     class GreetHelper implements Helper
@@ -158,7 +158,7 @@ this, add the following lines to your :file:`Services.yaml` file:
               # or invokable class
               - registerHelper: ['greet', '@Vendor\Extension\Renderer\Helper\GreetHelper']
 
-          Fr\Typo3Handlebars\Renderer\Renderer:
+          CPSIT\Typo3Handlebars\Renderer\Renderer:
             alias: 'handlebars.renderer_extended'
 
 The `identifier` configuration specifies how the `Helper` should be named and

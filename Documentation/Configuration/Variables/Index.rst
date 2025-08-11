@@ -48,8 +48,8 @@ it can simply be passed as an additional value in the `Presenter`:
 
     namespace Vendor\Extension\Presenter;
 
-    use Fr\Typo3Handlebars\Data\Response\ProviderResponse;
-    use Fr\Typo3Handlebars\Presenter\AbstractPresenter;
+    use CPSIT\Typo3Handlebars\Data\Response\ProviderResponse;
+    use CPSIT\Typo3Handlebars\Presenter\AbstractPresenter;
 
     class MyCustomPresenter extends AbstractPresenter
     {

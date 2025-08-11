@@ -15,9 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Template\Path;
+namespace CPSIT\Typo3Handlebars\Renderer\Template\Path;
 
-use Fr\Typo3Handlebars\Configuration;
+use CPSIT\Typo3Handlebars\Configuration;
 use TYPO3\CMS\Extbase;
 
 /**

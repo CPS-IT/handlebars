@@ -20,7 +20,7 @@ Usage
 
     tt_content.tx_myextension_mymodule = USER
     tt_content.tx_myextension_mymodule {
-        userFunc = Fr\Typo3Handlebars\DataProcessing\SimpleProcessor->process
+        userFunc = CPSIT\Typo3Handlebars\DataProcessing\SimpleProcessor->process
         userFunc.templatePath = Extensions/FluidStyledContent/MyModule
     }
 

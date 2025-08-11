@@ -17,8 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Configuration;
 
-use TYPO3\CMS\Core;
-
 /**
  * Extension
  *
@@ -43,24 +41,6 @@ final readonly class Extension
         }
         if (!\is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] ?? null)) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] = ['pages'];
-        }
-    }
-
-    /**
-     * Load additional libraries provided by PHAR file (only to be used in non-Composer-mode).
-     *
-     * FOR USE IN ext_localconf.php AND NON-COMPOSER-MODE ONLY.
-     */
-    public static function loadVendorLibraries(): void
-    {
-        // Vendor libraries are already available in Composer mode
-        if (Core\Core\Environment::isComposerMode()) {
-            return;
-        }
-
-        $vendorPharFile = Core\Utility\GeneralUtility::getFileAbsFileName('EXT:handlebars/Resources/Private/Libs/vendors.phar');
-        if (is_file($vendorPharFile)) {
-            require_once 'phar://' . $vendorPharFile . '/vendor/autoload.php';
         }
     }
 }

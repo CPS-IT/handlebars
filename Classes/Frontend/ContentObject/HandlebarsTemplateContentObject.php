@@ -228,11 +228,22 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
                 continue;
             }
 
-            if (!in_array($variableName, $reservedVariables, true)) {
-                $cObjConf = $variablesToProcess[$variableName . '.'] ?? [];
-                $variables[$variableName] = $this->cObj->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
-            } else {
+            if (in_array($variableName, $reservedVariables, true)) {
                 throw new Exception\ReservedVariableCannotBeUsed($variableName);
+            }
+
+            $cObjConf = $variablesToProcess[$variableName . '.'] ?? [];
+
+            // Check if empty value should *not* be applied after processing
+            $removeIfEmpty = (int)($cObjConf['removeIfEmpty'] ?? 0) === 1;
+            unset($cObjConf['removeIfEmpty']);
+
+            // Process value
+            $value = $this->cObj->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
+
+            // Apply value if not empty or no *empty toggle* is set
+            if (!$removeIfEmpty || trim($value) !== '') {
+                $variables[$variableName] = $value;
             }
         }
 

@@ -27,7 +27,6 @@ return [
     'files' => [
         'DS_Store',
         'composer.lock',
-        'dependency-checker.json',
         'docker-compose.yml',
         'editorconfig',
         'gitattributes',

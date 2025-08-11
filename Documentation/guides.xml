@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guides xmlns="https://www.phpdoc.org/guides" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
+        links-are-relative="true"
+>
+    <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+               project-home="https://extensions.typo3.org/extension/handlebars"
+               project-contact="https://typo3.slack.com/archives/C0281DBRFCZ"
+               project-repository="https://github.com/CPS-IT/handlebars"
+               project-issues="https://github.com/CPS-IT/handlebars/issues" edit-on-github-branch="main"
+               edit-on-github="CPS-IT/handlebars" typo3-core-preferred="stable"
+    />
+    <project title="Handlebars" release="0.7.26" copyright="since 2020 by coding. powerful. systems. CPS GmbH"/>
+    <inventory id="t3coreapi" url="https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/"/>
+    <inventory id="t3tsref" url="https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/"/>
+</guides>

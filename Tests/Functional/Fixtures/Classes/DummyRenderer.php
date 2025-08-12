@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Functional\Fixtures\Classes;
 
 use CPSIT\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\View;
 
 /**
  * DummyRenderer
@@ -29,12 +30,12 @@ use CPSIT\Typo3Handlebars\Renderer;
 final class DummyRenderer implements Renderer\Renderer
 {
     /**
-     * @var (\Closure(Renderer\Template\View\HandlebarsView): string|null)|null
+     * @var (\Closure(View\HandlebarsView): string|null)|null
      */
     public ?\Closure $testClosure = null;
-    public ?Renderer\Template\View\HandlebarsView $lastView = null;
+    public ?View\HandlebarsView $lastView = null;
 
-    public function render(Renderer\Template\View\HandlebarsView $view): string
+    public function render(View\HandlebarsView $view): string
     {
         $result = null;
 

@@ -77,7 +77,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     public function helperCanBeCalledFromExtendedLayout(): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\View\HandlebarsView(
                 '@main-layout-extended',
                 [
                     'templateName' => '@main-layout',
@@ -114,7 +114,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     public function helperCannotBeCalledOutsideOfExtendedLayout(): void
     {
         $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView('@main-layout-content-only'),
+            new Src\View\HandlebarsView('@main-layout-content-only'),
         );
 
         self::assertTrue(
@@ -131,7 +131,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     public function helperUsesReplaceModeIfInvalidModeIsGiven(): void
     {
         $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\View\HandlebarsView(
                 '@main-layout-extended-with-invalid-mode',
                 [
                     'templateName' => '@main-layout',
@@ -154,7 +154,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     public function helperCanBeCalledToConditionallyRenderBlocks(bool $renderSecondBlock, string $expected): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\View\HandlebarsView(
                 '@main-layout-extended-with-conditional-contents',
                 [
                     'templateName' => '@main-layout-conditional-block',

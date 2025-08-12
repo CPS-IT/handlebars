@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Template\View;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\View;
 
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
@@ -28,18 +28,18 @@ use TYPO3\TestingFramework;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Framework\Attributes\CoversClass(Src\Renderer\Template\View\HandlebarsView::class)]
+#[Framework\Attributes\CoversClass(Src\View\HandlebarsView::class)]
 final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
 {
     use Tests\HandlebarsTemplateResolverTrait;
 
-    private Src\Renderer\Template\View\HandlebarsView $subject;
+    private Src\View\HandlebarsView $subject;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = new Src\Renderer\Template\View\HandlebarsView(
+        $this->subject = new Src\View\HandlebarsView(
             'DummyTemplate',
             [
                 'foo' => 'baz',
@@ -50,7 +50,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function getTemplateThrowsExceptionIfNeitherTemplatePathNorTemplateSourceAreDefined(): void
     {
-        $subject = new Src\Renderer\Template\View\HandlebarsView();
+        $subject = new Src\View\HandlebarsView();
 
         $this->expectExceptionObject(
             new Src\Exception\ViewIsNotProperlyInitialized(),

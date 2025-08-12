@@ -19,6 +19,7 @@ namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars\Attribute;
 use CPSIT\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\View;
 use DevTheorem\Handlebars;
 use TYPO3\CMS\Core;
 
@@ -70,7 +71,7 @@ final readonly class RenderHelper implements Helper
         }
 
         $content = $this->renderer->render(
-            new Renderer\Template\View\HandlebarsView($name, $subContext),
+            new View\HandlebarsView($name, $subContext),
         );
 
         return new Handlebars\SafeString($content);

@@ -20,6 +20,7 @@ namespace CPSIT\Typo3Handlebars\Renderer;
 use CPSIT\Typo3Handlebars\Cache;
 use CPSIT\Typo3Handlebars\Event;
 use CPSIT\Typo3Handlebars\Exception;
+use CPSIT\Typo3Handlebars\View;
 use DevTheorem\Handlebars;
 use Psr\EventDispatcher;
 use Psr\Http\Message;
@@ -33,7 +34,7 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AsAlias(Renderer::class)]
+#[DependencyInjection\Attribute\AsAlias(Renderer::class, public: true)]
 #[DependencyInjection\Attribute\Autoconfigure(tags: ['handlebars.renderer'])]
 class HandlebarsRenderer implements Renderer
 {
@@ -53,7 +54,7 @@ class HandlebarsRenderer implements Renderer
      * @throws Exception\TemplatePathIsNotResolvable
      * @throws Exception\ViewIsNotProperlyInitialized
      */
-    public function render(Template\View\HandlebarsView $view): string
+    public function render(View\HandlebarsView $view): string
     {
         $compileResult = $this->compile($view);
 
@@ -90,7 +91,7 @@ class HandlebarsRenderer implements Renderer
      * @throws Exception\TemplatePathIsNotResolvable
      * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function compile(Template\View\HandlebarsView $view): ?string
+    protected function compile(View\HandlebarsView $view): ?string
     {
         $template = $view->getTemplate($this->templateResolver);
 

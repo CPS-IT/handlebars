@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Event;
 
 use CPSIT\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\View;
 
 /**
  * BeforeRenderingEvent
@@ -31,12 +32,12 @@ final class BeforeRenderingEvent
      * @param array<string|int, mixed> $variables
      */
     public function __construct(
-        private readonly Renderer\Template\View\HandlebarsView $view,
+        private readonly View\HandlebarsView $view,
         private array $variables,
         private readonly Renderer\Renderer $renderer,
     ) {}
 
-    public function getView(): Renderer\Template\View\HandlebarsView
+    public function getView(): View\HandlebarsView
     {
         return $this->view;
     }

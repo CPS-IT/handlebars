@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer;
 
+use CPSIT\Typo3Handlebars\View;
+
 /**
  * Renderer
  *
@@ -25,5 +27,5 @@ namespace CPSIT\Typo3Handlebars\Renderer;
  */
 interface Renderer
 {
-    public function render(Template\View\HandlebarsView $view): string;
+    public function render(View\HandlebarsView $view): string;
 }

@@ -19,6 +19,7 @@ namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars\Attribute;
 use CPSIT\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\View;
 use DevTheorem\Handlebars\HelperOptions;
 
 /**
@@ -56,7 +57,7 @@ final readonly class ExtendHelper implements Helper
         // Render layout with merged data
         try {
             return $this->renderer->render(
-                new Renderer\Template\View\HandlebarsView($name, $variables),
+                new View\HandlebarsView($name, $variables),
             );
         } finally {
             $this->layoutStack->pop();

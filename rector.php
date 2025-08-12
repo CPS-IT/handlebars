@@ -20,6 +20,7 @@ use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
+use Ssch\TYPO3Rector\TYPO313\v3\UseTYPO3CoreViewInterfaceInExtbaseRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
@@ -40,6 +41,10 @@ return static function (RectorConfig $rectorConfig): void {
         FirstClassCallableRector::class => [
             __DIR__ . '/Tests/Functional/Renderer/Helper/RenderHelperTest.php',
             __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
+        ],
+        UseTYPO3CoreViewInterfaceInExtbaseRector::class => [
+            __DIR__ . '/Classes/Frontend/ContentObject/HandlebarsTemplateContentObject.php',
+            __DIR__ . '/Tests/Unit/View/HandlebarsViewTest.php',
         ],
     ]);
 };

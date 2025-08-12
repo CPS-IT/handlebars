@@ -19,6 +19,7 @@ namespace CPSIT\Typo3Handlebars\Frontend\ContentObject;
 
 use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\View;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
@@ -37,10 +38,12 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         private readonly Renderer\Template\Path\ContentObjectPathProvider $pathProvider,
         private readonly Renderer\Renderer $renderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
+        private readonly View\HandlebarsViewFactory $viewFactory,
     ) {}
 
     /**
      * @param array<string, mixed> $conf
+     * @throws Exception\ViewIsNotSupported
      */
     public function render($conf = []): string
     {
@@ -89,31 +92,37 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
 
     /**
      * @param array<string, mixed> $config
+     * @throws Exception\ViewIsNotSupported
      */
-    private function createView(array $config): Renderer\Template\View\HandlebarsView
+    private function createView(array $config): View\HandlebarsView
     {
+        $templateRootPaths = [];
+        /** @var string|null $format */
         $format = $this->cObj?->stdWrapValue('format', $config, null);
-        $view = new Renderer\Template\View\HandlebarsView();
 
-        if (is_string($format)) {
-            $view->setFormat($format);
+        if (isset($config['file']) || isset($config['file.'])) {
+            $templateRootPaths[0] = (string)$this->cObj?->stdWrapValue('file', $config);
         }
 
         if (isset($config['templateName']) || isset($config['templateName.'])) {
-            return $view->setTemplatePath(
-                (string)$this->cObj?->stdWrapValue('templateName', $config),
-            );
+            $templateRootPaths[10] = (string)$this->cObj?->stdWrapValue('templateName', $config);
+        }
+
+        $viewFactoryData = new Core\View\ViewFactoryData(
+            templateRootPaths: $templateRootPaths,
+            request: $this->request,
+            format: $format,
+        );
+
+        $view = $this->viewFactory->create($viewFactoryData);
+
+        if (!($view instanceof View\HandlebarsView)) {
+            throw new Exception\ViewIsNotSupported($view);
         }
 
         if (isset($config['template']) || isset($config['template.'])) {
             return $view->setTemplateSource(
                 (string)$this->cObj?->stdWrapValue('template', $config),
-            );
-        }
-
-        if (isset($config['file']) || isset($config['file.'])) {
-            return $view->setTemplatePath(
-                (string)$this->cObj?->stdWrapValue('file', $config),
             );
         }
 

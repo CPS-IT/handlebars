@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Controller;
 
 use CPSIT\Typo3Handlebars\Exception;
-use CPSIT\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsView;
+use CPSIT\Typo3Handlebars\View\ExtbaseHandlebarsView;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
 

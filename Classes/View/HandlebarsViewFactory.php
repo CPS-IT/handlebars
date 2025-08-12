@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Extbase\View;
+namespace CPSIT\Typo3Handlebars\View;
 
 use CPSIT\Typo3Handlebars\Controller;
 use Symfony\Component\DependencyInjection;
@@ -25,13 +25,13 @@ use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Frontend;
 
 /**
- * ExtbaseHandlebarsViewFactory
+ * HandlebarsViewFactory
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\Autoconfigure(public: true)]
-final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFactoryInterface
+#[DependencyInjection\Attribute\AsAlias(Core\View\ViewFactoryInterface::class, public: true)]
+final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInterface
 {
     public function __construct(
         private Extbase\Configuration\ConfigurationManagerInterface $configurationManager,
@@ -42,14 +42,34 @@ final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFacto
 
     public function create(Core\View\ViewFactoryData $data): Core\View\ViewInterface
     {
-        if (!($data->request instanceof Extbase\Mvc\RequestInterface)) {
-            return $this->delegate->create($data);
-        }
-
         return $this->resolveView($data) ?? $this->delegate->create($data);
     }
 
-    private function resolveView(Core\View\ViewFactoryData $data): ?ExtbaseHandlebarsView
+    private function resolveView(Core\View\ViewFactoryData $data): ?Core\View\ViewInterface
+    {
+        if ($data->request instanceof Extbase\Mvc\RequestInterface) {
+            return $this->resolveExtbaseView($data);
+        }
+
+        $templateRootPaths = $data->templateRootPaths ?? [];
+        $view = new HandlebarsView();
+
+        if ($data->format !== null) {
+            $view->setFormat($data->format);
+        }
+
+        if (end($templateRootPaths) !== false) {
+            $view->setTemplatePath(end($templateRootPaths));
+        }
+
+        if ($data->templatePathAndFilename !== null) {
+            $view->setTemplatePath($data->templatePathAndFilename);
+        }
+
+        return $view;
+    }
+
+    private function resolveExtbaseView(Core\View\ViewFactoryData $data): ?Core\View\ViewInterface
     {
         /** @var Extbase\Mvc\RequestInterface $request */
         $request = $data->request;

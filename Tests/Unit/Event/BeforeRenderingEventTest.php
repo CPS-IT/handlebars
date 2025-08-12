@@ -37,7 +37,7 @@ final class BeforeRenderingEventTest extends TestingFramework\Core\Unit\UnitTest
         parent::setUp();
 
         $this->subject = new Src\Event\BeforeRenderingEvent(
-            new Src\Renderer\Template\View\HandlebarsView('foo'),
+            new Src\View\HandlebarsView('foo'),
             ['foo' => 'baz'],
             $this->createMock(Src\Renderer\HandlebarsRenderer::class),
         );
@@ -47,7 +47,7 @@ final class BeforeRenderingEventTest extends TestingFramework\Core\Unit\UnitTest
     public function getViewReturnsHandlebarsView(): void
     {
         self::assertEquals(
-            new Src\Renderer\Template\View\HandlebarsView('foo'),
+            new Src\View\HandlebarsView('foo'),
             $this->subject->getView(),
         );
     }

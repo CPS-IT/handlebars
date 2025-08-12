@@ -15,10 +15,11 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Renderer\Template\View;
+namespace CPSIT\Typo3Handlebars\View;
 
 use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
+use TYPO3\CMS\Core;
 
 /**
  * HandlebarsView
@@ -26,7 +27,7 @@ use CPSIT\Typo3Handlebars\Renderer;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class HandlebarsView
+final class HandlebarsView implements Core\View\ViewInterface
 {
     private ?string $templateSource = null;
     private ?string $format = null;
@@ -63,6 +64,20 @@ final class HandlebarsView
         }
 
         return $this->fetchFromFile($fullTemplatePath);
+    }
+
+    public function render(string $templateFileName = ''): string
+    {
+        $renderer = Core\Utility\GeneralUtility::makeInstance(Renderer\Renderer::class);
+
+        if ($templateFileName !== '') {
+            $view = clone $this;
+            $view->templatePath = $templateFileName;
+        } else {
+            $view = $this;
+        }
+
+        return $renderer->render($view);
     }
 
     /**

@@ -70,7 +70,7 @@ final readonly class RenderHelper implements Helper
         }
 
         $content = $this->renderer->render(
-            new Renderer\Template\View\HandlebarsView($name, $subContext),
+            new Renderer\RenderingContext($name, $subContext),
         );
 
         return new Handlebars\SafeString($content);

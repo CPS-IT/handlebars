@@ -28,14 +28,14 @@ use CPSIT\Typo3Handlebars\Renderer;
 final class AfterRenderingEvent
 {
     public function __construct(
-        private readonly Renderer\Template\View\HandlebarsView $view,
+        private readonly Renderer\RenderingContext $context,
         private string $content,
         private readonly Renderer\Renderer $renderer,
     ) {}
 
-    public function getView(): Renderer\Template\View\HandlebarsView
+    public function getContext(): Renderer\RenderingContext
     {
-        return $this->view;
+        return $this->context;
     }
 
     public function getContent(): string

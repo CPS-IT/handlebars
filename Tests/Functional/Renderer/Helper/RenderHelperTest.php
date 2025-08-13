@@ -74,7 +74,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     public function helperCanBeCalledWithDefaultContext(): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\Renderer\RenderingContext(
                 '@render-default-context',
                 [
                     '@foo' => [
@@ -91,7 +91,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     public function helperCanBeCalledWithCustomContext(): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\Renderer\RenderingContext(
                 '@render-custom-context',
                 [
                     'renderData' => [
@@ -108,7 +108,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     public function helperCanBeCalledWithMergedContext(): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\Renderer\RenderingContext(
                 '@render-merged-context',
                 [
                     '@foo' => [

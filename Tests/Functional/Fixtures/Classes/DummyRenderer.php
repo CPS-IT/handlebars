@@ -29,21 +29,21 @@ use CPSIT\Typo3Handlebars\Renderer;
 final class DummyRenderer implements Renderer\Renderer
 {
     /**
-     * @var (\Closure(Renderer\Template\View\HandlebarsView): string|null)|null
+     * @var (\Closure(Renderer\RenderingContext): string|null)|null
      */
     public ?\Closure $testClosure = null;
-    public ?Renderer\Template\View\HandlebarsView $lastView = null;
+    public ?Renderer\RenderingContext $lastContext = null;
 
-    public function render(Renderer\Template\View\HandlebarsView $view): string
+    public function render(Renderer\RenderingContext $context): string
     {
         $result = null;
 
-        $this->lastView = $view;
+        $this->lastContext = $context;
 
         if ($this->testClosure !== null) {
-            $result = ($this->testClosure)($view);
+            $result = ($this->testClosure)($context);
         }
 
-        return $result ?? $view->getTemplate();
+        return $result ?? $context->getTemplate();
     }
 }

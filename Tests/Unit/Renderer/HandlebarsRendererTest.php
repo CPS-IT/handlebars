@@ -58,18 +58,18 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     #[Framework\Attributes\Test]
     public function renderThrowsExceptionIfTemplateCompilationFails(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateErroneous');
+        $context = new Src\Renderer\RenderingContext('DummyTemplateErroneous');
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessageMatches('/^Wrong variable naming as \'baz!\'/');
 
-        $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render($view);
+        $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render($context);
     }
 
     #[Framework\Attributes\Test]
     public function renderThrowsExceptionIfTemplateFilsIsInvalid(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('foo.baz');
+        $context = new Src\Renderer\RenderingContext('foo.baz');
 
         $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver();
 
@@ -77,47 +77,47 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->expectExceptionMessageMatches('/^The template file "[^"]+\/foo\.baz" is invalid or does not exist\.$/');
         $this->expectExceptionCode(1736333208);
 
-        $this->renewSubject()->render($view);
+        $this->renewSubject()->render($context);
     }
 
     #[Framework\Attributes\Test]
     public function renderThrowsExceptionIfTemplatePathIsNotResolvable(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('foo.baz');
+        $context = new Src\Renderer\RenderingContext('foo.baz');
 
         $this->expectExceptionObject(
             new Src\Exception\TemplatePathIsNotResolvable('foo.baz')
         );
 
-        $this->renewSubject()->render($view);
+        $this->renewSubject()->render($context);
     }
 
     #[Framework\Attributes\Test]
     public function renderThrowsExceptionIfGivenViewIsNotProperlyInitialized(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView();
+        $context = new Src\Renderer\RenderingContext();
 
         $this->expectExceptionObject(
             new Src\Exception\ViewIsNotProperlyInitialized(),
         );
 
-        $this->subject->render($view);
+        $this->subject->render($context);
     }
 
     #[Framework\Attributes\Test]
     public function renderUsesGivenTemplatePathIfItIsNotAvailableWithinTemplateRootPaths(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView($this->templateRootPath . '/DummyTemplateEmpty');
+        $context = new Src\Renderer\RenderingContext($this->templateRootPath . '/DummyTemplateEmpty');
 
-        self::assertSame('', $this->subject->render($view));
+        self::assertSame('', $this->subject->render($context));
     }
 
     #[Framework\Attributes\Test]
     public function renderReturnsEmptyStringIfGivenTemplateIsEmpty(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateEmpty');
+        $context = new Src\Renderer\RenderingContext('DummyTemplateEmpty');
 
-        self::assertSame('', $this->subject->render($view));
+        self::assertSame('', $this->subject->render($context));
     }
 
     #[Framework\Attributes\Test]
@@ -134,11 +134,11 @@ array (2 items)
    another => "foo" (3 chars)
 EOF;
 
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateVariables', ['another' => 'foo']);
+        $context = new Src\Renderer\RenderingContext('DummyTemplateVariables', ['another' => 'foo']);
 
         self::assertSame(
             \trim($expected),
-            \trim($this->subject->render($view)),
+            \trim($this->subject->render($context)),
         );
 
         Core\Utility\DebugUtility::useAnsiColor(true);
@@ -156,37 +156,37 @@ EOF;
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
 
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+        $context = new Src\Renderer\RenderingContext('DummyTemplate');
 
-        self::assertSame('foo', $this->subject->render($view));
+        self::assertSame('foo', $this->subject->render($context));
     }
 
     #[Framework\Attributes\Test]
     public function renderDoesNotStoreRenderedTemplateInCacheIfDebugModeIsEnabled(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
-        $view->assign('name', 'foo');
+        $context = new Src\Renderer\RenderingContext('DummyTemplate');
+        $context->assign('name', 'foo');
 
         // Test with TypoScript config.debug = 1
         $this->frontendTypoScript->setConfigArray(['debug' => '1']);
-        $this->renewSubject()->render($view);
+        $this->renewSubject()->render($context);
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
 
         // Test with TYPO3_CONF_VARS
         $this->frontendTypoScript->setConfigArray([]);
         $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
-        $this->renewSubject()->render($view);
+        $this->renewSubject()->render($context);
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }
 
     #[Framework\Attributes\Test]
     public function renderDoesNotStoreRenderedTemplateInCacheIfCachingIsDisabled(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+        $context = new Src\Renderer\RenderingContext('DummyTemplate');
 
         $this->cacheInstruction->disableCache('testing');
 
-        $this->subject->render($view);
+        $this->subject->render($context);
 
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
     }
@@ -194,7 +194,7 @@ EOF;
     #[Framework\Attributes\Test]
     public function renderThrowsExceptionOnErrorIfDebugModeIsEnabled(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate');
+        $context = new Src\Renderer\RenderingContext('DummyTemplate');
 
         $this->frontendTypoScript->setConfigArray(['debug' => '1']);
 
@@ -202,28 +202,28 @@ EOF;
             new \Exception('Runtime: [name] does not exist'),
         );
 
-        $this->renewSubject()->render($view);
+        $this->renewSubject()->render($context);
     }
 
     #[Framework\Attributes\Test]
     public function renderReturnsRenderedTemplate(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplate', ['name' => 'foo']);
+        $context = new Src\Renderer\RenderingContext('DummyTemplate', ['name' => 'foo']);
 
         self::assertSame(
             'Hello, foo!',
-            \trim($this->subject->render($view)),
+            \trim($this->subject->render($context)),
         );
     }
 
     #[Framework\Attributes\Test]
     public function renderResolvesPartialsCorrectlyUsingPartialResolver(): void
     {
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateWithPartial', ['name' => 'foo']);
+        $context = new Src\Renderer\RenderingContext('DummyTemplateWithPartial', ['name' => 'foo']);
 
         self::assertSame(
             'Hello, foo!' . PHP_EOL . 'Welcome, foo, I am the partial!',
-            \trim($this->subject->render($view)),
+            \trim($this->subject->render($context)),
         );
     }
 
@@ -235,12 +235,12 @@ EOF;
             'DummyTemplateWithPartial' => \dirname(__DIR__) . '/Fixtures/Templates/DummyTemplateWithPartial.hbs',
         ];
 
-        $view = new Src\Renderer\Template\View\HandlebarsView('DummyTemplateWithPartial', ['name' => 'foo']);
+        $context = new Src\Renderer\RenderingContext('DummyTemplateWithPartial', ['name' => 'foo']);
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('The partial DummyPartial could not be found');
 
-        $this->renewSubject()->render($view);
+        $this->renewSubject()->render($context);
     }
 
     private function assertCacheIsEmptyForTemplate(string $template): void

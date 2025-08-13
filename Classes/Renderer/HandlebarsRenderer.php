@@ -53,9 +53,9 @@ class HandlebarsRenderer implements Renderer
      * @throws Exception\TemplatePathIsNotResolvable
      * @throws Exception\ViewIsNotProperlyInitialized
      */
-    public function render(Template\View\HandlebarsView $view): string
+    public function render(RenderingContext $context): string
     {
-        $compileResult = $this->compile($view);
+        $compileResult = $this->compile($context);
 
         // Early return if template is empty
         if ($compileResult === null) {
@@ -63,10 +63,10 @@ class HandlebarsRenderer implements Renderer
         }
 
         // Merge variables with default variables
-        $mergedVariables = array_merge($this->variableBag->get(), $view->getVariables());
+        $mergedVariables = array_merge($this->variableBag->get(), $context->getVariables());
 
         // Dispatch before rendering event
-        $beforeRenderingEvent = new Event\BeforeRenderingEvent($view, $mergedVariables, $this);
+        $beforeRenderingEvent = new Event\BeforeRenderingEvent($context, $mergedVariables, $this);
         $this->eventDispatcher->dispatch($beforeRenderingEvent);
 
         // Render content
@@ -76,7 +76,7 @@ class HandlebarsRenderer implements Renderer
         ]);
 
         // Dispatch after rendering event
-        $afterRenderingEvent = new Event\AfterRenderingEvent($view, $content, $this);
+        $afterRenderingEvent = new Event\AfterRenderingEvent($context, $content, $this);
         $this->eventDispatcher->dispatch($afterRenderingEvent);
 
         return $afterRenderingEvent->getContent();
@@ -90,9 +90,9 @@ class HandlebarsRenderer implements Renderer
      * @throws Exception\TemplatePathIsNotResolvable
      * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function compile(Template\View\HandlebarsView $view): ?string
+    protected function compile(RenderingContext $context): ?string
     {
-        $template = $view->getTemplate($this->templateResolver);
+        $template = $context->getTemplate($this->templateResolver);
 
         // Early return if template is empty
         if (\trim($template) === '') {

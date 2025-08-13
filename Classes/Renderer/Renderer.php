@@ -25,5 +25,5 @@ namespace CPSIT\Typo3Handlebars\Renderer;
  */
 interface Renderer
 {
-    public function render(Template\View\HandlebarsView $view): string;
+    public function render(RenderingContext $context): string;
 }

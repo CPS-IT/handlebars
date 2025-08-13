@@ -75,7 +75,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     public function helperCanBeCalledFromMainLayout(): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView('@main-layout'),
+            new Src\Renderer\RenderingContext('@main-layout'),
         );
 
         $expected = implode(PHP_EOL, [
@@ -105,7 +105,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     public function helperCanBeCalledFromExtendedLayout(): void
     {
         $actual = $this->renderer->render(
-            new Src\Renderer\Template\View\HandlebarsView(
+            new Src\Renderer\RenderingContext(
                 '@main-layout-extended-with-fifth-content',
                 [
                     'templateName' => '@main-layout',

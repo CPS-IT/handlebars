@@ -31,14 +31,14 @@ final class BeforeRenderingEvent
      * @param array<string|int, mixed> $variables
      */
     public function __construct(
-        private readonly Renderer\Template\View\HandlebarsView $view,
+        private readonly Renderer\RenderingContext $context,
         private array $variables,
         private readonly Renderer\Renderer $renderer,
     ) {}
 
-    public function getView(): Renderer\Template\View\HandlebarsView
+    public function getContext(): Renderer\RenderingContext
     {
-        return $this->view;
+        return $this->context;
     }
 
     /**

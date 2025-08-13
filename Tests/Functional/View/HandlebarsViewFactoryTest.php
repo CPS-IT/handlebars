@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Functional\Extbase\View;
+namespace CPSIT\Typo3Handlebars\Tests\Functional\View;
 
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
@@ -27,13 +27,13 @@ use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
 /**
- * ExtbaseHandlebarsViewFactoryTest
+ * HandlebarsViewFactoryTest
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Framework\Attributes\CoversClass(Src\Extbase\View\ExtbaseHandlebarsViewFactory::class)]
-final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Functional\FunctionalTestCase
+#[Framework\Attributes\CoversClass(Src\View\HandlebarsViewFactory::class)]
+final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
     use Tests\FrontendRequestTrait;
 
@@ -50,7 +50,7 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
 
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
     private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
-    private Src\Extbase\View\ExtbaseHandlebarsViewFactory $subject;
+    private Src\View\HandlebarsViewFactory $subject;
     private Extbase\Mvc\Request $request;
     private Extbase\Mvc\ExtbaseRequestParameters $extbaseRequestParameters;
 
@@ -69,7 +69,7 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
             ],
         ];
 
-        $this->subject = new Src\Extbase\View\ExtbaseHandlebarsViewFactory(
+        $this->subject = new Src\View\HandlebarsViewFactory(
             $this->configurationManager,
             $this->get(Fluid\View\FluidViewFactory::class),
             $this->get(Core\TypoScript\TypoScriptService::class),
@@ -78,6 +78,30 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
         $this->request = $this->buildExtbaseRequest($extbaseRequestParameters);
         $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
         $this->extbaseRequestParameters = $extbaseRequestParameters;
+    }
+
+    #[Framework\Attributes\Test]
+    public function createReturnsFallbackViewIfNoRequestIsAvailable(): void
+    {
+        $data = new Core\View\ViewFactoryData();
+
+        self::assertInstanceOf(
+            Fluid\View\FluidViewAdapter::class,
+            $this->subject->create($data),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function createReturnsFallbackViewIfNoCurrentContentObjectIsAvailable(): void
+    {
+        $this->request = $this->request->withoutAttribute('currentContentObject');
+
+        $data = new Core\View\ViewFactoryData(request: $this->request);
+
+        self::assertInstanceOf(
+            Fluid\View\FluidViewAdapter::class,
+            $this->subject->create($data),
+        );
     }
 
     #[Framework\Attributes\Test]
@@ -126,7 +150,7 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
 
         $actual = $this->subject->create($data);
 
-        self::assertInstanceOf(Src\Extbase\View\ExtbaseHandlebarsView::class, $actual);
+        self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
 
         $this->expectContentObjectConfiguration(
             'HANDLEBARSTEMPLATE',
@@ -185,7 +209,7 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
 
         $actual = $this->subject->create($data);
 
-        self::assertInstanceOf(Src\Extbase\View\ExtbaseHandlebarsView::class, $actual);
+        self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
 
         $actual->render();
     }
@@ -232,7 +256,52 @@ final class ExtbaseHandlebarsViewFactoryTest extends TestingFramework\Core\Funct
 
         $actual = $this->subject->create($data);
 
-        self::assertInstanceOf(Src\Extbase\View\ExtbaseHandlebarsView::class, $actual);
+        self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
+
+        $actual->render();
+    }
+
+    #[Framework\Attributes\Test]
+    public function createReturnsDefaultHandlebarsViewIfOutsideOfExtbaseContext(): void
+    {
+        $request = $this->buildServerRequest();
+        $request = $request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+
+        $data = new Core\View\ViewFactoryData(
+            templateRootPaths: [
+                10 => 'EXT:foo/Resources/Private/Templates',
+            ],
+            partialRootPaths: [
+                10 => 'EXT:foo/Resources/Private/Partials',
+            ],
+            layoutRootPaths: [
+                10 => 'EXT:foo/Resources/Private/Layouts',
+            ],
+            templatePathAndFilename: '@foo',
+            request: $request,
+            format: 'hbs',
+        );
+
+        $this->expectContentObjectConfiguration(
+            'HANDLEBARSTEMPLATE',
+            [
+                'templateName' => '@foo',
+                'templateRootPaths.' => [
+                    10 => 'EXT:foo/Resources/Private/Templates',
+                ],
+                'partialRootPaths.' => [
+                    10 => 'EXT:foo/Resources/Private/Partials',
+                ],
+                'layoutRootPaths.' => [
+                    10 => 'EXT:foo/Resources/Private/Layouts',
+                ],
+                'format' => 'hbs',
+            ],
+        );
+
+        $actual = $this->subject->create($data);
+
+        self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
 
         $actual->render();
     }

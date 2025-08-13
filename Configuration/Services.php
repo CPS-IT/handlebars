@@ -18,25 +18,12 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\DependencyInjection;
 
 use CPSIT\Typo3Handlebars\Attribute;
-use CPSIT\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsViewFactory;
 use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Extbase;
 
-return static function (
-    DependencyInjection\Loader\Configurator\ContainerConfigurator $containerConfigurator,
-    DependencyInjection\ContainerBuilder $container,
-): void {
+return static function (DependencyInjection\ContainerBuilder $container): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
     $container->addCompilerPass(new HandlebarsHelperPass());
-
-    $container->registerForAutoconfiguration(Extbase\Mvc\Controller\ActionController::class)
-        ->addMethodCall(
-            'injectViewFactory',
-            [new DependencyInjection\Reference(ExtbaseHandlebarsViewFactory::class)],
-        )
-    ;
-
     $container->registerAttributeForAutoconfiguration(
         Attribute\AsHelper::class,
         static function (DependencyInjection\ChildDefinition $definition, Attribute\AsHelper $attribute, \Reflector $reflector): void {

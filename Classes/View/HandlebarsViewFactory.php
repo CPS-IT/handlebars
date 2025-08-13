@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Extbase\View;
+namespace CPSIT\Typo3Handlebars\View;
 
 use CPSIT\Typo3Handlebars\Controller;
 use Symfony\Component\DependencyInjection;
@@ -25,13 +25,13 @@ use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Frontend;
 
 /**
- * ExtbaseHandlebarsViewFactory
+ * HandlebarsViewFactory
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\Autoconfigure(public: true)]
-final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFactoryInterface
+#[DependencyInjection\Attribute\AsAlias(Core\View\ViewFactoryInterface::class, public: true)]
+final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInterface
 {
     public function __construct(
         private Extbase\Configuration\ConfigurationManagerInterface $configurationManager,
@@ -42,32 +42,44 @@ final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFacto
 
     public function create(Core\View\ViewFactoryData $data): Core\View\ViewInterface
     {
-        if (!($data->request instanceof Extbase\Mvc\RequestInterface)) {
-            return $this->delegate->create($data);
-        }
-
         return $this->resolveView($data) ?? $this->delegate->create($data);
     }
 
-    private function resolveView(Core\View\ViewFactoryData $data): ?ExtbaseHandlebarsView
+    private function resolveView(Core\View\ViewFactoryData $data): ?HandlebarsView
     {
-        /** @var Extbase\Mvc\RequestInterface $request */
         $request = $data->request;
-        $contentObjectRenderer = $request->getAttribute('currentContentObject');
+        $contentObjectRenderer = $request?->getAttribute('currentContentObject');
+
+        if ($request === null) {
+            return null;
+        }
 
         if (!($contentObjectRenderer instanceof Frontend\ContentObject\ContentObjectRenderer)) {
             return null;
         }
 
-        $contentObjectConfiguration = $this->resolveContentObjectConfiguration(
-            $contentObjectRenderer,
-            $request->getControllerObjectName(),
-            $request->getControllerActionName(),
-            $data->format ?? $request->getFormat(),
-        );
+        if ($request instanceof Extbase\Mvc\RequestInterface) {
+            $contentObjectConfiguration = $this->resolveExtbaseContentObjectConfiguration(
+                $contentObjectRenderer,
+                $request->getControllerObjectName(),
+                $request->getControllerActionName(),
+                $data->format ?? $request->getFormat(),
+            );
+        } else {
+            $contentObjectConfiguration = array_filter(
+                [
+                    'templateName' => $data->templatePathAndFilename,
+                    'templateRootPaths.' => $data->templateRootPaths,
+                    'partialRootPaths.' => $data->partialRootPaths,
+                    'layoutRootPaths.' => $data->layoutRootPaths,
+                    'format' => $data->format,
+                ],
+                static fn(mixed $value) => $value !== null,
+            );
+        }
 
         if ($contentObjectConfiguration !== null) {
-            return new ExtbaseHandlebarsView($contentObjectRenderer, $this->typoScriptService, $contentObjectConfiguration);
+            return new HandlebarsView($contentObjectRenderer, $this->typoScriptService, $contentObjectConfiguration);
         }
 
         return null;
@@ -76,7 +88,7 @@ final readonly class ExtbaseHandlebarsViewFactory implements Core\View\ViewFacto
     /**
      * @return array<string, mixed>|null
      */
-    private function resolveContentObjectConfiguration(
+    private function resolveExtbaseContentObjectConfiguration(
         Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
         string $controllerObjectName,
         string $actionName,

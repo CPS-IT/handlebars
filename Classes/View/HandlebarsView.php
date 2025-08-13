@@ -15,20 +15,20 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Extbase\View;
+namespace CPSIT\Typo3Handlebars\View;
 
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
- * ExtbaseHandlebarsView
+ * HandlebarsView
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
 #[DependencyInjection\Attribute\Exclude]
-final class ExtbaseHandlebarsView implements Core\View\ViewInterface
+final class HandlebarsView implements Core\View\ViewInterface
 {
     /**
      * @param array<string, mixed> $contentObjectConfiguration

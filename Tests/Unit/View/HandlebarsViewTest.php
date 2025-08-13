@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Unit\Extbase\View;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\View;
 
 use CPSIT\Typo3Handlebars as Src;
 use PHPUnit\Framework;
@@ -24,23 +24,23 @@ use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
 /**
- * ExtbaseHandlebarsViewTest
+ * HandlebarsViewTest
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Framework\Attributes\CoversClass(Src\Extbase\View\ExtbaseHandlebarsView::class)]
-final class ExtbaseHandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
+#[Framework\Attributes\CoversClass(Src\View\HandlebarsView::class)]
+final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
 {
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
-    private Src\Extbase\View\ExtbaseHandlebarsView $subject;
+    private Src\View\HandlebarsView $subject;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->contentObjectRendererMock = $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class);
-        $this->subject = new Src\Extbase\View\ExtbaseHandlebarsView(
+        $this->subject = new Src\View\HandlebarsView(
             $this->contentObjectRendererMock,
             new Core\TypoScript\TypoScriptService(),
             [

@@ -18,7 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Controller;
 
 use CPSIT\Typo3Handlebars\Exception;
-use CPSIT\Typo3Handlebars\Extbase\View\ExtbaseHandlebarsView;
+use CPSIT\Typo3Handlebars\View\HandlebarsView;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
 
@@ -36,7 +36,7 @@ abstract class HandlebarsController extends Extbase\Mvc\Controller\ActionControl
      */
     protected function renderView(?string $templateName = null): string
     {
-        if (!($this->view instanceof ExtbaseHandlebarsView)) {
+        if (!($this->view instanceof HandlebarsView)) {
             throw new Exception\ViewIsNotSupported($this->view);
         }
 

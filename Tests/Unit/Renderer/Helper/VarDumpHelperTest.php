@@ -74,4 +74,40 @@ EOF;
 
         Core\Utility\DebugUtility::useAnsiColor(true);
     }
+
+    #[Framework\Attributes\Test]
+    public function renderAllowsToDefineDebugTitle(): void
+    {
+        Core\Utility\DebugUtility::useAnsiColor(false);
+
+        $renderingContext = [
+            'foo' => 'baz',
+        ];
+        $data = [];
+
+        $context = new Handlebars\HelperOptions(
+            'foo',
+            [
+                'title' => 'foo',
+            ],
+            static fn() => '',
+            static fn() => '',
+            0,
+            $renderingContext,
+            $data,
+        );
+
+        $expected = <<<EOF
+foo
+array (1 item)
+   foo => "baz" (3 chars)
+EOF;
+
+        self::assertEquals(
+            new Handlebars\SafeString($expected),
+            $this->subject->render($context),
+        );
+
+        Core\Utility\DebugUtility::useAnsiColor(true);
+    }
 }

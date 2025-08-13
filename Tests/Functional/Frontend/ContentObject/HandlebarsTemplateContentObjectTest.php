@@ -87,7 +87,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             'format' => 'hbs',
         ]);
 
-        self::assertSame('hbs', $this->renderer->lastView?->getFormat());
+        self::assertSame('hbs', $this->renderer->lastContext?->getFormat());
     }
 
     #[Framework\Attributes\Test]
@@ -101,7 +101,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertSame('html.hbs', $this->renderer->lastView?->getFormat());
+        self::assertSame('html.hbs', $this->renderer->lastContext?->getFormat());
     }
 
     #[Framework\Attributes\Test]
@@ -225,7 +225,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]
@@ -248,7 +248,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]
@@ -274,7 +274,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]
@@ -310,7 +310,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]
@@ -335,7 +335,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]
@@ -369,7 +369,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]
@@ -394,7 +394,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertEquals($expected, $this->renderer->lastView?->getVariables());
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
     }
 
     #[Framework\Attributes\Test]

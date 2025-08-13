@@ -15,18 +15,18 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Renderer\Template\View;
+namespace CPSIT\Typo3Handlebars\Renderer;
 
 use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
 
 /**
- * HandlebarsView
+ * RenderingContext
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class HandlebarsView
+final class RenderingContext
 {
     private ?string $templateSource = null;
     private ?string $format = null;

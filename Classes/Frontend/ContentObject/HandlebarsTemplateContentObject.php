@@ -49,8 +49,8 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             $conf = [];
         }
 
-        // Create handlebars view
-        $view = $this->createView($conf);
+        // Create rendering context
+        $context = $this->createContext($conf);
 
         // Resolve template paths
         /** @var array<string, mixed> $templatePaths */
@@ -69,12 +69,12 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         // Populate template paths for availability in subsequent renderings
         $this->pathProvider->push($templatePaths);
 
-        $view->assignMultiple($this->resolveVariables($conf));
+        $context->assignMultiple($this->resolveVariables($conf));
 
         $this->renderPageAssetsIntoPageRenderer($conf);
 
         try {
-            $content = $this->renderer->render($view);
+            $content = $this->renderer->render($context);
         } finally {
             // Remove current content object rendering from path provider stack
             $this->pathProvider->pop();
@@ -90,34 +90,34 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
     /**
      * @param array<string, mixed> $config
      */
-    private function createView(array $config): Renderer\Template\View\HandlebarsView
+    private function createContext(array $config): Renderer\RenderingContext
     {
         $format = $this->cObj?->stdWrapValue('format', $config, null);
-        $view = new Renderer\Template\View\HandlebarsView();
+        $context = new Renderer\RenderingContext();
 
         if (is_string($format)) {
-            $view->setFormat($format);
+            $context->setFormat($format);
         }
 
         if (isset($config['templateName']) || isset($config['templateName.'])) {
-            return $view->setTemplatePath(
+            return $context->setTemplatePath(
                 (string)$this->cObj?->stdWrapValue('templateName', $config),
             );
         }
 
         if (isset($config['template']) || isset($config['template.'])) {
-            return $view->setTemplateSource(
+            return $context->setTemplateSource(
                 (string)$this->cObj?->stdWrapValue('template', $config),
             );
         }
 
         if (isset($config['file']) || isset($config['file.'])) {
-            return $view->setTemplatePath(
+            return $context->setTemplatePath(
                 (string)$this->cObj?->stdWrapValue('file', $config),
             );
         }
 
-        return $view;
+        return $context;
     }
 
     /**

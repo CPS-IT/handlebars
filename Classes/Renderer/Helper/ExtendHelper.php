@@ -56,7 +56,7 @@ final readonly class ExtendHelper implements Helper
         // Render layout with merged data
         try {
             return $this->renderer->render(
-                new Renderer\Template\View\HandlebarsView($name, $variables),
+                new Renderer\RenderingContext($name, $variables),
             );
         } finally {
             $this->layoutStack->pop();

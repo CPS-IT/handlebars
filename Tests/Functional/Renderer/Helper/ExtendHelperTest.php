@@ -76,7 +76,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     {
         $actual = trim(
             $this->renderer->render(
-                new Src\Renderer\Template\View\HandlebarsView('@simple-layout-extended'),
+                new Src\Renderer\RenderingContext('@simple-layout-extended'),
             ),
         );
 
@@ -93,7 +93,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     {
         $actual = trim(
             $this->renderer->render(
-                new Src\Renderer\Template\View\HandlebarsView(
+                new Src\Renderer\RenderingContext(
                     '@simple-layout-extended-with-context',
                     [
                         'customContext' => [
@@ -124,7 +124,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     {
         $actual = trim(
             $this->renderer->render(
-                new Src\Renderer\Template\View\HandlebarsView(
+                new Src\Renderer\RenderingContext(
                     '@simple-layout-extended-with-context',
                     [
                         'foo' => 123,

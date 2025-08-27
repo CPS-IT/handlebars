@@ -185,7 +185,7 @@ final class HelperRegistry implements Core\SingletonInterface
         return static function () use ($function) {
             $arguments = \func_get_args();
             /** @var Handlebars\HelperOptions $options */
-            $options = array_pop($arguments);
+            $options = \array_pop($arguments);
 
             return $function($options, ...$arguments);
         };

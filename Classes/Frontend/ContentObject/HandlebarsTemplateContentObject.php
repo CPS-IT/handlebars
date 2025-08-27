@@ -138,6 +138,11 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             $variables = $this->contentDataProcessor->process($this->cObj, $config, $variables);
         }
 
+        // Convert flat variables (foo.bar.baz = xxx) to its multidimensional array representation (foo { bar { baz = xxx }}})
+        if ((int)($config['unflattenVariableNames'] ?? 0) === 1) {
+            $variables = Core\Utility\ArrayUtility::unflatten($variables);
+        }
+
         // Make settings available as variables
         if (isset($config['settings.'])) {
             $variables['settings'] = $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['settings.']);

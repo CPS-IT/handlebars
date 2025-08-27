@@ -373,6 +373,28 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function renderUnflattensVariableNames(): void
+    {
+        $expected = [
+            'data' => [],
+            'current' => null,
+            'foo' => [
+                'baz' => 'boo',
+            ],
+        ];
+
+        $this->subject->render([
+            'template' => 'foo',
+            'variables.' => [
+                'foo.baz' => 'boo',
+            ],
+            'unflattenVariableNames' => '1',
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
     public function renderResolvesAndAppliesSettingsFromConfig(): void
     {
         $expected = [

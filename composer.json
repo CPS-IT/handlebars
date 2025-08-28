@@ -36,6 +36,7 @@
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.0",
 		"cpsit/typo3-handlebars-test-extension": "1.0.0",
+		"eliashaeussler/deep-closure-comparator": "^1.1",
 		"eliashaeussler/version-bumper": "^3.0",
 		"ergebnis/composer-normalize": "^2.15",
 		"fig/log-test": "^1.1",
@@ -55,9 +56,6 @@
 		"typo3/coding-standards": "^0.8.0",
 		"typo3/testing-framework": "^9.2.0"
 	},
-	"conflict": {
-		"sebastian/comparator": "7.1.0"
-	},
 	"repositories": [
 		{
 			"type": "path",
@@ -72,7 +70,10 @@
 	"autoload-dev": {
 		"psr-4": {
 			"CPSIT\\Typo3Handlebars\\Tests\\": "Tests/"
-		}
+		},
+		"files": [
+			"Tests/Unit/DataProvider/HelperClosureProvider.php"
+		]
 	},
 	"config": {
 		"allow-plugins": {

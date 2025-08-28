@@ -20,6 +20,7 @@ namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use DevTheorem\Handlebars;
+use EliasHaeussler\DeepClosureComparator;
 use PHPUnit\Framework;
 use Psr\Log;
 use TYPO3\TestingFramework;
@@ -68,9 +69,9 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $this->subject->add('foo', $function);
 
-        $expected = $this->mapExpectedCallable($expectedCallable);
+        $expected = Src\Renderer\Helper\mapExpectedCallable($expectedCallable);
 
-        self::assertEquals($expected, $this->subject->get('foo'));
+        DeepClosureComparator\DeepClosureAssert::assertEquals($expected, $this->subject->get('foo'));
     }
 
     #[Framework\Attributes\Test]
@@ -102,11 +103,17 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $this->subject->add('foo', 'trim');
 
-        self::assertEquals($this->mapExpectedCallable(trim(...)), $this->subject->get('foo'));
+        DeepClosureComparator\DeepClosureAssert::assertEquals(
+            Src\Renderer\Helper\mapExpectedCallable('trim'),
+            $this->subject->get('foo'),
+        );
 
         $this->subject->add('foo', 'strtolower');
 
-        self::assertEquals($this->mapExpectedCallable(strtolower(...)), $this->subject->get('foo'));
+        DeepClosureComparator\DeepClosureAssert::assertEquals(
+            Src\Renderer\Helper\mapExpectedCallable('strtolower'),
+            $this->subject->get('foo'),
+        );
     }
 
     #[Framework\Attributes\Test]
@@ -124,7 +131,10 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $this->subject->add('foo', 'trim');
 
-        self::assertEquals($this->mapExpectedCallable(trim(...)), $this->subject->get('foo'));
+        DeepClosureComparator\DeepClosureAssert::assertEquals(
+            Src\Renderer\Helper\mapExpectedCallable('trim'),
+            $this->subject->get('foo'),
+        );
     }
 
     #[Framework\Attributes\Test]
@@ -134,7 +144,10 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $this->subject->add('foo', 'strtolower');
 
-        self::assertEquals(['foo' => $this->mapExpectedCallable(strtolower(...))], $this->subject->getAll());
+        DeepClosureComparator\DeepClosureAssert::assertEquals(
+            ['foo' => Src\Renderer\Helper\mapExpectedCallable('strtolower')],
+            $this->subject->getAll(),
+        );
     }
 
     #[Framework\Attributes\Test]
@@ -165,7 +178,7 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         yield 'callable as string' => [
             'trim',
-            trim(...),
+            'trim',
         ];
         yield 'invokable class as string' => [
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyInvokableHelper::class,
@@ -193,7 +206,7 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         ];
         yield 'static class method as string' => [
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::staticExecute',
-            [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'staticExecute'],
+            Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::staticExecute',
         ];
         yield 'non-static class method as string' => [
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::execute',
@@ -211,19 +224,5 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
             [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
             [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
         ];
-    }
-
-    /**
-     * @return \Closure(mixed..., Handlebars\HelperOptions): mixed
-     */
-    private function mapExpectedCallable(callable $expectedCallable): \Closure
-    {
-        return static function () use ($expectedCallable) {
-            $arguments = \func_get_args();
-            /** @var Handlebars\HelperOptions $options */
-            $options = \array_pop($arguments);
-
-            return $expectedCallable($options, ...$arguments);
-        };
     }
 }

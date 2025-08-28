@@ -133,6 +133,10 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             $variables = $this->getContentObjectVariables($config);
         }
 
+        // Add current context variables
+        $variables['data'] = $this->cObj->data ?? [];
+        $variables['current'] = $this->cObj?->data[$this->cObj->currentValKey] ?? null;
+
         // Process variables with configured data processors
         if ($this->cObj !== null) {
             $variables = $this->contentDataProcessor->process($this->cObj, $config, $variables);
@@ -195,12 +199,14 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             // (including arrays, which will be processed recursively as they may contain content objects)
             if (\is_array($value)) {
                 $simpleVariables[$sanitizedName] = $this->processVariables($value);
-
-                unset($simpleVariables[$sanitizedName]['data']);
-                unset($simpleVariables[$sanitizedName]['current']);
             } else {
                 $simpleVariables[$sanitizedName] = $value;
             }
+        }
+
+        // Return only simple variables if no variables need to be processed
+        if ($variablesToProcess === []) {
+            return $simpleVariables;
         }
 
         // Process content object variables
@@ -251,9 +257,6 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
                 $variables[$variableName] = $value;
             }
         }
-
-        $variables['data'] = $this->cObj->data;
-        $variables['current'] = $this->cObj->data[$this->cObj->currentValKey] ?? null;
 
         return $variables;
     }

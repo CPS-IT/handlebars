@@ -5,7 +5,7 @@
 # TYPO3 extension `handlebars`
 
 [![Coverage](https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls)](https://coveralls.io/github/CPS-IT/handlebars)
-[![Maintainability](https://api.codeclimate.com/v1/badges/5b2dfdd046fb1a6e04aa/maintainability)](https://codeclimate.com/github/CPS-IT/handlebars/maintainability)
+[![Maintainability](https://qlty.sh/gh/CPS-IT/projects/handlebars/maintainability.svg)](https://qlty.sh/gh/CPS-IT/projects/handlebars)
 [![Tests](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml)
 [![CGL](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml)
 [![Release](https://github.com/CPS-IT/handlebars/actions/workflows/release.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/release.yaml)

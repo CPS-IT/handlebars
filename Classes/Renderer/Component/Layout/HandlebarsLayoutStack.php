@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer\Component\Layout;
 
+use CPSIT\Typo3Handlebars\Exception;
 use TYPO3\CMS\Core;
 
 /**
@@ -28,10 +29,50 @@ use TYPO3\CMS\Core;
  */
 final class HandlebarsLayoutStack implements Core\SingletonInterface, \IteratorAggregate
 {
+    private const SCOPE_IDENTIFIER = '_layoutActions';
+
     /**
      * @var HandlebarsLayout[]
      */
     private array $stack = [];
+
+    /**
+     * @throws Exception\RenderScopeContainsUnsupportedLayoutStack
+     * @throws Exception\RenderScopeIsInvalid
+     */
+    public static function fromScope(mixed &$scope): self
+    {
+        // Fail if scope is invalid
+        if (!is_array($scope)) {
+            throw new Exception\RenderScopeIsInvalid($scope);
+        }
+
+        // Generate new stack if necessary
+        if (!isset($scope[self::SCOPE_IDENTIFIER])) {
+            $scope[self::SCOPE_IDENTIFIER] = new self();
+        }
+
+        // Early return if invalid stack was persisted
+        if (!($scope[self::SCOPE_IDENTIFIER] instanceof self)) {
+            throw new Exception\RenderScopeContainsUnsupportedLayoutStack();
+        }
+
+        return $scope[self::SCOPE_IDENTIFIER];
+    }
+
+    public static function destroyIfEmpty(mixed &$scope): void
+    {
+        try {
+            $stack = self::fromScope($scope);
+        } catch (Exception\RenderScopeContainsUnsupportedLayoutStack|Exception\RenderScopeIsInvalid) {
+            // Early return if scope is invalid or missing
+            return;
+        }
+
+        if ($stack->isEmpty()) {
+            unset($scope[self::SCOPE_IDENTIFIER]);
+        }
+    }
 
     public function push(HandlebarsLayout $layout): self
     {

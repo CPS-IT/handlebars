@@ -36,10 +36,10 @@ final class HandlebarsLayout
         private readonly \Closure $parseFunction,
     ) {}
 
-    public function parse(): void
+    public function parse(mixed &$context = null): void
     {
         $this->parsed = true;
-        ($this->parseFunction)();
+        ($this->parseFunction)($context);
     }
 
     public function addAction(HandlebarsLayoutAction $action): void

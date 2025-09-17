@@ -31,18 +31,15 @@ use DevTheorem\Handlebars;
 #[Attribute\AsHelper('block')]
 final readonly class BlockHelper implements Helper
 {
-    public function __construct(
-        private Renderer\Component\Layout\HandlebarsLayoutStack $layoutStack,
-    ) {}
-
     public function render(Handlebars\HelperOptions $options, string $name = ''): string
     {
         $actions = [];
+        $layoutStack = Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($options->scope);
 
         // Parse layouts and fetch all parsed layout actions for the requested block
-        foreach ($this->layoutStack as $layout) {
+        foreach ($layoutStack as $layout) {
             if (!$layout->isParsed()) {
-                $layout->parse();
+                $layout->parse($options->scope);
             }
 
             foreach ($layout->getActions($name) as $action) {

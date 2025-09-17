@@ -35,16 +35,16 @@ final readonly class ContentHelper implements Helper
     private const DEFAULT_MODE = Renderer\Component\Layout\HandlebarsLayoutActionMode::Replace;
 
     public function __construct(
-        private Renderer\Component\Layout\HandlebarsLayoutStack $layoutStack,
         private Log\LoggerInterface $logger,
     ) {}
 
     public function render(Handlebars\HelperOptions $options, string $name = ''): ?bool
     {
         $mode = $this->resolveLayoutActionMode($options, $name);
+        $layoutStack = Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($options->scope);
 
         // Early return if "content" helper is requested outside of an "extend" helper block
-        if ($this->layoutStack->isEmpty()) {
+        if ($layoutStack->isEmpty()) {
             $this->logger->error(
                 'Handlebars layout helper "content" can only be used within an "extend" helper block!',
                 ['name' => $name],
@@ -54,12 +54,12 @@ final readonly class ContentHelper implements Helper
         }
 
         // Get upper layout from stack
-        $layout = $this->layoutStack->last();
+        $layout = $layoutStack->last();
 
         // Usage in conditional context: Test whether given required block is registered
         if (!$options->fn()) {
             if (!$layout->isParsed()) {
-                $layout->parse();
+                $layout->parse($options->scope);
             }
 
             return $layout->hasAction($name);

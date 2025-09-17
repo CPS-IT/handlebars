@@ -34,13 +34,17 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
     private Src\Renderer\Component\Layout\HandlebarsLayout $subject;
 
     private bool $parseFunctionInvoked = false;
+    private mixed $passedContext = null;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->subject = new Src\Renderer\Component\Layout\HandlebarsLayout(
-            fn() => $this->parseFunctionInvoked = true,
+            function (mixed $context) {
+                $this->parseFunctionInvoked = true;
+                $this->passedContext = $context;
+            },
         );
     }
 
@@ -50,9 +54,12 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
         self::assertFalse($this->parseFunctionInvoked);
         self::assertFalse($this->subject->isParsed());
 
-        $this->subject->parse();
+        $context = ['foo' => 'baz'];
+
+        $this->subject->parse($context);
 
         self::assertTrue($this->parseFunctionInvoked);
+        self::assertSame($context, $this->passedContext);
         self::assertTrue($this->subject->isParsed());
     }
 

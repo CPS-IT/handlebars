@@ -32,7 +32,6 @@ use DevTheorem\Handlebars\HelperOptions;
 final readonly class ExtendHelper implements Helper
 {
     public function __construct(
-        private Renderer\Component\Layout\HandlebarsLayoutStack $layoutStack,
         private Renderer\Renderer $renderer,
     ) {}
 
@@ -48,7 +47,8 @@ final readonly class ExtendHelper implements Helper
         $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($options->fn);
 
         // Add layout to layout stack
-        $this->layoutStack->push($handlebarsLayout);
+        $layoutStack = Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($options->scope);
+        $layoutStack->push($handlebarsLayout);
 
         // Merge data with supplied data
         $variables = array_replace_recursive($options->scope, $customContext, $options->hash);
@@ -59,7 +59,9 @@ final readonly class ExtendHelper implements Helper
                 new Renderer\RenderingContext($name, $variables),
             );
         } finally {
-            $this->layoutStack->pop();
+            $layoutStack->pop();
+
+            Renderer\Component\Layout\HandlebarsLayoutStack::destroyIfEmpty($options->scope);
         }
     }
 }

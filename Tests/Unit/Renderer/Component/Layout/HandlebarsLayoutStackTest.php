@@ -40,6 +40,99 @@ final class HandlebarsLayoutStackTest extends TestingFramework\Core\Unit\UnitTes
     }
 
     #[Framework\Attributes\Test]
+    public function fromScopeThrowsExceptionIfGivenScopeIsInvalid(): void
+    {
+        $scope = 'foo';
+
+        $this->expectExceptionObject(
+            new Src\Exception\RenderScopeIsInvalid($scope),
+        );
+
+        Src\Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($scope);
+    }
+
+    #[Framework\Attributes\Test]
+    public function fromScopeThrowsExceptionIfAvailableScopeContainsUnsupportedStack(): void
+    {
+        $scope = [
+            '_layoutActions' => 'foo',
+        ];
+
+        $this->expectExceptionObject(
+            new Src\Exception\RenderScopeContainsUnsupportedLayoutStack(),
+        );
+
+        Src\Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($scope);
+    }
+
+    #[Framework\Attributes\Test]
+    public function fromScopeReturnsExistingStackFromGivenScope(): void
+    {
+        $stack = new Src\Renderer\Component\Layout\HandlebarsLayoutStack();
+        $scope = [
+            '_layoutActions' => $stack,
+        ];
+
+        self::assertSame($stack, Src\Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($scope));
+    }
+
+    #[Framework\Attributes\Test]
+    public function fromScopeAddsNewStackToScope(): void
+    {
+        $scope = [];
+
+        $actual = Src\Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($scope);
+
+        self::assertSame(
+            [
+                '_layoutActions' => $actual,
+            ],
+            $scope,
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function destroyIfEmptyDoesNothingIfStackWithinGivenScopeIsUnsupported(): void
+    {
+        $scope = [
+            '_layoutActions' => 'foo',
+        ];
+
+        Src\Renderer\Component\Layout\HandlebarsLayoutStack::destroyIfEmpty($scope);
+
+        self::assertSame('foo', $scope['_layoutActions']);
+    }
+
+    #[Framework\Attributes\Test]
+    public function destroyIfEmptyDoesNothingIfStackWithinGivenScopeIsNotEmpty(): void
+    {
+        $stack = new Src\Renderer\Component\Layout\HandlebarsLayoutStack();
+        $stack->push(new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => ''));
+
+        $scope = [
+            '_layoutActions' => $stack,
+        ];
+
+        Src\Renderer\Component\Layout\HandlebarsLayoutStack::destroyIfEmpty($scope);
+
+        self::assertSame($stack, $scope['_layoutActions']);
+    }
+
+    #[Framework\Attributes\Test]
+    public function destroyIfEmptyRemovesStackFromGivenScope(): void
+    {
+        $stack = new Src\Renderer\Component\Layout\HandlebarsLayoutStack();
+
+        $scope = [
+            '_layoutActions' => $stack,
+        ];
+
+        Src\Renderer\Component\Layout\HandlebarsLayoutStack::destroyIfEmpty($scope);
+
+        self::assertSame([], $scope);
+    }
+
+    #[Framework\Attributes\Test]
     public function pushAddsGivenLayoutToStack(): void
     {
         $layout = new Src\Renderer\Component\Layout\HandlebarsLayout(static fn() => '');

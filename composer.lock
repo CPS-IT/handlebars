@@ -6214,16 +6214,16 @@
         },
         {
             "name": "cuyz/valinor",
-            "version": "2.1.2",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CuyZ/Valinor.git",
-                "reference": "03521de8bc7fbf52b0bd07094809ff8f616bbf2d"
+                "reference": "35470e576041dd9695ef36aceaab8925bc676586"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/03521de8bc7fbf52b0bd07094809ff8f616bbf2d",
-                "reference": "03521de8bc7fbf52b0bd07094809ff8f616bbf2d",
+                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/35470e576041dd9695ef36aceaab8925bc676586",
+                "reference": "35470e576041dd9695ef36aceaab8925bc676586",
                 "shasum": ""
             },
             "require": {
@@ -6236,7 +6236,7 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.4",
-                "infection/infection": "^0.29",
+                "infection/infection": "^0.31",
                 "marcocesarato/php-conventional-changelog": "^1.12",
                 "mikey179/vfsstream": "^1.6.10",
                 "phpbench/phpbench": "^1.3",
@@ -6279,7 +6279,7 @@
             ],
             "support": {
                 "issues": "https://github.com/CuyZ/Valinor/issues",
-                "source": "https://github.com/CuyZ/Valinor/tree/2.1.2"
+                "source": "https://github.com/CuyZ/Valinor/tree/2.2.0"
             },
             "funding": [
                 {
@@ -6287,7 +6287,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-08-28T12:41:24+00:00"
+            "time": "2025-09-29T13:07:34+00:00"
         },
         {
             "name": "cypresslab/gitelephant",
@@ -8382,16 +8382,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.29",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan-phar-composer-source.git",
-                "reference": "git"
-            },
+            "version": "2.1.30",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d618573eed4a1b6b75e37b2e0b65ac65c885d88e",
-                "reference": "d618573eed4a1b6b75e37b2e0b65ac65c885d88e",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a4a7f159927983dd4f7c8020ed227d80b7f39d7d",
+                "reference": "a4a7f159927983dd4f7c8020ed227d80b7f39d7d",
                 "shasum": ""
             },
             "require": {
@@ -8436,7 +8431,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-25T06:58:18+00:00"
+            "time": "2025-10-02T16:07:52+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",

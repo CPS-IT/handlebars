@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"devtheorem/php-handlebars": "0.9.8"
+		"devtheorem/php-handlebars": "0.9.8 || 0.9.9"
 	},
 	"config": {
 		"lock": false,

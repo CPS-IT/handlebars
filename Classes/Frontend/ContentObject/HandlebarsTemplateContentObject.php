@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Frontend\ContentObject;
 
-use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
@@ -122,15 +121,16 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
 
     /**
      * @param array<string, mixed> $config
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     private function resolveVariables(array $config): array
     {
         // Process content object variables and simple variables
-        if (\is_array($config['variables.'] ?? null)) {
-            $variables = $this->processVariables($config['variables.']);
+        if ($this->cObj !== null && \is_array($config['variables.'] ?? null)) {
+            $processor = Renderer\Variables\VariablesProcessor::for($this->cObj);
+            $variables = $processor->process($config['variables.']);
         } else {
-            $variables = $this->getContentObjectVariables($config);
+            $variables = [];
         }
 
         // Add current context variables
@@ -153,139 +153,6 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         }
 
         return $variables;
-    }
-
-    /**
-     * @param array<string, mixed> $variables
-     * @return array<string, mixed>
-     */
-    private function processVariables(array $variables): array
-    {
-        $contentObjectRenderer = $this->getContentObjectRenderer();
-        $variablesToProcess = [];
-        $simpleVariables = [];
-
-        foreach ($variables as $name => $value) {
-            if (isset($variablesToProcess[$name])) {
-                continue;
-            }
-
-            // Use sanitized variable name for simple variables
-            $sanitizedName = \rtrim($name, '.');
-
-            // Apply variable as simple variable if it's a complex structure (such as objects)
-            if (!is_string($value) && !\is_array($value)) {
-                $simpleVariables[$sanitizedName] = $value;
-
-                continue;
-            }
-
-            // Register variable for further processing if an appropriate content object is available
-            // or if variable is a reference to another variable (will be resolved later)
-            if (is_string($value) &&
-                ($contentObjectRenderer->getContentObject($value) !== null || str_starts_with($value, '<'))
-            ) {
-                $cObjConfName = $name . '.';
-                $variablesToProcess[$name] = $value;
-
-                if (isset($variables[$cObjConfName])) {
-                    $variablesToProcess[$cObjConfName] = $variables[$cObjConfName];
-                }
-
-                continue;
-            }
-
-            // Apply variable as simple variable if it's a simple construct
-            // (including arrays, which will be processed recursively as they may contain content objects)
-            if (!\is_array($value)) {
-                $simpleVariables[$sanitizedName] = $value;
-            } elseif (!$this->shouldRemoveVariable($value)) {
-                $simpleVariables[$sanitizedName] = $this->processVariables($value);
-            }
-        }
-
-        // Return only simple variables if no variables need to be processed
-        if ($variablesToProcess === []) {
-            return $simpleVariables;
-        }
-
-        // Process content object variables
-        $processedVariables = $this->getContentObjectVariables(['variables.' => $variablesToProcess]);
-
-        // Merged processed content object variables with simple variables
-        Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedVariables, $simpleVariables);
-
-        return $processedVariables;
-    }
-
-    /**
-     * @param array<string, mixed> $conf
-     * @return array<string, mixed>
-     * @throws Exception\ReservedVariableCannotBeUsed
-     * @see https://github.com/TYPO3/typo3/blob/v13.4.13/typo3/sysext/frontend/Classes/ContentObject/FluidTemplateContentObject.php#L228
-     */
-    private function getContentObjectVariables(array $conf): array
-    {
-        if ($this->cObj === null) {
-            return [];
-        }
-
-        $variables = [];
-        $reservedVariables = ['data', 'current'];
-        $variablesToProcess = (array)($conf['variables.'] ?? []);
-
-        foreach ($variablesToProcess as $variableName => $cObjType) {
-            if (is_array($cObjType)) {
-                continue;
-            }
-
-            if (in_array($variableName, $reservedVariables, true)) {
-                throw new Exception\ReservedVariableCannotBeUsed($variableName);
-            }
-
-            $cObjConf = $variablesToProcess[$variableName . '.'] ?? [];
-
-            // Process value
-            $value = $this->cObj->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
-
-            // Check if value should *not* be applied after processing
-            $removeVariable = $this->shouldRemoveVariable($cObjConf, $value);
-
-            // Apply value if not empty or no *empty toggle* is set
-            if (!$removeVariable || trim($value) !== '') {
-                $variables[$variableName] = $value;
-            }
-        }
-
-        return $variables;
-    }
-
-    /**
-     * @param array<string, mixed> $configuration
-     */
-    private function shouldRemoveVariable(array $configuration, ?string $value = null): bool
-    {
-        if ($this->cObj === null) {
-            return false;
-        }
-
-        $removeCondition = $configuration['removeIf.'] ?? null;
-
-        // Early return on missing or insufficient remove condition
-        if (!\is_array($removeCondition)) {
-            return false;
-        }
-
-        // Use processed value as current value
-        $currentValue = $this->cObj->getCurrentVal();
-        $this->cObj->setCurrentVal($value);
-
-        try {
-            return $this->cObj->checkIf($removeCondition);
-        } finally {
-            // Restore original current value
-            $this->cObj->setCurrentVal($currentValue);
-        }
     }
 
     /**

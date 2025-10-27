@@ -244,16 +244,30 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             }
 
             $cObjConf = $variablesToProcess[$variableName . '.'] ?? [];
-
-            // Check if empty value should *not* be applied after processing
-            $removeIfEmpty = (int)($cObjConf['removeIfEmpty'] ?? 0) === 1;
-            unset($cObjConf['removeIfEmpty']);
+            $removeCondition = $cObjConf['removeIf.'] ?? null;
+            unset($cObjConf['removeIf.']);
 
             // Process value
             $value = $this->cObj->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
 
+            // Check if empty value should *not* be applied after processing
+            if (\is_array($removeCondition)) {
+                // Use processed value as current value
+                $currentValue = $this->cObj->getCurrentVal();
+                $this->cObj->setCurrentVal($value);
+
+                try {
+                    $removeVariable = $this->cObj->checkIf($removeCondition);
+                } finally {
+                    // Restore original current value
+                    $this->cObj->setCurrentVal($currentValue);
+                }
+            } else {
+                $removeVariable = false;
+            }
+
             // Apply value if not empty or no *empty toggle* is set
-            if (!$removeIfEmpty || trim($value) !== '') {
+            if (!$removeVariable || trim($value) !== '') {
                 $variables[$variableName] = $value;
             }
         }

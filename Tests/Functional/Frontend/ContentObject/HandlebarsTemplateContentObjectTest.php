@@ -314,7 +314,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
-    public function renderDoesNotApplyEmptyVariablesOnDefinedRemoveIfConfig(): void
+    public function renderDoesNotApplyContentObjectVariablesOnMatchingRemoveIfConfig(): void
     {
         $expected = [
             'data' => [
@@ -335,6 +335,43 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
                             'isFalse.' => [
                                 'current' => '1',
                             ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderDoesNotApplySimpleVariablesOnMatchingRemoveIfConfig(): void
+    {
+        $this->contentObjectRenderer->data = [
+            'foo' => '',
+        ];
+
+        $expected = [
+            'data' => [
+                $this->contentObjectRenderer->currentValKey => null,
+                'foo' => '',
+            ],
+            'current' => null,
+        ];
+
+        $this->subject->render([
+            'template' => 'foo',
+            'variables.' => [
+                'foo.' => [
+                    'baz.' => [
+                        'foo' => 'TEXT',
+                        'foo.' => [
+                            'field' => 'foo',
+                        ],
+                    ],
+                    'removeIf.' => [
+                        'isFalse.' => [
+                            'field' => 'foo',
                         ],
                     ],
                 ],

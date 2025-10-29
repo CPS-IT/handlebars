@@ -197,10 +197,10 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
 
             // Apply variable as simple variable if it's a simple construct
             // (including arrays, which will be processed recursively as they may contain content objects)
-            if (\is_array($value)) {
-                $simpleVariables[$sanitizedName] = $this->processVariables($value);
-            } else {
+            if (!\is_array($value)) {
                 $simpleVariables[$sanitizedName] = $value;
+            } elseif (!$this->shouldRemoveVariable($value)) {
+                $simpleVariables[$sanitizedName] = $this->processVariables($value);
             }
         }
 
@@ -244,27 +244,12 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             }
 
             $cObjConf = $variablesToProcess[$variableName . '.'] ?? [];
-            $removeCondition = $cObjConf['removeIf.'] ?? null;
-            unset($cObjConf['removeIf.']);
 
             // Process value
             $value = $this->cObj->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
 
-            // Check if empty value should *not* be applied after processing
-            if (\is_array($removeCondition)) {
-                // Use processed value as current value
-                $currentValue = $this->cObj->getCurrentVal();
-                $this->cObj->setCurrentVal($value);
-
-                try {
-                    $removeVariable = $this->cObj->checkIf($removeCondition);
-                } finally {
-                    // Restore original current value
-                    $this->cObj->setCurrentVal($currentValue);
-                }
-            } else {
-                $removeVariable = false;
-            }
+            // Check if value should *not* be applied after processing
+            $removeVariable = $this->shouldRemoveVariable($cObjConf, $value);
 
             // Apply value if not empty or no *empty toggle* is set
             if (!$removeVariable || trim($value) !== '') {
@@ -273,6 +258,34 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         }
 
         return $variables;
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    private function shouldRemoveVariable(array $configuration, ?string $value = null): bool
+    {
+        if ($this->cObj === null) {
+            return false;
+        }
+
+        $removeCondition = $configuration['removeIf.'] ?? null;
+
+        // Early return on missing or insufficient remove condition
+        if (!\is_array($removeCondition)) {
+            return false;
+        }
+
+        // Use processed value as current value
+        $currentValue = $this->cObj->getCurrentVal();
+        $this->cObj->setCurrentVal($value);
+
+        try {
+            return $this->cObj->checkIf($removeCondition);
+        } finally {
+            // Restore original current value
+            $this->cObj->setCurrentVal($currentValue);
+        }
     }
 
     /**

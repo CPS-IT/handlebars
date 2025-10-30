@@ -85,6 +85,7 @@ final readonly class VariablesProcessor
             if (!\is_array($value)) {
                 $simpleVariables[$sanitizedName] = $value;
             } elseif (!$this->shouldRemoveVariable($value)) {
+                unset($value['removeIf.']);
                 $simpleVariables[$sanitizedName] = $this->process($value);
             }
         }

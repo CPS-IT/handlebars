@@ -32,7 +32,7 @@ final class RenderingContext
     private ?string $format = null;
 
     /**
-     * @param array<string, mixed> $variables
+     * @param array<string|int, mixed> $variables
      */
     public function __construct(
         private ?string $templatePath = null,
@@ -98,14 +98,14 @@ final class RenderingContext
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     public function getVariables(): array
     {
         return $this->variables;
     }
 
-    public function assign(string $key, mixed $value): self
+    public function assign(string|int $key, mixed $value): self
     {
         $this->variables[$key] = $value;
 
@@ -113,7 +113,7 @@ final class RenderingContext
     }
 
     /**
-     * @param array<string, mixed> $values
+     * @param array<string|int, mixed> $values
      */
     public function assignMultiple(array $values): self
     {

@@ -57,7 +57,7 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
     }
 
     #[Framework\Attributes\Test]
-    public function processDoesNothingIGivenConditionDoesNotMatch(): void
+    public function processDoesNothingIfGivenConditionDoesNotMatch(): void
     {
         $this->contentObjectRenderer->data = [
             'foo' => '',

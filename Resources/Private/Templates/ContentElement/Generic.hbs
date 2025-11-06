@@ -1,0 +1,5 @@
+{{#if content}}
+    {{{content}}}
+{{else}}
+    {{{viewHelper 'f:cObject' typoscriptObjectPath=(join 'tt_content.' data.CType '.20') data=data table='tt_content'}}}
+{{/if}}

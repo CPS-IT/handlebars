@@ -1,0 +1,7 @@
+lib.contentElement = HANDLEBARSTEMPLATE
+lib.contentElement {
+  templateName = Default
+  templateRootPaths {
+    20 = EXT:handlebars/Resources/Private/Templates/ContentElement
+  }
+}

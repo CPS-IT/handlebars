@@ -47,39 +47,6 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
     }
 
     #[Framework\Attributes\Test]
-    public function constructorThrowsExceptionIfTemplateRootPathHasInvalidType(): void
-    {
-        $this->expectExceptionObject(
-            new Src\Exception\RootPathIsMalicious(null),
-        );
-
-        new Src\Renderer\Template\HandlebarsTemplateResolver(
-            new Src\Renderer\Template\TemplatePaths([
-                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
-                    /* @phpstan-ignore argument.type */
-                    [null],
-                ),
-            ]),
-        );
-    }
-
-    #[Framework\Attributes\Test]
-    public function constructorThrowsExceptionIfTemplateRootPathIsNotResolvable(): void
-    {
-        $this->expectExceptionObject(
-            new Src\Exception\RootPathIsNotResolvable('EXT:foo/baz'),
-        );
-
-        new Src\Renderer\Template\HandlebarsTemplateResolver(
-            new Src\Renderer\Template\TemplatePaths([
-                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
-                    ['EXT:foo/baz'],
-                ),
-            ]),
-        );
-    }
-
-    #[Framework\Attributes\Test]
     public function constructorThrowsExceptionIfFileExtensionHasInvalidType(): void
     {
         $this->expectExceptionObject(
@@ -98,6 +65,45 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
         );
 
         new Src\Renderer\Template\HandlebarsTemplateResolver($this->getTemplatePaths(), ['foo?!']);
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathThrowsExceptionIfRootPathHasInvalidType(): void
+    {
+        $subject = new Src\Renderer\Template\HandlebarsTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                    [],
+                    /* @phpstan-ignore argument.type */
+                    [null],
+                ),
+            ]),
+        );
+
+        $this->expectExceptionObject(
+            new Src\Exception\RootPathIsMalicious(null),
+        );
+
+        $subject->resolvePartialPath('foo');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolvePartialPathThrowsExceptionIfRootPathIsNotResolvable(): void
+    {
+        $subject = new Src\Renderer\Template\HandlebarsTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                    [],
+                    ['EXT:foo/baz'],
+                ),
+            ]),
+        );
+
+        $this->expectExceptionObject(
+            new Src\Exception\RootPathIsNotResolvable('EXT:foo/baz'),
+        );
+
+        $subject->resolvePartialPath('foo');
     }
 
     #[Framework\Attributes\Test]
@@ -143,6 +149,43 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
         $expected = $this->partialRootPath . '/DummyPartial.hbs';
 
         self::assertSame($expected, $this->subject->resolvePartialPath($templatePath));
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathThrowsExceptionIfRootPathHasInvalidType(): void
+    {
+        $subject = new Src\Renderer\Template\HandlebarsTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                    /* @phpstan-ignore argument.type */
+                    [null],
+                ),
+            ]),
+        );
+
+        $this->expectExceptionObject(
+            new Src\Exception\RootPathIsMalicious(null),
+        );
+
+        $subject->resolveTemplatePath('foo');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathThrowsExceptionIfRootPathIsNotResolvable(): void
+    {
+        $subject = new Src\Renderer\Template\HandlebarsTemplateResolver(
+            new Src\Renderer\Template\TemplatePaths([
+                new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                    ['EXT:foo/baz'],
+                ),
+            ]),
+        );
+
+        $this->expectExceptionObject(
+            new Src\Exception\RootPathIsNotResolvable('EXT:foo/baz'),
+        );
+
+        $subject->resolveTemplatePath('foo');
     }
 
     #[Framework\Attributes\Test]

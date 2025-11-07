@@ -28,38 +28,79 @@ use CPSIT\Typo3Handlebars\Exception;
 final class HandlebarsTemplateResolver extends BaseTemplateResolver
 {
     /**
-     * @var list<string>
+     * @var array<string, list<string>>
      */
-    protected array $partialRootPaths = [];
-
-    /**
-     * @var list<string>
-     */
-    protected array $templateRootPaths = [];
+    private array $resolvedPaths = [];
 
     /**
      * @param string[] $supportedFileExtensions
-     * @throws Exception\RootPathIsMalicious
-     * @throws Exception\RootPathIsNotResolvable
      */
     public function __construct(
-        TemplatePaths $templatePaths,
+        private readonly TemplatePaths $templatePaths,
         array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS,
     ) {
-        [$this->templateRootPaths, $this->partialRootPaths] = $this->resolveTemplatePaths($templatePaths);
         $this->supportedFileExtensions = $this->resolveSupportedFileExtensions($supportedFileExtensions);
     }
 
+    /**
+     * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
+     */
     public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
-        return $this->resolvePath($partialPath, $this->partialRootPaths, $format)
+        return $this->resolvePath($partialPath, $this->resolvePartialRootPaths(), $format)
             ?? throw new Exception\PartialPathIsNotResolvable($partialPath, $format);
     }
 
+    /**
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
+     */
     public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
-        return $this->resolvePath($templatePath, $this->templateRootPaths, $format)
+        return $this->resolvePath($templatePath, $this->resolveTemplateRootPaths(), $format)
             ?? throw new Exception\TemplatePathIsNotResolvable($templatePath, $format);
+    }
+
+    /**
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    private function resolvePartialRootPaths(): array
+    {
+        $partialRootPaths = $this->templatePaths->getPartialRootPaths();
+
+        return $this->resolveRootPathsFromCache($partialRootPaths);
+    }
+
+    /**
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    private function resolveTemplateRootPaths(): array
+    {
+        $templateRootPaths = $this->templatePaths->getTemplateRootPaths();
+
+        return $this->resolveRootPathsFromCache($templateRootPaths);
+    }
+
+    /**
+     * @param array<int, string> $rootPaths
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    private function resolveRootPathsFromCache(array $rootPaths): array
+    {
+        $hash = \sha1((string)\json_encode($rootPaths));
+
+        return $this->resolvedPaths[$hash] ?? ($this->resolvedPaths[$hash] = $this->normalizeRootPaths($rootPaths));
     }
 
     /**

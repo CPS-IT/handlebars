@@ -20,8 +20,13 @@ namespace CPSIT\Typo3Handlebars\DependencyInjection;
 use CPSIT\Typo3Handlebars\Attribute;
 use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Fluid;
+use TYPO3\CMS\Frontend;
 
-return static function (DependencyInjection\ContainerBuilder $container): void {
+return static function (
+    DependencyInjection\ContainerBuilder $container,
+    DependencyInjection\Loader\Configurator\ContainerConfigurator $configurator,
+): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
     $container->addCompilerPass(new HandlebarsHelperPass());
     $container->registerAttributeForAutoconfiguration(
@@ -46,4 +51,12 @@ return static function (DependencyInjection\ContainerBuilder $container): void {
             );
         },
     );
+
+    // Make sure the FLUIDTEMPLATE content object always receives an instance of FluidViewFactory,
+    // because it fails hard if any other view than FluidViewAdapter is resolved, which cannot be
+    // assured when using our custom HandlebarsViewFactory, as we don't know the exact context.
+    $configurator->services()
+        ->get(Frontend\ContentObject\FluidTemplateContentObject::class)
+        ->arg('$viewFactory', new DependencyInjection\Reference(Fluid\View\FluidViewFactory::class))
+    ;
 };

@@ -133,7 +133,7 @@ final readonly class VariablesProcessor
             $removeVariable = $this->shouldRemoveVariable($cObjConf, $value);
 
             // Apply value if not empty or no *empty toggle* is set
-            if (!$removeVariable || trim($value) !== '') {
+            if (!$removeVariable && trim($value) !== '') {
                 $processedVariables[$variableName] = $value;
             }
         }

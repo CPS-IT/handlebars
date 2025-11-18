@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests;
 use DevTheorem\Handlebars;
 use PHPUnit\Framework;
 use TYPO3\CMS\Core;
@@ -32,6 +33,8 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\VarDumpHelper::class)]
 final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
 {
+    use Tests\HandlebarsTemplateTestTrait;
+
     private Src\Renderer\Helper\VarDumpHelper $subject;
 
     protected function setUp(): void
@@ -39,6 +42,31 @@ final class VarDumpHelperTest extends TestingFramework\Core\Unit\UnitTestCase
         parent::setUp();
 
         $this->subject = new Src\Renderer\Helper\VarDumpHelper();
+    }
+
+    #[Framework\Attributes\Test]
+    public function helperCanBeUsedInTemplate(): void
+    {
+        Core\Utility\DebugUtility::useAnsiColor(false);
+
+        $expected = <<<EOF
+Debug
+array (1 item)
+   foo => "baz" (3 chars)
+EOF;
+
+        self::assertRenderedTemplateEqualsString(
+            '{{varDump}}',
+            $expected,
+            [
+                'foo' => 'baz',
+            ],
+            [
+                'varDump' => $this->subject->render(...),
+            ],
+        );
+
+        Core\Utility\DebugUtility::useAnsiColor(true);
     }
 
     #[Framework\Attributes\Test]

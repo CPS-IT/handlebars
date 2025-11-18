@@ -31,7 +31,7 @@
 		"typo3/cms-extbase": "~13.4.0",
 		"typo3/cms-fluid": "~13.4.0",
 		"typo3/cms-frontend": "~13.4.0",
-		"typo3fluid/fluid": "^4.0"
+		"typo3fluid/fluid": "^4.0 || ^5.0"
 	},
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.0",

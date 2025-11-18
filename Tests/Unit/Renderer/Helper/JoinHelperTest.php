@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests;
 use DevTheorem\Handlebars;
 use PHPUnit\Framework;
 use TYPO3\TestingFramework;
@@ -31,6 +32,8 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\JoinHelper::class)]
 final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
 {
+    use Tests\HandlebarsTemplateTestTrait;
+
     private Src\Renderer\Helper\JoinHelper $subject;
 
     public function setUp(): void
@@ -38,6 +41,26 @@ final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
         parent::setUp();
 
         $this->subject = new Src\Renderer\Helper\JoinHelper();
+    }
+
+    #[Framework\Attributes\Test]
+    public function helperCanBeUsedInTemplate(): void
+    {
+        self::assertRenderedTemplateEqualsString(
+            '{{join "foo" baz}}',
+            'foobaz',
+            [
+                'baz' => new class () implements \Stringable {
+                    public function __toString(): string
+                    {
+                        return 'baz';
+                    }
+                },
+            ],
+            [
+                'join' => $this->subject->render(...),
+            ],
+        );
     }
 
     #[Framework\Attributes\Test]

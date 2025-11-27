@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e94b78e9040e81cd59d7353cd99f24e",
+    "content-hash": "631a51e159f3b8fa8974f19a70abf683",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -6215,21 +6215,21 @@
         },
         {
             "name": "cuyz/valinor",
-            "version": "2.2.2",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CuyZ/Valinor.git",
-                "reference": "f6e00a8c4196d2df483d454ab67a54f0ced60a1a"
+                "reference": "212835b2efb89becd9881f4836e9b0b32ea105bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/f6e00a8c4196d2df483d454ab67a54f0ced60a1a",
-                "reference": "f6e00a8c4196d2df483d454ab67a54f0ced60a1a",
+                "url": "https://api.github.com/repos/CuyZ/Valinor/zipball/212835b2efb89becd9881f4836e9b0b32ea105bf",
+                "reference": "212835b2efb89becd9881f4836e9b0b32ea105bf",
                 "shasum": ""
             },
             "require": {
                 "composer-runtime-api": "^2.0",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "conflict": {
                 "phpstan/phpstan": "<1.0 || >= 3.0",
@@ -6280,7 +6280,7 @@
             ],
             "support": {
                 "issues": "https://github.com/CuyZ/Valinor/issues",
-                "source": "https://github.com/CuyZ/Valinor/tree/2.2.2"
+                "source": "https://github.com/CuyZ/Valinor/tree/2.3.1"
             },
             "funding": [
                 {
@@ -6288,7 +6288,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-13T07:23:21+00:00"
+            "time": "2025-10-21T12:16:56+00:00"
         },
         {
             "name": "cypresslab/gitelephant",
@@ -6355,21 +6355,21 @@
         },
         {
             "name": "eliashaeussler/deep-closure-comparator",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eliashaeussler/deep-closure-comparator.git",
-                "reference": "a84e20dc0c6f9b7b7a719c5a384d514dbf947f73"
+                "reference": "6b1e88d9aa88f31e1cee316507455a3c1b3ca91a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eliashaeussler/deep-closure-comparator/zipball/a84e20dc0c6f9b7b7a719c5a384d514dbf947f73",
-                "reference": "a84e20dc0c6f9b7b7a719c5a384d514dbf947f73",
+                "url": "https://api.github.com/repos/eliashaeussler/deep-closure-comparator/zipball/6b1e88d9aa88f31e1cee316507455a3c1b3ca91a",
+                "reference": "6b1e88d9aa88f31e1cee316507455a3c1b3ca91a",
                 "shasum": ""
             },
             "require": {
                 "opis/closure": "^4.0",
-                "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "phpunit/phpunit": "^10.5 || ^11.5 || ^12.3",
                 "sebastian/comparator": "^5.0 || ^6.3 || ^7.0"
             },
@@ -6404,29 +6404,29 @@
             "description": "Provides a PHPUnit comparator to assert equality of closures",
             "support": {
                 "issues": "https://github.com/eliashaeussler/deep-closure-comparator/issues",
-                "source": "https://github.com/eliashaeussler/deep-closure-comparator/tree/1.1.0"
+                "source": "https://github.com/eliashaeussler/deep-closure-comparator/tree/1.2.0"
             },
-            "time": "2025-08-26T07:52:15+00:00"
+            "time": "2025-11-14T14:11:56+00:00"
         },
         {
             "name": "eliashaeussler/version-bumper",
-            "version": "3.0.2",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eliashaeussler/version-bumper.git",
-                "reference": "2a2905a63015548d6ee961428bf11a980c5afe94"
+                "reference": "cb380fa4e6c488cb595aee1bfa08cf0570efff6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eliashaeussler/version-bumper/zipball/2a2905a63015548d6ee961428bf11a980c5afe94",
-                "reference": "2a2905a63015548d6ee961428bf11a980c5afe94",
+                "url": "https://api.github.com/repos/eliashaeussler/version-bumper/zipball/cb380fa4e6c488cb595aee1bfa08cf0570efff6f",
+                "reference": "cb380fa4e6c488cb595aee1bfa08cf0570efff6f",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^2.0",
                 "cuyz/valinor": "^2.0",
                 "cypresslab/gitelephant": "^4.5",
-                "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
                 "symfony/console": "^5.4 || ^6.4 || ^7.0",
                 "symfony/filesystem": "^5.4 || ^6.4 || ^7.0",
                 "symfony/options-resolver": "^5.4 || ^6.4 || ^7.0",
@@ -6472,9 +6472,9 @@
             "description": "Composer plugin to bump project versions during release preparations",
             "support": {
                 "issues": "https://github.com/eliashaeussler/version-bumper/issues",
-                "source": "https://github.com/eliashaeussler/version-bumper/tree/3.0.2"
+                "source": "https://github.com/eliashaeussler/version-bumper/tree/3.1.0"
             },
-            "time": "2025-10-13T05:10:37+00:00"
+            "time": "2025-11-14T17:13:18+00:00"
         },
         {
             "name": "ergebnis/composer-normalize",
@@ -8080,16 +8080,16 @@
         },
         {
             "name": "opis/closure",
-            "version": "4.3.1",
+            "version": "4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "9b6ef5f622b4b29cf98bdc144f2a370c3a40d4df"
+                "reference": "4836788ab123b955a0bbf31f7d4468dd3db825fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/9b6ef5f622b4b29cf98bdc144f2a370c3a40d4df",
-                "reference": "9b6ef5f622b4b29cf98bdc144f2a370c3a40d4df",
+                "url": "https://api.github.com/repos/opis/closure/zipball/4836788ab123b955a0bbf31f7d4468dd3db825fa",
+                "reference": "4836788ab123b955a0bbf31f7d4468dd3db825fa",
                 "shasum": ""
             },
             "require": {
@@ -8129,6 +8129,7 @@
             "description": "A library that can be used to serialize closures (anonymous functions) and arbitrary data.",
             "homepage": "https://opis.io/closure",
             "keywords": [
+                "anonymous classes",
                 "anonymous functions",
                 "closure",
                 "function",
@@ -8138,9 +8139,9 @@
             ],
             "support": {
                 "issues": "https://github.com/opis/closure/issues",
-                "source": "https://github.com/opis/closure/tree/4.3.1"
+                "source": "https://github.com/opis/closure/tree/4.4.0"
             },
-            "time": "2025-01-10T20:42:24+00:00"
+            "time": "2025-11-20T00:20:49+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -11530,7 +11531,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
         "ext-json": "*"
     },
     "platform-dev": {},

@@ -17,7 +17,7 @@
 		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/"
 	},
 	"require": {
-		"php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
 		"ext-json": "*",
 		"devtheorem/php-handlebars": "^0.9.8",
 		"psr/event-dispatcher": "^1.0",
@@ -36,8 +36,8 @@
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.0",
 		"cpsit/typo3-handlebars-test-extension": "1.0.0",
-		"eliashaeussler/deep-closure-comparator": "^1.1",
-		"eliashaeussler/version-bumper": "^3.0",
+		"eliashaeussler/deep-closure-comparator": "^1.2",
+		"eliashaeussler/version-bumper": "^3.1",
 		"ergebnis/composer-normalize": "^2.15",
 		"fig/log-test": "^1.1",
 		"friendsofphp/php-cs-fixer": "^3.57",

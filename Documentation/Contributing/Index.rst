@@ -3,9 +3,6 @@
 ..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
     :target: https://coveralls.io/github/CPS-IT/handlebars
 
-..  image:: https://qlty.sh/gh/CPS-IT/projects/handlebars/maintainability.svg
-    :target: https://qlty.sh/gh/CPS-IT/projects/handlebars
-
 ..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg
     :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
 

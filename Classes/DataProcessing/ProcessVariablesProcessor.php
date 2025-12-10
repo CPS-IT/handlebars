@@ -21,6 +21,7 @@ use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -126,6 +127,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $collection->set(DataSource\DataSource::ContentObjectConfiguration, $contentObjectConfiguration);
         $collection->set(DataSource\DataSource::ProcessedData, $processedData);
         $collection->set(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
+        $merge = (bool)($processorConfiguration['merge'] ?? false);
 
         $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
 
@@ -207,10 +209,16 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
             $cObj,
         );
 
-        // Apply processed variables, either override processed data (if no target variable name is given)
+        // Apply processed variables, either override/merge processed data (if no target variable name is given)
         // or merge with processed data using given target variable name ("as")
         if ($as === null) {
-            $processedData = $processedVariables;
+            if ($merge) {
+                Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedData, $processedVariables);
+            } else {
+                $processedData = $processedVariables;
+            }
+        } elseif ($merge && is_array($processedData[$as] ?? null)) {
+            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedData[$as], $processedVariables);
         } else {
             $processedData[$as] = $processedVariables;
         }

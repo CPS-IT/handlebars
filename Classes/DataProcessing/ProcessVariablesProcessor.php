@@ -19,7 +19,9 @@ namespace CPSIT\Typo3Handlebars\DataProcessing;
 
 use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
+use Psr\Log;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -96,6 +98,11 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\AutoconfigureTag('data.processor', ['identifier' => 'process-variables'])]
 final readonly class ProcessVariablesProcessor implements Frontend\ContentObject\DataProcessorInterface
 {
+    public function __construct(
+        private Log\LoggerInterface $logger,
+        private Core\TypoScript\TypoScriptService $typoScriptService,
+    ) {}
+
     /**
      * @param array<string, mixed> $contentObjectConfiguration
      * @param array<string, mixed> $processorConfiguration
@@ -110,7 +117,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         array $processorConfiguration,
         array $processedData,
     ): array {
-        $data = $processorConfiguration['data.'] ?? $processedData['data'] ?? $cObj->data;
+        $data = $this->resolveDataSources($contentObjectConfiguration, $processorConfiguration, $processedData, $cObj) ?? $cObj->data;
         $table = $processorConfiguration['table'] ?? $processedData['table'] ?? $cObj->getCurrentTable();
         $variables = $processorConfiguration['variables.'] ?? null;
         $as = $processorConfiguration['as'] ?? null;
@@ -142,5 +149,115 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         }
 
         return $processedData;
+    }
+
+    /**
+     * @param array<string, mixed> $contentObjectConfiguration
+     * @param array<string, mixed> $processorConfiguration
+     * @param array<string|int, mixed> $processedData
+     * @return array<string|int, mixed>|null
+     */
+    private function resolveDataSources(
+        array $contentObjectConfiguration,
+        array $processorConfiguration,
+        array $processedData,
+        Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
+    ): ?array {
+        /** @var array<string|int, mixed>|null $dataFromConfiguration */
+        $dataFromConfiguration = $processorConfiguration['data.'] ?? null;
+        /** @var array<string|int, mixed>|null $dataFromProcessedData */
+        $dataFromProcessedData = $processedData['data'] ?? null;
+        /** @var string|array<int, string>|null $dataSources */
+        $dataSources = $processorConfiguration['dataSource.'] ?? $processorConfiguration['dataSource'] ?? null;
+
+        // Early return if no data sources are configured
+        if ($dataSources === null) {
+            return $dataFromConfiguration ?? $dataFromProcessedData;
+        }
+
+        // Normalize content object configuration
+        $contentObjectConfiguration = $this->typoScriptService->convertTypoScriptArrayToPlainArray($contentObjectConfiguration);
+
+        // Normalize simplified data source configuration
+        if (!is_array($dataSources)) {
+            $dataSources = [$dataSources];
+        }
+
+        ksort($dataSources);
+
+        return array_reduce(
+            $dataSources,
+            fn(array $carry, string $keyword) => $this->processDataSource(
+                $carry,
+                $keyword,
+                $contentObjectConfiguration,
+                $contentObjectRenderer,
+                $processedData,
+            ),
+            [],
+        );
+    }
+
+    /**
+     * @param array<string|int, mixed> $processedDataSources
+     * @param array<string|int, mixed> $contentObjectConfiguration
+     * @param array<string|int, mixed> $processedData
+     * @return array<string|int, mixed>
+     */
+    private function processDataSource(
+        array $processedDataSources,
+        string $dataSourceIdentifier,
+        array $contentObjectConfiguration,
+        Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
+        array $processedData,
+    ): array {
+        if (str_contains($dataSourceIdentifier, ':')) {
+            [$dataSourceIdentifier, $path] = Core\Utility\GeneralUtility::trimExplode(':', $dataSourceIdentifier, true, 2);
+        } else {
+            $path = null;
+        }
+
+        $dataSource = ProcessorDataSource::tryFrom($dataSourceIdentifier);
+
+        if ($dataSource === null) {
+            $this->logger->warning(
+                'Invalid processor data source keyword "{source}" passed to "process-variables" data processor (while processing {table}:{uid}).',
+                [
+                    'source' => $dataSourceIdentifier,
+                    'table' => $contentObjectRenderer->getCurrentTable(),
+                    'uid' => $contentObjectRenderer->data['uid'] ?? '*unknown*',
+                ],
+            );
+        }
+
+        $data = match ($dataSource) {
+            ProcessorDataSource::ContentObjectConfiguration => $contentObjectConfiguration,
+            ProcessorDataSource::ContentObjectRenderer => $contentObjectRenderer->data,
+            ProcessorDataSource::ProcessedData => $processedData,
+            default => [],
+        };
+
+        // Limit data to configured path
+        if ($path !== null) {
+            try {
+                $data = Core\Utility\ArrayUtility::getValueByPath($data, $path, '.');
+            } catch (Core\Utility\Exception\MissingArrayPathException) {
+                $this->logger->warning(
+                    'Invalid path "{path}" for processor data source "{source}" passed to "process-variables" data processor (while processing {table}:{uid}).',
+                    [
+                        'path' => $path,
+                        'source' => $dataSourceIdentifier,
+                        'table' => $contentObjectRenderer->getCurrentTable(),
+                        'uid' => $contentObjectRenderer->data['uid'] ?? '*unknown*',
+                    ],
+                );
+
+                return $processedDataSources;
+            }
+        }
+
+        Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedDataSources, $data);
+
+        return $processedDataSources;
     }
 }

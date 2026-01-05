@@ -41,8 +41,6 @@ final readonly class Configuration implements Config\Definition\ConfigurationInt
     public function getConfigTreeBuilder(): Config\Definition\Builder\TreeBuilder
     {
         $treeBuilder = new Config\Definition\Builder\TreeBuilder('handlebars');
-
-        /* @phpstan-ignore method.notFound */
         $treeBuilder
             ->getRootNode()
             ->children()

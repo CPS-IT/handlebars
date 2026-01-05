@@ -15,8 +15,9 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
+use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\Config\RectorConfig;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
+use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
@@ -37,8 +38,10 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
-        FirstClassCallableRector::class => [
-            __DIR__ . '/Tests/Functional/Renderer/Helper/RenderHelperTest.php',
+        ArrayToFirstClassCallableRector::class => [
+            __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
+        ],
+        FunctionFirstClassCallableRector::class => [
             __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
         ],
     ]);

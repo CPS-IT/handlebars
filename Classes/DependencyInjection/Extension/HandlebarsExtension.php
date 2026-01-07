@@ -34,45 +34,17 @@ final class HandlebarsExtension extends DependencyInjection\Extension\Extension
     private const PARAMETER_ROOT_CONTEXT = 'handlebars.variables';
 
     /**
-     * @var string[]
-     */
-    private array $templateRootPaths = [];
-
-    /**
-     * @var string[]
-     */
-    private array $partialRootPaths = [];
-
-    /**
-     * @var array<string|int, mixed>
-     */
-    private array $rootContext = [];
-
-    /**
      * @param array<string|int, mixed>[] $configs
      */
     public function load(array $configs, DependencyInjection\ContainerBuilder $container): void
     {
-        $this->reset();
-        $this->parseConfiguration($configs);
-
-        $container->getParameterBag()->add([
-            self::PARAMETER_TEMPLATE_ROOT_PATHS => $this->templateRootPaths,
-            self::PARAMETER_PARTIAL_ROOT_PATHS => $this->partialRootPaths,
-            self::PARAMETER_ROOT_CONTEXT => $this->rootContext,
-        ]);
-    }
-
-    /**
-     * @param array<string|int, mixed>[] $configs
-     */
-    private function parseConfiguration(array $configs): void
-    {
         $templateConfig = $this->mergeConfigs($configs, 'view');
 
-        $this->templateRootPaths = $templateConfig['templateRootPaths'] ?? [];
-        $this->partialRootPaths = $templateConfig['partialRootPaths'] ?? [];
-        $this->rootContext = $this->mergeConfigs($configs, 'variables');
+        $container->getParameterBag()->add([
+            self::PARAMETER_TEMPLATE_ROOT_PATHS => $templateConfig['templateRootPaths'] ?? [],
+            self::PARAMETER_PARTIAL_ROOT_PATHS => $templateConfig['partialRootPaths'] ?? [],
+            self::PARAMETER_ROOT_CONTEXT => $this->mergeConfigs($configs, 'variables'),
+        ]);
     }
 
     /**
@@ -88,12 +60,5 @@ final class HandlebarsExtension extends DependencyInjection\Extension\Extension
         }
 
         return $mergedConfig;
-    }
-
-    private function reset(): void
-    {
-        $this->templateRootPaths = [];
-        $this->partialRootPaths = [];
-        $this->rootContext = [];
     }
 }

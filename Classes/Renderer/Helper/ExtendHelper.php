@@ -19,7 +19,7 @@ namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars\Attribute;
 use CPSIT\Typo3Handlebars\Renderer;
-use DevTheorem\Handlebars\HelperOptions;
+use DevTheorem\Handlebars;
 
 /**
  * ExtendHelper
@@ -36,7 +36,7 @@ final readonly class ExtendHelper implements Helper
     ) {}
 
     public function render(
-        HelperOptions $options,
+        Handlebars\HelperOptions $options,
         ?Renderer\RenderingContext $renderingContext = null,
         string $name = '',
         mixed ...$arguments,

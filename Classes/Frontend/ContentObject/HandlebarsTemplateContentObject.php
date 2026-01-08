@@ -17,7 +17,9 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Frontend\ContentObject;
 
+use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
+use CPSIT\Typo3Handlebars\Service;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
@@ -36,6 +38,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         private readonly Renderer\Template\Path\ContentObjectPathProvider $pathProvider,
         private readonly Renderer\Renderer $renderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
+        private readonly Service\AssetService $assetService,
     ) {}
 
     /**
@@ -70,6 +73,10 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
 
         $context->assignMultiple($this->resolveVariables($conf));
 
+        // Process modern AssetCollector-based assets
+        $this->processAssets($conf);
+
+        // Process legacy headerAssets/footerAssets (maintained for backward compatibility)
         $this->renderPageAssetsIntoPageRenderer($conf);
 
         try {
@@ -148,6 +155,27 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         }
 
         return $variables;
+    }
+
+    /**
+     * Process and register assets from TypoScript configuration.
+     *
+     * @param array<string, mixed> $config
+     * @throws Exception\InvalidAssetConfigurationException
+     */
+    private function processAssets(array $config): void
+    {
+        if (!isset($config['assets.']) || !\is_array($config['assets.'])) {
+            return;
+        }
+
+        try {
+            $this->assetService->registerAssets(
+                $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['assets.'])
+            );
+        } catch (Exception\InvalidAssetConfigurationException $e) {
+            throw $e;
+        }
     }
 
     /**

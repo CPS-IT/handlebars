@@ -59,6 +59,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             $this->pathProvider,
             $this->renderer,
             $this->get(Core\TypoScript\TypoScriptService::class),
+            $this->get(Src\Service\AssetService::class),
         );
         $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
         $this->pageRenderer = $this->get(Core\Page\PageRenderer::class);

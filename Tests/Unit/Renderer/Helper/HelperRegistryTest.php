@@ -69,16 +69,71 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $this->subject->add('foo', $function);
 
-        $expected = Src\Renderer\Helper\mapExpectedCallable($expectedCallable);
+        $expected = $this->mapExpectedCallable($expectedCallable);
 
         DeepClosureComparator\DeepClosureAssert::assertEquals($expected, $this->subject->get('foo'));
     }
 
+    #[Framework\Attributes\DataProvider('addDecoratesHelperFunctionDataProvider')]
     #[Framework\Attributes\Test]
-    public function addDecoratesHelperFunction(): void
+    public function addDecoratesHelperFunction(callable $function, string $expected): void
     {
-        $function = static fn(Handlebars\HelperOptions $options, string $foo) => $foo . $options->hash['foo'];
+        $renderingContext = new Src\Renderer\RenderingContext();
+        $renderingContext->assign('baz', 'foo');
 
+        $scope = [];
+        $data = [
+            'renderingContext' => $renderingContext,
+        ];
+        $options = new Handlebars\HelperOptions(
+            'foo',
+            [
+                'foo' => 'baz',
+            ],
+            static fn() => '',
+            static fn() => '',
+            0,
+            $scope,
+            $data,
+        );
+
+        $this->subject->add('foo', $function);
+
+        self::assertSame($expected, $this->subject->get('foo')('foo', $options));
+    }
+
+    #[Framework\Attributes\Test]
+    public function addOverridesAvailableHelper(): void
+    {
+        $this->subject->add('foo', 'trim');
+
+        DeepClosureComparator\DeepClosureAssert::assertEquals(
+            $this->mapExpectedCallable('trim'),
+            $this->subject->get('foo'),
+        );
+
+        $this->subject->add('foo', 'strtolower');
+
+        DeepClosureComparator\DeepClosureAssert::assertEquals(
+            $this->mapExpectedCallable('strtolower'),
+            $this->subject->get('foo'),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function getThrowsExceptionIfGivenHelperIsNotRegistered(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\HelperIsNotRegistered('foo'),
+        );
+
+        $this->subject->get('foo');
+    }
+
+    #[Framework\Attributes\Test]
+    public function getReturnsFunctionAcceptingNullableParameter(): void
+    {
+        $function = static fn(?Src\Renderer\RenderingContext $context) => $context?->getVariables()['baz'] ?? 'empty';
         $scope = [];
         $data = [];
         $options = new Handlebars\HelperOptions(
@@ -95,35 +150,86 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $this->subject->add('foo', $function);
 
-        self::assertSame('foobaz', $this->subject->get('foo')('foo', $options));
+        self::assertSame('empty', $this->subject->get('foo')('foo', $options));
     }
 
     #[Framework\Attributes\Test]
-    public function addOverridesAvailableHelper(): void
+    public function getReturnsFunctionAcceptingMissingTypeForRuntimeArguments(): void
     {
-        $this->subject->add('foo', 'trim');
-
-        DeepClosureComparator\DeepClosureAssert::assertEquals(
-            Src\Renderer\Helper\mapExpectedCallable('trim'),
-            $this->subject->get('foo'),
+        $function = static fn($foo) => $foo;
+        $scope = [];
+        $data = [];
+        $options = new Handlebars\HelperOptions(
+            'foo',
+            [
+                'foo' => 'baz',
+            ],
+            static fn() => '',
+            static fn() => '',
+            0,
+            $scope,
+            $data,
         );
 
-        $this->subject->add('foo', 'strtolower');
+        $this->subject->add('foo', $function);
 
-        DeepClosureComparator\DeepClosureAssert::assertEquals(
-            Src\Renderer\Helper\mapExpectedCallable('strtolower'),
-            $this->subject->get('foo'),
-        );
+        self::assertSame('foo', $this->subject->get('foo')('foo', $options));
     }
 
     #[Framework\Attributes\Test]
-    public function getThrowsExceptionIfGivenHelperIsNotRegistered(): void
+    public function getThrowsExceptionIfFunctionHasNonNullableParameterWithNullValue(): void
     {
+        $function = static fn(Src\Renderer\RenderingContext $context) => $context->getVariables()['baz'];
+        $scope = [];
+        $data = [];
+        $options = new Handlebars\HelperOptions(
+            'foo',
+            [
+                'foo' => 'baz',
+            ],
+            static fn() => '',
+            static fn() => '',
+            0,
+            $scope,
+            $data,
+        );
+
+        $this->subject->add('foo', $function);
+
         $this->expectExceptionObject(
-            new Src\Exception\HelperIsNotRegistered('foo'),
+            Src\Exception\InvalidHelperException::forUnresolvableParameter($function, 'context'),
         );
 
-        $this->subject->get('foo');
+        $this->subject->get('foo')('foo', $options);
+    }
+
+    #[Framework\Attributes\Test]
+    public function getThrowsExceptionIfFunctionHasParameterWithUnsupportedType(): void
+    {
+        $function = static fn(Src\Renderer\RenderingContext $context) => $context->getVariables()['baz'];
+        $scope = [];
+        $data = [
+            'renderingContext' => 'foo',
+        ];
+        $options = new Handlebars\HelperOptions(
+            'foo',
+            [
+                'foo' => 'baz',
+            ],
+            static fn() => '',
+            static fn() => '',
+            0,
+            $scope,
+            $data,
+        );
+
+        $this->subject->add('foo', $function);
+
+        $this->expectExceptionObject(
+            Src\Exception\InvalidHelperException::forUnresolvableParameter($function, 'context'),
+        );
+
+        $this->subject->get('foo')('foo', $options);
     }
 
     #[Framework\Attributes\Test]
@@ -132,7 +238,7 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->subject->add('foo', 'trim');
 
         DeepClosureComparator\DeepClosureAssert::assertEquals(
-            Src\Renderer\Helper\mapExpectedCallable('trim'),
+            $this->mapExpectedCallable('trim'),
             $this->subject->get('foo'),
         );
     }
@@ -145,7 +251,7 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->subject->add('foo', 'strtolower');
 
         DeepClosureComparator\DeepClosureAssert::assertEquals(
-            ['foo' => Src\Renderer\Helper\mapExpectedCallable('strtolower')],
+            ['foo' => $this->mapExpectedCallable('strtolower')],
             $this->subject->getAll(),
         );
     }
@@ -206,23 +312,66 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         ];
         yield 'static class method as string' => [
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::staticExecute',
-            Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::staticExecute',
+            (new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper())->staticExecute(...),
         ];
         yield 'non-static class method as string' => [
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class . '::execute',
-            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
+            (new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper())->execute(...),
         ];
         yield 'static class method as array' => [
             [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'staticExecute'],
-            [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'staticExecute'],
+            (new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper())->staticExecute(...),
         ];
         yield 'non-static class method as array' => [
             [Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class, 'execute'],
-            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
+            (new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper())->execute(...),
         ];
         yield 'class method as initialized array' => [
             [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
-            [new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper(), 'execute'],
+            (new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper())->execute(...),
         ];
+    }
+
+    /**
+     * @return \Generator<string, array{callable, string}>
+     */
+    public static function addDecoratesHelperFunctionDataProvider(): \Generator
+    {
+        yield 'no parameters' => [
+            static fn() => 'foo',
+            'foo',
+        ];
+        yield 'helper options only' => [
+            static fn(Handlebars\HelperOptions $options) => $options->hash['foo'],
+            'baz',
+        ];
+        yield 'helper options and arguments' => [
+            static fn(Handlebars\HelperOptions $options, string $foo) => $foo . $options->hash['foo'],
+            'foobaz',
+        ];
+        yield 'rendering context only' => [
+            static fn(Src\Renderer\RenderingContext $context) => $context->getVariables()['baz'],
+            'foo',
+        ];
+        yield 'rendering context and arguments' => [
+            static fn(Src\Renderer\RenderingContext $context, string $foo) => $foo . $context->getVariables()['baz'],
+            'foofoo',
+        ];
+        yield 'rendering context, helper options and arguments' => [
+            static fn(Src\Renderer\RenderingContext $context, Handlebars\HelperOptions $options, string $foo) => $foo . $options->hash['foo'] . $context->getVariables()['baz'],
+            'foobazfoo',
+        ];
+        yield 'helper options, rendering context and arguments' => [
+            static fn(Handlebars\HelperOptions $options, Src\Renderer\RenderingContext $context, string $foo) => $foo . $options->hash['foo'] . $context->getVariables()['baz'],
+            'foobazfoo',
+        ];
+    }
+
+    private function mapExpectedCallable(callable $expectedCallable): \Closure
+    {
+        $reflectionObject = new \ReflectionObject($this->subject);
+        $reflectionMethod = $reflectionObject->getMethod('decorateHelperFunction');
+
+        return $reflectionMethod->invoke($this->subject, $expectedCallable);
     }
 }

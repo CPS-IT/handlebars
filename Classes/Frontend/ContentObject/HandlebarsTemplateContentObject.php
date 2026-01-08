@@ -92,7 +92,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
     private function createContext(array $config): Renderer\RenderingContext
     {
         $format = $this->cObj?->stdWrapValue('format', $config, null);
-        $context = new Renderer\RenderingContext();
+        $context = new Renderer\RenderingContext(request: $this->request);
 
         if (is_string($format)) {
             $context->setFormat($format);

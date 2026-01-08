@@ -35,8 +35,12 @@ final readonly class ExtendHelper implements Helper
         private Renderer\Renderer $renderer,
     ) {}
 
-    public function render(HelperOptions $options, string $name = '', mixed ...$arguments): string
-    {
+    public function render(
+        HelperOptions $options,
+        ?Renderer\RenderingContext $renderingContext = null,
+        string $name = '',
+        mixed ...$arguments,
+    ): string {
         // Custom context is optional
         $customContext = [];
         if ($arguments !== []) {
@@ -56,7 +60,7 @@ final readonly class ExtendHelper implements Helper
         // Render layout with merged data
         try {
             return $this->renderer->render(
-                new Renderer\RenderingContext($name, $variables),
+                new Renderer\RenderingContext($name, $variables, $renderingContext?->getRequest()),
             );
         } finally {
             $layoutStack->pop();

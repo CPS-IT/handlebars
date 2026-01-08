@@ -30,12 +30,12 @@ use TYPO3\CMS\Core\Page\AssetCollector;
  * @author Vladimir Falcon Piva <v.falcon@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class AssetService
+final readonly class AssetService
 {
     private const KNOWN_OPTIONS = ['priority', 'useNonce'];
 
     public function __construct(
-        private readonly AssetCollector $assetCollector,
+        private AssetCollector $assetCollector,
     ) {}
 
     /**

@@ -70,10 +70,7 @@
 	"autoload-dev": {
 		"psr-4": {
 			"CPSIT\\Typo3Handlebars\\Tests\\": "Tests/"
-		},
-		"files": [
-			"Tests/Unit/DataProvider/HelperClosureProvider.php"
-		]
+		}
 	},
 	"config": {
 		"allow-plugins": {

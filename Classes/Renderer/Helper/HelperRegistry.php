@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars\Exception;
+use CPSIT\Typo3Handlebars\Renderer;
 use DevTheorem\Handlebars;
 use Psr\Log;
 use TYPO3\CMS\Core;
@@ -100,6 +101,7 @@ final class HelperRegistry implements Core\SingletonInterface
         // └─ b. as closure or first class callable syntax
         // 2. invokable class
         // └─ a. as string (class-name)
+        // └─ b. as object
         // 3. class implementing Helper interface
         // ├─ a. as string (class-name)
         // └─ b. as object
@@ -107,9 +109,6 @@ final class HelperRegistry implements Core\SingletonInterface
         // ├─ a. as string => class-name::method-name
         // ├─ b. as array => [class-name, method-name]
         // └─ c. as initialized array => [object, method-name]
-
-        $className = null;
-        $methodName = null;
 
         if (\is_string($function) && !str_contains($function, '::')) {
             // 1a. callable as string
@@ -128,8 +127,13 @@ final class HelperRegistry implements Core\SingletonInterface
             }
         }
 
-        if (\is_callable($function)) {
+        if ($function instanceof \Closure) {
             // 1b. callable as closure or first class callable syntax
+            return $function;
+        }
+
+        if (is_callable($function) && is_object($function)) {
+            // 2b. invokable class as object
             return $function;
         }
 
@@ -137,6 +141,9 @@ final class HelperRegistry implements Core\SingletonInterface
         if ($function instanceof Helper) {
             return $function->render(...);
         }
+
+        $className = null;
+        $methodName = null;
 
         // 4a. class method as string
         /* @phpstan-ignore booleanAnd.rightAlwaysFalse */
@@ -146,13 +153,11 @@ final class HelperRegistry implements Core\SingletonInterface
 
         // 4b. class method as array
         // 4c. class method as initialized array
-        /* @phpstan-ignore identical.alwaysTrue */
         if (\is_array($function) && \count($function) === 2) {
             [$className, $methodName] = $function;
         }
 
         // Early return if either class name or method name cannot be resolved
-        /* @phpstan-ignore identical.alwaysFalse */
         if ($className === null || $methodName === null) {
             throw Exception\InvalidHelperException::forUnsupportedType($function);
         }
@@ -165,16 +170,24 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // Instantiate class if not done yet
-        if (\is_string($className)) {
-            $className = Core\Utility\GeneralUtility::makeInstance($className);
+        if (\is_string($className) && !$reflectionMethod->isStatic()) {
+            /** @var class-string $className */
+            $helperClass = Core\Utility\GeneralUtility::makeInstance($className);
+        } else {
+            $helperClass = $className;
         }
 
-        $callable = [$className, $methodName];
-        if (\is_callable($callable)) {
-            return $callable;
+        $callable = [$helperClass, $methodName];
+
+        if (!\is_callable($callable)) {
+            throw Exception\InvalidHelperException::forInvalidCallable($callable);
         }
 
-        throw Exception\InvalidHelperException::forInvalidCallable($callable);
+        if ($reflectionMethod->isStatic()) {
+            return $helperClass::$methodName(...);
+        }
+
+        return $helperClass->$methodName(...);
     }
 
     /**
@@ -186,8 +199,69 @@ final class HelperRegistry implements Core\SingletonInterface
             $arguments = \func_get_args();
             /** @var Handlebars\HelperOptions $options */
             $options = \array_pop($arguments);
+            $renderingContext = $options->data['renderingContext'] ?? null;
+            $parameters = self::mapFunctionParameters($function, $options, $renderingContext, $arguments);
 
-            return $function($options, ...$arguments);
+            return $function(...$parameters);
         };
+    }
+
+    /**
+     * @param list<mixed> $arguments
+     * @return list<mixed>
+     * @throws Exception\InvalidHelperException
+     */
+    private static function mapFunctionParameters(
+        callable $function,
+        Handlebars\HelperOptions $options,
+        mixed $renderingContext,
+        array $arguments,
+    ): array {
+        // Fall back to HelperOptions + runtime arguments if callable cannot be reflected
+        if (!is_string($function) && !($function instanceof \Closure)) {
+            return [$options, ...$arguments];
+        }
+
+        $reflectionFunction = new \ReflectionFunction($function);
+        $parameters = [];
+        $parameterMap = [
+            Handlebars\HelperOptions::class => $options,
+            Renderer\RenderingContext::class => $renderingContext,
+        ];
+
+        foreach ($reflectionFunction->getParameters() as $parameter) {
+            $type = $parameter->getType();
+
+            // Exit loop if we reached runtime arguments (those may be declared without a named type)
+            if (!($type instanceof \ReflectionNamedType)) {
+                break;
+            }
+
+            // Exit loop if we reached runtime arguments
+            if (!\array_key_exists($type->getName(), $parameterMap)) {
+                break;
+            }
+
+            $resolvedParameter = $parameterMap[$type->getName()];
+
+            if ($resolvedParameter === null) {
+                if ($type->allowsNull()) {
+                    $parameters[] = null;
+                    continue;
+                }
+
+                // Fail if a non-nullable parameter would receive null
+                throw Exception\InvalidHelperException::forUnresolvableParameter($function, $parameter->getName());
+            }
+
+            // Fail if a parameter would receive a wrong type
+            if (!\is_a($resolvedParameter, $type->getName(), true)) {
+                throw Exception\InvalidHelperException::forUnresolvableParameter($function, $parameter->getName());
+            }
+
+            $parameters[] = $resolvedParameter;
+        }
+
+        return [...$parameters, ...$arguments];
     }
 }

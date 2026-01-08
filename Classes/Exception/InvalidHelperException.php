@@ -53,4 +53,16 @@ final class InvalidHelperException extends \Exception
             1638180355
         );
     }
+
+    public static function forUnresolvableParameter(callable $helperFunction, string $parameterName): self
+    {
+        return new self(
+            \sprintf(
+                'The helper function with callable %s requires an unresolvable parameter "$%s".',
+                \get_debug_type($helperFunction),
+                $parameterName,
+            ),
+            1767777282,
+        );
+    }
 }

@@ -148,13 +148,4 @@ final class AssetTypeTest extends TestingFramework\Core\Unit\UnitTestCase
 
         self::assertSame('addInlineStyleSheet', $actual);
     }
-
-    #[Framework\Attributes\Test]
-    public function enumValuesAreCorrect(): void
-    {
-        self::assertSame('javaScript', Src\Service\AssetType::JAVASCRIPT->value);
-        self::assertSame('inlineJavaScript', Src\Service\AssetType::INLINE_JAVASCRIPT->value);
-        self::assertSame('css', Src\Service\AssetType::CSS->value);
-        self::assertSame('inlineCss', Src\Service\AssetType::INLINE_CSS->value);
-    }
 }

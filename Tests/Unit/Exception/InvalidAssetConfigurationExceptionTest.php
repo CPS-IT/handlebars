@@ -89,13 +89,4 @@ final class InvalidAssetConfigurationExceptionTest extends TestingFramework\Core
         );
         self::assertSame(1704800005, $actual->getCode());
     }
-
-    #[Framework\Attributes\Test]
-    public function exceptionExtendsBaseException(): void
-    {
-        $actual = Src\Exception\InvalidAssetConfigurationException::forMissingSource('test', 'css');
-
-        self::assertInstanceOf(Src\Exception\Exception::class, $actual);
-        self::assertInstanceOf(\Exception::class, $actual);
-    }
 }

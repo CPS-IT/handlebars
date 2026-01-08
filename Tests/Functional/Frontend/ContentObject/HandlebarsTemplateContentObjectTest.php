@@ -20,6 +20,7 @@ namespace CPSIT\Typo3Handlebars\Tests\Functional\Frontend\ContentObject;
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
+use Psr\Http\Message;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
@@ -45,12 +46,11 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     private Src\Frontend\ContentObject\HandlebarsTemplateContentObject $subject;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
     private Core\Page\PageRenderer $pageRenderer;
+    private Message\ServerRequestInterface $request;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $request = $this->buildServerRequest();
 
         $this->renderer = new Tests\Functional\Fixtures\Classes\DummyRenderer();
         $this->pathProvider = $this->get(Src\Renderer\Template\Path\ContentObjectPathProvider::class);
@@ -63,10 +63,12 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
         $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
         $this->pageRenderer = $this->get(Core\Page\PageRenderer::class);
 
-        $this->subject->setRequest($request);
+        $this->request = $this->buildServerRequest();
+        $this->subject->setRequest($this->request);
         $this->subject->setContentObjectRenderer($this->contentObjectRenderer);
-        $this->contentObjectRenderer->setRequest($request);
-        $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
+        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRenderer);
+        $this->contentObjectRenderer->setRequest($this->request);
+        $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($this->request);
     }
 
     #[Framework\Attributes\Test]
@@ -80,7 +82,17 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
-    public function renderAppliesGivenFormatToView(): void
+    public function renderAppliesCurrentRequestToContext(): void
+    {
+        $this->subject->render([
+            'template' => 'foo',
+        ]);
+
+        self::assertEquals($this->request, $this->renderer->lastContext?->getRequest());
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderAppliesGivenFormatToContext(): void
     {
         $this->subject->render([
             'template' => 'foo',
@@ -105,7 +117,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
-    public function renderAppliesGivenTemplateNameToView(): void
+    public function renderAppliesGivenTemplateNameToContext(): void
     {
         $this->expectExceptionObject(
             new Src\Exception\TemplateFileIsInvalid('foo'),
@@ -132,7 +144,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
-    public function renderAppliesGivenTemplateToView(): void
+    public function renderAppliesGivenTemplateToContext(): void
     {
         self::assertSame(
             'foo',
@@ -157,7 +169,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
-    public function renderAppliesGivenFileToView(): void
+    public function renderAppliesGivenFileToContext(): void
     {
         $this->expectExceptionObject(
             new Src\Exception\TemplateFileIsInvalid('foo'),

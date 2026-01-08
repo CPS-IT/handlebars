@@ -36,8 +36,12 @@ final readonly class RenderHelper implements Helper
         private Renderer\Renderer $renderer,
     ) {}
 
-    public function render(Handlebars\HelperOptions $options, string $name = '', mixed ...$arguments): Handlebars\SafeString
-    {
+    public function render(
+        Handlebars\HelperOptions $options,
+        ?Renderer\RenderingContext $renderingContext = null,
+        string $name = '',
+        mixed ...$arguments,
+    ): Handlebars\SafeString {
         // Resolve data
         $rootData = $options->data['root'];
         $merge = (bool)($options->hash['merge'] ?? false);
@@ -70,7 +74,7 @@ final readonly class RenderHelper implements Helper
         }
 
         $content = $this->renderer->render(
-            new Renderer\RenderingContext($name, $subContext),
+            new Renderer\RenderingContext($name, $subContext, $renderingContext?->getRequest()),
         );
 
         return new Handlebars\SafeString($content);

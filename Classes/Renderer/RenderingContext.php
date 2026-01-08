@@ -19,6 +19,7 @@ namespace CPSIT\Typo3Handlebars\Renderer;
 
 use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
+use Psr\Http\Message;
 
 /**
  * RenderingContext
@@ -37,6 +38,7 @@ final class RenderingContext
     public function __construct(
         private ?string $templatePath = null,
         private array $variables = [],
+        private ?Message\ServerRequestInterface $request = null,
     ) {}
 
     /**
@@ -120,6 +122,18 @@ final class RenderingContext
         foreach ($values as $key => $value) {
             $this->assign($key, $value);
         }
+
+        return $this;
+    }
+
+    public function getRequest(): ?Message\ServerRequestInterface
+    {
+        return $this->request;
+    }
+
+    public function setRequest(Message\ServerRequestInterface $request): self
+    {
+        $this->request = $request;
 
         return $this;
     }

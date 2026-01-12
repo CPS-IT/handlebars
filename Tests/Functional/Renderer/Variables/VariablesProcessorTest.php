@@ -160,6 +160,20 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
     }
 
     #[Framework\Attributes\Test]
+    public function processTreatsStringsWithLeftAngleBracketAndNonFollowingWhitespaceAsStaticText(): void
+    {
+        $expected = [
+            'foo' => '<foo>',
+        ];
+
+        $actual = $this->subject->process([
+            'foo' => '<foo>',
+        ]);
+
+        self::assertEquals($expected, $actual);
+    }
+
+    #[Framework\Attributes\Test]
     public function processDoesNotApplyContentObjectVariablesOnMatchingRemoveIfConfig(): void
     {
         $expected = [

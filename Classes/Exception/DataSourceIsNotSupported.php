@@ -15,17 +15,22 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\DataProcessing;
+namespace CPSIT\Typo3Handlebars\Exception;
 
 /**
- * ProcessorDataSource
+ * DataSourceIsNotSupported
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-enum ProcessorDataSource: string
+final class DataSourceIsNotSupported extends Exception
 {
-    case ContentObjectConfiguration = 'contentObjectConfiguration';
-    case ContentObjectRenderer = 'contentObjectRenderer';
-    case ProcessedData = 'processedData';
+    public function __construct(
+        public readonly string $dataSourceIdentifier,
+    ) {
+        parent::__construct(
+            sprintf('The given data source "%s" is not supported.', $dataSourceIdentifier),
+            1768385875,
+        );
+    }
 }

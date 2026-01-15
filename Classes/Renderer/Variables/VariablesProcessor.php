@@ -66,9 +66,12 @@ final readonly class VariablesProcessor
             }
 
             // Register variable for further processing if an appropriate content object is available
-            // or if variable is a reference to another variable (will be resolved later)
+            // or if variable is a reference to another variable (will be resolved later). The whitespace
+            // after left angle bracket is intended to avoid treating static text like <foo> as reference.
+            // Since all refernces are written like =< foo, we can safely assume a combination of a left
+            // angle bracket followed by a whitespace is a reference to be resolved.
             if (is_string($value) &&
-                ($this->contentObjectRenderer->getContentObject($value) !== null || str_starts_with($value, '<'))
+                ($this->contentObjectRenderer->getContentObject($value) !== null || str_starts_with($value, '< '))
             ) {
                 $cObjConfName = $name . '.';
                 $variablesToProcess[$name] = $value;

@@ -25,3 +25,4 @@ primarily aimed at specifically extending the standard components.
     CustomRenderingComponents/Index
     CreateACustomHelper/Index
     Events/Index
+    AssetManagement/Index

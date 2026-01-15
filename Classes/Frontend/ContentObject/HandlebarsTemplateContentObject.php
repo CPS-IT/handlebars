@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Frontend\ContentObject;
 
+use CPSIT\Typo3Handlebars\Exception;
+use CPSIT\Typo3Handlebars\Frontend\Assets;
 use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
@@ -36,6 +38,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         private readonly Renderer\Template\Path\ContentObjectPathProvider $pathProvider,
         private readonly Renderer\Renderer $renderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
+        private readonly Assets\AssetHandler $assetHandler,
     ) {}
 
     /**
@@ -68,9 +71,11 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         // Populate template paths for availability in subsequent renderings
         $this->pathProvider->push($templatePaths);
 
+        // Resolve and assign template variables
         $context->assignMultiple($this->resolveVariables($conf));
 
-        $this->renderPageAssetsIntoPageRenderer($conf);
+        // Process configured assets (using AssetCollector and PageRenderer)
+        $this->processAssets($conf);
 
         try {
             $content = $this->renderer->render($context);
@@ -151,10 +156,19 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
     }
 
     /**
+     * Process and register assets from TypoScript configuration.
+     *
      * @param array<string, mixed> $config
+     * @throws Exception\InvalidAssetConfigurationException
      */
-    private function renderPageAssetsIntoPageRenderer(array $config): void
+    private function processAssets(array $config): void
     {
+        if (is_array($config['assets.'] ?? null)) {
+            $this->assetHandler->collectAssets(
+                $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['assets.']),
+            );
+        }
+
         if (is_string($config['headerAssets'] ?? null) && is_array($config['headerAssets.'] ?? null)) {
             $headerAssets = $this->cObj?->cObjGetSingle($config['headerAssets'], $config['headerAssets.']) ?? '';
         } else {

@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Service;
+namespace CPSIT\Typo3Handlebars\Frontend\Assets;
 
 /**
  * AssetType
@@ -29,32 +29,32 @@ namespace CPSIT\Typo3Handlebars\Service;
  */
 enum AssetType: string
 {
-    case JAVASCRIPT = 'javaScript';
-    case INLINE_JAVASCRIPT = 'inlineJavaScript';
-    case CSS = 'css';
-    case INLINE_CSS = 'inlineCss';
+    case Css = 'css';
+    case InlineCss = 'inlineCss';
+    case InlineJavaScript = 'inlineJavaScript';
+    case JavaScript = 'javaScript';
+
+    /**
+     * @return list<string>
+     */
+    public static function values(): array
+    {
+        return \array_map(
+            static fn(self $assetType) => $assetType->value,
+            self::cases(),
+        );
+    }
 
     /**
      * Get boolean HTML attributes for this asset type.
      *
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getBooleanAttributes(): array
     {
         return match ($this) {
-            self::JAVASCRIPT, self::INLINE_JAVASCRIPT => ['async', 'defer', 'nomodule'],
-            self::CSS, self::INLINE_CSS => ['disabled'],
-        };
-    }
-
-    /**
-     * Check if this is an inline asset type.
-     */
-    public function isInline(): bool
-    {
-        return match ($this) {
-            self::INLINE_JAVASCRIPT, self::INLINE_CSS => true,
-            self::JAVASCRIPT, self::CSS => false,
+            self::JavaScript, self::InlineJavaScript => ['async', 'defer', 'nomodule'],
+            self::Css, self::InlineCss => ['disabled'],
         };
     }
 
@@ -67,15 +67,13 @@ enum AssetType: string
     }
 
     /**
-     * Get the AssetCollector method name for this asset type.
+     * Check if this is an inline asset type.
      */
-    public function getCollectorMethod(): string
+    public function isInline(): bool
     {
         return match ($this) {
-            self::JAVASCRIPT => 'addJavaScript',
-            self::INLINE_JAVASCRIPT => 'addInlineJavaScript',
-            self::CSS => 'addStyleSheet',
-            self::INLINE_CSS => 'addInlineStyleSheet',
+            self::InlineJavaScript, self::InlineCss => true,
+            self::JavaScript, self::Css => false,
         };
     }
 }

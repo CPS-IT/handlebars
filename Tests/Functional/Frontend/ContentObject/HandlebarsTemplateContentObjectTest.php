@@ -43,6 +43,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
 
     private Tests\Functional\Fixtures\Classes\DummyRenderer $renderer;
     private Src\Renderer\Template\Path\ContentObjectPathProvider $pathProvider;
+    private Core\Page\AssetCollector $assetCollector;
     private Src\Frontend\ContentObject\HandlebarsTemplateContentObject $subject;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
     private Core\Page\PageRenderer $pageRenderer;
@@ -54,12 +55,13 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
 
         $this->renderer = new Tests\Functional\Fixtures\Classes\DummyRenderer();
         $this->pathProvider = $this->get(Src\Renderer\Template\Path\ContentObjectPathProvider::class);
+        $this->assetCollector = $this->get(Core\Page\AssetCollector::class);
         $this->subject = new Src\Frontend\ContentObject\HandlebarsTemplateContentObject(
             $this->get(Frontend\ContentObject\ContentDataProcessor::class),
             $this->pathProvider,
             $this->renderer,
             $this->get(Core\TypoScript\TypoScriptService::class),
-            $this->get(Src\Service\AssetService::class),
+            new Src\Frontend\Assets\AssetHandler($this->assetCollector),
         );
         $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
         $this->pageRenderer = $this->get(Core\Page\PageRenderer::class);
@@ -276,6 +278,23 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
         ]);
 
         self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderCollectsConfiguredAssets(): void
+    {
+        $this->subject->render([
+            'template' => 'foo',
+            'assets.' => [
+                'javaScript' => [
+                    'my-script' => [
+                        'source' => 'EXT:myext/Resources/Public/JavaScript/app.js',
+                    ],
+                ],
+            ],
+        ]);
+
+        self::assertArrayHasKey('my-script', $this->assetCollector->getJavaScripts());
     }
 
     #[Framework\Attributes\Test]

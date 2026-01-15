@@ -33,7 +33,7 @@ final class InvalidAssetConfigurationExceptionTest extends TestingFramework\Core
     #[Framework\Attributes\Test]
     public function forMissingSourceReturnsExceptionWithCorrectMessage(): void
     {
-        $actual = Src\Exception\InvalidAssetConfigurationException::forMissingSource('my-asset', 'javaScript');
+        $actual = Src\Exception\InvalidAssetConfigurationException::forMissingSource('my-asset', Src\Frontend\Assets\AssetType::JavaScript);
 
         self::assertSame(
             'Asset configuration "my-asset" (type: javaScript) is missing required "source" parameter.',
@@ -45,7 +45,7 @@ final class InvalidAssetConfigurationExceptionTest extends TestingFramework\Core
     #[Framework\Attributes\Test]
     public function forInvalidIdentifierReturnsExceptionWithCorrectMessage(): void
     {
-        $actual = Src\Exception\InvalidAssetConfigurationException::forInvalidIdentifier('css');
+        $actual = Src\Exception\InvalidAssetConfigurationException::forInvalidIdentifier(Src\Frontend\Assets\AssetType::Css);
 
         self::assertSame(
             'Asset configuration (type: css) has invalid or empty identifier.',
@@ -57,7 +57,7 @@ final class InvalidAssetConfigurationExceptionTest extends TestingFramework\Core
     #[Framework\Attributes\Test]
     public function forInvalidConfigurationReturnsExceptionWithCorrectMessage(): void
     {
-        $actual = Src\Exception\InvalidAssetConfigurationException::forInvalidConfiguration('test-asset', 'inlineJavaScript');
+        $actual = Src\Exception\InvalidAssetConfigurationException::forInvalidConfiguration('test-asset', Src\Frontend\Assets\AssetType::InlineJavaScript);
 
         self::assertSame(
             'Asset configuration "test-asset" (type: inlineJavaScript) must be an array.',
@@ -72,7 +72,7 @@ final class InvalidAssetConfigurationExceptionTest extends TestingFramework\Core
         $actual = Src\Exception\InvalidAssetConfigurationException::forUnknownAssetType('invalidType');
 
         self::assertSame(
-            'Unknown asset type "invalidType". Valid types are: javaScript, inlineJavaScript, css, inlineCss.',
+            'Unknown asset type "invalidType". Valid types are: css, inlineCss, inlineJavaScript, javaScript.',
             $actual->getMessage()
         );
         self::assertSame(1704800004, $actual->getCode());
@@ -81,7 +81,7 @@ final class InvalidAssetConfigurationExceptionTest extends TestingFramework\Core
     #[Framework\Attributes\Test]
     public function forInvalidAssetsArrayReturnsExceptionWithCorrectMessage(): void
     {
-        $actual = Src\Exception\InvalidAssetConfigurationException::forInvalidAssetsArray('javaScript');
+        $actual = Src\Exception\InvalidAssetConfigurationException::forInvalidAssetsArray(Src\Frontend\Assets\AssetType::JavaScript);
 
         self::assertSame(
             'Assets configuration for type "javaScript" must be an array.',

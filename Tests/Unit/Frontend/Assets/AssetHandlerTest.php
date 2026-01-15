@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Unit\Service;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\Frontend\Assets;
 
 use CPSIT\Typo3Handlebars as Src;
 use PHPUnit\Framework;
@@ -23,40 +23,38 @@ use TYPO3\CMS\Core;
 use TYPO3\TestingFramework;
 
 /**
- * AssetServiceTest
+ * AssetHandlerTest
  *
  * @author Vladimir Falcon Piva <v.falcon@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Framework\Attributes\CoversClass(Src\Service\AssetService::class)]
-final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Frontend\Assets\AssetHandler::class)]
+final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
 {
     private Core\Page\AssetCollector $assetCollector;
-    private Src\Service\AssetService $subject;
+    private Src\Frontend\Assets\AssetHandler $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->assetCollector = new Core\Page\AssetCollector();
-        $this->subject = new Src\Service\AssetService(
-            $this->assetCollector,
-        );
+        $this->subject = new Src\Frontend\Assets\AssetHandler($this->assetCollector);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsDoesNothingIfNoAssetsConfigured(): void
+    public function collectAssetsDoesNothingIfNoAssetsAreConfigured(): void
     {
-        $this->subject->registerAssets([]);
+        $this->subject->collectAssets([]);
 
-        self::assertEmpty($this->assetCollector->getJavaScripts());
-        self::assertEmpty($this->assetCollector->getInlineJavaScripts());
-        self::assertEmpty($this->assetCollector->getStyleSheets());
-        self::assertEmpty($this->assetCollector->getInlineStyleSheets());
+        self::assertSame([], $this->assetCollector->getJavaScripts());
+        self::assertSame([], $this->assetCollector->getInlineJavaScripts());
+        self::assertSame([], $this->assetCollector->getStyleSheets());
+        self::assertSame([], $this->assetCollector->getInlineStyleSheets());
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsAddsJavaScriptWithMinimalConfiguration(): void
+    public function collectAssetsAddsJavaScriptWithMinimalConfiguration(): void
     {
         $config = [
             'javaScript' => [
@@ -66,17 +64,18 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getJavaScripts();
+
         self::assertArrayHasKey('my-script', $assets);
         self::assertSame('EXT:myext/Resources/Public/JavaScript/app.js', $assets['my-script']['source']);
-        self::assertEmpty($assets['my-script']['attributes']);
-        self::assertEmpty($assets['my-script']['options']);
+        self::assertSame([], $assets['my-script']['attributes']);
+        self::assertSame([], $assets['my-script']['options']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsAddsJavaScriptWithFullConfiguration(): void
+    public function collectAssetsAddsJavaScriptWithFullConfiguration(): void
     {
         $config = [
             'javaScript' => [
@@ -95,9 +94,10 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getJavaScripts();
+
         self::assertArrayHasKey('my-script', $assets);
         self::assertSame('EXT:myext/Resources/Public/JavaScript/app.js', $assets['my-script']['source']);
         self::assertSame('async', $assets['my-script']['attributes']['async']);
@@ -108,7 +108,7 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsAddsStyleSheetWithMediaAttribute(): void
+    public function collectAssetsAddsStyleSheetWithMediaAttribute(): void
     {
         $config = [
             'css' => [
@@ -121,16 +121,17 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getStyleSheets();
+
         self::assertArrayHasKey('my-styles', $assets);
         self::assertSame('EXT:myext/Resources/Public/Css/styles.css', $assets['my-styles']['source']);
         self::assertSame('screen and (max-width: 768px)', $assets['my-styles']['attributes']['media']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsAddsInlineJavaScript(): void
+    public function collectAssetsAddsInlineJavaScript(): void
     {
         $config = [
             'inlineJavaScript' => [
@@ -143,16 +144,17 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getInlineJavaScripts();
+
         self::assertArrayHasKey('my-inline', $assets);
         self::assertSame('console.log("Hello");', $assets['my-inline']['source']);
         self::assertSame('module', $assets['my-inline']['attributes']['type']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsAddsInlineStyleSheet(): void
+    public function collectAssetsAddsInlineStyleSheet(): void
     {
         $config = [
             'inlineCss' => [
@@ -162,15 +164,16 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getInlineStyleSheets();
+
         self::assertArrayHasKey('my-inline-css', $assets);
         self::assertSame('body { margin: 0; }', $assets['my-inline-css']['source']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsProcessesMultipleAssetsOfDifferentTypes(): void
+    public function collectAssetsProcessesMultipleAssetsOfDifferentTypes(): void
     {
         $config = [
             'javaScript' => [
@@ -185,7 +188,7 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         self::assertCount(2, $this->assetCollector->getJavaScripts());
         self::assertCount(1, $this->assetCollector->getStyleSheets());
@@ -193,7 +196,7 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsThrowsExceptionForMissingSource(): void
+    public function collectAssetsThrowsExceptionForMissingSource(): void
     {
         $config = [
             'javaScript' => [
@@ -206,11 +209,11 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->expectException(Src\Exception\InvalidAssetConfigurationException::class);
         $this->expectExceptionMessage('missing required "source"');
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsThrowsExceptionForEmptySource(): void
+    public function collectAssetsThrowsExceptionForEmptySource(): void
     {
         $config = [
             'javaScript' => [
@@ -222,11 +225,11 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $this->expectException(Src\Exception\InvalidAssetConfigurationException::class);
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsHandlesBooleanAttributesCorrectly(): void
+    public function collectAssetsHandlesBooleanAttributesCorrectly(): void
     {
         $config = [
             'javaScript' => [
@@ -241,16 +244,17 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getJavaScripts();
+
         self::assertSame('async', $assets['my-script']['attributes']['async']);
         self::assertSame('nomodule', $assets['my-script']['attributes']['nomodule']);
         self::assertArrayNotHasKey('defer', $assets['my-script']['attributes']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsHandlesCssBooleanAttributesCorrectly(): void
+    public function collectAssetsHandlesCssBooleanAttributesCorrectly(): void
     {
         $config = [
             'css' => [
@@ -264,15 +268,16 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getStyleSheets();
+
         self::assertSame('disabled', $assets['my-styles']['attributes']['disabled']);
         self::assertSame('screen', $assets['my-styles']['attributes']['media']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsHandlesMultipleBooleanAttributesCombinations(): void
+    public function collectAssetsHandlesMultipleBooleanAttributesCombinations(): void
     {
         $config = [
             'javaScript' => [
@@ -289,9 +294,10 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getJavaScripts();
+
         self::assertSame('async', $assets['my-script']['attributes']['async']);
         self::assertSame('defer', $assets['my-script']['attributes']['defer']);
         self::assertSame('module', $assets['my-script']['attributes']['type']);
@@ -300,7 +306,7 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsHandlesOptionsCorrectly(): void
+    public function collectAssetsHandlesOptionsCorrectly(): void
     {
         $config = [
             'javaScript' => [
@@ -314,15 +320,16 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         $assets = $this->assetCollector->getJavaScripts();
+
         self::assertTrue($assets['my-script']['options']['priority']);
         self::assertFalse($assets['my-script']['options']['useNonce']);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsThrowsExceptionForInvalidConfiguration(): void
+    public function collectAssetsThrowsExceptionForInvalidConfiguration(): void
     {
         $config = [
             'javaScript' => [
@@ -335,11 +342,11 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->expectException(Src\Exception\InvalidAssetConfigurationException::class);
         $this->expectExceptionMessage('missing required "source"');
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsHandlesAllFourAssetTypes(): void
+    public function collectAssetsHandlesAllFourAssetTypes(): void
     {
         $config = [
             'javaScript' => [
@@ -356,7 +363,7 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
             ],
         ];
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
 
         self::assertCount(1, $this->assetCollector->getJavaScripts());
         self::assertCount(1, $this->assetCollector->getInlineJavaScripts());
@@ -365,7 +372,7 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
-    public function registerAssetsThrowsExceptionForUnknownAssetType(): void
+    public function collectAssetsThrowsExceptionForUnknownAssetType(): void
     {
         $config = [
             'unknownType' => [
@@ -376,6 +383,6 @@ final class AssetServiceTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->expectException(Src\Exception\InvalidAssetConfigurationException::class);
         $this->expectExceptionMessage('Unknown asset type "unknownType"');
 
-        $this->subject->registerAssets($config);
+        $this->subject->collectAssets($config);
     }
 }

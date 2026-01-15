@@ -31,7 +31,7 @@ use TYPO3\TestingFramework;
  * @license GPL-2.0-or-later
  */
 #[Framework\Attributes\CoversClass(Src\Frontend\ContentObject\HandlebarsTemplateContentObject::class)]
-#[Framework\Attributes\CoversClass(Src\Service\AssetService::class)]
+#[Framework\Attributes\CoversClass(Src\Frontend\Assets\AssetHandler::class)]
 final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
     use Tests\FrontendRequestTrait;
@@ -56,7 +56,7 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
             $this->get(Src\Renderer\Template\Path\ContentObjectPathProvider::class),
             $this->get(Src\Renderer\Renderer::class),
             $this->get(Core\TypoScript\TypoScriptService::class),
-            $this->get(Src\Service\AssetService::class),
+            $this->get(Src\Frontend\Assets\AssetHandler::class),
         );
 
         $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();

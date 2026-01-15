@@ -15,14 +15,13 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Service;
+namespace CPSIT\Typo3Handlebars\Frontend\Assets;
 
 use CPSIT\Typo3Handlebars\Exception;
-use CPSIT\Typo3Handlebars\Exception\InvalidAssetConfigurationException;
-use TYPO3\CMS\Core\Page\AssetCollector;
+use TYPO3\CMS\Core;
 
 /**
- * AssetService
+ * AssetHandler
  *
  * Processes asset configuration and registers assets with TYPO3's AssetCollector.
  * Supports JavaScript, CSS, and inline variants with full attribute and option support.
@@ -30,64 +29,52 @@ use TYPO3\CMS\Core\Page\AssetCollector;
  * @author Vladimir Falcon Piva <v.falcon@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final readonly class AssetService
+final readonly class AssetHandler
 {
     private const KNOWN_OPTIONS = ['priority', 'useNonce'];
 
     public function __construct(
-        private AssetCollector $assetCollector,
+        private Core\Page\AssetCollector $assetCollector,
     ) {}
 
     /**
      * Process and register assets from configuration.
      *
-     * @param array<int|string, mixed> $assetsConfig Plain asset configuration array
+     * @param array<int|string, mixed> $assetsConfiguration Plain asset configuration array
      * @throws Exception\InvalidAssetConfigurationException
      */
-    public function registerAssets(array $assetsConfig): void
+    public function collectAssets(array $assetsConfiguration): void
     {
-        foreach ($assetsConfig as $typeKey => $assets) {
+        foreach ($assetsConfiguration as $typeKey => $assets) {
             // Validate and get AssetType (validates everything)
-            $assetType = $this->validateConfiguration($typeKey, $assets);
+            $assetType = $this->validateAssetAndResolveAssetType($typeKey, $assets);
 
             // Process validated assets
-            $this->processAssets($assetType, $assets);
+            foreach ($assets as $identifier => $configuration) {
+                $this->processAsset((string)$identifier, $assetType, $configuration);
+            }
         }
     }
 
     /**
-     * @param array<int|string, mixed> $assets
+     * @param array<string, mixed> $configuration
      */
-    private function processAssets(
-        AssetType $type,
-        array $assets,
-    ): void {
-        foreach ($assets as $identifier => $assetConfig) {
-            $this->processAsset((string)$identifier, $type, $assetConfig);
-        }
+    private function processAsset(string $identifier, AssetType $type, array $configuration): void
+    {
+        $source = \trim((string)$configuration['source']);
+        $attributes = $this->processAttributes($configuration['attributes'] ?? [], $type);
+        $options = $this->processOptions($configuration['options'] ?? []);
+
+        match ($type) {
+            AssetType::JavaScript => $this->assetCollector->addJavaScript($identifier, $source, $attributes, $options),
+            AssetType::InlineJavaScript => $this->assetCollector->addInlineJavaScript($identifier, $source, $attributes, $options),
+            AssetType::Css => $this->assetCollector->addStyleSheet($identifier, $source, $attributes, $options),
+            AssetType::InlineCss => $this->assetCollector->addInlineStyleSheet($identifier, $source, $attributes, $options),
+        };
     }
 
     /**
-     * @param array<string, mixed> $assetConfig
-     */
-    private function processAsset(
-        string $identifier,
-        AssetType $type,
-        array $assetConfig,
-    ): void {
-        $source = \trim((string)$assetConfig['source']);
-
-        $attributes = $this->processAttributes(
-            $assetConfig['attributes'] ?? [],
-            $type,
-        );
-        $options = $this->processOptions($assetConfig['options'] ?? []);
-
-        $this->registerWithCollector($type, $identifier, $source, $attributes, $options);
-    }
-
-    /**
-     * Validate complete asset type configuration.
+     * Validate complete asset type configuration and resolve configured asset type.
      *
      * Validates:
      * - Asset type key is valid
@@ -98,12 +85,10 @@ final readonly class AssetService
      * @param string|int $typeKey The asset type key from config
      * @param mixed $assets The assets configuration for this type
      * @return AssetType The validated AssetType enum
-     * @throws InvalidAssetConfigurationException
+     * @throws Exception\InvalidAssetConfigurationException
      */
-    private function validateConfiguration(
-        string|int $typeKey,
-        mixed $assets,
-    ): AssetType {
+    private function validateAssetAndResolveAssetType(string|int $typeKey, mixed $assets): AssetType
+    {
         $assetType = AssetType::tryFrom((string)$typeKey);
 
         if ($assetType === null) {
@@ -111,41 +96,24 @@ final readonly class AssetService
         }
 
         if (!\is_array($assets)) {
-            throw Exception\InvalidAssetConfigurationException::forInvalidAssetsArray($assetType->value);
+            throw Exception\InvalidAssetConfigurationException::forInvalidAssetsArray($assetType);
         }
 
         foreach ($assets as $identifier => $assetConfig) {
             if (!\is_string($identifier) || \trim($identifier) === '') {
-                throw Exception\InvalidAssetConfigurationException::forInvalidIdentifier($assetType->value);
+                throw Exception\InvalidAssetConfigurationException::forInvalidIdentifier($assetType);
             }
 
             if (!\is_array($assetConfig)) {
-                throw Exception\InvalidAssetConfigurationException::forInvalidConfiguration($identifier, $assetType->value);
+                throw Exception\InvalidAssetConfigurationException::forInvalidConfiguration($identifier, $assetType);
             }
 
             if (!isset($assetConfig['source']) || \trim((string)$assetConfig['source']) === '') {
-                throw Exception\InvalidAssetConfigurationException::forMissingSource($identifier, $assetType->value);
+                throw Exception\InvalidAssetConfigurationException::forMissingSource($identifier, $assetType);
             }
         }
 
         return $assetType;
-    }
-
-    /**
-     * Register asset with AssetCollector using the appropriate method.
-     *
-     * @param array<string, string> $attributes
-     * @param array<string, bool> $options
-     */
-    private function registerWithCollector(
-        AssetType $type,
-        string $identifier,
-        string $source,
-        array $attributes,
-        array $options,
-    ): void {
-        $method = $type->getCollectorMethod();
-        $this->assetCollector->$method($identifier, $source, $attributes, $options);
     }
 
     /**
@@ -163,7 +131,7 @@ final readonly class AssetService
 
         foreach ($attributes as $name => $value) {
             $name = (string)$name;
-            $processed = $this->addAttribute($processed, $name, $value, $type);
+            $this->addAttribute($processed, $name, $value, $type);
         }
 
         return $processed;
@@ -171,45 +139,36 @@ final readonly class AssetService
 
     /**
      * @param array<string, string> $processed
-     * @return array<string, string>
      */
-    private function addAttribute(
-        array $processed,
-        string $name,
-        mixed $value,
-        AssetType $type,
-    ): array {
+    private function addAttribute(array &$processed, string $name, mixed $value, AssetType $type): void
+    {
         if ($type->isBooleanAttribute($name)) {
-            return $this->addBooleanAttribute($processed, $name, $value);
+            $this->addBooleanAttribute($processed, $name, $value);
+        } else {
+            $this->addRegularAttribute($processed, $name, $value);
         }
-
-        return $this->addRegularAttribute($processed, $name, $value);
     }
 
     /**
      * Add a boolean attribute (e.g., async, defer, disabled).
      *
      * @param array<string, string> $processed
-     * @return array<string, string>
      */
-    private function addBooleanAttribute(array $processed, string $name, mixed $value): array
+    private function addBooleanAttribute(array &$processed, string $name, mixed $value): void
     {
         if ((bool)$value === true) {
             $processed[$name] = $name;
         }
-        return $processed;
     }
 
     /**
      * @param array<string, string> $processed
-     * @return array<string, string>
      */
-    private function addRegularAttribute(array $processed, string $name, mixed $value): array
+    private function addRegularAttribute(array &$processed, string $name, mixed $value): void
     {
         if ($value !== null && $value !== '') {
             $processed[$name] = (string)$value;
         }
-        return $processed;
     }
 
     /**

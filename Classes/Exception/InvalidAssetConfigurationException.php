@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Exception;
 
+use CPSIT\Typo3Handlebars\Frontend;
+
 /**
  * InvalidAssetConfigurationException
  *
@@ -27,36 +29,36 @@ namespace CPSIT\Typo3Handlebars\Exception;
  */
 final class InvalidAssetConfigurationException extends Exception
 {
-    public static function forMissingSource(string $identifier, string $type): self
+    public static function forMissingSource(string $identifier, Frontend\Assets\AssetType $type): self
     {
         return new self(
             \sprintf(
                 'Asset configuration "%s" (type: %s) is missing required "source" parameter.',
                 $identifier,
-                $type,
+                $type->value,
             ),
             1704800001,
         );
     }
 
-    public static function forInvalidIdentifier(string $type): self
+    public static function forInvalidIdentifier(Frontend\Assets\AssetType $type): self
     {
         return new self(
             \sprintf(
                 'Asset configuration (type: %s) has invalid or empty identifier.',
-                $type,
+                $type->value,
             ),
             1704800002,
         );
     }
 
-    public static function forInvalidConfiguration(string $identifier, string $type): self
+    public static function forInvalidConfiguration(string $identifier, Frontend\Assets\AssetType $type): self
     {
         return new self(
             \sprintf(
                 'Asset configuration "%s" (type: %s) must be an array.',
                 $identifier,
-                $type,
+                $type->value,
             ),
             1704800003,
         );
@@ -66,19 +68,20 @@ final class InvalidAssetConfigurationException extends Exception
     {
         return new self(
             \sprintf(
-                'Unknown asset type "%s". Valid types are: javaScript, inlineJavaScript, css, inlineCss.',
+                'Unknown asset type "%s". Valid types are: %s.',
                 $type,
+                implode(', ', Frontend\Assets\AssetType::values()),
             ),
             1704800004,
         );
     }
 
-    public static function forInvalidAssetsArray(string $type): self
+    public static function forInvalidAssetsArray(Frontend\Assets\AssetType $type): self
     {
         return new self(
             \sprintf(
                 'Assets configuration for type "%s" must be an array.',
-                $type,
+                $type->value,
             ),
             1704800005,
         );

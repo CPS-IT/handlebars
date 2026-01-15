@@ -18,8 +18,8 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Frontend\ContentObject;
 
 use CPSIT\Typo3Handlebars\Exception;
+use CPSIT\Typo3Handlebars\Frontend\Assets;
 use CPSIT\Typo3Handlebars\Renderer;
-use CPSIT\Typo3Handlebars\Service;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
@@ -38,7 +38,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         private readonly Renderer\Template\Path\ContentObjectPathProvider $pathProvider,
         private readonly Renderer\Renderer $renderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
-        private readonly Service\AssetService $assetService,
+        private readonly Assets\AssetHandler $assetHandler,
     ) {}
 
     /**
@@ -71,13 +71,11 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         // Populate template paths for availability in subsequent renderings
         $this->pathProvider->push($templatePaths);
 
+        // Resolve and assign template variables
         $context->assignMultiple($this->resolveVariables($conf));
 
-        // Process modern AssetCollector-based assets
+        // Process configured assets (using AssetCollector and PageRenderer)
         $this->processAssets($conf);
-
-        // Process legacy headerAssets/footerAssets (maintained for backward compatibility)
-        $this->renderPageAssetsIntoPageRenderer($conf);
 
         try {
             $content = $this->renderer->render($context);
@@ -165,24 +163,12 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
      */
     private function processAssets(array $config): void
     {
-        if (!isset($config['assets.']) || !\is_array($config['assets.'])) {
-            return;
-        }
-
-        try {
-            $this->assetService->registerAssets(
-                $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['assets.'])
+        if (is_array($config['assets.'] ?? null)) {
+            $this->assetHandler->collectAssets(
+                $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['assets.']),
             );
-        } catch (Exception\InvalidAssetConfigurationException $e) {
-            throw $e;
         }
-    }
 
-    /**
-     * @param array<string, mixed> $config
-     */
-    private function renderPageAssetsIntoPageRenderer(array $config): void
-    {
         if (is_string($config['headerAssets'] ?? null) && is_array($config['headerAssets.'] ?? null)) {
             $headerAssets = $this->cObj?->cObjGetSingle($config['headerAssets'], $config['headerAssets.']) ?? '';
         } else {

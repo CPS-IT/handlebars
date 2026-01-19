@@ -31,33 +31,33 @@ final class DataSourceCollection
     private array $dataSources = [];
 
     /**
+     * @return array<string|int, mixed>
+     */
+    public function get(DataSource $dataSource): array
+    {
+        return $this->dataSources[$dataSource->value] ?? [];
+    }
+
+    /**
      * @param array<string|int, mixed> $configuration
      */
-    public function addDataSource(DataSource $dataSource, array $configuration): self
+    public function set(DataSource $dataSource, array $configuration): self
     {
         $this->dataSources[$dataSource->value] = $configuration;
 
         return $this;
     }
 
-    public function removeDataSource(DataSource $dataSource): self
+    public function has(DataSource $dataSource): bool
+    {
+        return \array_key_exists($dataSource->value, $this->dataSources);
+    }
+
+    public function remove(DataSource $dataSource): self
     {
         unset($this->dataSources[$dataSource->value]);
 
         return $this;
-    }
-
-    public function has(DataSource $dataSource): bool
-    {
-        return array_key_exists($dataSource->value, $this->dataSources);
-    }
-
-    /**
-     * @return array<string|int, mixed>
-     */
-    public function get(DataSource $dataSource): array
-    {
-        return $this->dataSources[$dataSource->value] ?? [];
     }
 
     /**
@@ -89,6 +89,32 @@ final class DataSourceCollection
         return $default;
     }
 
+    /**
+     * @param DataSource|list<DataSource> $dataSources
+     */
+    public function with(string $key, mixed $value, DataSource|array $dataSources = []): self
+    {
+        // Apply to all configured data sources if no data sources are configured explicitly
+        if ($dataSources === []) {
+            foreach ($this->dataSources as $dataSource => $configuration) {
+                $this->dataSources[$dataSource][$key] = $value;
+            }
+
+            return $this;
+        }
+
+        if ($dataSources instanceof DataSource) {
+            $dataSources = [$dataSources];
+        }
+
+        foreach ($dataSources as $dataSource) {
+            $this->dataSources[$dataSource->value] ??= [];
+            $this->dataSources[$dataSource->value][$key] = $value;
+        }
+
+        return $this;
+    }
+
     private function resolveForDataSource(string $key, DataSource $dataSource, bool &$found = false): mixed
     {
         $configuration = $this->get($dataSource);
@@ -102,7 +128,7 @@ final class DataSourceCollection
      */
     private function getConfiguredDataSourcesSortedByPriority(): array
     {
-        $dataSources = array_map(DataSource::from(...), array_keys($this->dataSources));
+        $dataSources = array_map(DataSource::from(...), \array_keys($this->dataSources));
 
         return DataSource::sortByPriority($dataSources);
     }

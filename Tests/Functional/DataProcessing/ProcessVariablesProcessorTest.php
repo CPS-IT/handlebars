@@ -67,12 +67,74 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
     }
 
     #[Framework\Attributes\Test]
+    public function processTriggersConfiguredPreProcessors(): void
+    {
+        $processorConfiguration = [
+            'variables.' => [],
+            'preProcessing.' => [
+                '30' => Tests\Functional\Fixtures\Classes\DummyPreProcessor::class,
+                '10' => Tests\Functional\Fixtures\Classes\DummyPreProcessor::class,
+                '20' => Tests\Functional\Fixtures\Classes\DummyPreProcessor::class,
+            ],
+        ];
+
+        self::assertSame(
+            ['foo' => 3],
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processThrowsExceptionIfConfiguredPreProcessorOrPostProcessorIsunsupported(): void
+    {
+        $processorConfiguration = [
+            'variables.' => [],
+            'preProcessing.' => [
+                '10' => self::class,
+            ],
+        ];
+
+        $this->expectExceptionObject(
+            new Src\Exception\ConfiguredProcessorIsUnsupported(self::class),
+        );
+
+        $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []);
+    }
+
+    #[Framework\Attributes\Test]
+    public function processLogsUsageOfMissingDataSource(): void
+    {
+        $this->contentObjectRenderer->start(['uid' => 123], 'tt_content');
+
+        $processorConfiguration = [
+            'dataSource' => Src\DataProcessing\DataSource\DataSource::ProcessedData->value,
+            'variables.' => [],
+            'preProcessing.' => [
+                '10' => Tests\Functional\Fixtures\Classes\DataSourceCollectionManipulatingPreProcessor::class,
+            ],
+        ];
+
+        self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []));
+        self::assertTrue(
+            $this->logger->hasWarning([
+                'message' => 'No data provided for data source "{source}" while processing {table}:{uid}.',
+                'context' => [
+                    'source' => Src\DataProcessing\DataSource\DataSource::ProcessedData->value,
+                    'table' => 'tt_content',
+                    'uid' => 123,
+                ],
+            ]),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function processLogsUsageOfInvalidDataSourceKeyword(): void
     {
         $this->contentObjectRenderer->start(['uid' => 123], 'tt_content');
 
         $processorConfiguration = [
             'dataSource' => 'foo',
+            'variables.' => [],
         ];
 
         self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []));
@@ -172,6 +234,24 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
         ];
 
         self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []));
+    }
+
+    #[Framework\Attributes\Test]
+    public function processTriggersConfiguredPostProcessors(): void
+    {
+        $processorConfiguration = [
+            'variables.' => [],
+            'postProcessing.' => [
+                '30' => Tests\Functional\Fixtures\Classes\DummyPostProcessor::class,
+                '10' => Tests\Functional\Fixtures\Classes\DummyPostProcessor::class,
+                '20' => Tests\Functional\Fixtures\Classes\DummyPostProcessor::class,
+            ],
+        ];
+
+        self::assertSame(
+            ['foo' => -3],
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
     }
 
     #[Framework\Attributes\Test]

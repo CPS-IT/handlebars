@@ -65,7 +65,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideReturnsConfiguredDataIfNoDataSourcesAreDefined(): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'data.' => [
@@ -91,7 +91,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideReturnsDataFromProcessedDataIfNoDataSourcesAreDefined(): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             [
                 'data' => [
@@ -99,7 +99,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
                 ],
             ],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'variables.' => [
@@ -147,19 +147,19 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
         array $expected,
     ): void {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer,
             ['foo' => 'COR-BAZ'],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
             ['foo' => 'COC-BAZ'],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'PD-BAZ'],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'dataSource' => $dataSource->value,
@@ -207,11 +207,11 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideAcceptsDifferentDataSources(array $dataSources, ?array $expected): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer,
             ['foo' => 'COR-BAZ'],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
             [
                 'bar.' => [
@@ -219,11 +219,11 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
                 ],
             ],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'PD-BAZ'],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'dataSource.' => $dataSources,
@@ -243,7 +243,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideThrowsExceptionOnInvalidDataSourceKeyword(): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'dataSource' => 'foo',
@@ -261,7 +261,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideThrowsExceptionOnMissingDataSource(): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'dataSource' => Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer->value,
@@ -279,7 +279,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideHandlesDataSourcesWithConfiguredPath(): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             [
                 'foo' => [
@@ -289,7 +289,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
                 ],
             ],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'dataSource' => 'processedData:foo.baz',
@@ -313,7 +313,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     public function provideThrowsExceptionOnInvalidDataSourcePath(): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             [
                 'foo' => [
@@ -323,7 +323,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
                 ],
             ],
         );
-        $collection->addDataSource(
+        $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
                 'dataSource' => 'processedData:foo.bar',

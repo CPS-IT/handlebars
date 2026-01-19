@@ -40,9 +40,9 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
     }
 
     #[Framework\Attributes\Test]
-    public function addDataSourceAddsGivenDataSourceToCollection(): void
+    public function getAddsGivenDataSourceToCollection(): void
     {
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'baz'],
         );
@@ -52,33 +52,33 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
     }
 
     #[Framework\Attributes\Test]
-    public function removeDataSourceRemovesGivenDataSourceFromCollection(): void
-    {
-        $this->subject->addDataSource(
-            Src\DataProcessing\DataSource\DataSource::ProcessedData,
-            ['foo' => 'baz'],
-        );
-
-        $this->subject->removeDataSource(Src\DataProcessing\DataSource\DataSource::ProcessedData);
-
-        self::assertFalse($this->subject->has(Src\DataProcessing\DataSource\DataSource::ProcessedData));
-        self::assertSame([], $this->subject->get(Src\DataProcessing\DataSource\DataSource::ProcessedData));
-    }
-
-    #[Framework\Attributes\Test]
     public function getReturnsEmptyArrayIfDataSourceIsNotPresent(): void
     {
         self::assertSame([], $this->subject->get(Src\DataProcessing\DataSource\DataSource::ProcessedData));
     }
 
     #[Framework\Attributes\Test]
+    public function removeDataSourceRemovesGivenDataSourceFromCollection(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ['foo' => 'baz'],
+        );
+
+        $this->subject->remove(Src\DataProcessing\DataSource\DataSource::ProcessedData);
+
+        self::assertFalse($this->subject->has(Src\DataProcessing\DataSource\DataSource::ProcessedData));
+        self::assertSame([], $this->subject->get(Src\DataProcessing\DataSource\DataSource::ProcessedData));
+    }
+
+    #[Framework\Attributes\Test]
     public function resolveWalksThroughConfiguredDataSourcesByPriorityIfNoDataSourceIsGiven(): void
     {
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'PD-BAZ'],
         );
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
             ['foo' => 'COC-BAZ'],
         );
@@ -89,11 +89,11 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
     #[Framework\Attributes\Test]
     public function resolveWalksThroughGivenDataSourcesInGivenOrder(): void
     {
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'PD-BAZ'],
         );
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
             ['foo' => 'COC-BAZ'],
         );
@@ -113,11 +113,11 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
     #[Framework\Attributes\Test]
     public function resolveReturnsResolvedValueForGivenDataSource(): void
     {
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'PD-BAZ'],
         );
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
             ['foo' => 'COC-BAZ'],
         );
@@ -134,11 +134,11 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
     #[Framework\Attributes\Test]
     public function resolveReturnsDefaultValueIfKeyCannotBeFound(): void
     {
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ProcessedData,
             ['foo' => 'PD-BAZ'],
         );
-        $this->subject->addDataSource(
+        $this->subject->set(
             Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
             ['foo' => 'COC-BAZ'],
         );
@@ -150,6 +150,89 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
                 Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer,
                 'baz',
             ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function withAppliesGivenValueToAllDataSources(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ['foo' => 'PD-BAZ'],
+        );
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+            ['foo' => 'COC-BAZ'],
+        );
+
+        $this->subject->with('foo', 'baz');
+
+        self::assertSame(
+            'baz',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ProcessedData),
+        );
+        self::assertSame(
+            'baz',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function withAppliesGivenValueToGivenDataSource(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ['foo' => 'PD-BAZ'],
+        );
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+            ['foo' => 'COC-BAZ'],
+        );
+
+        $this->subject->with('foo', 'baz', Src\DataProcessing\DataSource\DataSource::ProcessedData);
+
+        self::assertSame(
+            'baz',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ProcessedData),
+        );
+        self::assertSame(
+            'COC-BAZ',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function withAppliesGivenValueToGivenDataSources(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ['foo' => 'PD-BAZ'],
+        );
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+            ['foo' => 'COC-BAZ'],
+        );
+
+        $this->subject->with(
+            'foo',
+            'baz',
+            [
+                Src\DataProcessing\DataSource\DataSource::ProcessedData,
+                Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer,
+            ],
+        );
+
+        self::assertSame(
+            'baz',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ProcessedData),
+        );
+        self::assertSame(
+            'baz',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer),
+        );
+        self::assertSame(
+            'COC-BAZ',
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration),
         );
     }
 }

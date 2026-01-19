@@ -21,6 +21,7 @@ use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -108,6 +109,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
      * @param array<string|int, mixed> $processedData
      * @return array<string|int, mixed>
      * @throws Frontend\ContentObject\Exception\ContentRenderingException
+     * @throws Exception\ConfiguredProcessorIsUnsupported
      * @throws Exception\ReservedVariableCannotBeUsed
      */
     public function process(
@@ -119,10 +121,26 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $data = null;
 
         $collection = new DataSource\DataSourceCollection();
-        $collection->addDataSource(DataSource\DataSource::ContentObjectRenderer, $cObj->data);
-        $collection->addDataSource(DataSource\DataSource::ContentObjectConfiguration, $contentObjectConfiguration);
-        $collection->addDataSource(DataSource\DataSource::ProcessedData, $processedData);
-        $collection->addDataSource(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
+        $collection->set(DataSource\DataSource::ContentObjectRenderer, $cObj->data);
+        $collection->set(DataSource\DataSource::ContentObjectConfiguration, $contentObjectConfiguration);
+        $collection->set(DataSource\DataSource::ProcessedData, $processedData);
+        $collection->set(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
+
+        $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
+
+        // Early return if no or invalid variables to process are configured
+        if (!\is_array($variables)) {
+            return $processedData;
+        }
+
+        // Trigger pre-processors
+        $variables = $this->triggerDataSourceAwareProcessors(
+            $processorConfiguration,
+            'preProcessing',
+            $variables,
+            $collection,
+            $cObj,
+        );
 
         try {
             $data = $this->dataSourceProvider->provide($collection);
@@ -162,13 +180,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
             [DataSource\DataSource::ProcessorConfiguration, DataSource\DataSource::ProcessedData],
             $cObj->getCurrentTable(),
         );
-        $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration);
-
-        // Early return if no variables to process are configured
-        if (!\is_array($variables)) {
-            return $processedData;
-        }
 
         // Use temporary cObj for processing
         $cObj = clone $cObj;
@@ -183,6 +195,15 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $processor = Renderer\Variables\VariablesProcessor::for($cObj);
         $processedVariables = $processor->process($variables);
 
+        // Trigger post-processors
+        $processedVariables = $this->triggerDataSourceAwareProcessors(
+            $processorConfiguration,
+            'postProcessing',
+            $processedVariables,
+            $collection,
+            $cObj,
+        );
+
         // Apply processed variables, either override processed data (if no target variable name is given)
         // or merge with processed data using given target variable name ("as")
         if ($as === null) {
@@ -192,5 +213,38 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         }
 
         return $processedData;
+    }
+
+    /**
+     * @param array<string, mixed> $processorConfiguration
+     * @param array<string|int, mixed> $variables
+     * @return array<string|int, mixed>
+     * @throws Exception\ConfiguredProcessorIsUnsupported
+     */
+    private function triggerDataSourceAwareProcessors(
+        array $processorConfiguration,
+        string $processorKey,
+        array $variables,
+        DataSource\DataSourceCollection $collection,
+        Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
+    ): array {
+        // Early return if no processors are registered
+        if (!\is_array($processorConfiguration[$processorKey . '.'] ?? null)) {
+            return $variables;
+        }
+
+        \ksort($processorConfiguration[$processorKey . '.']);
+
+        /** @var string $processorClassName */
+        foreach ($processorConfiguration[$processorKey . '.'] as $processorClassName) {
+            if (!\is_a($processorClassName, DataSource\DataSourceAwareProcessor::class, true)) {
+                throw new Exception\ConfiguredProcessorIsUnsupported($processorClassName);
+            }
+
+            $processor = Core\Utility\GeneralUtility::makeInstance($processorClassName);
+            $variables = $processor->process($variables, $collection, $contentObjectRenderer);
+        }
+
+        return $variables;
     }
 }

@@ -55,7 +55,7 @@ final readonly class DataSourceProvider
 
         // Normalize content object configuration
         $normalizedCollection = clone $collection;
-        $normalizedCollection->addDataSource(
+        $normalizedCollection->set(
             DataSource::ContentObjectConfiguration,
             $this->typoScriptService->convertTypoScriptArrayToPlainArray(
                 $collection->get(DataSource::ContentObjectConfiguration),

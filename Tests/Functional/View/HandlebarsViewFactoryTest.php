@@ -163,44 +163,67 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         $actual->render();
     }
 
-    #[Framework\Attributes\Test]
-    public function createReturnsHandlebarsViewWithProcessedTemplateName(): void
+    /**
+     * @return \Generator<string, array{array<string, mixed>}>
+     */
+    public static function createReturnsHandlebarsViewWithResolvedConfigurationDataProvider(): \Generator
     {
-        $this->configurationManager->configuration['handlebars'] = [
-            'templateName' => [
-                '_typoScriptNodeValue' => 'CASE',
-                'key' => [
-                    'field' => 'controllerActionName',
-                ],
-                'baz' => [
-                    '_typoScriptNodeValue' => 'TEXT',
-                    'value' => '@baz',
-                ],
-                'default' => '@not-found',
+        $barConfiguration = [
+            'templateName' => '@bar',
+            'variables' => [
+                'foo' => 'bar',
+            ],
+        ];
+        $bazConfiguration = [
+            'templateName' => '@baz',
+            'variables' => [
+                'foo' => 'baz',
             ],
         ];
 
-        $this->expectContentObjectConfigurationCalls(2);
-
-        $this->expectContentObjectConfiguration(
-            'CASE',
+        yield 'controller FQCN' => [
             [
-                'key.' => [
-                    'field' => 'controllerActionName',
-                ],
-                'baz' => 'TEXT',
-                'baz.' => [
-                    'value' => '@baz',
-                ],
-                'default' => '@not-found',
+                'Vendor\\Extension\\Controller\\BarController' => $barConfiguration,
+                'Vendor\\Extension\\Controller\\FooController' => $bazConfiguration,
             ],
-            '@baz',
-        );
+        ];
+        yield 'controller name and action name' => [
+            [
+                'Foo::bar' => $barConfiguration,
+                'Foo::baz' => $bazConfiguration,
+            ],
+        ];
+        yield 'controller name' => [
+            [
+                'Bar' => $barConfiguration,
+                'Foo' => $bazConfiguration,
+            ],
+        ];
+        yield 'fallback' => [
+            [
+                'Foo::bar' => $barConfiguration,
+                'default' => $bazConfiguration,
+            ],
+        ];
+    }
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('createReturnsHandlebarsViewWithResolvedConfigurationDataProvider')]
+    public function createReturnsHandlebarsViewWithResolvedConfiguration(array $configuration): void
+    {
+        $this->configurationManager->configuration['handlebars'] = $configuration;
+
+        $this->expectContentObjectConfigurationCalls(1);
         $this->expectContentObjectConfiguration(
             'HANDLEBARSTEMPLATE',
             [
                 'templateName' => '@baz',
+                'variables.' => [
+                    'foo' => 'baz',
+                ],
                 'format' => 'hbs',
             ],
         );
@@ -218,32 +241,12 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     public function createReturnsHandlebarsViewWithDefaultConfigurationIfProcessedTemplateNameIsEmpty(): void
     {
         $this->configurationManager->configuration['handlebars'] = [
-            'templateName' => [
-                '_typoScriptNodeValue' => 'CASE',
-                'key' => [
-                    'field' => 'controllerActionName',
-                ],
-                'boo' => [
-                    '_typoScriptNodeValue' => 'TEXT',
-                    'value' => '@boo',
-                ],
+            'Foo:boo' => [
+                'templateName' => '@boo',
             ],
         ];
 
-        $this->expectContentObjectConfigurationCalls(2);
-        $this->expectContentObjectConfiguration(
-            'CASE',
-            [
-                'key.' => [
-                    'field' => 'controllerActionName',
-                ],
-                'boo' => 'TEXT',
-                'boo.' => [
-                    'value' => '@boo',
-                ],
-            ],
-            '',
-        );
+        $this->expectContentObjectConfigurationCalls(1);
         $this->expectContentObjectConfiguration(
             'HANDLEBARSTEMPLATE',
             [

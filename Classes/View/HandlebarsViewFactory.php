@@ -127,45 +127,35 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
         // HANDLEBARSTEMPLATE content object requires TypoScript configuration, so let's convert early
         $typoScriptConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray($handlebarsConfiguration);
 
-        // Resolve template name from controller action
-        if (is_string($typoScriptConfiguration['templateName'] ?? null) &&
-            is_array($typoScriptConfiguration['templateName.'] ?? null)
-        ) {
-            // Inject custom fields to be referenced in TypoScript when resolving the
-            // template name, e.g. in combination with a CASE content object
-            $contentObjectRenderer->data['controllerName'] = $controllerAlias;
-            $contentObjectRenderer->data['controllerObjectName'] = $controllerObjectName;
-            $contentObjectRenderer->data['controllerAction'] = $actionName;
-            $contentObjectRenderer->data['controllerNameAndAction'] = $controllerAlias . '::' . $actionName;
-
-            try {
-                // Resolve template name based on the current controller action
-                $typoScriptConfiguration['templateName'] = $contentObjectRenderer->cObjGetSingle(
-                    $typoScriptConfiguration['templateName'],
-                    $typoScriptConfiguration['templateName.'],
-                );
-            } finally {
-                // Remove configuration which is solely responsible for template name resolving
-                unset(
-                    $typoScriptConfiguration['templateName.'],
-                    $contentObjectRenderer->data['controllerName'],
-                    $contentObjectRenderer->data['controllerObjectName'],
-                    $contentObjectRenderer->data['controllerAction'],
-                    $contentObjectRenderer->data['controllerNameAndAction'],
-                );
+        // Resolve TypoScript configuration based on controller context
+        $resolvedConfiguration = [];
+        $possibleConfigurationKeys = [
+            // Controller FQCN
+            $controllerObjectName,
+            // Controller & action
+            $controllerAlias . '::' . $actionName,
+            // Controller only
+            $controllerAlias,
+            // Fallback
+            'default',
+        ];
+        foreach ($possibleConfigurationKeys as $possibleConfigurationKey) {
+            if (\array_key_exists($possibleConfigurationKey . '.', $typoScriptConfiguration)) {
+                $resolvedConfiguration = $typoScriptConfiguration[$possibleConfigurationKey . '.'];
+                break;
             }
         }
 
-        // Early return if no (valid) template name is given
-        if (empty($typoScriptConfiguration['templateName'])) {
+        // Early return if no configuration was resolved
+        if ($resolvedConfiguration === []) {
             return $defaultConfiguration;
         }
 
         // Add format
-        if (!isset($typoScriptConfiguration['format'])) {
-            $typoScriptConfiguration['format'] = $format;
+        if (!isset($resolvedConfiguration['format'])) {
+            $resolvedConfiguration['format'] = $format;
         }
 
-        return $typoScriptConfiguration;
+        return $resolvedConfiguration;
     }
 }

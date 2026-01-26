@@ -222,6 +222,46 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function renderCallsPreProcessors(): void
+    {
+        $expected = [
+            'data' => [],
+            'current' => null,
+            'foo' => 2,
+        ];
+
+        $this->subject->render([
+            'template' => 'foo',
+            'preProcessing.' => [
+                '10' => Tests\Functional\Fixtures\Classes\DummyPreProcessor::class,
+                '20' => Tests\Functional\Fixtures\Classes\DummyPreProcessor::class,
+            ],
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderCallsPostProcessors(): void
+    {
+        $expected = [
+            'data' => [],
+            'current' => null,
+            'foo' => -2,
+        ];
+
+        $this->subject->render([
+            'template' => 'foo',
+            'postProcessing.' => [
+                '10' => Tests\Functional\Fixtures\Classes\DummyPostProcessor::class,
+                '20' => Tests\Functional\Fixtures\Classes\DummyPostProcessor::class,
+            ],
+        ]);
+
+        self::assertEquals($expected, $this->renderer->lastContext?->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
     public function renderCallsDataProcessorsAndAppliesVariables(): void
     {
         $this->contentObjectRenderer->data = [

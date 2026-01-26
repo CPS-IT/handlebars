@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Frontend\ContentObject;
 
+use CPSIT\Typo3Handlebars\DataProcessing;
 use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Frontend\Assets;
 use CPSIT\Typo3Handlebars\Renderer;
@@ -33,6 +34,8 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\AutoconfigureTag('frontend.contentobject', ['identifier' => 'HANDLEBARSTEMPLATE'])]
 final class HandlebarsTemplateContentObject extends Frontend\ContentObject\AbstractContentObject
 {
+    use DataProcessing\DataSource\SupportsDataSourceAwareProcessing;
+
     public function __construct(
         private readonly Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
         private readonly Renderer\Template\Path\ContentObjectPathProvider $pathProvider,
@@ -127,13 +130,35 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
     /**
      * @param array<string, mixed> $config
      * @return array<string|int, mixed>
+     * @throws Exception\ConfiguredProcessorIsUnsupported
+     * @throws Exception\ReservedVariableCannotBeUsed
+     * @throws Frontend\ContentObject\Exception\ContentRenderingException
      */
     private function resolveVariables(array $config): array
     {
-        // Process content object variables and simple variables
-        if ($this->cObj !== null && \is_array($config['variables.'] ?? null)) {
+        $collection = new DataProcessing\DataSource\DataSourceCollection();
+        $collection->set(DataProcessing\DataSource\DataSource::ContentObjectRenderer, $this->cObj->data ?? []);
+        $collection->set(DataProcessing\DataSource\DataSource::ProcessorConfiguration, $config);
+
+        if ($this->cObj !== null) {
+            if (\is_array($config['variables.'] ?? null)) {
+                $variables = $config['variables.'];
+            } else {
+                $variables = [];
+            }
+
+            // Trigger pre-processors
+            $variables = $this->triggerDataSourceAwareProcessors(
+                $config,
+                'preProcessing',
+                $variables,
+                $collection,
+                $this->cObj,
+            );
+
+            // Process content object variables and simple variables
             $processor = Renderer\Variables\VariablesProcessor::for($this->cObj);
-            $variables = $processor->process($config['variables.']);
+            $variables = $processor->process($variables);
         } else {
             $variables = [];
         }
@@ -150,6 +175,17 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         // Make settings available as variables
         if (isset($config['settings.'])) {
             $variables['settings'] = $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['settings.']);
+        }
+
+        // Trigger post-processors
+        if ($this->cObj !== null) {
+            $variables = $this->triggerDataSourceAwareProcessors(
+                $config,
+                'postProcessing',
+                $variables,
+                $collection,
+                $this->cObj,
+            );
         }
 
         return $variables;

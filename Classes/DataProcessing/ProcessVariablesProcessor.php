@@ -21,7 +21,6 @@ use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -98,6 +97,8 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\AutoconfigureTag('data.processor', ['identifier' => 'process-variables'])]
 final readonly class ProcessVariablesProcessor implements Frontend\ContentObject\DataProcessorInterface
 {
+    use DataSource\SupportsDataSourceAwareProcessing;
+
     public function __construct(
         private DataSource\DataSourceProvider $dataSourceProvider,
         private Log\LoggerInterface $logger,
@@ -213,38 +214,5 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         }
 
         return $processedData;
-    }
-
-    /**
-     * @param array<string, mixed> $processorConfiguration
-     * @param array<string|int, mixed> $variables
-     * @return array<string|int, mixed>
-     * @throws Exception\ConfiguredProcessorIsUnsupported
-     */
-    private function triggerDataSourceAwareProcessors(
-        array $processorConfiguration,
-        string $processorKey,
-        array $variables,
-        DataSource\DataSourceCollection $collection,
-        Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
-    ): array {
-        // Early return if no processors are registered
-        if (!\is_array($processorConfiguration[$processorKey . '.'] ?? null)) {
-            return $variables;
-        }
-
-        \ksort($processorConfiguration[$processorKey . '.']);
-
-        /** @var string $processorClassName */
-        foreach ($processorConfiguration[$processorKey . '.'] as $processorClassName) {
-            if (!\is_a($processorClassName, DataSource\DataSourceAwareProcessor::class, true)) {
-                throw new Exception\ConfiguredProcessorIsUnsupported($processorClassName);
-            }
-
-            $processor = Core\Utility\GeneralUtility::makeInstance($processorClassName);
-            $variables = $processor->process($variables, $collection, $contentObjectRenderer);
-        }
-
-        return $variables;
     }
 }

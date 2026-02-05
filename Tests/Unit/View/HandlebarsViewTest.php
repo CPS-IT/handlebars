@@ -19,6 +19,7 @@ namespace CPSIT\Typo3Handlebars\Tests\Unit\View;
 
 use CPSIT\Typo3Handlebars as Src;
 use PHPUnit\Framework;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
@@ -32,6 +33,8 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\View\HandlebarsView::class)]
 final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
 {
+    protected bool $resetSingletonInstances = true;
+
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
     private Src\View\HandlebarsView $subject;
 
@@ -109,6 +112,40 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->expectContentObjectConfiguration(return: 'foo');
 
         self::assertSame('foo', $this->subject->render());
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderUsesClonedContentObjectRendererWithConfiguredRequest(): void
+    {
+        $contentObject = new Src\Tests\Unit\Fixtures\Classes\DummyContentObject();
+
+        $container = new DependencyInjection\Container();
+        $container->set('HANDLEBARSTEMPLATE', $contentObject);
+        $container->set(Frontend\ContentObject\ContentObjectFactory::class, new Frontend\ContentObject\ContentObjectFactory($container));
+
+        $request = new Core\Http\ServerRequest();
+        $contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer(null, $container);
+        $contentObjectRenderer->setRequest($request);
+
+        $subject = new Src\View\HandlebarsView(
+            $contentObjectRenderer,
+            new Core\TypoScript\TypoScriptService(),
+            [
+                'templateName' => '@foo',
+            ],
+            $request,
+        );
+
+        $expectedRequest = clone $request;
+        $expectedRequest = $expectedRequest->withAttribute('currentContentObject', $contentObjectRenderer);
+
+        $expectedContentObjectRenderer = clone $contentObjectRenderer;
+        $expectedContentObjectRenderer->setRequest($request);
+
+        self::assertSame('foo', $subject->render());
+        self::assertEquals($expectedRequest, $contentObject->getRequest());
+        self::assertEquals($expectedContentObjectRenderer, $contentObject->getContentObjectRenderer());
+        self::assertNotSame($contentObjectRenderer, $contentObject->getContentObjectRenderer());
     }
 
     #[Framework\Attributes\Test]

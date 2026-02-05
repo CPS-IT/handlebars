@@ -151,6 +151,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         $actual = $this->subject->create($data);
 
         self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
+        self::assertSame($this->request, $actual->getRequest());
 
         $this->expectContentObjectConfiguration(
             'HANDLEBARSTEMPLATE',

@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\View;
 
+use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
@@ -37,6 +38,7 @@ final class HandlebarsView implements Core\View\ViewInterface
         private readonly Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
         private array $contentObjectConfiguration,
+        private readonly ?Message\ServerRequestInterface $request = null,
     ) {}
 
     public function assign(string $key, mixed $value): self
@@ -66,13 +68,19 @@ final class HandlebarsView implements Core\View\ViewInterface
 
     public function render(string $templateFileName = ''): string
     {
+        $contentObjectRenderer = $this->contentObjectRenderer;
         $contentObjectConfiguration = $this->contentObjectConfiguration;
 
         if ($templateFileName !== '') {
             $contentObjectConfiguration['templateName'] = $templateFileName;
         }
 
-        return $this->contentObjectRenderer->cObjGetSingle('HANDLEBARSTEMPLATE', $contentObjectConfiguration);
+        if ($this->request !== null) {
+            $contentObjectRenderer = clone $contentObjectRenderer;
+            $contentObjectRenderer->setRequest($this->request);
+        }
+
+        return $contentObjectRenderer->cObjGetSingle('HANDLEBARSTEMPLATE', $contentObjectConfiguration);
     }
 
     public function setTemplateName(string $templateName): self
@@ -80,5 +88,10 @@ final class HandlebarsView implements Core\View\ViewInterface
         $this->contentObjectConfiguration['templateName'] = $templateName;
 
         return $this;
+    }
+
+    public function getRequest(): ?Message\ServerRequestInterface
+    {
+        return $this->request;
     }
 }

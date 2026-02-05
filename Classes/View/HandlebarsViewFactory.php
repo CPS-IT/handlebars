@@ -79,7 +79,7 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
         }
 
         if ($contentObjectConfiguration !== null) {
-            return new HandlebarsView($contentObjectRenderer, $this->typoScriptService, $contentObjectConfiguration);
+            return new HandlebarsView($contentObjectRenderer, $this->typoScriptService, $contentObjectConfiguration, $request);
         }
 
         return null;

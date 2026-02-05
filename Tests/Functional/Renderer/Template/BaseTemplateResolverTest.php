@@ -39,6 +39,7 @@ final class BaseTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     protected array $configurationToUseInTestInstance = [
         'BE' => [
             'lockRootPath' => [
+                '/bar',
                 '/foo',
             ],
         ],
@@ -136,6 +137,38 @@ final class BaseTemplateResolverTest extends TestingFramework\Core\Functional\Fu
         );
 
         $this->subject->resolveTemplatePaths($templatePaths);
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTemplatePathsSkipsEmptyRootPaths(): void
+    {
+        $templatePaths = new Src\Renderer\Template\TemplatePaths([
+            new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider(
+                [
+                    0 => '/foo/templates',
+                    10 => '',
+                    20 => '/bar/templates',
+                ],
+                [
+                    0 => '/foo/partials',
+                    10 => '',
+                    20 => '/bar/partials',
+                ],
+            ),
+        ]);
+
+        $expected = [
+            [
+                '/foo/templates',
+                '/bar/templates',
+            ],
+            [
+                '/foo/partials',
+                '/bar/partials',
+            ],
+        ];
+
+        self::assertSame($expected, $this->subject->resolveTemplatePaths($templatePaths));
     }
 
     #[Framework\Attributes\Test]

@@ -95,6 +95,11 @@ abstract class BaseTemplateResolver implements TemplateResolver
                 throw new Exception\RootPathIsMalicious($rootPath);
             }
 
+            // Skip empty root paths
+            if ($rootPath === '') {
+                continue;
+            }
+
             $normalizedRootPath = rtrim($rootPath, DIRECTORY_SEPARATOR);
             $normalizedRootPath = Core\Utility\GeneralUtility::getFileAbsFileName($normalizedRootPath);
 

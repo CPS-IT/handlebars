@@ -130,19 +130,21 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
         // Resolve TypoScript configuration based on controller context
         $resolvedConfiguration = [];
         $possibleConfigurationKeys = [
-            // Controller FQCN
-            $controllerObjectName,
-            // Controller & action
-            $controllerAlias . '::' . $actionName,
-            // Controller only
-            $controllerAlias,
             // Fallback
             'default',
+            // Controller only
+            $controllerAlias,
+            // Controller & action
+            $controllerAlias . '::' . $actionName,
+            // Controller FQCN
+            $controllerObjectName,
         ];
         foreach ($possibleConfigurationKeys as $possibleConfigurationKey) {
             if (\array_key_exists($possibleConfigurationKey . '.', $typoScriptConfiguration)) {
-                $resolvedConfiguration = $typoScriptConfiguration[$possibleConfigurationKey . '.'];
-                break;
+                Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+                    $resolvedConfiguration,
+                    $typoScriptConfiguration[$possibleConfigurationKey . '.'],
+                );
             }
         }
 

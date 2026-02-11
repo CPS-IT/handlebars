@@ -239,6 +239,53 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     }
 
     #[Framework\Attributes\Test]
+    public function createReturnsHandlebarsViewWithMergedConfigurations(): void
+    {
+        $this->configurationManager->configuration['handlebars'] = [
+            'default' => [
+                'templateName' => '@default',
+                'variables' => [
+                    'default' => 'foo',
+                ],
+            ],
+            'Foo' => [
+                'templateName' => '@foo',
+                'variables' => [
+                    'foo' => 'foo',
+                ],
+            ],
+            'Foo::baz' => [
+                'templateName' => '@baz',
+                'variables' => [
+                    'baz' => 'baz',
+                ],
+            ],
+        ];
+
+        $this->expectContentObjectConfigurationCalls(1);
+        $this->expectContentObjectConfiguration(
+            'HANDLEBARSTEMPLATE',
+            [
+                'templateName' => '@baz',
+                'variables.' => [
+                    'default' => 'foo',
+                    'foo' => 'foo',
+                    'baz' => 'baz',
+                ],
+                'format' => 'hbs',
+            ],
+        );
+
+        $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');
+
+        $actual = $this->subject->create($data);
+
+        self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
+
+        $actual->render();
+    }
+
+    #[Framework\Attributes\Test]
     public function createReturnsHandlebarsViewWithDefaultConfigurationIfProcessedTemplateNameIsEmpty(): void
     {
         $this->configurationManager->configuration['handlebars'] = [

@@ -72,12 +72,13 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
         );
 
         $helperRegistry->add('viewHelper', $subject);
+        $helperRegistry->add('viewHelperNamespace', $subject->registerNamespace(...));
 
         $this->request = $this->buildServerRequest();
     }
 
     #[Framework\Attributes\Test]
-    public function helperThrowsExceptionOnInvalidViewHelperName(): void
+    public function renderLogsErrorOnInvalidViewHelperName(): void
     {
         $this->renderer->render(
             new Src\Renderer\RenderingContext('@viewHelper-invalid', [], $this->request),
@@ -94,7 +95,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
     }
 
     #[Framework\Attributes\Test]
-    public function helperDelegatesRenderingToRequestedViewHelper(): void
+    public function renderDelegatesRenderingToRequestedViewHelper(): void
     {
         $actual = $this->renderer->render(
             new Src\Renderer\RenderingContext(
@@ -107,5 +108,70 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
         );
 
         self::assertSame('foo.baz', trim($actual));
+    }
+
+    #[Framework\Attributes\Test]
+    public function registerNamespaceDoesNothingIfNamespacesVariablesWasModifiedOutside(): void
+    {
+        $this->expectExceptionMessageMatches('/No suitable resolvers were registered for this namespace/');
+
+        $this->renderer->render(
+            new Src\Renderer\RenderingContext(
+                '@viewHelperNamespace',
+                [
+                    '_namespaces' => 'foo',
+                ],
+                $this->request,
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function registerNamespaceAddsGivenLocalNamespaceToRenderingContext(): void
+    {
+        $renderingContext = new Src\Renderer\RenderingContext('@viewHelperNamespace');
+
+        $expected = [
+            '_namespaces' => [
+                'test' => [
+                    'CPSIT\\Typo3Handlebars\\TestExtension\\ViewHelpers',
+                ],
+            ],
+        ];
+
+        $actual = $this->renderer->render($renderingContext);
+
+        self::assertSame('bar', trim($actual));
+        self::assertSame($expected, $renderingContext->getVariables());
+    }
+
+    #[Framework\Attributes\Test]
+    public function registerNamespaceMergesMultipleLocalNamespaces(): void
+    {
+        $renderingContext = new Src\Renderer\RenderingContext(
+            '@viewHelperNamespace-multiple',
+            [
+                '_namespaces' => [
+                    'test' => [
+                        'CPSIT\\Typo3Handlebars\\TestExtension\\ViewHelpers',
+                    ],
+                ],
+            ],
+        );
+
+        $expected = [
+            '_namespaces' => [
+                'test' => [
+                    'CPSIT\\Typo3Handlebars\\TestExtension\\ViewHelpers',
+                    'CPSIT\\Typo3Handlebars\\TestExtension\\ViewHelpers\\Other',
+                    'CPSIT\\Typo3Handlebars\\TestExtension\\ViewHelpers\\Other\\Other',
+                ],
+            ],
+        ];
+
+        $actual = $this->renderer->render($renderingContext);
+
+        self::assertSame('bar', trim($actual));
+        self::assertSame($expected, $renderingContext->getVariables());
     }
 }

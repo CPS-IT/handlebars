@@ -49,7 +49,7 @@
 		"phpunit/phpcov": "^9.0 || ^10.0 || ^11.0",
 		"phpunit/phpunit": "^11.5 || ^12.1",
 		"psr/container": "^2.0",
-		"saschaegerer/phpstan-typo3": "^2.1",
+		"saschaegerer/phpstan-typo3": "^2.1 || ^3.0",
 		"shipmonk/composer-dependency-analyser": "^1.8",
 		"ssch/typo3-rector": "^3.3",
 		"symfony/event-dispatcher": "^7.0",

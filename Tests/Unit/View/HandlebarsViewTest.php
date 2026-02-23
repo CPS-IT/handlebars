@@ -89,6 +89,22 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    public function assignAssignsSettingsToContentObjectConfiguration(): void
+    {
+        $this->subject->assign('settings', ['foo' => 'baz']);
+        $this->subject->assign('settings', ['baz' => 'foo']);
+
+        $this->expectContentObjectConfiguration([
+            'settings.' => [
+                'foo' => 'baz',
+                'baz' => 'foo',
+            ],
+        ]);
+
+        $this->subject->render();
+    }
+
+    #[Framework\Attributes\Test]
     public function assignMultipleAssignsAllVariablesToContentObjectConfiguration(): void
     {
         $this->subject->assignMultiple([

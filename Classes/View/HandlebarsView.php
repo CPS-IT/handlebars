@@ -49,7 +49,13 @@ final class HandlebarsView implements Core\View\ViewInterface
             $value = $this->typoScriptService->convertPlainArrayToTypoScriptArray($value);
         }
 
-        $this->contentObjectConfiguration['variables.'][$key] = $value;
+        if ($key === 'settings.') {
+            $this->contentObjectConfiguration['settings.'] ??= [];
+
+            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->contentObjectConfiguration['settings.'], $value);
+        } else {
+            $this->contentObjectConfiguration['variables.'][$key] = $value;
+        }
 
         return $this;
     }

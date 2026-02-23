@@ -23,7 +23,7 @@ use DevTheorem\Handlebars;
 use Psr\Http\Message;
 use Psr\Log;
 use TYPO3\CMS\Fluid;
-use TYPO3Fluid\Fluid\Core;
+use TYPO3Fluid\Fluid as FluidStandalone;
 
 /**
  * ViewHelperInvoker
@@ -99,7 +99,7 @@ final readonly class ViewHelperInvoker implements Renderer\Helper\Helper
 
         // Parse namespace declaration
         $fluidRenderingContext = $this->renderingContextFactory->create();
-        $processor = new Core\Parser\TemplateProcessor\NamespaceDetectionTemplateProcessor();
+        $processor = new FluidStandalone\Core\Parser\TemplateProcessor\NamespaceDetectionTemplateProcessor();
         $processor->setRenderingContext($fluidRenderingContext);
         $processor->registerNamespacesFromTemplateSource($templateSource);
 

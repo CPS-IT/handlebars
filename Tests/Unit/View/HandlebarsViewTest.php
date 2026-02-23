@@ -176,6 +176,12 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->subject->render();
     }
 
+    #[Framework\Attributes\Test]
+    public function getTemplateNameReturnsTemplateNameFromContentObjectConfiguration(): void
+    {
+        self::assertSame('@foo', $this->subject->getTemplateName());
+    }
+
     /**
      * @param array<string, mixed> $contentObjectConfiguration
      */

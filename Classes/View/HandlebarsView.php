@@ -96,6 +96,11 @@ final class HandlebarsView implements Core\View\ViewInterface
         return $this;
     }
 
+    public function getTemplateName(): ?string
+    {
+        return $this->contentObjectConfiguration['templateName'] ?? null;
+    }
+
     public function getRequest(): ?Message\ServerRequestInterface
     {
         return $this->request;

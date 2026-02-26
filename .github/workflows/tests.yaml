@@ -90,7 +90,7 @@ jobs:
         working-directory: .Build/coverage
         run: sed -i 's#/home/runner/work/handlebars/handlebars#${{ github.workspace }}#g' clover.xml
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: .Build/coverage/clover.xml
@@ -108,7 +108,7 @@ jobs:
       # Download artifact
       - name: Download coverage artifact
         id: download
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: coverage
 

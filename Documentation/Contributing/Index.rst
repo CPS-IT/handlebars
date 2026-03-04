@@ -1,5 +1,14 @@
 ..  include:: /Includes.rst.txt
 
+..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
+    :target: https://coveralls.io/github/CPS-IT/handlebars
+
+..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
+
+..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
+
 ..  _contributing:
 
 ============
@@ -14,7 +23,9 @@ The development of this extension follows the official
 `TYPO3 coding standards <https://github.com/TYPO3/coding-standards>`__.
 To ensure the stability and cleanliness of the code, various code
 quality tools are used and most components are covered with test
-cases.
+cases. In addition, we use `DDEV <https://ddev.readthedocs.io/en/stable/>`__
+for local development. Make sure to set it up as described below. For
+continuous integration, we use GitHub Actions.
 
 ..  _create-an-issue-first:
 
@@ -56,13 +67,16 @@ Now install all Composer dependencies:
 
 ..  _check-code-quality:
 
+..  code-block:: bash
+
+    # All analyzers
+    composer analyze
+
+    # Specific analyzers
+    composer analyze:dependencies
+
 Check code quality
 ------------------
-
-..  rst-class:: d-inline-block mb-3
-
-..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
 
 ..  code-block:: bash
 
@@ -94,23 +108,31 @@ Check code quality
 Run tests
 ---------
 
-..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
+..  code-block:: bash
 
-..  rst-class:: d-inline-block mb-3
+    # All tests
+    composer test
 
-..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
-    :target: https://coveralls.io/github/CPS-IT/handlebars
+    # Specific tests
+    composer test:functional
+    composer test:unit
+
+    # All tests with code coverage
+    composer test:coverage
+
+    # Specific tests with code coverage
+    composer test:coverage:functional
+    composer test:coverage:unit
+
+    # Merge code coverage of all test suites
+    composer test:coverage:merge
+
+Code coverage reports are written to :file:`.Build/coverage`. You can
+open the last merged HTML report like follows:
 
 ..  code-block:: bash
 
-    # Run tests
-    composer test
-
-    # Run tests with code coverage
-    composer test:coverage
-
-The code coverage reports will be stored in :file:`.Build/log/coverage`.
+    open .Build/coverage/html/_merged/index.html
 
 ..  _build-documentation:
 
@@ -135,5 +157,10 @@ The built docs will be stored in :file:`.Build/docs`.
 Pull Request
 ------------
 
-When you have finished developing your contribution, simply submit a
-pull request on GitHub: https://github.com/CPS-IT/handlebars/pulls
+Once you have finished your work, please **submit a pull request** and describe
+what you've done: https://github.com/CPS-IT/handlebars/pulls
+
+Ideally, your PR references an issue describing the problem
+you're trying to solve. All described code quality tools are automatically
+executed on each pull request for all currently supported PHP versions and TYPO3
+versions.

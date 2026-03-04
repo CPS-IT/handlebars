@@ -5,23 +5,17 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Exception;
+namespace CPSIT\Typo3Handlebars\Exception;
 
 /**
  * InvalidHelperException
@@ -39,13 +33,10 @@ final class InvalidHelperException extends \Exception
         );
     }
 
-    /**
-     * @param mixed $helperFunction
-     */
-    public static function forUnsupportedType($helperFunction): self
+    public static function forUnsupportedType(mixed $helperFunction): self
     {
         return new self(
-            \sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', \gettype($helperFunction)),
+            \sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', \get_debug_type($helperFunction)),
             1637339694
         );
     }
@@ -58,8 +49,20 @@ final class InvalidHelperException extends \Exception
         [$className, $methodName] = $callable;
 
         return new self(
-            \sprintf('The helper function with callable [%s, %s] is not valid.', \gettype($className), \gettype($methodName)),
+            \sprintf('The helper function with callable [%s, %s] is not valid.', \get_debug_type($className), \get_debug_type($methodName)),
             1638180355
+        );
+    }
+
+    public static function forUnresolvableParameter(callable $helperFunction, string $parameterName): self
+    {
+        return new self(
+            \sprintf(
+                'The helper function with callable %s requires an unresolvable parameter "$%s".',
+                \get_debug_type($helperFunction),
+                $parameterName,
+            ),
+            1767777282,
         );
     }
 }

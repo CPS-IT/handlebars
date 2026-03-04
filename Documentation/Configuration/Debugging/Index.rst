@@ -11,9 +11,6 @@ results in individual tags being provided with debug output, which can be
 used to better localize errors, especially during development, and thus fix
 them more efficiently.
 
-Learn more in the
-`official documentation of LightnCandy <https://zordius.github.io/HandlebarsCookbook/LC-FLAG_RENDER_DEBUG.html>`__.
-
 ..  warning::
 
     Note that debugging only applies in the default `Renderer`. If a custom

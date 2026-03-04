@@ -5,26 +5,19 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Template;
+namespace CPSIT\Typo3Handlebars\Renderer\Template;
 
-use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use CPSIT\Typo3Handlebars\Exception;
 
 /**
  * HandlebarsTemplateResolver
@@ -32,157 +25,116 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsTemplateResolver implements TemplateResolverInterface
+final class HandlebarsTemplateResolver extends BaseTemplateResolver
 {
-    public const DEFAULT_FILE_EXTENSIONS = ['hbs', 'handlebars', 'html'];
-
     /**
-     * @var string[]
+     * @var array<string, list<string>>
      */
-    protected $templateRootPaths;
-
-    /**
-     * @var string[]
-     */
-    protected $supportedFileExtensions;
+    private array $resolvedPaths = [];
 
     /**
      * @param string[] $supportedFileExtensions
      */
-    public function __construct(TemplatePaths $templateRootPaths, array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS)
-    {
-        $this->setTemplateRootPaths($templateRootPaths->get());
-        $this->setSupportedFileExtensions($supportedFileExtensions);
+    public function __construct(
+        private readonly TemplatePaths $templatePaths,
+        array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS,
+    ) {
+        $this->supportedFileExtensions = $this->resolveSupportedFileExtensions($supportedFileExtensions);
     }
 
     /**
-     * @return string[]
+     * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
      */
-    public function getTemplateRootPaths(): array
+    public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
-        return $this->templateRootPaths;
+        return $this->resolvePath($partialPath, $this->resolvePartialRootPaths(), $format)
+            ?? throw new Exception\PartialPathIsNotResolvable($partialPath, $format);
     }
 
     /**
-     * Set sorted list of template root paths.
-     *
-     * Sorts the given template root paths by array key and applies them to the resolver.
-     * Additionally, trailing directory separators are stripped of to normalize paths and
-     * allow less error-prone template path resolving.
-     *
-     * @param string[] $templateRootPaths List of (probably unsorted) template root paths
-     * @return self This object to allow fluent access to this instance
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
      */
-    public function setTemplateRootPaths(array $templateRootPaths): self
+    public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
-        $this->templateRootPaths = [];
-        ksort($templateRootPaths);
-        foreach ($templateRootPaths as $templateRootPath) {
-            $this->validateTemplateRootPath($templateRootPath);
-            $this->templateRootPaths[] = rtrim($templateRootPath, DIRECTORY_SEPARATOR);
+        return $this->resolvePath($templatePath, $this->resolveTemplateRootPaths(), $format)
+            ?? throw new Exception\TemplatePathIsNotResolvable($templatePath, $format);
+    }
+
+    /**
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    private function resolvePartialRootPaths(): array
+    {
+        $partialRootPaths = $this->templatePaths->getPartialRootPaths();
+
+        return $this->resolveRootPathsFromCache($partialRootPaths);
+    }
+
+    /**
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    private function resolveTemplateRootPaths(): array
+    {
+        $templateRootPaths = $this->templatePaths->getTemplateRootPaths();
+
+        return $this->resolveRootPathsFromCache($templateRootPaths);
+    }
+
+    /**
+     * @param array<int, string> $rootPaths
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    private function resolveRootPathsFromCache(array $rootPaths): array
+    {
+        $hash = \sha1((string)\json_encode($rootPaths));
+
+        return $this->resolvedPaths[$hash] ?? ($this->resolvedPaths[$hash] = $this->normalizeRootPaths($rootPaths));
+    }
+
+    /**
+     * @param list<string> $rootPaths
+     * @throws Exception\TemplateFormatIsNotSupported
+     */
+    private function resolvePath(string $path, array $rootPaths, ?string $format = null): ?string
+    {
+        $fileExtensions = $this->supportedFileExtensions;
+        $filename = $path;
+
+        if ($format !== null) {
+            // Throw exception if given format is not supported
+            if (!in_array($format, $fileExtensions, true)) {
+                throw new Exception\TemplateFormatIsNotSupported($format);
+            }
+
+            $fileExtensions = [$format];
         }
-        return $this;
-    }
 
-    public function getSupportedFileExtensions(): array
-    {
-        return $this->supportedFileExtensions;
-    }
+        foreach (array_reverse($rootPaths) as $rootPath) {
+            foreach ($fileExtensions as $extension) {
+                $possibleFilename = $this->resolveFilename($path, $rootPath, $extension);
 
-    /**
-     * Set file extensions to be supported by this resolver.
-     *
-     * Applies the given list of supported file extensions to this resolver. In case the
-     * given list is empty or contains only empty values, {@see DEFAULT_FILE_EXTENSIONS}
-     * is applied instead.
-     *
-     * @param string[] $supportedFileExtensions List of file extensions supported by this resolver
-     * @return self This object to allow fluent access to this instance
-     */
-    public function setSupportedFileExtensions(array $supportedFileExtensions): self
-    {
-        if ($supportedFileExtensions === []) {
-            $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS;
-        }
-        array_map([$this, 'validateFileExtension'], $supportedFileExtensions);
-        $this->supportedFileExtensions = $supportedFileExtensions;
-        return $this;
-    }
-
-    public function supports(string $fileExtension): bool
-    {
-        return \in_array($fileExtension, $this->supportedFileExtensions, true);
-    }
-
-    public function resolveTemplatePath(string $templatePath): string
-    {
-        $filename = $templatePath;
-        foreach (array_reverse($this->templateRootPaths) as $templateRootPath) {
-            foreach ($this->supportedFileExtensions as $extension) {
-                $possibleFilename = $this->resolveFilename($templatePath, $templateRootPath, $extension);
-                if (file_exists($possibleFilename)) {
+                if (is_file($possibleFilename)) {
                     return $possibleFilename;
                 }
             }
         }
-        if (file_exists($possibleFilename = $this->resolveFilename($filename))) {
+
+        if ($format === null && is_file($possibleFilename = $this->resolveFilename($filename))) {
             return $possibleFilename;
         }
-        throw new TemplateNotFoundException($filename, 1606217089);
-    }
 
-    protected function resolveFilename(string $templatePath, string $templateRootPath = null, string $extension = null): string
-    {
-        if ($templateRootPath !== null) {
-            $filename = $templateRootPath . DIRECTORY_SEPARATOR . ltrim($templatePath, DIRECTORY_SEPARATOR);
-        } else {
-            $filename = $templatePath;
-        }
-        if ($extension !== null && !\in_array(pathinfo($filename, PATHINFO_EXTENSION), $this->supportedFileExtensions)) {
-            $filename .= '.' . $extension;
-        }
-        $filename = GeneralUtility::getFileAbsFileName($filename);
-        return $filename;
-    }
-
-    /**
-     * @param mixed $templateRootPath
-     */
-    protected function validateTemplateRootPath($templateRootPath): void
-    {
-        if (!\is_string($templateRootPath)) {
-            throw new \InvalidArgumentException(
-                \sprintf('Template root path must be of type string, "%s" given.', \gettype($templateRootPath)),
-                1613727984
-            );
-        }
-        if (GeneralUtility::getFileAbsFileName($templateRootPath) === '') {
-            throw new \InvalidArgumentException(
-                \sprintf('Template root path must be resolvable by %s::getFileAbsFileName().', GeneralUtility::class),
-                1613728252
-            );
-        }
-    }
-
-    /**
-     * @param mixed $fileExtension
-     */
-    protected function validateFileExtension($fileExtension): void
-    {
-        if (!\is_string($fileExtension)) {
-            throw new \InvalidArgumentException(
-                \sprintf('File extension must be of type string, "%s" given.', \gettype($fileExtension)),
-                1613727952
-            );
-        }
-        if (str_starts_with(trim($fileExtension), '.')) {
-            throw new \InvalidArgumentException('File extension must not start with a dot.', 1613727713);
-        }
-        if (preg_match('/^[\w\-.]+$/', $fileExtension) !== 1) {
-            throw new \InvalidArgumentException(
-                \sprintf('File extension "%s" is not valid.', $fileExtension),
-                1613727593
-            );
-        }
+        return null;
     }
 }

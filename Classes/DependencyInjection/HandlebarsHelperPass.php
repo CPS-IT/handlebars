@@ -5,29 +5,20 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\DependencyInjection;
+namespace CPSIT\Typo3Handlebars\DependencyInjection;
 
-use Fr\Typo3Handlebars\Renderer\HelperAwareInterface;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
+use CPSIT\Typo3Handlebars\Renderer;
+use Symfony\Component\DependencyInjection;
 
 /**
  * HandlebarsHelperPass
@@ -37,67 +28,26 @@ use Symfony\Component\DependencyInjection\Reference;
  * @internal
  * @codeCoverageIgnore
  */
-final class HandlebarsHelperPass implements CompilerPassInterface
+final readonly class HandlebarsHelperPass implements DependencyInjection\Compiler\CompilerPassInterface
 {
-    /**
-     * @var string
-     */
-    private $helperTagName;
+    public const TAG_NAME = 'handlebars.helper';
 
-    /**
-     * @var string
-     */
-    private $rendererTagName;
-
-    /**
-     * @var Definition[]
-     */
-    private $rendererDefinitions = [];
-
-    public function __construct(string $helperTagName, string $rendererTagName)
+    public function process(DependencyInjection\ContainerBuilder $container): void
     {
-        $this->helperTagName = $helperTagName;
-        $this->rendererTagName = $rendererTagName;
-    }
-
-    public function process(ContainerBuilder $container): void
-    {
-        $this->fetchRendererDefinitions($container);
+        $registryDefinition = $container->getDefinition(Renderer\Helper\HelperRegistry::class);
 
         // Register tagged Handlebars helper at all Helper-aware renderers
-        foreach ($container->findTaggedServiceIds($this->helperTagName) as $serviceId => $tags) {
-            $container->findDefinition($serviceId)->setPublic(true);
-
+        foreach ($container->findTaggedServiceIds(self::TAG_NAME) as $serviceId => $tags) {
             foreach (array_filter($tags) as $attributes) {
                 $this->validateTag($serviceId, $attributes);
-                $this->registerHelper(
-                    $attributes['identifier'],
-                    [new Reference($serviceId), $attributes['method']]
+
+                $registryDefinition->addMethodCall(
+                    'add',
+                    [
+                        $attributes['identifier'],
+                        [new DependencyInjection\Reference($serviceId), $attributes['method']],
+                    ],
                 );
-            }
-        }
-    }
-
-    /**
-     * @param array{0: string|Reference, 1: string} $callable
-     */
-    private function registerHelper(string $name, array $callable): void
-    {
-        foreach ($this->rendererDefinitions as $rendererDefinition) {
-            $rendererDefinition->addMethodCall('registerHelper', [$name, $callable]);
-        }
-    }
-
-    protected function fetchRendererDefinitions(ContainerBuilder $container): void
-    {
-        $this->rendererDefinitions = [];
-
-        foreach (array_keys($container->findTaggedServiceIds($this->rendererTagName)) as $serviceId) {
-            $rendererDefinition = $container->findDefinition($serviceId);
-            $rendererClass = $rendererDefinition->getClass();
-
-            if ($rendererClass !== null && \in_array(HelperAwareInterface::class, class_implements($rendererClass) ?: [])) {
-                $this->rendererDefinitions[] = $rendererDefinition;
             }
         }
     }
@@ -109,14 +59,14 @@ final class HandlebarsHelperPass implements CompilerPassInterface
     {
         if (!\array_key_exists('identifier', $tagAttributes) || (string)$tagAttributes['identifier'] === '') {
             throw new \InvalidArgumentException(
-                \sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
-                1606236820
+                \sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
+                1606236820,
             );
         }
         if (!\array_key_exists('method', $tagAttributes) || (string)$tagAttributes['method'] === '') {
             throw new \InvalidArgumentException(
-                \sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', $this->helperTagName, $serviceId),
-                1606245140
+                \sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
+                1606245140,
             );
         }
     }

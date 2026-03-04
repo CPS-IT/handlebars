@@ -1,0 +1,24 @@
+page = PAGE
+page.10 = EXTBASEPLUGIN
+page.10 {
+  extensionName = TestExtension
+  pluginName = TestDefaultTemplate
+}
+
+[page["uid"] == 2]
+  page.10.pluginName = TestRenderedTemplate
+[end]
+
+[page["uid"] == 3]
+  page.10.pluginName = TestSpecificTemplate
+[end]
+
+config.disableAllHeaderCode = 1
+
+plugin.tx_handlebars {
+  view {
+    templateRootPaths {
+      0 = EXT:test_extension/Resources/Templates
+    }
+  }
+}

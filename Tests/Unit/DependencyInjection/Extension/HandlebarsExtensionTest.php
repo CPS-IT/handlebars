@@ -5,27 +5,22 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\DependencyInjection\Extension;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\DependencyInjection\Extension;
 
-use Fr\Typo3Handlebars\DependencyInjection\Extension\HandlebarsExtension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use CPSIT\Typo3Handlebars as Src;
+use PHPUnit\Framework;
+use Symfony\Component\DependencyInjection;
+use TYPO3\TestingFramework;
 
 /**
  * HandlebarsExtensionTest
@@ -33,29 +28,27 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsExtensionTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\DependencyInjection\Extension\HandlebarsExtension::class)]
+final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    /**
-     * @var HandlebarsExtension
-     */
-    protected $subject;
+    private Src\DependencyInjection\Extension\HandlebarsExtension $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->subject = new HandlebarsExtension();
+        $this->subject = new Src\DependencyInjection\Extension\HandlebarsExtension();
     }
 
     /**
-     * @test
-     * @dataProvider loadAddsResolvedParametersToContainerDataProvider
      * @param array<int, mixed>[] $configs
      * @param array<string, mixed> $expectedParameters
      */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('loadAddsResolvedParametersToContainerDataProvider')]
     public function loadAddsResolvedParametersToContainer(array $configs, array $expectedParameters): void
     {
-        $container = new ContainerBuilder();
+        $container = new DependencyInjection\ContainerBuilder();
 
         $this->subject->load($configs, $container);
 
@@ -68,7 +61,7 @@ class HandlebarsExtensionTest extends UnitTestCase
     /**
      * @return \Generator<string, array<mixed>>
      */
-    public function loadAddsResolvedParametersToContainerDataProvider(): \Generator
+    public static function loadAddsResolvedParametersToContainerDataProvider(): \Generator
     {
         $firstRootPaths = [
             10 => 'EXT:foo/baz',
@@ -87,70 +80,70 @@ class HandlebarsExtensionTest extends UnitTestCase
         yield 'no configs' => [
             [],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                'handlebars.templateRootPaths' => [],
+                'handlebars.partialRootPaths' => [],
+                'handlebars.variables' => [],
             ],
         ];
         yield 'default data' => [
             [
                 [
-                    'default_data' => [
+                    'variables' => [
                         'foo' => 'baz',
                     ],
                 ],
                 [
-                    'default_data' => [
+                    'variables' => [
                         'foo' => 'yay',
                         'baz' => 'foo',
                     ],
                 ],
             ],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [
+                'handlebars.templateRootPaths' => [],
+                'handlebars.partialRootPaths' => [],
+                'handlebars.variables' => [
                     'foo' => 'yay',
                     'baz' => 'foo',
                 ],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
             ],
         ];
         yield 'template root paths' => [
             [
                 [
-                    'template' => [
-                        'template_root_paths' => $firstRootPaths,
+                    'view' => [
+                        'templateRootPaths' => $firstRootPaths,
                     ],
                 ],
                 [
-                    'template' => [
-                        'template_root_paths' => $secondRootPaths,
+                    'view' => [
+                        'templateRootPaths' => $secondRootPaths,
                     ],
                 ],
             ],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => $expectedRootPaths,
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => [],
+                'handlebars.templateRootPaths' => $expectedRootPaths,
+                'handlebars.partialRootPaths' => [],
+                'handlebars.variables' => [],
             ],
         ];
         yield 'partial root paths' => [
             [
                 [
-                    'template' => [
-                        'partial_root_paths' => $firstRootPaths,
+                    'view' => [
+                        'partialRootPaths' => $firstRootPaths,
                     ],
                 ],
                 [
-                    'template' => [
-                        'partial_root_paths' => $secondRootPaths,
+                    'view' => [
+                        'partialRootPaths' => $secondRootPaths,
                     ],
                 ],
             ],
             [
-                HandlebarsExtension::PARAMETER_DEFAULT_DATA => [],
-                HandlebarsExtension::PARAMETER_TEMPLATE_ROOT_PATHS => [],
-                HandlebarsExtension::PARAMETER_PARTIAL_ROOT_PATHS => $expectedRootPaths,
+                'handlebars.templateRootPaths' => [],
+                'handlebars.partialRootPaths' => $expectedRootPaths,
+                'handlebars.variables' => [],
             ],
         ];
     }

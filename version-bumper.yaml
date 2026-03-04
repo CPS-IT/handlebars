@@ -1,0 +1,9 @@
+presets:
+  - typo3-commit-guidelines
+  - name: typo3-extension
+    options:
+      # @todo Migrate to PHP-based documentation rendering
+      documentation: legacy
+
+releaseOptions:
+  commitMessage: '[RELEASE] Release of EXT:handlebars {%version%}'

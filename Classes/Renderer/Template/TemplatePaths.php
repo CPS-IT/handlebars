@@ -5,29 +5,19 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer\Template;
+namespace CPSIT\Typo3Handlebars\Renderer\Template;
 
-use Fr\Typo3Handlebars\Configuration\Extension;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use Symfony\Component\DependencyInjection;
 
 /**
  * TemplatePaths
@@ -35,92 +25,81 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class TemplatePaths implements ContainerAwareInterface
+final class TemplatePaths
 {
-    use ContainerAwareTrait;
-
-    public const TEMPLATES = 'template_root_paths';
-    public const PARTIALS = 'partial_root_paths';
+    /**
+     * @var array<int, string>|null
+     */
+    private ?array $partialRootPaths = null;
 
     /**
-     * @var ConfigurationManagerInterface
+     * @var array<int, string>|null
      */
-    protected $configurationManager;
+    private ?array $templateRootPaths = null;
 
     /**
-     * @var string
+     * @param iterable<Path\PathProvider> $pathProviders
      */
-    protected $type;
+    public function __construct(
+        #[DependencyInjection\Attribute\AutowireIterator('handlebars.template_path_provider', defaultPriorityMethod: 'getPriority')]
+        private readonly iterable $pathProviders,
+    ) {}
 
     /**
-     * @var string[]
+     * @return array<int, string>
      */
-    protected $templatePaths;
-
-    public function __construct(ConfigurationManagerInterface $configurationManager, string $type = self::TEMPLATES)
+    public function getPartialRootPaths(): array
     {
-        $this->configurationManager = $configurationManager;
-        $this->type = $type;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function get(): array
-    {
-        if ($this->templatePaths === null) {
-            $this->resolveTemplatePaths();
-        }
-
-        return $this->templatePaths;
-    }
-
-    protected function resolveTemplatePaths(): void
-    {
-        $this->templatePaths = $this->mergeTemplatePaths(
-            $this->getTemplatePathsFromContainer($this->type),
-            $this->getTemplatePathsFromTypoScriptConfiguration($this->type)
+        return $this->resolvePaths(
+            static fn(Path\PathProvider $pathProvider) => $pathProvider->getPartialRootPaths(),
+            $this->partialRootPaths,
         );
     }
 
     /**
-     * @return string[]
+     * @return array<int, string>
      */
-    protected function getTemplatePathsFromContainer(string $type): array
+    public function getTemplateRootPaths(): array
     {
-        if ($this->container === null) {
-            return [];
+        return $this->resolvePaths(
+            static fn(Path\PathProvider $pathProvider) => $pathProvider->getTemplateRootPaths(),
+            $this->templateRootPaths,
+        );
+    }
+
+    /**
+     * @param callable(Path\PathProvider): array<int, string> $mapFunction
+     * @param array<int, string>|null $rootPaths
+     * @return array<int, string>
+     */
+    private function resolvePaths(callable $mapFunction, ?array &$rootPaths): array
+    {
+        // Early return if root paths are already resolved and cached
+        if ($rootPaths !== null) {
+            return $rootPaths;
         }
 
-        $parameterName = 'handlebars.' . $type;
-        $templatePathsParameter = $this->container->getParameter($parameterName);
+        $cacheable = true;
+        $paths = [];
 
-        return \is_array($templatePathsParameter) ? $templatePathsParameter : [$templatePathsParameter];
-    }
+        // Resolve root paths from path providers
+        foreach ($this->pathProviders as $pathProvider) {
+            \array_unshift($paths, $mapFunction($pathProvider));
 
-    /**
-     * @return string[]
-     */
-    protected function getTemplatePathsFromTypoScriptConfiguration(string $type): array
-    {
-        $configurationType = GeneralUtility::underscoredToLowerCamelCase($type);
-        $typoScriptConfiguration = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
-            Extension::NAME
-        );
+            if (!$pathProvider->isCacheable()) {
+                $cacheable = false;
+            }
+        }
 
-        return $typoScriptConfiguration['view'][$configurationType] ?? [];
-    }
+        // Merge and sort all root paths
+        $mergedPaths = array_replace(...$paths);
+        ksort($mergedPaths);
 
-    /**
-     * @param string[] ...$templatePaths
-     * @return string[]
-     */
-    protected function mergeTemplatePaths(array ...$templatePaths): array
-    {
-        $mergedTemplatePaths = array_replace(...$templatePaths);
-        ksort($mergedTemplatePaths);
+        // Cache root paths if possible
+        if ($cacheable) {
+            $rootPaths = $mergedPaths;
+        }
 
-        return $mergedTemplatePaths;
+        return $mergedPaths;
     }
 }

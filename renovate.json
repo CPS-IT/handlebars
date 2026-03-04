@@ -7,10 +7,6 @@
 	"assignees": [
 		"eliashaeussler"
 	],
-	"useBaseBranchConfig": "merge",
-	"baseBranchPatterns": [
-		"1.x"
-	],
 	"constraints": {
 		"php": "8.2.*"
 	},
@@ -28,10 +24,10 @@
 		},
 		{
 			"extends": [
-				":disableRenovate"
+				":pinVersions"
 			],
 			"matchFileNames": [
-				"Tests/Functional/Fixtures/test_extension/**"
+				"Resources/Private/Libs/composer.json"
 			]
 		}
 	]

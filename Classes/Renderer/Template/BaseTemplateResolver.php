@@ -1,0 +1,152 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS extension "handlebars".
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace CPSIT\Typo3Handlebars\Renderer\Template;
+
+use CPSIT\Typo3Handlebars\Exception;
+use Symfony\Component\Filesystem;
+use TYPO3\CMS\Core;
+
+/**
+ * BaseTemplateResolver
+ *
+ * @author Elias Häußler <e.haeussler@familie-redlich.de>
+ * @license GPL-2.0-or-later
+ */
+abstract class BaseTemplateResolver implements TemplateResolver
+{
+    protected const DEFAULT_FILE_EXTENSIONS = ['hbs', 'handlebars', 'html'];
+
+    /**
+     * @var list<string>
+     */
+    protected array $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS;
+
+    public function supports(string $fileExtension): bool
+    {
+        return \in_array($fileExtension, $this->supportedFileExtensions, true);
+    }
+
+    protected function resolveFilename(string $path, ?string $rootPath = null, ?string $extension = null): string
+    {
+        if (Filesystem\Path::isAbsolute($path)) {
+            $filename = $path;
+        } elseif ($rootPath !== null) {
+            $filename = $rootPath . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
+        } else {
+            $filename = $path;
+        }
+
+        if ($extension !== null && !$this->supports(pathinfo($filename, PATHINFO_EXTENSION))) {
+            $filename .= '.' . $extension;
+        }
+
+        $resolvedFilename = Core\Utility\GeneralUtility::getFileAbsFileName($filename);
+
+        if ($resolvedFilename === '' && Core\Utility\PathUtility::isAllowedAdditionalPath($filename)) {
+            return $filename;
+        }
+
+        return $resolvedFilename;
+    }
+
+    /**
+     * @return array{list<string>, list<string>}
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    protected function resolveTemplatePaths(TemplatePaths $templatePaths): array
+    {
+        return [
+            $this->normalizeRootPaths($templatePaths->getTemplateRootPaths()),
+            $this->normalizeRootPaths($templatePaths->getPartialRootPaths()),
+        ];
+    }
+
+    /**
+     * @param string[] $rootPaths
+     * @return list<string>
+     * @throws Exception\RootPathIsMalicious
+     * @throws Exception\RootPathIsNotResolvable
+     */
+    protected function normalizeRootPaths(array $rootPaths): array
+    {
+        $normalizedRootPaths = [];
+
+        ksort($rootPaths);
+
+        foreach ($rootPaths as $rootPath) {
+            /* @phpstan-ignore function.alreadyNarrowedType */
+            if (!\is_string($rootPath)) {
+                throw new Exception\RootPathIsMalicious($rootPath);
+            }
+
+            // Skip empty root paths
+            if ($rootPath === '') {
+                continue;
+            }
+
+            $normalizedRootPath = rtrim($rootPath, DIRECTORY_SEPARATOR);
+            $normalizedRootPath = Core\Utility\GeneralUtility::getFileAbsFileName($normalizedRootPath);
+
+            if ($normalizedRootPath === '') {
+                if (!Core\Utility\PathUtility::isAllowedAdditionalPath($rootPath)) {
+                    throw new Exception\RootPathIsNotResolvable($rootPath);
+                }
+
+                $normalizedRootPath = $rootPath;
+            }
+
+            $normalizedRootPaths[] = $normalizedRootPath;
+        }
+
+        return $normalizedRootPaths;
+    }
+
+    /**
+     * @param string[] $supportedFileExtensions
+     * @return list<string>
+     */
+    protected function resolveSupportedFileExtensions(array $supportedFileExtensions): array
+    {
+        if ($supportedFileExtensions === []) {
+            $supportedFileExtensions = self::DEFAULT_FILE_EXTENSIONS;
+        }
+
+        return array_values(
+            \array_unique(
+                array_map($this->normalizeFileExtension(...), $supportedFileExtensions),
+            ),
+        );
+    }
+
+    /**
+     * @throws Exception\FileExtensionIsInvalid
+     * @throws Exception\FileExtensionIsMalicious
+     */
+    protected function normalizeFileExtension(mixed $fileExtension): string
+    {
+        if (!\is_string($fileExtension)) {
+            throw new Exception\FileExtensionIsMalicious($fileExtension);
+        }
+        if (preg_match('/^[\w\-.]+$/', $fileExtension) !== 1) {
+            throw new Exception\FileExtensionIsInvalid($fileExtension);
+        }
+
+        return ltrim(trim($fileExtension), '.');
+    }
+}

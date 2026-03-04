@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the TYPO3 CMS extension "handlebars".
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace CPSIT\Typo3Handlebars\Renderer\Component\Layout;
+
+/**
+ * HandlebarsLayout
+ *
+ * @author Elias Häußler <e.haeussler@familie-redlich.de>
+ * @license GPL-2.0-or-later
+ */
+final class HandlebarsLayout
+{
+    private bool $parsed = false;
+
+    /**
+     * @var array<string, list<HandlebarsLayoutAction>>
+     */
+    private array $actions = [];
+
+    public function __construct(
+        private readonly \Closure $parseFunction,
+    ) {}
+
+    public function parse(mixed &$context = null): void
+    {
+        $this->parsed = true;
+        ($this->parseFunction)($context);
+    }
+
+    public function addAction(HandlebarsLayoutAction $action): void
+    {
+        $name = $action->getName();
+
+        $this->actions[$name] ??= [];
+        $this->actions[$name][] = $action;
+    }
+
+    /**
+     * @return ($name is null ? array<string, HandlebarsLayoutAction[]> : HandlebarsLayoutAction[])
+     */
+    public function getActions(?string $name = null): array
+    {
+        if ($name === null) {
+            return $this->actions;
+        }
+
+        return $this->actions[$name] ?? [];
+    }
+
+    public function hasAction(string $name): bool
+    {
+        return \array_key_exists($name, $this->actions);
+    }
+
+    public function isParsed(): bool
+    {
+        return $this->parsed;
+    }
+}

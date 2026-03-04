@@ -16,7 +16,7 @@ Extbase repositories
 
     This compatibility method is only applicable to `DataProcessors`
     that extend the :php:`AbstractDataProcessor`, since it provides the
-    necessary method. It is not part of the :php:`DataProcessorInterface`.
+    necessary method. It is not part of the :php:`DataProcessor` interface.
 
 When Extbase repositories are used to fetch data via the `DataProvider`,
 it may be necessary to perform the necessary bootstrapping for Extbase
@@ -42,7 +42,7 @@ Usage
 
      namespace Vendor\Extension\DataProcessing;
 
-     use Fr\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
+     use CPSIT\Typo3Handlebars\DataProcessing\AbstractDataProcessor;
 
      class HeaderProcessor extends AbstractDataProcessor
      {

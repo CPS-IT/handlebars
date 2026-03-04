@@ -21,5 +21,5 @@ how to use the extension:
 
     Cache/Index
     TemplatePaths/Index
-    DefaultData/Index
+    Variables/Index
     Debugging/Index

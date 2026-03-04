@@ -14,7 +14,7 @@ What does it do?
 The extension provides a full rendering environment for Handlebars templates
 within TYPO3 CMS. All `core features <https://handlebarsjs.com/guide/>`_ of
 Handlebars.js are supported by the usage of the third-party library
-`LightnCandy <https://github.com/zordius/lightncandy>`_.
+`PHP Handlebars <https://github.com/devtheorem/php-handlebars>`_.
 
 Its main use is to seamlessly integrate Handlebars templates into TYPO3 without
 the need to modify these templates again for output in TYPO3.

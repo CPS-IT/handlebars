@@ -5,42 +5,27 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Renderer;
+namespace CPSIT\Typo3Handlebars\Renderer;
 
-use Fr\Typo3Handlebars\Cache\CacheInterface;
-use Fr\Typo3Handlebars\Cache\NullCache;
-use Fr\Typo3Handlebars\Event\AfterRenderingEvent;
-use Fr\Typo3Handlebars\Event\BeforeRenderingEvent;
-use Fr\Typo3Handlebars\Exception\InvalidTemplateFileException;
-use Fr\Typo3Handlebars\Exception\TemplateCompilationException;
-use Fr\Typo3Handlebars\Exception\TemplateNotFoundException;
-use Fr\Typo3Handlebars\Renderer\Template\TemplateResolverInterface;
-use Fr\Typo3Handlebars\Traits\HandlebarsHelperTrait;
-use LightnCandy\Context;
-use LightnCandy\LightnCandy;
-use LightnCandy\Partial;
-use LightnCandy\Runtime;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use CPSIT\Typo3Handlebars\Cache;
+use CPSIT\Typo3Handlebars\Event;
+use CPSIT\Typo3Handlebars\Exception;
+use DevTheorem\Handlebars;
+use Psr\EventDispatcher;
+use Psr\Http\Message;
+use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Frontend;
 
 /**
  * HandlebarsRenderer
@@ -48,130 +33,80 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, LoggerAwareInterface
+#[DependencyInjection\Attribute\AsAlias(Renderer::class)]
+#[DependencyInjection\Attribute\Autoconfigure(tags: ['handlebars.renderer'])]
+class HandlebarsRenderer implements Renderer
 {
-    use HandlebarsHelperTrait;
-    use LoggerAwareTrait;
+    protected ?bool $debugMode = null;
 
-    /**
-     * @var CacheInterface
-     */
-    protected $cache;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var TemplateResolverInterface
-     */
-    protected $templateResolver;
-
-    /**
-     * @var TemplateResolverInterface|null
-     */
-    protected $partialResolver;
-
-    /**
-     * @var array<mixed, mixed>
-     */
-    protected $defaultData;
-
-    /**
-     * @var bool
-     */
-    protected $debugMode;
-
-    /**
-     * @param array<mixed, mixed> $defaultData
-     */
     public function __construct(
-        CacheInterface $cache,
-        EventDispatcherInterface $eventDispatcher,
-        TemplateResolverInterface $templateResolver,
-        TemplateResolverInterface $partialResolver = null,
-        array $defaultData = []
-    ) {
-        $this->cache = $cache;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->templateResolver = $templateResolver;
-        $this->partialResolver = $partialResolver;
-        $this->defaultData = $defaultData;
-        $this->debugMode = $this->isDebugModeEnabled();
-    }
-
-    public function render(string $templatePath, array $data = []): string
-    {
-        try {
-            return $this->processRendering($templatePath, $data);
-        } catch (InvalidTemplateFileException | TemplateCompilationException | TemplateNotFoundException $exception) {
-            if ($this->logger !== null) {
-                $this->logger->critical($exception->getMessage(), ['exception' => $exception]);
-            }
-
-            return '';
-        }
-    }
+        protected readonly Cache\Cache $cache,
+        protected readonly EventDispatcher\EventDispatcherInterface $eventDispatcher,
+        protected readonly Helper\HelperRegistry $helperRegistry,
+        protected readonly Template\TemplateResolver $templateResolver,
+        protected readonly Variables\VariableBag $variableBag,
+    ) {}
 
     /**
-     * @param array<mixed, mixed> $data
-     * @throws InvalidTemplateFileException if template file is invalid
-     * @throws TemplateCompilationException if template compilation fails and errors are not yet handled by compiler
-     * @throws TemplateNotFoundException if template could not be found
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
+     * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function processRendering(string $templatePath, array $data): string
+    public function render(RenderingContext $context): string
     {
-        $fullTemplatePath = $this->templateResolver->resolveTemplatePath($templatePath);
-        $template = file_get_contents($fullTemplatePath);
-
-        // Throw exception if template file is invalid
-        if ($template === false) {
-            throw new InvalidTemplateFileException($fullTemplatePath, 1606217313);
-        }
+        $compileResult = $this->compile($context);
 
         // Early return if template is empty
-        if (trim($template) === '') {
+        if ($compileResult === null) {
             return '';
         }
 
-        // Merge render data with default data
-        $mergedData = array_merge($this->defaultData, $data);
-
-        // Compile template
-        $compileResult = $this->compile($template);
-        $renderer = $this->prepareCompileResult($compileResult);
+        // Merge variables with default variables
+        $mergedVariables = array_merge($this->variableBag->get(), $context->getVariables());
 
         // Dispatch before rendering event
-        $beforeRenderingEvent = new BeforeRenderingEvent($fullTemplatePath, $mergedData, $this);
+        $beforeRenderingEvent = new Event\BeforeRenderingEvent($context, $mergedVariables, $this);
         $this->eventDispatcher->dispatch($beforeRenderingEvent);
 
         // Render content
-        $content = $renderer($beforeRenderingEvent->getData(), [
-            'debug' => Runtime::DEBUG_TAGS_HTML,
-            'helpers' => $this->helpers,
+        $renderer = Handlebars\Handlebars::template($compileResult);
+        $content = $renderer($beforeRenderingEvent->getVariables(), [
+            'helpers' => $this->helperRegistry->getAll(),
+            'data' => [
+                'renderingContext' => $context,
+            ],
         ]);
 
         // Dispatch after rendering event
-        $afterRenderingEvent = new AfterRenderingEvent($fullTemplatePath, $content, $this);
+        $afterRenderingEvent = new Event\AfterRenderingEvent($context, $content, $this);
         $this->eventDispatcher->dispatch($afterRenderingEvent);
 
         return $afterRenderingEvent->getContent();
     }
 
     /**
-     * Compile given template by LightnCandy compiler.
+     * Compile given template by Handlebars compiler.
      *
-     * @param string $template Raw template to be compiled
-     * @return string The compiled template
-     * @throws TemplateCompilationException if template compilation fails and errors are not yet handled by compiler
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
+     * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function compile(string $template): string
+    protected function compile(RenderingContext $context): ?string
     {
+        $template = $context->getTemplate($this->templateResolver);
+
+        // Early return if template is empty
+        if (\trim($template) === '') {
+            return null;
+        }
+
         // Disable cache if debugging is enabled or caching is disabled
-        $cache = $this->cache;
-        if ($this->debugMode || $this->isCachingDisabled()) {
-            $cache = new NullCache();
+        if ($this->isDebugModeEnabled() || $this->isCachingDisabled()) {
+            $cache = new Cache\NullCache();
+        } else {
+            $cache = $this->cache;
         }
 
         // Get compile result from cache
@@ -180,74 +115,21 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
             return $compileResult;
         }
 
-        $compileResult = LightnCandy::compile($template, $this->getCompileOptions());
-
-        // Handle compilation failures
-        if ($compileResult === false) {
-            $errors = LightnCandy::getContext()['error'] ?? [];
-
-            throw new TemplateCompilationException(
-                \sprintf(
-                    'Error during template compilation: "%s"',
-                    implode('", "', \is_array($errors) ? $errors : [$errors])
-                ),
-                1614620212
-            );
-        }
+        $compileResult = Handlebars\Handlebars::precompile($template, $this->getCompileOptions());
 
         // Write compiled template into cache
-        if (!$this->debugMode) {
-            $cache->set($template, $compileResult);
-        }
+        $cache->set($template, $compileResult);
 
         return $compileResult;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getCompileOptions(): array
+    protected function getCompileOptions(): Handlebars\Options
     {
-        return [
-            'flags' => $this->getCompileFlags(),
-            'helpers' => $this->getHelperStubs(),
-            'partialresolver' => $this->partialResolver ? [$this, 'resolvePartial'] : false,
-        ];
-    }
-
-    protected function getCompileFlags(): int
-    {
-        $flags = LightnCandy::FLAG_HANDLEBARS | LightnCandy::FLAG_RUNTIMEPARTIAL | LightnCandy::FLAG_EXTHELPER | LightnCandy::FLAG_ERROR_EXCEPTION;
-        if ($this->debugMode) {
-            $flags |= LightnCandy::FLAG_RENDER_DEBUG;
-        }
-        return $flags;
-    }
-
-    protected function prepareCompileResult(string $compileResult): callable
-    {
-        // Touch temporary file
-        $path = GeneralUtility::tempnam('hbs_');
-
-        // Write file and validate write result
-        /** @var string|null $writeResult */
-        $writeResult = GeneralUtility::writeFileToTypo3tempDir($path, '<?php ' . $compileResult);
-        if ($writeResult !== null) {
-            throw new TemplateCompilationException(\sprintf('Cannot prepare compiled render function: %s', $writeResult), 1614705397);
-        }
-
-        // Build callable
-        $callable = include $path;
-
-        // Remove temporary file
-        GeneralUtility::unlink_tempfile($path);
-
-        // Validate callable
-        if (!\is_callable($callable)) {
-            throw new TemplateCompilationException('Got invalid compile result from compiler.', 1639405571);
-        }
-
-        return $callable;
+        return new Handlebars\Options(
+            strict: $this->isDebugModeEnabled(),
+            helpers: $this->getHelperStubs(),
+            partialResolver: fn(Handlebars\Context $context, string $name) => $this->resolvePartial($name),
+        );
     }
 
     /**
@@ -258,70 +140,67 @@ class HandlebarsRenderer implements RendererInterface, HelperAwareInterface, Log
      * helpers during compile time, whereas the concrete helper callables are
      * provided during runtime.
      *
-     * @return array<string, true>
+     * @return array<string, callable>
      */
     protected function getHelperStubs(): array
     {
-        return array_fill_keys(array_keys($this->helpers), true);
+        return array_fill_keys(array_keys($this->helperRegistry->getAll()), static fn() => '');
     }
 
     /**
      * Resolve path to given partial using partial resolver.
      *
-     * Tries to resolve the given partial using the {@see $partialResolver}. If
+     * Tries to resolve the given partial using the {@see $templateResolver}. If
      * no partial resolver is registered, `null` is returned. Otherwise, the
      * partials' file contents are returned. Returning `null` will be handled as
      * "partial not found" by the renderer.
      *
-     * This method is called by {@see Partial::resolver()}.
+     * This method is called by {@see Handlebars\Partial::resolve()}.
      *
-     * @param array<string, mixed> $context Current context of compiler progress, see {@see Context::create()}
      * @param string $name Name of the partial to be resolved
      * @return string|null Partial file contents if partial could be resolved, `null` otherwise
-     * @throws TemplateNotFoundException if partial could not be found
+     * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\TemplateFormatIsNotSupported
      */
-    public function resolvePartial(/** @noinspection PhpUnusedParameterInspection */ array $context, string $name): ?string
+    protected function resolvePartial(string $name): ?string
     {
-        if ($this->partialResolver === null) {
+        $partial = @file_get_contents($this->templateResolver->resolvePartialPath($name));
+
+        if ($partial === false) {
             return null;
         }
-        return file_get_contents($this->partialResolver->resolveTemplatePath($name)) ?: null;
-    }
 
-    /**
-     * @return array<mixed, mixed>
-     */
-    public function getDefaultData(): array
-    {
-        return $this->defaultData;
-    }
-
-    /**
-     * @param array<mixed, mixed> $defaultData
-     */
-    public function setDefaultData(array $defaultData): self
-    {
-        $this->defaultData = $defaultData;
-        return $this;
+        return $partial;
     }
 
     protected function isCachingDisabled(): bool
     {
-        $tsfe = $this->getTypoScriptFrontendController();
-        return $tsfe !== null && (bool)$tsfe->no_cache;
+        $cacheInstruction = $this->getServerRequest()->getAttribute('frontend.cache.instruction');
+
+        if ($cacheInstruction instanceof Frontend\Cache\CacheInstruction) {
+            return !$cacheInstruction->isCachingAllowed();
+        }
+
+        return false;
     }
 
     protected function isDebugModeEnabled(): bool
     {
-        $tsfe = $this->getTypoScriptFrontendController();
-        if ($tsfe !== null && (bool)($tsfe->config['config']['debug'] ?? false)) {
+        if ($this->debugMode !== null) {
+            return $this->debugMode;
+        }
+
+        $typoScript = $this->getServerRequest()->getAttribute('frontend.typoscript');
+
+        if ($typoScript instanceof Core\TypoScript\FrontendTypoScript && (bool)($typoScript->getConfigArray()['debug'] ?? false)) {
             return true;
         }
-        return (bool)($GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] ?? false);
+
+        return $this->debugMode = (bool)($GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] ?? false);
     }
 
-    protected function getTypoScriptFrontendController(): ?TypoScriptFrontendController
+    protected function getServerRequest(): Message\ServerRequestInterface
     {
-        return $GLOBALS['TSFE'] ?? null;
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

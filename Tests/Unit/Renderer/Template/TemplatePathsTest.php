@@ -5,28 +5,22 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Tests\Unit\Renderer\Template;
+namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Template;
 
-use Fr\Typo3Handlebars\Renderer\Template\TemplatePaths;
-use Fr\Typo3Handlebars\Tests\Unit\Fixtures\Classes\DummyConfigurationManager;
-use Fr\Typo3Handlebars\Tests\Unit\HandlebarsTemplateResolverTrait;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests;
+use PHPUnit\Framework;
+use TYPO3\TestingFramework;
 
 /**
  * TemplatePathsTest
@@ -34,74 +28,197 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class TemplatePathsTest extends UnitTestCase
+#[Framework\Attributes\CoversClass(Src\Renderer\Template\TemplatePaths::class)]
+final class TemplatePathsTest extends TestingFramework\Core\Unit\UnitTestCase
 {
-    use HandlebarsTemplateResolverTrait;
+    use Tests\HandlebarsTemplateResolverTrait;
 
-    /**
-     * @var DummyConfigurationManager
-     */
-    protected $configurationManager;
-
-    /**
-     * @var TemplatePaths
-     */
-    protected $subject;
+    private Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider $pathProvider;
+    private Src\Renderer\Template\TemplatePaths $subject;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->configurationManager = new DummyConfigurationManager();
-        $this->subject = new TemplatePaths($this->configurationManager);
-        $this->subject->setContainer($this->getContainer());
+
+        $this->pathProvider = new Tests\Unit\Fixtures\Classes\Renderer\Template\Path\DummyPathProvider();
+        $this->subject = new Src\Renderer\Template\TemplatePaths([
+            $this->pathProvider,
+            new Src\Renderer\Template\Path\GlobalPathProvider($this->getViewConfiguration()),
+        ]);
     }
 
     /**
-     * @test
-     * @dataProvider getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider
-     * @param array<string, array<mixed>> $typoScriptConfiguration
-     * @param string[] $expected
+     * @param array<int, string> $partialRootPaths
+     * @param array<int, string> $expected
      */
-    public function getMergesConfigurationFromContainerWithTypoScriptConfiguration(
-        array $typoScriptConfiguration,
-        array $expected
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('getPartialRootPathsMergesConfigurationFromPathProvidersDataProvider')]
+    public function getPartialRootPathsMergesConfigurationFromPathProviders(
+        array $partialRootPaths,
+        array $expected,
     ): void {
-        $this->configurationManager->setConfiguration($typoScriptConfiguration);
+        $this->pathProvider->partialRootPaths = $partialRootPaths;
 
-        self::assertSame($expected, $this->subject->get());
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialRootPathsCachesRootPathsIfAllPathProvidersAreCacheable(): void
+    {
+        $this->pathProvider->partialRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+
+        $this->pathProvider->partialRootPaths = [
+            20 => 'baz',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialRootPathsDoesNotCacheRootPathsIfAnyPathProviderIsNonCacheable(): void
+    {
+        $this->pathProvider->cacheable = false;
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
+
+        $this->pathProvider->partialRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getPartialRootPaths());
     }
 
     /**
-     * @return \Generator<string, array<mixed>>
+     * @param array<int, string> $templateRootPaths
+     * @param array<int, string> $expected
      */
-    public function getMergesConfigurationFromContainerWithTypoScriptConfigurationDataProvider(): \Generator
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider')]
+    public function getTemplateRootPathsMergesConfigurationFromPathProviders(
+        array $templateRootPaths,
+        array $expected,
+    ): void {
+        $this->pathProvider->templateRootPaths = $templateRootPaths;
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getTemplateRootPathsCachesRootPathsIfAllPathProvidersAreCacheable(): void
     {
-        yield 'no TypoScript configuration' => [
+        $this->pathProvider->templateRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+
+        $this->pathProvider->templateRootPaths = [
+            20 => 'baz',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getTemplateRootPathsDoesNotCacheRootPathsIfAnyPathProviderIsNonCacheable(): void
+    {
+        $this->pathProvider->cacheable = false;
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+
+        $this->pathProvider->templateRootPaths = [
+            20 => 'foo',
+        ];
+
+        $expected = [
+            10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+            20 => 'foo',
+        ];
+
+        self::assertSame($expected, $this->subject->getTemplateRootPaths());
+    }
+
+    /**
+     * @return \Generator<string, array{array<int, string>, array<int, string>}>
+     */
+    public static function getPartialRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
+    {
+        yield 'no view configuration' => [
             [],
             [
-                10 => $this->getTemplateRootPath(),
+                10 => dirname(__DIR__, 2) . '/Fixtures/Partials',
             ],
         ];
-        yield 'TypoScript configuration with identical keys' => [
+        yield 'view configuration with identical keys' => [
             [
-                'view' => [
-                    'templateRootPaths' => [
-                        '10' => 'foo',
-                    ],
-                ],
+                '10' => 'foo',
             ],
             [
                 10 => 'foo',
             ],
         ];
-        yield 'TypoScript configuration with additional keys' => [
+        yield 'view configuration with additional keys' => [
             [
-                'view' => [
-                    'templateRootPaths' => [
-                        '10' => 'foo',
-                        '20' => 'baz',
-                    ],
-                ],
+                '10' => 'foo',
+                '20' => 'baz',
+            ],
+            [
+                10 => 'foo',
+                20 => 'baz',
+            ],
+        ];
+    }
+
+    /**
+     * @return \Generator<string, array{array<int, string>, array<int, string>}>
+     */
+    public static function getTemplateRootPathsMergesConfigurationFromPathProvidersDataProvider(): \Generator
+    {
+        yield 'no view configuration' => [
+            [],
+            [
+                10 => dirname(__DIR__, 2) . '/Fixtures/Templates',
+            ],
+        ];
+        yield 'view configuration with identical keys' => [
+            [
+                '10' => 'foo',
+            ],
+            [
+                10 => 'foo',
+            ],
+        ];
+        yield 'view configuration with additional keys' => [
+            [
+                '10' => 'foo',
+                '20' => 'baz',
             ],
             [
                 10 => 'foo',

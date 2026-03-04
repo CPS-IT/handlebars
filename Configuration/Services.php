@@ -5,29 +5,58 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2020 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\DependencyInjection;
+namespace CPSIT\Typo3Handlebars\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use CPSIT\Typo3Handlebars\Attribute;
+use CPSIT\Typo3Handlebars\Renderer;
+use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Fluid;
+use TYPO3\CMS\Frontend;
 
-return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $container): void {
+return static function (
+    DependencyInjection\ContainerBuilder $container,
+    DependencyInjection\Loader\Configurator\ContainerConfigurator $configurator,
+): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
-    $container->addCompilerPass(new DataProcessorPass('handlebars.processor', 'handlebars.compatibility_layer'));
-    $container->addCompilerPass(new HandlebarsHelperPass('handlebars.helper', 'handlebars.renderer'));
+    $container->addCompilerPass(new HandlebarsHelperPass());
+    $container->registerAttributeForAutoconfiguration(
+        Attribute\AsHelper::class,
+        static function (DependencyInjection\ChildDefinition $definition, Attribute\AsHelper $attribute, \Reflector $reflector): void {
+            if ($attribute->method !== null) {
+                $method = $attribute->method;
+            } elseif ($reflector instanceof \ReflectionMethod) {
+                $method = $reflector->getName();
+            } elseif ($reflector instanceof \ReflectionClass && $reflector->implementsInterface(Renderer\Helper\Helper::class)) {
+                $method = 'render';
+            } else {
+                $method = '__invoke';
+            }
+
+            $definition->addTag(
+                HandlebarsHelperPass::TAG_NAME,
+                [
+                    'identifier' => $attribute->identifier,
+                    'method' => $method,
+                ],
+            );
+        },
+    );
+
+    // Make sure the FLUIDTEMPLATE content object always receives an instance of FluidViewFactory,
+    // because it fails hard if any other view than FluidViewAdapter is resolved, which cannot be
+    // assured when using our custom HandlebarsViewFactory, as we don't know the exact context.
+    $configurator->services()
+        ->get(Frontend\ContentObject\FluidTemplateContentObject::class)
+        ->arg('$viewFactory', new DependencyInjection\Reference(Fluid\View\FluidViewFactory::class))
+    ;
 };

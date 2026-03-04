@@ -3,27 +3,21 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS extension "handlebars_components".
+ * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\Event;
+namespace CPSIT\Typo3Handlebars\Event;
 
-use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
+use CPSIT\Typo3Handlebars\Renderer;
 
 /**
  * BeforeRenderingEvent
@@ -31,56 +25,52 @@ use Fr\Typo3Handlebars\Renderer\HandlebarsRenderer;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-class BeforeRenderingEvent
+final class BeforeRenderingEvent
 {
     /**
-     * @var string
+     * @param array<string|int, mixed> $variables
      */
-    private $templatePath;
+    public function __construct(
+        private readonly Renderer\RenderingContext $context,
+        private array $variables,
+        private readonly Renderer\Renderer $renderer,
+    ) {}
 
-    /**
-     * @var array<mixed, mixed>
-     */
-    private $data;
-
-    /**
-     * @var HandlebarsRenderer
-     */
-    private $renderer;
-
-    /**
-     * @param array<mixed, mixed> $data
-     */
-    public function __construct(string $templatePath, array $data, HandlebarsRenderer $renderer)
+    public function getContext(): Renderer\RenderingContext
     {
-        $this->templatePath = $templatePath;
-        $this->data = $data;
-        $this->renderer = $renderer;
-    }
-
-    public function getTemplatePath(): string
-    {
-        return $this->templatePath;
+        return $this->context;
     }
 
     /**
-     * @return array<mixed, mixed>
+     * @return array<string|int, mixed>
      */
-    public function getData(): array
+    public function getVariables(): array
     {
-        return $this->data;
+        return $this->variables;
     }
 
     /**
-     * @param array<mixed, mixed> $data
+     * @param array<string|int, mixed> $variables
      */
-    public function setData(array $data): self
+    public function setVariables(array $variables): self
     {
-        $this->data = $data;
+        $this->variables = $variables;
         return $this;
     }
 
-    public function getRenderer(): HandlebarsRenderer
+    public function addVariable(string $name, mixed $value): self
+    {
+        $this->variables[$name] = $value;
+        return $this;
+    }
+
+    public function removeVariable(string $name): self
+    {
+        unset($this->variables[$name]);
+        return $this;
+    }
+
+    public function getRenderer(): Renderer\Renderer
     {
         return $this->renderer;
     }

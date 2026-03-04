@@ -5,68 +5,59 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
- * Copyright (C) 2021 Elias Häußler <e.haeussler@familie-redlich.de>
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * The TYPO3 project - inspiring people to share!
  */
 
-namespace Fr\Typo3Handlebars\DependencyInjection\Extension;
+namespace CPSIT\Typo3Handlebars\DependencyInjection\Extension;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config;
 
 /**
  * HandlebarsExtension configuration structure.
  *
  * Defines the following configuration structure for the {@see HandlebarsExtension}:
  *
- * - defaultData:
- *   - [data]: any default data passed to the renderer
+ * - variables:
+ *   - [data]: any default variable passed to the renderer
  *
- * - template:
- *   - [template_root_paths]: numeric array of template root paths
- *   - [partial_root_paths]: numeric array of partial root paths
+ * - view:
+ *   - [templateRootPaths]: numeric array of template root paths
+ *   - [partialRootPaths]: numeric array of partial root paths
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  * @internal
  * @codeCoverageIgnore
  */
-final class Configuration implements ConfigurationInterface
+final readonly class Configuration implements Config\Definition\ConfigurationInterface
 {
-    public function getConfigTreeBuilder(): TreeBuilder
+    public function getConfigTreeBuilder(): Config\Definition\Builder\TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('handlebars');
-        $rootNode = $treeBuilder->getRootNode();
-
-        /** @phpstan-ignore-next-line */
-        $rootNode
+        $treeBuilder = new Config\Definition\Builder\TreeBuilder('handlebars');
+        $treeBuilder
+            ->getRootNode()
             ->children()
-                ->arrayNode('default_data')
+                ->arrayNode('variables')
                     ->performNoDeepMerging()
                     ->variablePrototype()->end()
                 ->end()
-                ->arrayNode('template')
+                ->arrayNode('view')
                     ->children()
-                        ->arrayNode('template_root_paths')
+                        ->arrayNode('templateRootPaths')
                             ->beforeNormalization()
                                 ->always($this->getRootPathNormalizationClosure())
                             ->end()
                             ->performNoDeepMerging()
                             ->variablePrototype()->end()
                         ->end()
-                        ->arrayNode('partial_root_paths')
+                        ->arrayNode('partialRootPaths')
                             ->beforeNormalization()
                                 ->always($this->getRootPathNormalizationClosure())
                             ->end()
@@ -89,7 +80,7 @@ final class Configuration implements ConfigurationInterface
             }
             if (!\is_array($transitions)) {
                 throw new \InvalidArgumentException(
-                    \sprintf('Illegal value for root path configuration. Only numeric arrays are allowed, got "%s" instead.', \gettype($transitions)),
+                    \sprintf('Illegal value for root path configuration. Only numeric arrays are allowed, got "%s" instead.', \get_debug_type($transitions)),
                     1615835938
                 );
             }
@@ -104,10 +95,10 @@ final class Configuration implements ConfigurationInterface
     }
 
     /**
-     * @param array<mixed, mixed> $array
+     * @param array<string|int, mixed> $array
      */
     private function containsNonNumericIndexes(array $array): bool
     {
-        return \count(array_filter(array_keys($array), 'is_string')) !== 0;
+        return \count(array_filter(array_keys($array), is_string(...))) !== 0;
     }
 }

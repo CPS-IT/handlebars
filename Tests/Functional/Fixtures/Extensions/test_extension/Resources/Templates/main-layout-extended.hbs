@@ -1,0 +1,14 @@
+{{#extend templateName}}
+    {{#content "main" mode="append"}}
+        injected
+    {{/content}}
+    {{#content "second" mode="prepend"}}
+        injected
+    {{/content}}
+    {{#content "third" mode="replace"}}
+        injected
+    {{/content}}
+    {{#content "fourth"}}
+        injected
+    {{/content}}
+{{/extend}}

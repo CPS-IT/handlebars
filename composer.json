@@ -81,6 +81,9 @@
 			"typo3/cms-composer-installers": true
 		},
 		"bin-dir": ".Build/bin",
+		"branch-alias": {
+			"dev-main": "1.x-dev"
+		},
 		"sort-packages": true,
 		"vendor-dir": ".Build/vendor"
 	},

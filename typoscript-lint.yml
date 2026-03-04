@@ -1,4 +1,5 @@
 paths:
+  - Configuration/Sets/*/*.typoscript
   - Configuration/TypoScript/*
   - Configuration/TSconfig/*
 sniffs:

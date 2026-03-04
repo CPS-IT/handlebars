@@ -48,10 +48,16 @@ jobs:
       - name: Lint TypoScript
         run: composer lint:typoscript -- --fail-on-warnings
 
+      # Migration
+      - name: Run Rector migration
+        run: composer migration:rector -- --dry-run
+
       # SCA
       - name: SCA PHP
         run: composer sca:php -- --error-format github
 
-      # Migration
-      - name: Run Rector migration
-        run: composer migration:rector -- --dry-run
+      # Documentation
+      - name: Check documentation build
+        run: |
+          mkdir -p .Build/docs
+          composer docs:build -- --no-progress --fail-on-log

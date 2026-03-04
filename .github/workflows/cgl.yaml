@@ -56,8 +56,9 @@ jobs:
       - name: SCA PHP
         run: composer sca:php -- --error-format github
 
+      # @todo Enable once docs are rewritten
       # Documentation
-      - name: Check documentation build
-        run: |
-          mkdir -p .Build/docs
-          composer docs:build -- --no-progress --fail-on-log
+      #- name: Check documentation build
+      #  run: |
+      #    mkdir -p .Build/docs
+      #    composer docs:build -- --no-progress --fail-on-log

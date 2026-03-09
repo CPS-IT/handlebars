@@ -50,7 +50,7 @@ final class UnflattenVariableNamesProcessorTest extends TestingFramework\Core\Fu
         ];
 
         $actual = $this->subject->process(
-            $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class),
+            self::createStub(Frontend\ContentObject\ContentObjectRenderer::class),
             [],
             [],
             [

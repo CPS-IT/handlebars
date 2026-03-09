@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Attribute class PHPUnit\\Framework\\Attributes\\AllowMockObjectsWithoutExpectations does not exist\.$#'
+			identifier: attribute.notFound
+			count: 4
+			path: Tests/Functional/View/HandlebarsViewFactoryTest.php
+
+		-
+			message: '#^Attribute class PHPUnit\\Framework\\Attributes\\AllowMockObjectsWithoutExpectations does not exist\.$#'
+			identifier: attribute.notFound
+			count: 2
+			path: Tests/Unit/View/HandlebarsViewTest.php

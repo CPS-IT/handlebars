@@ -39,7 +39,7 @@ final class AfterRenderingEventTest extends TestingFramework\Core\Unit\UnitTestC
         $this->subject = new Src\Event\AfterRenderingEvent(
             new Src\Renderer\RenderingContext('foo'),
             'baz',
-            $this->createMock(Src\Renderer\HandlebarsRenderer::class),
+            self::createStub(Src\Renderer\HandlebarsRenderer::class),
         );
     }
 

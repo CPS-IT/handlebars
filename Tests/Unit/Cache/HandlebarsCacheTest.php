@@ -41,17 +41,17 @@ final class HandlebarsCacheTest extends TestingFramework\Core\Unit\UnitTestCase
         parent::setUp();
 
         $cache = $this->getCache();
-        $cacheMock = $this->createMock(Core\Cache\Frontend\FrontendInterface::class);
-        $cacheMock->method('get')->willReturnCallback(
+        $cacheStub = self::createStub(Core\Cache\Frontend\FrontendInterface::class);
+        $cacheStub->method('get')->willReturnCallback(
             static fn(string $entryIdentifier) => $cache->get($entryIdentifier),
         );
-        $cacheMock->method('set')->willReturnCallback(
+        $cacheStub->method('set')->willReturnCallback(
             static function (string $entryIdentifier, mixed $data) use ($cache) {
                 $cache->set($entryIdentifier, $data);
             },
         );
 
-        $this->subject = new Src\Cache\HandlebarsCache($cacheMock);
+        $this->subject = new Src\Cache\HandlebarsCache($cacheStub);
     }
 
     #[Framework\Attributes\Test]

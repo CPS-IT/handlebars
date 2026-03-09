@@ -81,6 +81,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function createReturnsFallbackViewIfNoRequestIsAvailable(): void
     {
         $data = new Core\View\ViewFactoryData();
@@ -92,6 +93,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function createReturnsFallbackViewIfNoCurrentContentObjectIsAvailable(): void
     {
         $this->request = $this->request->withoutAttribute('currentContentObject');
@@ -105,6 +107,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function createReturnsFallbackViewIfControllerIsUnknown(): void
     {
         $this->extbaseRequestParameters->setControllerObjectName('Vendor\\Extension\\Controller\\UnknownController');
@@ -119,6 +122,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function createReturnsFallbackViewWithDefaultConfigurationIfNoHandlebarsConfigurationIsAvailable(): void
     {
         $data = new Core\View\ViewFactoryData(request: $this->request, format: 'hbs');

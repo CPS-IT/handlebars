@@ -131,6 +131,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function renderUsesClonedContentObjectRendererWithConfiguredRequest(): void
     {
         $contentObject = new Src\Tests\Unit\Fixtures\Classes\DummyContentObject();
@@ -177,6 +178,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function getTemplateNameReturnsTemplateNameFromContentObjectConfiguration(): void
     {
         self::assertSame('@foo', $this->subject->getTemplateName());

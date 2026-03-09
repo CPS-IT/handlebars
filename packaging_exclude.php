@@ -27,6 +27,7 @@ return [
     'files' => [
         'DS_Store',
         'composer.lock',
+        'composer-dependency-analyser.php',
         'docker-compose.yml',
         'editorconfig',
         'gitattributes',
@@ -34,6 +35,7 @@ return [
         'packaging_exclude.php',
         'php-cs-fixer.php',
         'phpstan.neon',
+        'phpstan-baseline.neon',
         'phpunit.functional.xml',
         'phpunit.unit.xml',
         'rector.php',

@@ -27,6 +27,12 @@ use TYPO3\TestingFramework;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ *
+ * @phpstan-type ValidContainerParameters array{
+ *     'handlebars.templateRootPaths': array<int, string>,
+ *     'handlebars.partialRootPaths': array<int, string>,
+ *     'handlebars.variables': array<string, mixed>,
+ * }
  */
 #[Framework\Attributes\CoversClass(Src\DependencyInjection\Extension\HandlebarsExtension::class)]
 final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestCase
@@ -41,8 +47,8 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
     }
 
     /**
-     * @param array<int, mixed>[] $configs
-     * @param array<string, mixed> $expectedParameters
+     * @param array<array<string, mixed>> $configs
+     * @param ValidContainerParameters $expectedParameters
      */
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('loadAddsResolvedParametersToContainerDataProvider')]
@@ -59,7 +65,7 @@ final class HandlebarsExtensionTest extends TestingFramework\Core\Unit\UnitTestC
     }
 
     /**
-     * @return \Generator<string, array<mixed>>
+     * @return \Generator<string, array{array<array<string, mixed>>, ValidContainerParameters}>
      */
     public static function loadAddsResolvedParametersToContainerDataProvider(): \Generator
     {

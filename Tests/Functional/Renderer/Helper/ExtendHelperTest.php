@@ -81,7 +81,10 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
 
         self::assertJson($actual);
 
-        $json = json_decode($actual, true);
+        $json = json_decode($actual, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertIsArray($json);
+
         unset($json['_layoutActions']);
 
         self::assertSame([], $json);
@@ -112,7 +115,10 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
 
         self::assertJson($actual);
 
-        $json = json_decode($actual, true);
+        $json = json_decode($actual, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertIsArray($json);
+
         unset($json['_layoutActions']);
 
         self::assertSame($expected, $json);
@@ -144,7 +150,10 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
 
         self::assertJson($actual);
 
-        $json = json_decode($actual, true);
+        $json = json_decode($actual, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertIsArray($json);
+
         unset($json['_layoutActions']);
 
         self::assertSame($expected, $json);

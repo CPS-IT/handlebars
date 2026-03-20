@@ -55,7 +55,11 @@ final readonly class ExtendHelper implements Helper
         $layoutStack->push($handlebarsLayout);
 
         // Merge data with supplied data
-        $variables = array_replace_recursive($options->scope, $customContext, $options->hash);
+        if (is_array($options->scope)) {
+            $variables = array_replace_recursive($options->scope, $customContext, $options->hash);
+        } else {
+            $variables = array_replace_recursive($customContext, $options->hash);
+        }
 
         // Render layout with merged data
         try {

@@ -43,15 +43,15 @@ trait SupportsDataSourceAwareProcessing
         Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ): array {
         // Early return if no processors are registered
-        if (!\is_array($processorConfiguration[$processorKey . '.'] ?? null)) {
+        if (!is_array($processorConfiguration[$processorKey . '.'] ?? null)) {
             return $variables;
         }
 
-        \ksort($processorConfiguration[$processorKey . '.']);
+        ksort($processorConfiguration[$processorKey . '.']);
 
         /** @var string $processorClassName */
         foreach ($processorConfiguration[$processorKey . '.'] as $processorClassName) {
-            if (!\is_a($processorClassName, DataSourceAwareProcessor::class, true)) {
+            if (!is_a($processorClassName, DataSourceAwareProcessor::class, true)) {
                 throw new Exception\ConfiguredProcessorIsUnsupported($processorClassName);
             }
 

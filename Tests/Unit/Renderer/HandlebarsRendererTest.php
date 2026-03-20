@@ -137,8 +137,8 @@ EOF;
         $context = new Src\Renderer\RenderingContext('DummyTemplateVariables', ['another' => 'foo']);
 
         self::assertSame(
-            \trim($expected),
-            \trim($this->subject->render($context)),
+            trim($expected),
+            trim($this->subject->render($context)),
         );
 
         Core\Utility\DebugUtility::useAnsiColor(true);
@@ -212,7 +212,7 @@ EOF;
 
         self::assertSame(
             'Hello, foo!',
-            \trim($this->subject->render($context)),
+            trim($this->subject->render($context)),
         );
     }
 
@@ -223,7 +223,7 @@ EOF;
 
         self::assertSame(
             'Hello, foo!' . PHP_EOL . 'Welcome, foo, I am the partial!',
-            \trim($this->subject->render($context)),
+            trim($this->subject->render($context)),
         );
     }
 
@@ -232,7 +232,7 @@ EOF;
     {
         $this->templateResolver = new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyInvalidTemplateResolver();
         $this->templateResolver->templateMap = [
-            'DummyTemplateWithPartial' => \dirname(__DIR__) . '/Fixtures/Templates/DummyTemplateWithPartial.hbs',
+            'DummyTemplateWithPartial' => dirname(__DIR__) . '/Fixtures/Templates/DummyTemplateWithPartial.hbs',
         ];
 
         $context = new Src\Renderer\RenderingContext('DummyTemplateWithPartial', ['name' => 'foo']);

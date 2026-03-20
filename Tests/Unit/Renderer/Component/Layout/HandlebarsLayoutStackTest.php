@@ -100,6 +100,7 @@ final class HandlebarsLayoutStackTest extends TestingFramework\Core\Unit\UnitTes
 
         Src\Renderer\Component\Layout\HandlebarsLayoutStack::destroyIfEmpty($scope);
 
+        self::assertIsArray($scope);
         self::assertSame('foo', $scope['_layoutActions']);
     }
 
@@ -115,6 +116,7 @@ final class HandlebarsLayoutStackTest extends TestingFramework\Core\Unit\UnitTes
 
         Src\Renderer\Component\Layout\HandlebarsLayoutStack::destroyIfEmpty($scope);
 
+        self::assertIsArray($scope);
         self::assertSame($stack, $scope['_layoutActions']);
     }
 
@@ -251,7 +253,7 @@ final class HandlebarsLayoutStackTest extends TestingFramework\Core\Unit\UnitTes
 
         self::assertSame(
             [$layout2, $layout1],
-            \iterator_to_array($this->subject),
+            iterator_to_array($this->subject),
         );
     }
 }

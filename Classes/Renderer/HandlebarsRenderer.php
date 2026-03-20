@@ -98,7 +98,7 @@ class HandlebarsRenderer implements Renderer
         $template = $context->getTemplate($this->templateResolver);
 
         // Early return if template is empty
-        if (\trim($template) === '') {
+        if (trim($template) === '') {
             return null;
         }
 
@@ -201,6 +201,9 @@ class HandlebarsRenderer implements Renderer
 
     protected function getServerRequest(): Message\ServerRequestInterface
     {
-        return $GLOBALS['TYPO3_REQUEST'];
+        /** @var Message\ServerRequestInterface $serverRequest */
+        $serverRequest = $GLOBALS['TYPO3_REQUEST'];
+
+        return $serverRequest;
     }
 }

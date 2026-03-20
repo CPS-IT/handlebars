@@ -44,7 +44,7 @@ final class HandlebarsView implements Core\View\ViewInterface
     public function assign(string $key, mixed $value): self
     {
         // Maintain TypoScript object structure
-        if (\is_array($value)) {
+        if (is_array($value)) {
             $key .= '.';
             $value = $this->typoScriptService->convertPlainArrayToTypoScriptArray($value);
         }
@@ -52,9 +52,15 @@ final class HandlebarsView implements Core\View\ViewInterface
         if ($key === 'settings.') {
             $this->contentObjectConfiguration['settings.'] ??= [];
 
-            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->contentObjectConfiguration['settings.'], $value);
+            if (is_array($this->contentObjectConfiguration['settings.']) && is_array($value)) {
+                Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($this->contentObjectConfiguration['settings.'], $value);
+            }
         } else {
-            $this->contentObjectConfiguration['variables.'][$key] = $value;
+            $this->contentObjectConfiguration['variables.'] ??= [];
+
+            if (is_array($this->contentObjectConfiguration['variables.'])) {
+                $this->contentObjectConfiguration['variables.'][$key] = $value;
+            }
         }
 
         return $this;
@@ -98,7 +104,13 @@ final class HandlebarsView implements Core\View\ViewInterface
 
     public function getTemplateName(): ?string
     {
-        return $this->contentObjectConfiguration['templateName'] ?? null;
+        $templateName = $this->contentObjectConfiguration['templateName'] ?? null;
+
+        if (!is_string($templateName)) {
+            return null;
+        }
+
+        return $templateName;
     }
 
     public function getRequest(): ?Message\ServerRequestInterface

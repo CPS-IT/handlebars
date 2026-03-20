@@ -70,12 +70,16 @@ final readonly class ViewHelperInvoker implements Renderer\Helper\Helper
         }
 
         // Add local namespaces
-        $localNamespaces = $renderingContext->getVariables()[self::LOCAL_NAMESPACES_IDENTIFIER] ?? null;
-        if (is_array($localNamespaces)) {
-            $fluidRenderingContext->getViewHelperResolver()->setLocalNamespaces($localNamespaces);
+        if ($renderingContext instanceof Renderer\RenderingContext) {
+            /** @var array<string, array<string|null>|null>|null $localNamespaces */
+            $localNamespaces = $renderingContext->getVariables()[self::LOCAL_NAMESPACES_IDENTIFIER] ?? null;
+
+            if (is_array($localNamespaces)) {
+                $fluidRenderingContext->getViewHelperResolver()->setLocalNamespaces($localNamespaces);
+            }
         }
 
-        [$namespace, $viewHelperShortName] = \explode(':', $name, 2);
+        [$namespace, $viewHelperShortName] = explode(':', $name, 2);
         $className = $fluidRenderingContext->getViewHelperResolver()->createViewHelperInstance($namespace, $viewHelperShortName);
 
         return $fluidRenderingContext->getViewHelperInvoker()->invoke($className, $options->hash, $fluidRenderingContext, $options->fn);
@@ -104,7 +108,7 @@ final readonly class ViewHelperInvoker implements Renderer\Helper\Helper
         $processor->registerNamespacesFromTemplateSource($templateSource);
 
         // Merge local namespace declarations
-        $localNamespaces = \array_merge_recursive(
+        $localNamespaces = array_merge_recursive(
             $localNamespaces,
             $fluidRenderingContext->getViewHelperResolver()->getLocalNamespaces(),
         );

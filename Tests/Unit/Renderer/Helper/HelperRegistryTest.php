@@ -30,6 +30,8 @@ use TYPO3\TestingFramework;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ *
+ * @phpstan-type ValidHelperFunction array{object, string}|array{class-string, string}|callable|string|Src\Renderer\Helper\Helper
  */
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\HelperRegistry::class)]
 final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
@@ -63,6 +65,9 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         self::assertSame([], $this->subject->getAll());
     }
 
+    /**
+     * @param ValidHelperFunction $function
+     */
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('addRegistersHelperCorrectlyDataProvider')]
     public function addRegistersHelperCorrectly(mixed $function, callable $expectedCallable): void
@@ -278,7 +283,7 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     /**
-     * @return \Generator<string, array{mixed, mixed}>
+     * @return \Generator<string, array{ValidHelperFunction, callable}>
      */
     public static function addRegistersHelperCorrectlyDataProvider(): \Generator
     {
@@ -346,7 +351,11 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
             'baz',
         ];
         yield 'helper options and arguments' => [
-            static fn(Handlebars\HelperOptions $options, string $foo) => $foo . $options->hash['foo'],
+            static function (Handlebars\HelperOptions $options, string $foo) {
+                self::assertIsString($options->hash['foo']);
+
+                return $foo . $options->hash['foo'];
+            },
             'foobaz',
         ];
         yield 'rendering context only' => [
@@ -354,15 +363,29 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
             'foo',
         ];
         yield 'rendering context and arguments' => [
-            static fn(Src\Renderer\RenderingContext $context, string $foo) => $foo . $context->getVariables()['baz'],
+            static function (Src\Renderer\RenderingContext $context, string $foo) {
+                self::assertIsString($context->getVariables()['baz']);
+
+                return $foo . $context->getVariables()['baz'];
+            },
             'foofoo',
         ];
         yield 'rendering context, helper options and arguments' => [
-            static fn(Src\Renderer\RenderingContext $context, Handlebars\HelperOptions $options, string $foo) => $foo . $options->hash['foo'] . $context->getVariables()['baz'],
+            static function (Src\Renderer\RenderingContext $context, Handlebars\HelperOptions $options, string $foo) {
+                self::assertIsString($options->hash['foo']);
+                self::assertIsString($context->getVariables()['baz']);
+
+                return $foo . $options->hash['foo'] . $context->getVariables()['baz'];
+            },
             'foobazfoo',
         ];
         yield 'helper options, rendering context and arguments' => [
-            static fn(Handlebars\HelperOptions $options, Src\Renderer\RenderingContext $context, string $foo) => $foo . $options->hash['foo'] . $context->getVariables()['baz'],
+            static function (Handlebars\HelperOptions $options, Src\Renderer\RenderingContext $context, string $foo) {
+                self::assertIsString($options->hash['foo']);
+                self::assertIsString($context->getVariables()['baz']);
+
+                return $foo . $options->hash['foo'] . $context->getVariables()['baz'];
+            },
             'foobazfoo',
         ];
     }
@@ -371,7 +394,10 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $reflectionObject = new \ReflectionObject($this->subject);
         $reflectionMethod = $reflectionObject->getMethod('decorateHelperFunction');
+        $invocationResult = $reflectionMethod->invoke($this->subject, $expectedCallable);
 
-        return $reflectionMethod->invoke($this->subject, $expectedCallable);
+        self::assertInstanceOf(\Closure::class, $invocationResult);
+
+        return $invocationResult;
     }
 }

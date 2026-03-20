@@ -32,7 +32,7 @@ final class InvalidAssetConfigurationException extends Exception
     public static function forMissingSource(string $identifier, Frontend\Assets\AssetType $type): self
     {
         return new self(
-            \sprintf(
+            sprintf(
                 'Asset configuration "%s" (type: %s) is missing required "source" parameter.',
                 $identifier,
                 $type->value,
@@ -44,7 +44,7 @@ final class InvalidAssetConfigurationException extends Exception
     public static function forInvalidIdentifier(Frontend\Assets\AssetType $type): self
     {
         return new self(
-            \sprintf(
+            sprintf(
                 'Asset configuration (type: %s) has invalid or empty identifier.',
                 $type->value,
             ),
@@ -55,7 +55,7 @@ final class InvalidAssetConfigurationException extends Exception
     public static function forInvalidConfiguration(string $identifier, Frontend\Assets\AssetType $type): self
     {
         return new self(
-            \sprintf(
+            sprintf(
                 'Asset configuration "%s" (type: %s) must be an array.',
                 $identifier,
                 $type->value,
@@ -67,7 +67,7 @@ final class InvalidAssetConfigurationException extends Exception
     public static function forUnknownAssetType(string $type): self
     {
         return new self(
-            \sprintf(
+            sprintf(
                 'Unknown asset type "%s". Valid types are: %s.',
                 $type,
                 implode(', ', Frontend\Assets\AssetType::values()),
@@ -79,7 +79,7 @@ final class InvalidAssetConfigurationException extends Exception
     public static function forInvalidAssetsArray(Frontend\Assets\AssetType $type): self
     {
         return new self(
-            \sprintf(
+            sprintf(
                 'Assets configuration for type "%s" must be an array.',
                 $type->value,
             ),

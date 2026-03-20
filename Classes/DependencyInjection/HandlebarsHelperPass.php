@@ -57,15 +57,15 @@ final readonly class HandlebarsHelperPass implements DependencyInjection\Compile
      */
     private function validateTag(string $serviceId, array $tagAttributes): void
     {
-        if (!\array_key_exists('identifier', $tagAttributes) || (string)$tagAttributes['identifier'] === '') {
+        if (!array_key_exists('identifier', $tagAttributes) || (string)$tagAttributes['identifier'] === '') {
             throw new \InvalidArgumentException(
-                \sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
+                sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
                 1606236820,
             );
         }
-        if (!\array_key_exists('method', $tagAttributes) || (string)$tagAttributes['method'] === '') {
+        if (!array_key_exists('method', $tagAttributes) || (string)$tagAttributes['method'] === '') {
             throw new \InvalidArgumentException(
-                \sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
+                sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
                 1606245140,
             );
         }

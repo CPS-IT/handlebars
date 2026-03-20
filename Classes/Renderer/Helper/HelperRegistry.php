@@ -110,19 +110,19 @@ final class HelperRegistry implements Core\SingletonInterface
         // ├─ b. as array => [class-name, method-name]
         // └─ c. as initialized array => [object, method-name]
 
-        if (\is_string($function) && !str_contains($function, '::')) {
+        if (is_string($function) && !str_contains($function, '::')) {
             // 1a. callable as string
-            if (\is_callable($function)) {
+            if (is_callable($function)) {
                 return $function;
             }
 
             // 2a. invokable class as string
-            if (class_exists($function) && \is_callable($callable = Core\Utility\GeneralUtility::makeInstance($function))) {
+            if (class_exists($function) && is_callable($callable = Core\Utility\GeneralUtility::makeInstance($function))) {
                 return $callable;
             }
 
             // 3a. class implementing Helper interface as string
-            if (class_exists($function) && \is_a($function, Helper::class, true)) {
+            if (class_exists($function) && is_a($function, Helper::class, true)) {
                 return Core\Utility\GeneralUtility::makeInstance($function)->render(...);
             }
         }
@@ -147,13 +147,13 @@ final class HelperRegistry implements Core\SingletonInterface
 
         // 4a. class method as string
         /* @phpstan-ignore booleanAnd.rightAlwaysFalse */
-        if (\is_string($function) && str_contains($function, '::')) {
+        if (is_string($function) && str_contains($function, '::')) {
             [$className, $methodName] = explode('::', $function, 2);
         }
 
         // 4b. class method as array
         // 4c. class method as initialized array
-        if (\is_array($function) && \count($function) === 2) {
+        if (is_array($function) && count($function) === 2) {
             [$className, $methodName] = $function;
         }
 
@@ -162,15 +162,27 @@ final class HelperRegistry implements Core\SingletonInterface
             throw Exception\InvalidHelperException::forUnsupportedType($function);
         }
 
+        // Get reflection
+        if (is_string($className) && class_exists($className)) {
+            $reflectionClass = new \ReflectionClass($className);
+        } elseif (is_object($className)) {
+            $reflectionClass = new \ReflectionObject($className);
+        } else {
+            throw Exception\InvalidHelperException::forUnsupportedType($className);
+        }
+
+        // Early return if method is invalid
+        if (!is_string($methodName)) {
+            throw Exception\InvalidHelperException::forUnsupportedType($function);
+        }
+
         // Early return if method is not public
-        $reflectionClass = new \ReflectionClass($className);
-        $reflectionMethod = $reflectionClass->getMethod($methodName);
-        if (!$reflectionMethod->isPublic()) {
+        if (!($reflectionMethod = $reflectionClass->getMethod($methodName))->isPublic()) {
             throw Exception\InvalidHelperException::forFunction($reflectionClass->name . '::' . $methodName);
         }
 
         // Instantiate class if not done yet
-        if (\is_string($className) && !$reflectionMethod->isStatic()) {
+        if (is_string($className) && !$reflectionMethod->isStatic()) {
             /** @var class-string $className */
             $helperClass = Core\Utility\GeneralUtility::makeInstance($className);
         } else {
@@ -179,7 +191,7 @@ final class HelperRegistry implements Core\SingletonInterface
 
         $callable = [$helperClass, $methodName];
 
-        if (!\is_callable($callable)) {
+        if (!is_callable($callable)) {
             throw Exception\InvalidHelperException::forInvalidCallable($callable);
         }
 
@@ -196,9 +208,9 @@ final class HelperRegistry implements Core\SingletonInterface
     private function decorateHelperFunction(callable $function): \Closure
     {
         return static function () use ($function) {
-            $arguments = \func_get_args();
+            $arguments = func_get_args();
             /** @var Handlebars\HelperOptions $options */
-            $options = \array_pop($arguments);
+            $options = array_pop($arguments);
             $renderingContext = $options->data['renderingContext'] ?? null;
             $parameters = self::mapFunctionParameters($function, $options, $renderingContext, $arguments);
 
@@ -238,7 +250,7 @@ final class HelperRegistry implements Core\SingletonInterface
             }
 
             // Exit loop if we reached runtime arguments
-            if (!\array_key_exists($type->getName(), $parameterMap)) {
+            if (!array_key_exists($type->getName(), $parameterMap)) {
                 break;
             }
 
@@ -255,7 +267,7 @@ final class HelperRegistry implements Core\SingletonInterface
             }
 
             // Fail if a parameter would receive a wrong type
-            if (!\is_a($resolvedParameter, $type->getName(), true)) {
+            if ((!is_string($resolvedParameter) && !is_object($resolvedParameter)) || !is_a($resolvedParameter, $type->getName(), true)) {
                 throw Exception\InvalidHelperException::forUnresolvableParameter($function, $parameter->getName());
             }
 

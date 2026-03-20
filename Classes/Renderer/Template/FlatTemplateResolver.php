@@ -89,7 +89,7 @@ final class FlatTemplateResolver extends BaseTemplateResolver
     private function resolvePath(string $path, array $flattenedFiles, ?string $format = null): ?string
     {
         // Throw exception if given format is not supported
-        if ($format !== null && !\in_array($format, $this->supportedFileExtensions, true)) {
+        if ($format !== null && !in_array($format, $this->supportedFileExtensions, true)) {
             throw new Exception\TemplateFormatIsNotSupported($format);
         }
 
@@ -131,7 +131,7 @@ final class FlatTemplateResolver extends BaseTemplateResolver
      */
     private function buildPathMap(array $rootPaths): array
     {
-        $hash = \sha1((string)\json_encode($rootPaths));
+        $hash = sha1((string)json_encode($rootPaths));
 
         if (isset($this->flattenedRootPaths[$hash])) {
             return $this->flattenedRootPaths[$hash];

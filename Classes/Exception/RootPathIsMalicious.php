@@ -28,7 +28,7 @@ final class RootPathIsMalicious extends Exception
     public function __construct(mixed $rootPath)
     {
         parent::__construct(
-            \sprintf('Root path must be of type string, "%s" given.', \get_debug_type($rootPath)),
+            sprintf('Root path must be of type string, "%s" given.', get_debug_type($rootPath)),
             1736257150,
         );
     }

@@ -28,7 +28,7 @@ final class InvalidHelperException extends \Exception
     public static function forFunction(string $helperFunction): self
     {
         return new self(
-            \sprintf('The helper function "%s" is invalid.', $helperFunction),
+            sprintf('The helper function "%s" is invalid.', $helperFunction),
             1637339290
         );
     }
@@ -36,7 +36,7 @@ final class InvalidHelperException extends \Exception
     public static function forUnsupportedType(mixed $helperFunction): self
     {
         return new self(
-            \sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', \get_debug_type($helperFunction)),
+            sprintf('Only callables, strings and arrays can be defined as helpers, "%s" given.', get_debug_type($helperFunction)),
             1637339694
         );
     }
@@ -49,7 +49,7 @@ final class InvalidHelperException extends \Exception
         [$className, $methodName] = $callable;
 
         return new self(
-            \sprintf('The helper function with callable [%s, %s] is not valid.', \get_debug_type($className), \get_debug_type($methodName)),
+            sprintf('The helper function with callable [%s, %s] is not valid.', get_debug_type($className), get_debug_type($methodName)),
             1638180355
         );
     }
@@ -57,9 +57,9 @@ final class InvalidHelperException extends \Exception
     public static function forUnresolvableParameter(callable $helperFunction, string $parameterName): self
     {
         return new self(
-            \sprintf(
+            sprintf(
                 'The helper function with callable %s requires an unresolvable parameter "$%s".',
-                \get_debug_type($helperFunction),
+                get_debug_type($helperFunction),
                 $parameterName,
             ),
             1767777282,

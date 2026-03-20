@@ -46,6 +46,10 @@ final readonly class AssetHandler
     public function collectAssets(array $assetsConfiguration): void
     {
         foreach ($assetsConfiguration as $typeKey => $assets) {
+            if (!is_iterable($assets)) {
+                continue;
+            }
+
             // Validate and get AssetType (validates everything)
             $assetType = $this->validateAssetAndResolveAssetType($typeKey, $assets);
 
@@ -57,11 +61,11 @@ final readonly class AssetHandler
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array{source: string, attributes?: array<string, string>, options?: array<string, string>} $configuration
      */
     private function processAsset(string $identifier, AssetType $type, array $configuration): void
     {
-        $source = \trim((string)$configuration['source']);
+        $source = trim((string)$configuration['source']);
         $attributes = $this->processAttributes($configuration['attributes'] ?? [], $type);
         $options = $this->processOptions($configuration['options'] ?? []);
 
@@ -86,6 +90,7 @@ final readonly class AssetHandler
      * @param mixed $assets The assets configuration for this type
      * @return AssetType The validated AssetType enum
      * @throws Exception\InvalidAssetConfigurationException
+     * @phpstan-assert-if-true array<string, array{source: string}> $assets
      */
     private function validateAssetAndResolveAssetType(string|int $typeKey, mixed $assets): AssetType
     {
@@ -95,20 +100,20 @@ final readonly class AssetHandler
             throw Exception\InvalidAssetConfigurationException::forUnknownAssetType((string)$typeKey);
         }
 
-        if (!\is_array($assets)) {
+        if (!is_array($assets)) {
             throw Exception\InvalidAssetConfigurationException::forInvalidAssetsArray($assetType);
         }
 
         foreach ($assets as $identifier => $assetConfig) {
-            if (!\is_string($identifier) || \trim($identifier) === '') {
+            if (!is_string($identifier) || trim($identifier) === '') {
                 throw Exception\InvalidAssetConfigurationException::forInvalidIdentifier($assetType);
             }
 
-            if (!\is_array($assetConfig)) {
+            if (!is_array($assetConfig)) {
                 throw Exception\InvalidAssetConfigurationException::forInvalidConfiguration($identifier, $assetType);
             }
 
-            if (!isset($assetConfig['source']) || \trim((string)$assetConfig['source']) === '') {
+            if (!is_string($assetConfig['source'] ?? null) || trim($assetConfig['source']) === '') {
                 throw Exception\InvalidAssetConfigurationException::forMissingSource($identifier, $assetType);
             }
         }
@@ -123,7 +128,7 @@ final readonly class AssetHandler
      */
     private function processAttributes(mixed $attributes, AssetType $type): array
     {
-        if (!\is_array($attributes)) {
+        if (!is_array($attributes)) {
             return [];
         }
 
@@ -166,7 +171,7 @@ final readonly class AssetHandler
      */
     private function addRegularAttribute(array &$processed, string $name, mixed $value): void
     {
-        if ($value !== null && $value !== '') {
+        if (is_scalar($value) && (string)$value !== '') {
             $processed[$name] = (string)$value;
         }
     }

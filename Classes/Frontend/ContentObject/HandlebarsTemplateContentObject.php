@@ -50,7 +50,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
     public function render($conf = []): string
     {
         /* @phpstan-ignore function.alreadyNarrowedType */
-        if (!\is_array($conf)) {
+        if (!is_array($conf)) {
             $conf = [];
         }
 
@@ -87,7 +87,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             $this->pathProvider->pop();
         }
 
-        if (isset($conf['stdWrap.'])) {
+        if (is_array($conf['stdWrap.'] ?? null)) {
             return $this->cObj?->stdWrap($content, $conf['stdWrap.']) ?? $content;
         }
 
@@ -141,7 +141,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         $collection->set(DataProcessing\DataSource\DataSource::ProcessorConfiguration, $config);
 
         if ($this->cObj !== null) {
-            if (\is_array($config['variables.'] ?? null)) {
+            if (is_array($config['variables.'] ?? null)) {
                 $variables = $config['variables.'];
             } else {
                 $variables = [];
@@ -173,7 +173,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         }
 
         // Make settings available as variables
-        if (isset($config['settings.'])) {
+        if (is_array($config['settings.'] ?? null)) {
             $variables['settings'] = $this->typoScriptService->convertTypoScriptArrayToPlainArray($config['settings.']);
         }
 
@@ -217,11 +217,11 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
             $footerAssets = '';
         }
 
-        if (\trim($headerAssets) !== '') {
+        if (trim($headerAssets) !== '') {
             $this->getPageRenderer()->addHeaderData($headerAssets);
         }
 
-        if (\trim($footerAssets) !== '') {
+        if (trim($footerAssets) !== '') {
             $this->getPageRenderer()->addFooterData($footerAssets);
         }
     }

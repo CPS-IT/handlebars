@@ -145,7 +145,7 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
     #[Framework\Attributes\Test]
     public function resolvePartialPathResolvesAbsolutePartialPathCorrectly(): void
     {
-        $templatePath = \dirname(__DIR__, 2) . '/Fixtures/Partials/DummyPartial.hbs';
+        $templatePath = dirname(__DIR__, 2) . '/Fixtures/Partials/DummyPartial.hbs';
         $expected = $this->partialRootPath . '/DummyPartial.hbs';
 
         self::assertSame($expected, $this->subject->resolvePartialPath($templatePath));
@@ -227,7 +227,7 @@ final class HandlebarsTemplateResolverTest extends TestingFramework\Core\Unit\Un
     #[Framework\Attributes\Test]
     public function resolveTemplatePathResolvesAbsoluteTemplatePathCorrectly(): void
     {
-        $templatePath = \dirname(__DIR__, 2) . '/Fixtures/Templates/DummyTemplate.hbs';
+        $templatePath = dirname(__DIR__, 2) . '/Fixtures/Templates/DummyTemplate.hbs';
         $expected = $this->templateRootPath . '/DummyTemplate.hbs';
 
         self::assertSame($expected, $this->subject->resolveTemplatePath($templatePath));

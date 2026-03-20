@@ -28,7 +28,7 @@ final class TemplateFileIsInvalid extends Exception
     public function __construct(string $file)
     {
         parent::__construct(
-            \sprintf('The template file "%s" is invalid or does not exist.', $file),
+            sprintf('The template file "%s" is invalid or does not exist.', $file),
             1736333208,
         );
     }

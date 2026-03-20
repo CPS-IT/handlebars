@@ -32,10 +32,16 @@ final readonly class VarDumpHelper implements Helper
 {
     public function render(Handlebars\HelperOptions $options): Handlebars\SafeString
     {
-        \ob_start();
+        ob_start();
 
-        Core\Utility\DebugUtility::debug($options->scope, $options->hash['title'] ?? 'Debug');
+        $title = $options->hash['title'] ?? null;
 
-        return new Handlebars\SafeString((string)\ob_get_clean());
+        if (!is_string($title)) {
+            $title = 'Debug';
+        }
+
+        Core\Utility\DebugUtility::debug($options->scope, $title);
+
+        return new Handlebars\SafeString((string)ob_get_clean());
     }
 }

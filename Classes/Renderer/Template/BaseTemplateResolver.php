@@ -38,7 +38,7 @@ abstract class BaseTemplateResolver implements TemplateResolver
 
     public function supports(string $fileExtension): bool
     {
-        return \in_array($fileExtension, $this->supportedFileExtensions, true);
+        return in_array($fileExtension, $this->supportedFileExtensions, true);
     }
 
     protected function resolveFilename(string $path, ?string $rootPath = null, ?string $extension = null): string
@@ -91,7 +91,7 @@ abstract class BaseTemplateResolver implements TemplateResolver
 
         foreach ($rootPaths as $rootPath) {
             /* @phpstan-ignore function.alreadyNarrowedType */
-            if (!\is_string($rootPath)) {
+            if (!is_string($rootPath)) {
                 throw new Exception\RootPathIsMalicious($rootPath);
             }
 
@@ -128,7 +128,7 @@ abstract class BaseTemplateResolver implements TemplateResolver
         }
 
         return array_values(
-            \array_unique(
+            array_unique(
                 array_map($this->normalizeFileExtension(...), $supportedFileExtensions),
             ),
         );
@@ -140,7 +140,7 @@ abstract class BaseTemplateResolver implements TemplateResolver
      */
     protected function normalizeFileExtension(mixed $fileExtension): string
     {
-        if (!\is_string($fileExtension)) {
+        if (!is_string($fileExtension)) {
             throw new Exception\FileExtensionIsMalicious($fileExtension);
         }
         if (preg_match('/^[\w\-.]+$/', $fileExtension) !== 1) {

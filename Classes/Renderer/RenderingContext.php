@@ -72,7 +72,7 @@ final class RenderingContext
      */
     private function fetchFromFile(string $file): string
     {
-        if (!\is_file($file)) {
+        if (!is_file($file)) {
             throw new Exception\TemplateFileIsInvalid($file);
         }
 

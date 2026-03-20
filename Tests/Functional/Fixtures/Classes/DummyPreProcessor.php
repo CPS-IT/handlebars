@@ -34,7 +34,10 @@ final readonly class DummyPreProcessor implements DataProcessing\DataSource\Data
         Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
     ): array {
         $variables['foo'] ??= 0;
-        $variables['foo']++;
+
+        if (is_int($variables['foo'])) {
+            $variables['foo']++;
+        }
 
         return $variables;
     }

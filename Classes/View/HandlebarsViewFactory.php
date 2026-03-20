@@ -140,7 +140,7 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
             $controllerObjectName,
         ];
         foreach ($possibleConfigurationKeys as $possibleConfigurationKey) {
-            if (\array_key_exists($possibleConfigurationKey . '.', $typoScriptConfiguration)) {
+            if (array_key_exists($possibleConfigurationKey . '.', $typoScriptConfiguration)) {
                 Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
                     $resolvedConfiguration,
                     $typoScriptConfiguration[$possibleConfigurationKey . '.'],

@@ -28,7 +28,7 @@ final class RootPathIsNotResolvable extends Exception
     public function __construct(string $rootPath)
     {
         parent::__construct(
-            \sprintf('Root path "%s" is not resolvable (either not allowed or not existing).', $rootPath),
+            sprintf('Root path "%s" is not resolvable (either not allowed or not existing).', $rootPath),
             1736257279,
         );
     }

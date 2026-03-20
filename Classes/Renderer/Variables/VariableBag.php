@@ -83,7 +83,7 @@ final class VariableBag implements \ArrayAccess
         $mergedVariables = [];
 
         foreach ($this->providers as $provider) {
-            \array_unshift($providerVariables, $provider->get());
+            array_unshift($providerVariables, $provider->get());
         }
 
         foreach ($providerVariables as $variables) {

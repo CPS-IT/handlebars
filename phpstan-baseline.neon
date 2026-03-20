@@ -1,10 +1,58 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Cannot access offset ''SYS'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: Classes/Configuration/Extension.php
+
+		-
+			message: '#^Cannot access offset ''cacheConfigurations'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: Classes/Configuration/Extension.php
+
+		-
+			message: '#^Cannot access offset ''caching'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: Classes/Configuration/Extension.php
+
+		-
+			message: '#^Cannot access offset ''handlebars'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Classes/Configuration/Extension.php
+
+		-
+			message: '#^Cannot access offset ''FE'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Renderer/HandlebarsRenderer.php
+
+		-
+			message: '#^Cannot access offset ''debug'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Renderer/HandlebarsRenderer.php
+
+		-
 			message: '#^Attribute class PHPUnit\\Framework\\Attributes\\AllowMockObjectsWithoutExpectations does not exist\.$#'
 			identifier: attribute.notFound
 			count: 4
 			path: Tests/Functional/View/HandlebarsViewFactoryTest.php
+
+		-
+			message: '#^Cannot access offset ''FE'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
+
+		-
+			message: '#^Cannot access offset ''debug'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
 
 		-
 			message: '#^Attribute class PHPUnit\\Framework\\Attributes\\AllowMockObjectsWithoutExpectations does not exist\.$#'

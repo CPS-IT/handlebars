@@ -50,7 +50,7 @@ final class DataSourceCollection
 
     public function has(DataSource $dataSource): bool
     {
-        return \array_key_exists($dataSource->value, $this->dataSources);
+        return array_key_exists($dataSource->value, $this->dataSources);
     }
 
     public function remove(DataSource $dataSource): self
@@ -118,7 +118,7 @@ final class DataSourceCollection
     private function resolveForDataSource(string $key, DataSource $dataSource, bool &$found = false): mixed
     {
         $configuration = $this->get($dataSource);
-        $found = \array_key_exists($key, $configuration);
+        $found = array_key_exists($key, $configuration);
 
         return $found ? $configuration[$key] : null;
     }
@@ -128,7 +128,7 @@ final class DataSourceCollection
      */
     private function getConfiguredDataSourcesSortedByPriority(): array
     {
-        $dataSources = array_map(DataSource::from(...), \array_keys($this->dataSources));
+        $dataSources = array_map(DataSource::from(...), array_keys($this->dataSources));
 
         return DataSource::sortByPriority($dataSources);
     }

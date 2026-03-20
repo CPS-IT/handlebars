@@ -130,7 +130,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
 
         // Early return if no or invalid variables to process are configured
-        if (!\is_array($variables)) {
+        if (!is_array($variables)) {
             return $processedData;
         }
 
@@ -176,11 +176,13 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         }
 
         $data ??= $cObj->data;
+        /** @var string $table */
         $table = $collection->resolve(
             'table',
             [DataSource\DataSource::ProcessorConfiguration, DataSource\DataSource::ProcessedData],
             $cObj->getCurrentTable(),
         );
+        /** @var string|null $as */
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration);
 
         // Use temporary cObj for processing
@@ -188,7 +190,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $cObj->start($data, $table);
 
         // Early return if processing should be skipped according to a configured condition
-        if (\is_array($processorConfiguration['if.'] ?? null) && !$cObj->checkIf($processorConfiguration['if.'])) {
+        if (is_array($processorConfiguration['if.'] ?? null) && !$cObj->checkIf($processorConfiguration['if.'])) {
             return $processedData;
         }
 

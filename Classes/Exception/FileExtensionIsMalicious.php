@@ -28,7 +28,7 @@ final class FileExtensionIsMalicious extends Exception
     public function __construct(mixed $fileExtension)
     {
         parent::__construct(
-            \sprintf('File extension must be of type string, "%s" given.', \get_debug_type($fileExtension)),
+            sprintf('File extension must be of type string, "%s" given.', get_debug_type($fileExtension)),
             1736258321,
         );
     }

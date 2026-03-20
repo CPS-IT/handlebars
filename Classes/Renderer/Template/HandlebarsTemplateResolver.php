@@ -98,7 +98,7 @@ final class HandlebarsTemplateResolver extends BaseTemplateResolver
      */
     private function resolveRootPathsFromCache(array $rootPaths): array
     {
-        $hash = \sha1((string)\json_encode($rootPaths));
+        $hash = sha1((string)json_encode($rootPaths));
 
         return $this->resolvedPaths[$hash] ?? ($this->resolvedPaths[$hash] = $this->normalizeRootPaths($rootPaths));
     }

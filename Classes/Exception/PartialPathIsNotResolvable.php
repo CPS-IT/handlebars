@@ -34,7 +34,7 @@ final class PartialPathIsNotResolvable extends Exception
         }
 
         parent::__construct(
-            \sprintf('The partial path "%s"%s cannot be resolved.', $path, $formatMessage),
+            sprintf('The partial path "%s"%s cannot be resolved.', $path, $formatMessage),
             1736254715,
         );
     }

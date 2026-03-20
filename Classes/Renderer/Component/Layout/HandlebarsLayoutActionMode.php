@@ -31,6 +31,6 @@ enum HandlebarsLayoutActionMode: string
 
     public static function tryFromCaseInsensitive(string $mode): ?self
     {
-        return self::tryFrom(\strtolower($mode));
+        return self::tryFrom(strtolower($mode));
     }
 }

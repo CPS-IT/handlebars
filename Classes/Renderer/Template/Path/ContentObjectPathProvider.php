@@ -65,8 +65,8 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
             $partialRootPaths[PHP_INT_MAX] = $configuration['partialRootPath'];
         }
 
-        \ksort($templateRootPaths);
-        \ksort($partialRootPaths);
+        ksort($templateRootPaths);
+        ksort($partialRootPaths);
 
         $this->stack[] = [
             'partialRootPaths' => [
@@ -143,7 +143,7 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
                 );
             }
 
-            \ksort($this->stack[$this->currentItem][$type]['merged']);
+            ksort($this->stack[$this->currentItem][$type]['merged']);
         }
 
         return $this->stack[$this->currentItem][$type]['merged'];

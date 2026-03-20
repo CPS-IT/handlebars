@@ -125,13 +125,13 @@ final class MarkerBasedValueProcessor
      */
     private function collectReferences(mixed &$value, string|int $key, array &$parent): void
     {
-        if (\is_array($value)) {
+        if (is_array($value)) {
             $this->collectReferencesRecursively($value);
         }
-        if (\is_string($key) && ($marker = $this->resolveMarker($key)) !== null) {
+        if (is_string($key) && ($marker = $this->resolveMarker($key)) !== null) {
             $this->markerValues[$marker] = [&$parent, $key, $value];
         }
-        if (\is_string($value) && ($marker = $this->resolveMarker($value)) !== null) {
+        if (is_string($value) && ($marker = $this->resolveMarker($value)) !== null) {
             $this->replacementTargets[$marker] ??= [];
             $this->replacementTargets[$marker][] = [&$parent, $key, &$value];
         }
@@ -139,7 +139,7 @@ final class MarkerBasedValueProcessor
 
     private function resolveMarker(string $value): ?string
     {
-        if (\array_key_exists($value, self::$markerTemplateCache[$this->markerPattern])) {
+        if (array_key_exists($value, self::$markerTemplateCache[$this->markerPattern])) {
             return self::$markerTemplateCache[$this->markerPattern][$value];
         }
 

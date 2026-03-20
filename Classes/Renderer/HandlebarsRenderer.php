@@ -52,6 +52,7 @@ class HandlebarsRenderer implements Renderer
      * @throws Exception\TemplateFormatIsNotSupported
      * @throws Exception\TemplatePathIsNotResolvable
      * @throws Exception\ViewIsNotProperlyInitialized
+     * @throws \Throwable
      */
     public function render(RenderingContext $context): string
     {
@@ -70,13 +71,21 @@ class HandlebarsRenderer implements Renderer
         $this->eventDispatcher->dispatch($beforeRenderingEvent);
 
         // Render content
-        $renderer = Handlebars\Handlebars::template($compileResult);
-        $content = $renderer($beforeRenderingEvent->getVariables(), [
-            'helpers' => $this->helperRegistry->getAll(),
-            'data' => [
-                'renderingContext' => $context,
-            ],
-        ]);
+        try {
+            $renderer = Handlebars\Handlebars::template($compileResult);
+            $content = $renderer($beforeRenderingEvent->getVariables(), [
+                'helpers' => $this->helperRegistry->getAll(),
+                'data' => [
+                    'renderingContext' => $context,
+                ],
+            ]);
+        } catch (\Throwable $exception) {
+            if ($exception->getPrevious() instanceof Core\Http\ImmediateResponseException) {
+                $exception = $exception->getPrevious();
+            }
+
+            throw $exception;
+        }
 
         // Dispatch after rendering event
         $afterRenderingEvent = new Event\AfterRenderingEvent($context, $content, $this);

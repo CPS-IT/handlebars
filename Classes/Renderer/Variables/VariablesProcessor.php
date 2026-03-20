@@ -129,6 +129,11 @@ final readonly class VariablesProcessor
 
             $cObjConf = $variables[$variableName . '.'] ?? [];
 
+            // Normalize content object configuration
+            if (!is_array($cObjConf)) {
+                $cObjConf = [];
+            }
+
             // Process value
             $value = $this->contentObjectRenderer->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
 

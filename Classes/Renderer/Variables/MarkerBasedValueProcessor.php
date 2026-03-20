@@ -36,12 +36,12 @@ final class MarkerBasedValueProcessor
     private static array $markerTemplateCache = [];
 
     /**
-     * @var array<string, array{array<string, mixed>, string|int, mixed}>
+     * @var array<string, array{array<string|int, mixed>, string|int, mixed}>
      */
     private array $markerValues = [];
 
     /**
-     * @var array<string, list<array{array<string, mixed>, string|int, mixed}>>
+     * @var array<string, list<array{array<string|int, mixed>, string|int, mixed}>>
      */
     private array $replacementTargets = [];
 
@@ -73,7 +73,7 @@ final class MarkerBasedValueProcessor
     }
 
     /**
-     * @param array<array-key, mixed> $values
+     * @param array<string|int, mixed> $values
      */
     public function replaceMarkers(array &$values, bool $removeNonMatchingMarkers = false): int
     {
@@ -111,7 +111,7 @@ final class MarkerBasedValueProcessor
     }
 
     /**
-     * @param array<array-key, mixed> $values
+     * @param array<string|int, mixed> $values
      */
     private function collectReferencesRecursively(array &$values): void
     {
@@ -121,7 +121,7 @@ final class MarkerBasedValueProcessor
     }
 
     /**
-     * @param array<array-key, mixed> $parent
+     * @param array<string|int, mixed> $parent
      */
     private function collectReferences(mixed &$value, string|int $key, array &$parent): void
     {

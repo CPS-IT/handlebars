@@ -30,7 +30,7 @@ use Symfony\Component\DependencyInjection;
 interface VariableProvider extends \ArrayAccess
 {
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     public function get(): array;
 

@@ -32,7 +32,7 @@ use TYPO3\CMS\Frontend;
 final class HandlebarsView implements Core\View\ViewInterface
 {
     /**
-     * @param array<string, mixed> $contentObjectConfiguration
+     * @param array<string|int, mixed> $contentObjectConfiguration
      */
     public function __construct(
         private readonly Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,

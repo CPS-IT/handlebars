@@ -56,8 +56,9 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $this->subject->add('foo', $function);
 
-        self::assertTrue($this->logger->hasCriticalThatPasses(function ($logRecord) use ($function) {
+        self::assertTrue($this->logger->hasCriticalThatPasses(function (array $logRecord) use ($function) {
             self::assertSame('Error while registering Handlebars helper "foo".', $logRecord['message']);
+            self::assertIsArray($logRecord['context']);
             self::assertSame('foo', $logRecord['context']['name']);
             self::assertSame($function, $logRecord['context']['function']);
             return true;

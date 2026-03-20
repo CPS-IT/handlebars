@@ -82,6 +82,7 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
 
         self::assertTrue($this->assetCollector->hasJavaScript('test-script'));
         $assets = $this->assetCollector->getJavaScripts();
+        self::assertIsArray($assets['test-script']);
         self::assertSame(
             'EXT:handlebars/Resources/Public/JavaScript/test.js',
             $assets['test-script']['source'],
@@ -107,6 +108,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         ]);
 
         $assets = $this->assetCollector->getJavaScripts();
+        self::assertIsArray($assets['test-script']);
+        self::assertIsArray($assets['test-script']['attributes']);
         self::assertSame('async', $assets['test-script']['attributes']['async']);
         self::assertSame('anonymous', $assets['test-script']['attributes']['crossorigin']);
     }
@@ -130,6 +133,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
 
         self::assertTrue($this->assetCollector->hasStyleSheet('test-styles'));
         $assets = $this->assetCollector->getStyleSheets();
+        self::assertIsArray($assets['test-styles']);
+        self::assertIsArray($assets['test-styles']['attributes']);
         self::assertSame('print', $assets['test-styles']['attributes']['media']);
     }
 
@@ -151,6 +156,7 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
 
         self::assertTrue($this->assetCollector->hasInlineJavaScript('test-inline'));
         $assets = $this->assetCollector->getInlineJavaScripts();
+        self::assertIsArray($assets['test-inline']);
         self::assertSame($jsCode, $assets['test-inline']['source']);
     }
 
@@ -172,6 +178,7 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
 
         self::assertTrue($this->assetCollector->hasInlineStyleSheet('test-inline-css'));
         $assets = $this->assetCollector->getInlineStyleSheets();
+        self::assertIsArray($assets['test-inline-css']);
         self::assertSame($cssCode, $assets['test-inline-css']['source']);
     }
 
@@ -257,6 +264,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         ]);
 
         $assets = $this->assetCollector->getInlineJavaScripts();
+        self::assertIsArray($assets['nonce-script']);
+        self::assertIsArray($assets['nonce-script']['options']);
         self::assertTrue($assets['nonce-script']['options']['useNonce']);
     }
 
@@ -280,6 +289,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         ]);
 
         $assets = $this->assetCollector->getJavaScripts();
+        self::assertIsArray($assets['async-script']);
+        self::assertIsArray($assets['async-script']['attributes']);
         self::assertSame('async', $assets['async-script']['attributes']['async']);
         self::assertSame('defer', $assets['async-script']['attributes']['defer']);
         self::assertArrayNotHasKey('nomodule', $assets['async-script']['attributes']);
@@ -303,6 +314,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         ]);
 
         $assets = $this->assetCollector->getStyleSheets();
+        self::assertIsArray($assets['disabled-styles']);
+        self::assertIsArray($assets['disabled-styles']['attributes']);
         self::assertSame('disabled', $assets['disabled-styles']['attributes']['disabled']);
     }
 
@@ -393,6 +406,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         ]);
 
         $assets = $this->assetCollector->getJavaScripts();
+        self::assertIsArray($assets['secure-script']);
+        self::assertIsArray($assets['secure-script']['attributes']);
         self::assertSame('anonymous', $assets['secure-script']['attributes']['crossorigin']);
         self::assertSame('sha384-abc123', $assets['secure-script']['attributes']['integrity']);
     }
@@ -415,6 +430,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         ]);
 
         $assets = $this->assetCollector->getStyleSheets();
+        self::assertIsArray($assets['responsive-styles']);
+        self::assertIsArray($assets['responsive-styles']['attributes']);
         self::assertSame('screen and (min-width: 768px)', $assets['responsive-styles']['attributes']['media']);
     }
 }

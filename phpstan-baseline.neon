@@ -121,6 +121,12 @@ parameters:
 			path: Classes/Renderer/Template/Path/TypoScriptPathProvider.php
 
 		-
+			rawMessage: 'Method CPSIT\Typo3Handlebars\Renderer\Template\Path\TypoScriptPathProvider::getViewConfiguration() should return array{partialRootPaths?: array<int, string>, templateRootPaths?: array<int, string>} but returns array<''partialRootPaths''|''templateRootPaths'', mixed>.'
+			identifier: return.type
+			count: 1
+			path: Classes/Renderer/Template/Path/TypoScriptPathProvider.php
+
+		-
 			rawMessage: 'Parameter $configurationManager of method CPSIT\Typo3Handlebars\Renderer\Template\Path\TypoScriptPathProvider::__construct() has typehint with internal interface TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface.'
 			identifier: parameter.internalInterface
 			count: 1
@@ -195,6 +201,18 @@ parameters:
 		-
 			rawMessage: 'Call to method getConfiguration() of internal interface TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface from outside its root namespace TYPO3.'
 			identifier: method.internalInterface
+			count: 1
+			path: Classes/View/HandlebarsViewFactory.php
+
+		-
+			rawMessage: Cannot access offset 'alias' on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/View/HandlebarsViewFactory.php
+
+		-
+			rawMessage: Cannot access offset string on mixed.
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: Classes/View/HandlebarsViewFactory.php
 

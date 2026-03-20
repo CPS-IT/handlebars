@@ -58,7 +58,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         $context = $this->createContext($conf);
 
         // Resolve template paths
-        /** @var array<string, mixed> $templatePaths */
+        /** @var array{templateRootPath?: string, partialRootPath?: string, templateRootPaths?: array<int, string>, partialRootPaths?: array<int, string>} $templatePaths */
         $templatePaths = $this->typoScriptService->convertTypoScriptArrayToPlainArray(
             array_intersect_key(
                 $conf,

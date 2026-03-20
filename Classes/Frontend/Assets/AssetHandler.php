@@ -90,7 +90,7 @@ final readonly class AssetHandler
      * @param mixed $assets The assets configuration for this type
      * @return AssetType The validated AssetType enum
      * @throws Exception\InvalidAssetConfigurationException
-     * @phpstan-assert-if-true array<string, array{source: string}> $assets
+     * @phpstan-assert array<string, array{source: string, attributes?: array<string, string>, options?: array<string, string>}> $assets
      */
     private function validateAssetAndResolveAssetType(string|int $typeKey, mixed $assets): AssetType
     {

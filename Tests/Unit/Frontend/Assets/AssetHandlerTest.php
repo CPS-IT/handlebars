@@ -69,6 +69,7 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
         $assets = $this->assetCollector->getJavaScripts();
 
         self::assertArrayHasKey('my-script', $assets);
+        self::assertIsArray($assets['my-script']);
         self::assertSame('EXT:myext/Resources/Public/JavaScript/app.js', $assets['my-script']['source']);
         self::assertSame([], $assets['my-script']['attributes']);
         self::assertSame([], $assets['my-script']['options']);
@@ -99,6 +100,9 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
         $assets = $this->assetCollector->getJavaScripts();
 
         self::assertArrayHasKey('my-script', $assets);
+        self::assertIsArray($assets['my-script']);
+        self::assertIsArray($assets['my-script']['attributes']);
+        self::assertIsArray($assets['my-script']['options']);
         self::assertSame('EXT:myext/Resources/Public/JavaScript/app.js', $assets['my-script']['source']);
         self::assertSame('async', $assets['my-script']['attributes']['async']);
         self::assertSame('defer', $assets['my-script']['attributes']['defer']);
@@ -126,6 +130,8 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
         $assets = $this->assetCollector->getStyleSheets();
 
         self::assertArrayHasKey('my-styles', $assets);
+        self::assertIsArray($assets['my-styles']);
+        self::assertIsArray($assets['my-styles']['attributes']);
         self::assertSame('EXT:myext/Resources/Public/Css/styles.css', $assets['my-styles']['source']);
         self::assertSame('screen and (max-width: 768px)', $assets['my-styles']['attributes']['media']);
     }
@@ -149,6 +155,8 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
         $assets = $this->assetCollector->getInlineJavaScripts();
 
         self::assertArrayHasKey('my-inline', $assets);
+        self::assertIsArray($assets['my-inline']);
+        self::assertIsArray($assets['my-inline']['attributes']);
         self::assertSame('console.log("Hello");', $assets['my-inline']['source']);
         self::assertSame('module', $assets['my-inline']['attributes']['type']);
     }
@@ -169,6 +177,7 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
         $assets = $this->assetCollector->getInlineStyleSheets();
 
         self::assertArrayHasKey('my-inline-css', $assets);
+        self::assertIsArray($assets['my-inline-css']);
         self::assertSame('body { margin: 0; }', $assets['my-inline-css']['source']);
     }
 
@@ -248,6 +257,8 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $assets = $this->assetCollector->getJavaScripts();
 
+        self::assertIsArray($assets['my-script']);
+        self::assertIsArray($assets['my-script']['attributes']);
         self::assertSame('async', $assets['my-script']['attributes']['async']);
         self::assertSame('nomodule', $assets['my-script']['attributes']['nomodule']);
         self::assertArrayNotHasKey('defer', $assets['my-script']['attributes']);
@@ -272,6 +283,8 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $assets = $this->assetCollector->getStyleSheets();
 
+        self::assertIsArray($assets['my-styles']);
+        self::assertIsArray($assets['my-styles']['attributes']);
         self::assertSame('disabled', $assets['my-styles']['attributes']['disabled']);
         self::assertSame('screen', $assets['my-styles']['attributes']['media']);
     }
@@ -298,6 +311,8 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $assets = $this->assetCollector->getJavaScripts();
 
+        self::assertIsArray($assets['my-script']);
+        self::assertIsArray($assets['my-script']['attributes']);
         self::assertSame('async', $assets['my-script']['attributes']['async']);
         self::assertSame('defer', $assets['my-script']['attributes']['defer']);
         self::assertSame('module', $assets['my-script']['attributes']['type']);
@@ -324,6 +339,8 @@ final class AssetHandlerTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $assets = $this->assetCollector->getJavaScripts();
 
+        self::assertIsArray($assets['my-script']);
+        self::assertIsArray($assets['my-script']['options']);
         self::assertTrue($assets['my-script']['options']['priority']);
         self::assertFalse($assets['my-script']['options']['useNonce']);
     }

@@ -39,35 +39,45 @@ final readonly class HandlebarsHelperPass implements DependencyInjection\Compile
         // Register tagged Handlebars helper at all Helper-aware renderers
         foreach ($container->findTaggedServiceIds(self::TAG_NAME) as $serviceId => $tags) {
             foreach (array_filter($tags) as $attributes) {
-                $this->validateTag($serviceId, $attributes);
-
-                $registryDefinition->addMethodCall(
-                    'add',
-                    [
-                        $attributes['identifier'],
-                        [new DependencyInjection\Reference($serviceId), $attributes['method']],
-                    ],
-                );
+                if ($this->isValidTag($serviceId, $attributes)) {
+                    $registryDefinition->addMethodCall(
+                        'add',
+                        [
+                            $attributes['identifier'],
+                            [new DependencyInjection\Reference($serviceId), $attributes['method']],
+                        ],
+                    );
+                }
             }
         }
     }
 
     /**
-     * @param array<string, string> $tagAttributes
+     * @phpstan-assert-if-true array{identifier: non-empty-string, method: non-empty-string} $tagAttributes
      */
-    private function validateTag(string $serviceId, array $tagAttributes): void
+    private function isValidTag(string $serviceId, mixed $tagAttributes): bool
     {
-        if (!array_key_exists('identifier', $tagAttributes) || (string)$tagAttributes['identifier'] === '') {
+        if (!is_array($tagAttributes)) {
+            throw new \InvalidArgumentException(
+                sprintf('Service tag "%s" requires an array as confguration, %s given in: %s', self::TAG_NAME, get_debug_type($tagAttributes), $serviceId),
+                1774039452,
+            );
+        }
+
+        if (!is_string($tagAttributes['identifier'] ?? null) || $tagAttributes['identifier'] === '') {
             throw new \InvalidArgumentException(
                 sprintf('Service tag "%s" requires an identifier attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
                 1606236820,
             );
         }
-        if (!array_key_exists('method', $tagAttributes) || (string)$tagAttributes['method'] === '') {
+
+        if (!is_string($tagAttributes['method'] ?? null) || $tagAttributes['method'] === '') {
             throw new \InvalidArgumentException(
                 sprintf('Service tag "%s" requires an method attribute to be defined, missing in: %s', self::TAG_NAME, $serviceId),
                 1606245140,
             );
         }
+
+        return true;
     }
 }

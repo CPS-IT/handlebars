@@ -60,7 +60,6 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
 
         if ($request instanceof Extbase\Mvc\RequestInterface) {
             $contentObjectConfiguration = $this->resolveExtbaseContentObjectConfiguration(
-                $contentObjectRenderer,
                 $request->getControllerObjectName(),
                 $request->getControllerActionName(),
                 $data->format ?? $request->getFormat(),
@@ -86,10 +85,9 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
     }
 
     /**
-     * @return array<string, mixed>|null
+     * @return array<string|int, mixed>|null
      */
     private function resolveExtbaseContentObjectConfiguration(
-        Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer,
         string $controllerObjectName,
         string $actionName,
         string $format,
@@ -140,7 +138,7 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
             $controllerObjectName,
         ];
         foreach ($possibleConfigurationKeys as $possibleConfigurationKey) {
-            if (array_key_exists($possibleConfigurationKey . '.', $typoScriptConfiguration)) {
+            if (is_array($typoScriptConfiguration[$possibleConfigurationKey . '.'] ?? null)) {
                 Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
                     $resolvedConfiguration,
                     $typoScriptConfiguration[$possibleConfigurationKey . '.'],

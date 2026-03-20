@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase;
 final class TypoScriptVariableProvider implements VariableProvider
 {
     /**
-     * @var array<string, mixed>|null
+     * @var array<string|int, mixed>|null
      */
     private ?array $variables = null;
 
@@ -72,7 +72,7 @@ final class TypoScriptVariableProvider implements VariableProvider
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     private function fetchVariables(): array
     {
@@ -80,7 +80,12 @@ final class TypoScriptVariableProvider implements VariableProvider
             Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
             Configuration\Extension::NAME,
         );
+        $variables = $typoScriptConfiguration['variables'] ?? [];
 
-        return $typoScriptConfiguration['variables'] ?? [];
+        if (!is_array($variables)) {
+            return [];
+        }
+
+        return $variables;
     }
 }

@@ -33,17 +33,14 @@ use TYPO3\CMS\Core;
 final class ContentObjectPathProvider implements PathProvider, Core\SingletonInterface
 {
     /**
-     * @var list<array{
-     *     partialRootPaths: RootPathStackItem,
-     *     templateRootPaths: RootPathStackItem,
-     * }>
+     * @var list<array<self::*, RootPathStackItem>>
      */
     private array $stack = [];
 
     private ?int $currentItem = null;
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array{templateRootPath?: string, partialRootPath?: string, templateRootPaths?: array<int, string>, partialRootPaths?: array<int, string>} $configuration
      */
     public function push(array $configuration): void
     {
@@ -108,12 +105,12 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
 
     public function getPartialRootPaths(): array
     {
-        return $this->getMergedRootPathsFromStack('partialRootPaths');
+        return $this->getMergedRootPathsFromStack(self::PARTIALS);
     }
 
     public function getTemplateRootPaths(): array
     {
-        return $this->getMergedRootPathsFromStack('templateRootPaths');
+        return $this->getMergedRootPathsFromStack(self::TEMPLATES);
     }
 
     public function isCacheable(): bool
@@ -123,7 +120,7 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
     }
 
     /**
-     * @param 'partialRootPaths'|'templateRootPaths' $type
+     * @param self::* $type
      * @return array<int, string>
      */
     private function getMergedRootPathsFromStack(string $type): array
@@ -134,16 +131,16 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
 
         // Merge and cache root paths
         if ($this->stack[$this->currentItem][$type]['merged'] === null) {
-            $this->stack[$this->currentItem][$type]['merged'] = $this->stack[0][$type]['current'];
+            $merged = $this->stack[0][$type]['current'];
 
             for ($i = 1; $i <= $this->currentItem; $i++) {
-                Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
-                    $this->stack[$this->currentItem][$type]['merged'],
-                    $this->stack[$i][$type]['current'],
-                );
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $merged = array_replace($merged, $this->stack[$i][$type]['current']);
             }
 
-            ksort($this->stack[$this->currentItem][$type]['merged']);
+            ksort($merged);
+
+            $this->stack[$this->currentItem][$type]['merged'] = $merged;
         }
 
         return $this->stack[$this->currentItem][$type]['merged'];

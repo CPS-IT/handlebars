@@ -71,6 +71,7 @@ class HandlebarsRenderer implements Renderer
 
         // Render content
         $renderer = Handlebars\Handlebars::template($compileResult);
+        /** @var string $content */
         $content = $renderer($beforeRenderingEvent->getVariables(), [
             'helpers' => $this->helperRegistry->getAll(),
             'data' => [

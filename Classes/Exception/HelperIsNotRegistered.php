@@ -28,7 +28,7 @@ final class HelperIsNotRegistered extends Exception
     public function __construct(string $name)
     {
         parent::__construct(
-            \sprintf('Handlebars helper "%s" is not registered.', $name),
+            sprintf('Handlebars helper "%s" is not registered.', $name),
             1736242470,
         );
     }

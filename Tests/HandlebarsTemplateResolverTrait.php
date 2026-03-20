@@ -64,8 +64,8 @@ trait HandlebarsTemplateResolverTrait
                 'lockRootPath' => [
                     $this->partialRootPath,
                     $this->templateRootPath,
-                    \dirname($this->partialRootPath),
-                    \dirname($this->templateRootPath),
+                    dirname($this->partialRootPath),
+                    dirname($this->templateRootPath),
                 ],
             ],
         ];

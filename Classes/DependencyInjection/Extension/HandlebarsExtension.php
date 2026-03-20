@@ -56,7 +56,9 @@ final class HandlebarsExtension extends DependencyInjection\Extension\Extension
         $mergedConfig = [];
 
         foreach (array_column($configs, $configKey) as $concreteConfig) {
-            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($mergedConfig, $concreteConfig);
+            if (is_array($concreteConfig)) {
+                Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($mergedConfig, $concreteConfig);
+            }
         }
 
         return $mergedConfig;

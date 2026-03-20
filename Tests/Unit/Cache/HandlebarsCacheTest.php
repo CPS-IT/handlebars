@@ -47,6 +47,8 @@ final class HandlebarsCacheTest extends TestingFramework\Core\Unit\UnitTestCase
         );
         $cacheStub->method('set')->willReturnCallback(
             static function (string $entryIdentifier, mixed $data) use ($cache) {
+                self::assertIsString($data);
+
                 $cache->set($entryIdentifier, $data);
             },
         );

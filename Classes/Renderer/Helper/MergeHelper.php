@@ -32,7 +32,7 @@ final readonly class MergeHelper implements Helper
 {
     /**
      * @param array<string, mixed> ...$contexts
-     * @return array<string, mixed>
+     * @return array<mixed>
      */
     public function render(Handlebars\HelperOptions $options, array ...$contexts): array
     {

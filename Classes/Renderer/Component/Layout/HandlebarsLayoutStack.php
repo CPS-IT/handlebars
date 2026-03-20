@@ -69,7 +69,7 @@ final class HandlebarsLayoutStack implements Core\SingletonInterface, \IteratorA
             return;
         }
 
-        if ($stack->isEmpty()) {
+        if (is_array($scope) && $stack->isEmpty()) {
             unset($scope[self::SCOPE_IDENTIFIER]);
         }
     }

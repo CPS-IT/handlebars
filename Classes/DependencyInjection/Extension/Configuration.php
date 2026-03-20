@@ -78,9 +78,9 @@ final readonly class Configuration implements Config\Definition\ConfigurationInt
             if ($transitions === null) {
                 return [];
             }
-            if (!\is_array($transitions)) {
+            if (!is_array($transitions)) {
                 throw new \InvalidArgumentException(
-                    \sprintf('Illegal value for root path configuration. Only numeric arrays are allowed, got "%s" instead.', \get_debug_type($transitions)),
+                    sprintf('Illegal value for root path configuration. Only numeric arrays are allowed, got "%s" instead.', get_debug_type($transitions)),
                     1615835938
                 );
             }
@@ -99,6 +99,6 @@ final readonly class Configuration implements Config\Definition\ConfigurationInt
      */
     private function containsNonNumericIndexes(array $array): bool
     {
-        return \count(array_filter(array_keys($array), is_string(...))) !== 0;
+        return count(array_filter(array_keys($array), is_string(...))) !== 0;
     }
 }

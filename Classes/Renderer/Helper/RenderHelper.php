@@ -51,7 +51,7 @@ final readonly class RenderHelper implements Helper
         // Custom contexts can be defined as helper argument, e.g.
         // {{render '@foo' customContext}}
         $subContext = reset($arguments);
-        if (!\is_array($subContext)) {
+        if (!is_array($subContext)) {
             $subContext = [];
         }
 
@@ -59,7 +59,11 @@ final readonly class RenderHelper implements Helper
         // =====================
         // Default contexts can be defined by using the template name when rendering a
         // specific template, e.g. if $name = '@foo' then $rootData['@foo'] is requested
-        $defaultContext = $rootData[$name] ?? [];
+        if (is_array($rootData)) {
+            $defaultContext = $rootData[$name] ?? [];
+        } else {
+            $defaultContext = [];
+        }
 
         // Resolve context
         // ===============
@@ -68,9 +72,14 @@ final readonly class RenderHelper implements Helper
         // {{render '@foo' customContext merge=true}}
         if ($subContext === []) {
             $subContext = $defaultContext;
-        } elseif ($merge) {
+        } elseif ($merge && is_array($defaultContext)) {
             Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($defaultContext, $subContext);
             $subContext = $defaultContext;
+        }
+
+        // Reset context if it's not an array
+        if (!is_array($subContext)) {
+            $subContext = [];
         }
 
         $content = $this->renderer->render(

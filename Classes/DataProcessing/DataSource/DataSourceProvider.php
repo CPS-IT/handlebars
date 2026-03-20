@@ -115,7 +115,9 @@ final readonly class DataSourceProvider
             $processedDataSources = [];
         }
 
-        Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedDataSources, $data);
+        if (is_array($data)) {
+            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedDataSources, $data);
+        }
 
         return $processedDataSources;
     }

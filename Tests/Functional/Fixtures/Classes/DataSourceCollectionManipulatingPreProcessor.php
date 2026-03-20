@@ -37,8 +37,11 @@ final readonly class DataSourceCollectionManipulatingPreProcessor implements Dat
             'dataSource',
             DataProcessing\DataSource\DataSource::ProcessorConfiguration,
         );
-        $dataSource = DataProcessing\DataSource\DataSource::from($dataSourceIdentifier);
-        $collection->remove($dataSource);
+
+        if (is_string($dataSourceIdentifier)) {
+            $dataSource = DataProcessing\DataSource\DataSource::from($dataSourceIdentifier);
+            $collection->remove($dataSource);
+        }
 
         return $variables;
     }

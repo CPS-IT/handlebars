@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 final class VariableBag implements \ArrayAccess
 {
     /**
-     * @var array<string, mixed>|null
+     * @var array<string|int, mixed>|null
      */
     private ?array $variables = null;
 
@@ -43,7 +43,7 @@ final class VariableBag implements \ArrayAccess
     ) {}
 
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     public function get(): array
     {
@@ -75,7 +75,7 @@ final class VariableBag implements \ArrayAccess
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     private function fetchVariablesFromProviders(): array
     {
@@ -83,7 +83,7 @@ final class VariableBag implements \ArrayAccess
         $mergedVariables = [];
 
         foreach ($this->providers as $provider) {
-            \array_unshift($providerVariables, $provider->get());
+            array_unshift($providerVariables, $provider->get());
         }
 
         foreach ($providerVariables as $variables) {

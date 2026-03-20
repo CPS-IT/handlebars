@@ -88,7 +88,7 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
         $this->subject->addAction($this->createAction('foo'));
         $this->subject->addAction($this->createAction('baz'));
 
-        self::assertSame(['foo', 'baz'], \array_keys($this->subject->getActions()));
+        self::assertSame(['foo', 'baz'], array_keys($this->subject->getActions()));
     }
 
     #[Framework\Attributes\Test]

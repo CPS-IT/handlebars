@@ -32,7 +32,7 @@ final class FooViewHelper extends Fluid\Core\ViewHelper\AbstractViewHelper
         $this->registerArgument('foo', 'string', 'Foo');
     }
 
-    public function render(): string
+    public function render(): mixed
     {
         return $this->arguments['foo'];
     }

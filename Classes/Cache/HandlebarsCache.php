@@ -37,13 +37,21 @@ final readonly class HandlebarsCache implements Cache
     public function get(string $template): ?string
     {
         $cacheIdentifier = $this->calculateCacheIdentifier($template);
-        return $this->cache->get($cacheIdentifier) ?: null;
+        $value = $this->cache->get($cacheIdentifier);
+
+        if (!is_string($value)) {
+            return null;
+        }
+
+        return $value;
     }
 
     public function set(string $template, string $compileResult): void
     {
-        $cacheIdentifier = $this->calculateCacheIdentifier($template);
-        $this->cache->set($cacheIdentifier, $compileResult);
+        $this->cache->set(
+            $this->calculateCacheIdentifier($template),
+            $compileResult,
+        );
     }
 
     protected function calculateCacheIdentifier(string $template): string

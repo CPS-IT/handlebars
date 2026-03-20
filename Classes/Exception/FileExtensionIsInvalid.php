@@ -28,7 +28,7 @@ final class FileExtensionIsInvalid extends Exception
     public function __construct(string $fileExtension)
     {
         parent::__construct(
-            \sprintf('File extension "%s" is not valid.', \get_debug_type($fileExtension)),
+            sprintf('File extension "%s" is not valid.', get_debug_type($fileExtension)),
             1736258381,
         );
     }

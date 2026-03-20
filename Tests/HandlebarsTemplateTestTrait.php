@@ -34,7 +34,7 @@ trait HandlebarsTemplateTestTrait
     public static function renderTemplate(string $template, array $variables = [], array $helpers = []): string
     {
         $options = new Handlebars\Options(
-            helpers: \array_map(
+            helpers: array_map(
                 static fn() => static fn() => '',
                 $helpers,
             ),
@@ -42,11 +42,11 @@ trait HandlebarsTemplateTestTrait
         $renderer = Handlebars\Handlebars::compile($template, $options);
 
         return $renderer($variables, [
-            'helpers' => \array_map(
+            'helpers' => array_map(
                 static fn(callable $fn) => static function () use ($fn) {
-                    $arguments = \func_get_args();
+                    $arguments = func_get_args();
                     /** @var Handlebars\HelperOptions $options */
-                    $options = \array_pop($arguments);
+                    $options = array_pop($arguments);
 
                     return $fn($options, ...$arguments);
                 },
@@ -67,6 +67,6 @@ trait HandlebarsTemplateTestTrait
     ): void {
         $actual = self::renderTemplate($template, $variables, $helpers);
 
-        self::assertSame(\trim($expected), \trim($actual));
+        self::assertSame(trim($expected), trim($actual));
     }
 }

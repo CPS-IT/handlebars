@@ -77,8 +77,10 @@ final class ResolveMarkersProcessor implements Frontend\ContentObject\DataProces
         $pattern = $processorConfiguration['pattern'] ?? null;
         $removeNonMatchingMarkers = (bool)($processorConfiguration['removeNonMatchingMarkers'] ?? false);
 
-        $processor = Renderer\Variables\MarkerBasedValueProcessor::create($pattern);
-        $processor->replaceMarkers($processedData, $removeNonMatchingMarkers);
+        if ((is_string($pattern) && $pattern !== '') || $pattern === null) {
+            $processor = Renderer\Variables\MarkerBasedValueProcessor::create($pattern);
+            $processor->replaceMarkers($processedData, $removeNonMatchingMarkers);
+        }
 
         return $processedData;
     }

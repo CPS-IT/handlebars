@@ -58,7 +58,7 @@ final class HandlebarsControllerTest extends TestingFramework\Core\Functional\Fu
 
         self::assertSame(
             'This is the default template, Foo!',
-            \trim((string)$response->getBody()),
+            trim((string)$response->getBody()),
         );
     }
 
@@ -71,7 +71,7 @@ final class HandlebarsControllerTest extends TestingFramework\Core\Functional\Fu
 
         self::assertSame(
             'This is the rendered template, Foo!',
-            \trim((string)$response->getBody()),
+            trim((string)$response->getBody()),
         );
     }
 
@@ -84,7 +84,7 @@ final class HandlebarsControllerTest extends TestingFramework\Core\Functional\Fu
 
         self::assertSame(
             'Hello World!',
-            \trim((string)$response->getBody()),
+            trim((string)$response->getBody()),
         );
     }
 }

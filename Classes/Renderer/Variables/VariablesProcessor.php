@@ -56,10 +56,10 @@ final readonly class VariablesProcessor
             }
 
             // Use sanitized variable name for simple variables
-            $sanitizedName = \rtrim((string)$name, '.');
+            $sanitizedName = rtrim((string)$name, '.');
 
             // Apply variable as simple variable if it's a complex structure (such as objects)
-            if (!is_string($value) && !\is_array($value)) {
+            if (!is_string($value) && !is_array($value)) {
                 $simpleVariables[$sanitizedName] = $value;
 
                 continue;
@@ -85,7 +85,7 @@ final readonly class VariablesProcessor
 
             // Apply variable as simple variable if it's a simple construct
             // (including arrays, which will be processed recursively as they may contain content objects)
-            if (!\is_array($value)) {
+            if (!is_array($value)) {
                 $simpleVariables[$sanitizedName] = $value;
             } elseif (!$this->shouldRemoveVariable($value)) {
                 unset($value['removeIf.']);
@@ -119,7 +119,7 @@ final readonly class VariablesProcessor
         $reservedVariables = ['data', 'current'];
 
         foreach ($variables as $variableName => $cObjType) {
-            if (is_array($cObjType)) {
+            if (!is_string($cObjType)) {
                 continue;
             }
 
@@ -128,6 +128,11 @@ final readonly class VariablesProcessor
             }
 
             $cObjConf = $variables[$variableName . '.'] ?? [];
+
+            // Normalize content object configuration
+            if (!is_array($cObjConf)) {
+                $cObjConf = [];
+            }
 
             // Process value
             $value = $this->contentObjectRenderer->cObjGetSingle($cObjType, $cObjConf, 'variables.' . $variableName);
@@ -145,14 +150,14 @@ final readonly class VariablesProcessor
     }
 
     /**
-     * @param array<string, mixed> $configuration
+     * @param array<mixed> $configuration
      */
     private function shouldRemoveVariable(array $configuration, ?string $value = null): bool
     {
         $removeCondition = $configuration['removeIf.'] ?? null;
 
         // Early return on missing or insufficient remove condition
-        if (!\is_array($removeCondition)) {
+        if (!is_array($removeCondition)) {
             return false;
         }
 

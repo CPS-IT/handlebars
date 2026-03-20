@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase;
 final class TypoScriptPathProvider implements PathProvider
 {
     /**
-     * @var array<string, mixed>|null
+     * @var array<self::*, mixed>|null
      */
     private ?array $viewConfiguration = null;
 
@@ -62,7 +62,13 @@ final class TypoScriptPathProvider implements PathProvider
                 Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
                 Configuration\Extension::NAME,
             );
-            $this->viewConfiguration = $typoScriptConfiguration['view'] ?? [];
+            $viewConfiguration = $typoScriptConfiguration['view'] ?? [];
+
+            if (\is_array($viewConfiguration)) {
+                $this->viewConfiguration = \array_intersect_key($viewConfiguration, [self::PARTIALS => true, self::TEMPLATES => true]);
+            } else {
+                $this->viewConfiguration = [];
+            }
         }
 
         return $this->viewConfiguration;

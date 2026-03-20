@@ -84,7 +84,7 @@ final class TemplatePaths
 
         // Resolve root paths from path providers
         foreach ($this->pathProviders as $pathProvider) {
-            \array_unshift($paths, $mapFunction($pathProvider));
+            array_unshift($paths, $mapFunction($pathProvider));
 
             if (!$pathProvider->isCacheable()) {
                 $cacheable = false;

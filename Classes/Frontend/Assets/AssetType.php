@@ -39,7 +39,7 @@ enum AssetType: string
      */
     public static function values(): array
     {
-        return \array_map(
+        return array_map(
             static fn(self $assetType) => $assetType->value,
             self::cases(),
         );
@@ -63,7 +63,7 @@ enum AssetType: string
      */
     public function isBooleanAttribute(string $name): bool
     {
-        return \in_array($name, $this->getBooleanAttributes(), true);
+        return in_array($name, $this->getBooleanAttributes(), true);
     }
 
     /**

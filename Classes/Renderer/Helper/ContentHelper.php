@@ -77,7 +77,7 @@ final readonly class ContentHelper implements Helper
         Handlebars\HelperOptions $options,
         string $name,
     ): Renderer\Component\Layout\HandlebarsLayoutActionMode {
-        if (!isset($options->hash['mode'])) {
+        if (!is_string($options->hash['mode'] ?? null)) {
             return self::DEFAULT_MODE;
         }
 
@@ -87,7 +87,7 @@ final readonly class ContentHelper implements Helper
             $mode = self::DEFAULT_MODE;
 
             $this->logger->warning(
-                \sprintf(
+                sprintf(
                     'Handlebars layout helper "content" has invalid mode "%s". Falling back to "%s".',
                     $options->hash['mode'],
                     $mode->value,

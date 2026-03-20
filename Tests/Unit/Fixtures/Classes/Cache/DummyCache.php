@@ -48,7 +48,7 @@ final readonly class DummyCache implements Cache\Cache
     public function set(string $template, string $compileResult): void
     {
         $cacheFile = $this->resolveCacheFile($template);
-        Core\Utility\GeneralUtility::mkdir_deep(\dirname($cacheFile));
+        Core\Utility\GeneralUtility::mkdir_deep(dirname($cacheFile));
         file_put_contents($cacheFile, $compileResult);
     }
 

@@ -45,7 +45,7 @@ final class ResolveMarkersProcessorTest extends TestingFramework\Core\Functional
         $request = $this->buildServerRequest();
 
         $this->subject = new Src\DataProcessing\ResolveMarkersProcessor();
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
+        $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
     }

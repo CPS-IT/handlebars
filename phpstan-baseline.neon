@@ -55,10 +55,28 @@ parameters:
 			path: Classes/View/HandlebarsViewFactory.php
 
 		-
+			rawMessage: 'Method TYPO3\CMS\Core\Page\PageRenderer::render() invoked with 1 parameter, 0 required.'
+			identifier: arguments.count
+			count: 1
+			path: Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php
+
+		-
+			rawMessage: 'Method TYPO3\CMS\Core\Page\PageRenderer::render() invoked with 1 parameter, 0 required.'
+			identifier: arguments.count
+			count: 1
+			path: Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php
+
+		-
 			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
 			identifier: attribute.notFound
 			count: 4
 			path: Tests/Functional/View/HandlebarsViewFactoryTest.php
+
+		-
+			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
+			identifier: attribute.notFound
+			count: 2
+			path: Tests/Functional/View/HandlebarsViewTest.php
 
 		-
 			rawMessage: Cannot access offset 'FE' on mixed.
@@ -71,9 +89,3 @@ parameters:
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
 			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
-
-		-
-			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
-			identifier: attribute.notFound
-			count: 2
-			path: Tests/Unit/View/HandlebarsViewTest.php

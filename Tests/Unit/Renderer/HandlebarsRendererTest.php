@@ -23,6 +23,7 @@ use PHPUnit\Framework;
 use Psr\Log;
 use Symfony\Component\EventDispatcher;
 use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
@@ -123,16 +124,15 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     #[Framework\Attributes\Test]
     public function renderMergesVariablesWithGivenVariables(): void
     {
-        $this->helperRegistry->add('varDump', Src\Renderer\Helper\VarDumpHelper::class);
+        $this->helperRegistry->add('debug', Src\Renderer\Helper\DebugHelper::class);
 
-        Core\Utility\DebugUtility::useAnsiColor(false);
+        // Pre-render var_dump, because the first call contains stylesheet, whereas following calls don't
+        $this->renderVarDump(null);
 
-        $expected = <<<EOF
-Debug
-array (2 items)
-   foo => "baz" (3 chars)
-   another => "foo" (3 chars)
-EOF;
+        $expected = $this->renderVarDump([
+            'foo' => 'baz',
+            'another' => 'foo',
+        ]);
 
         $context = new Src\Renderer\RenderingContext('DummyTemplateVariables', ['another' => 'foo']);
 
@@ -140,8 +140,6 @@ EOF;
             trim($expected),
             trim($this->subject->render($context)),
         );
-
-        Core\Utility\DebugUtility::useAnsiColor(true);
     }
 
     #[Framework\Attributes\Test]
@@ -281,6 +279,18 @@ EOF;
                     'foo' => 'baz',
                 ]),
             ]),
+        );
+    }
+
+    private function renderVarDump(mixed $subject): string
+    {
+        return Extbase\Utility\DebuggerUtility::var_dump(
+            $subject,
+            'Debug',
+            12,
+            false,
+            false,
+            true,
         );
     }
 }

@@ -60,3 +60,7 @@ jobs:
       #  run: |
       #    mkdir -p .Build/docs
       #    composer docs:build -- --no-progress --fail-on-log
+
+      # Bundler
+      - name: Check dependency extraction for TER vendor libraries
+        run: composer extract-dependencies --print-file-contents --fail

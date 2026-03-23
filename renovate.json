@@ -21,14 +21,6 @@
 			"matchPackageNames": [
 				"cpsit/typo3-handlebars-test-extension"
 			]
-		},
-		{
-			"extends": [
-				":pinVersions"
-			],
-			"matchFileNames": [
-				"Resources/Private/Libs/composer.json"
-			]
 		}
 	]
 }

@@ -47,11 +47,17 @@ final readonly class BlockHelper implements Helper
             }
         }
 
+        try {
+            $initial = $options->fn($options->scope);
+        } catch (\Exception) {
+            $initial = '';
+        }
+
         // Walk through layout actions and apply them to the rendered block
         return array_reduce(
             $actions,
             static fn(string $value, Renderer\Component\Layout\HandlebarsLayoutAction $action): string => $action->render($value),
-            $options->fn($options->scope),
+            $initial,
         );
     }
 }

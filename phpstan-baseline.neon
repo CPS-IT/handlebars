@@ -73,12 +73,6 @@ parameters:
 			path: Classes/Renderer/HandlebarsRenderer.php
 
 		-
-			rawMessage: Parameter $context of anonymous function has typehint with internal class DevTheorem\Handlebars\Context.
-			identifier: parameter.internalClass
-			count: 1
-			path: Classes/Renderer/HandlebarsRenderer.php
-
-		-
 			rawMessage: 'Call to internal method TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolver::getLocalNamespaces() from outside its root namespace TYPO3Fluid.'
 			identifier: method.internal
 			count: 1
@@ -1463,6 +1457,18 @@ parameters:
 			identifier: class.implementsInternalInterface
 			count: 1
 			path: Tests/Unit/Fixtures/Classes/DummyConfigurationManager.php
+
+		-
+			rawMessage: 'Call to method __construct() of internal class DevTheorem\Handlebars\RuntimeContext from outside its root namespace DevTheorem.'
+			identifier: method.internalClass
+			count: 1
+			path: Tests/Unit/Renderer/Component/Layout/HandlebarsLayoutActionTest.php
+
+		-
+			rawMessage: Instantiation of internal class DevTheorem\Handlebars\RuntimeContext.
+			identifier: new.internalClass
+			count: 1
+			path: Tests/Unit/Renderer/Component/Layout/HandlebarsLayoutActionTest.php
 
 		-
 			rawMessage: Access to internal constant TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_FE from outside its root namespace TYPO3.

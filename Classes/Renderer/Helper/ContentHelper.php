@@ -57,7 +57,9 @@ final readonly class ContentHelper implements Helper
         $layout = $layoutStack->last();
 
         // Usage in conditional context: Test whether given required block is registered
-        if (!$options->fn()) {
+        try {
+            $options->fn();
+        } catch (\Exception) {
             if (!$layout->isParsed()) {
                 $layout->parse($options->scope);
             }

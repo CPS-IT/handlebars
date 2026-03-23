@@ -122,13 +122,14 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
         return new Src\Renderer\Component\Layout\HandlebarsLayoutAction(
             $name,
             new Handlebars\HelperOptions(
-                'foo',
-                [],
-                static fn() => '',
-                static fn() => '',
-                0,
                 $renderingContext,
                 $data,
+                'foo',
+                [],
+                0,
+                null,
+                static fn() => '',
+                static fn() => '',
             ),
         );
     }

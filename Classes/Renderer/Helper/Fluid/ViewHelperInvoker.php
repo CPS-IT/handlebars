@@ -82,7 +82,7 @@ final readonly class ViewHelperInvoker implements Renderer\Helper\Helper
         [$namespace, $viewHelperShortName] = explode(':', $name, 2);
         $className = $fluidRenderingContext->getViewHelperResolver()->createViewHelperInstance($namespace, $viewHelperShortName);
 
-        return $fluidRenderingContext->getViewHelperInvoker()->invoke($className, $options->hash, $fluidRenderingContext, $options->fn);
+        return $fluidRenderingContext->getViewHelperInvoker()->invoke($className, $options->hash, $fluidRenderingContext, $options->fn(...));
     }
 
     #[Attribute\AsHelper('viewHelperNamespace')]

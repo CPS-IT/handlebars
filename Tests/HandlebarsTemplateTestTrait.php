@@ -34,8 +34,8 @@ trait HandlebarsTemplateTestTrait
     public static function renderTemplate(string $template, array $variables = [], array $helpers = []): string
     {
         $options = new Handlebars\Options(
-            helpers: array_map(
-                static fn() => static fn() => '',
+            knownHelpers: array_map(
+                static fn() => true,
                 $helpers,
             ),
         );

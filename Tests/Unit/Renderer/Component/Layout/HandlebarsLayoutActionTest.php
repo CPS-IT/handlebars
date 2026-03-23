@@ -41,13 +41,14 @@ final class HandlebarsLayoutActionTest extends TestingFramework\Core\Unit\UnitTe
         $data = [];
 
         $this->options = new Handlebars\HelperOptions(
-            'foo',
-            [],
-            static fn() => 'baz',
-            static fn() => 'baz',
-            0,
             $renderingContext,
             $data,
+            'foo',
+            [],
+            0,
+            new Handlebars\RuntimeContext(),
+            static fn() => 'baz',
+            static fn() => 'baz',
         );
     }
 

@@ -48,7 +48,7 @@ final readonly class ExtendHelper implements Helper
         }
 
         // Create new handlebars layout item
-        $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($options->fn);
+        $handlebarsLayout = new Renderer\Component\Layout\HandlebarsLayout($options->fn(...));
 
         // Add layout to layout stack
         $layoutStack = Renderer\Component\Layout\HandlebarsLayoutStack::fromScope($options->scope);

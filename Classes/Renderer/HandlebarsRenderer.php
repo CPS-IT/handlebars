@@ -71,7 +71,6 @@ class HandlebarsRenderer implements Renderer
 
         // Render content
         $renderer = Handlebars\Handlebars::template($compileResult);
-        /** @var string $content */
         $content = $renderer($beforeRenderingEvent->getVariables(), [
             'helpers' => $this->helperRegistry->getAll(),
             'data' => [
@@ -127,25 +126,25 @@ class HandlebarsRenderer implements Renderer
     protected function getCompileOptions(): Handlebars\Options
     {
         return new Handlebars\Options(
+            knownHelpers: $this->getKnownHelpers(),
             strict: $this->isDebugModeEnabled(),
-            helpers: $this->getHelperStubs(),
-            partialResolver: fn(Handlebars\Context $context, string $name) => $this->resolvePartial($name),
+            partialResolver: $this->resolvePartial(...),
         );
     }
 
     /**
      * Get currently supported helpers as stubs.
      *
-     * Returns an array of available helper stubs to provide a list of available
-     * helpers for the compiler. This is necessary to enforce the usage of those
+     * Returns an array of available (= known) helpers to provide a list of available
+     * helpers for the compiler. This is recommended to improve the usage of those
      * helpers during compile time, whereas the concrete helper callables are
      * provided during runtime.
      *
-     * @return array<string, callable>
+     * @return array<string, true>
      */
-    protected function getHelperStubs(): array
+    protected function getKnownHelpers(): array
     {
-        return array_fill_keys(array_keys($this->helperRegistry->getAll()), static fn() => '');
+        return array_fill_keys(array_keys($this->helperRegistry->getAll()), true);
     }
 
     /**

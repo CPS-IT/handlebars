@@ -80,13 +80,14 @@ EOF;
         $data = [];
 
         $context = new Handlebars\HelperOptions(
-            'foo',
-            [],
-            static fn() => '',
-            static fn() => '',
-            0,
             $renderingContext,
             $data,
+            'foo',
+            [],
+            0,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $expected = <<<EOF
@@ -114,15 +115,16 @@ EOF;
         $data = [];
 
         $context = new Handlebars\HelperOptions(
+            $renderingContext,
+            $data,
             'foo',
             [
                 'title' => 'foo',
             ],
-            static fn() => '',
-            static fn() => '',
             0,
-            $renderingContext,
-            $data,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $expected = <<<EOF

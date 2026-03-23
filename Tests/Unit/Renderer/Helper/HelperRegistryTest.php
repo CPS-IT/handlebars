@@ -92,15 +92,16 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
             'renderingContext' => $renderingContext,
         ];
         $options = new Handlebars\HelperOptions(
+            $scope,
+            $data,
             'foo',
             [
                 'foo' => 'baz',
             ],
-            static fn() => '',
-            static fn() => '',
             0,
-            $scope,
-            $data,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $this->subject->add('foo', $function);
@@ -143,15 +144,16 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $scope = [];
         $data = [];
         $options = new Handlebars\HelperOptions(
+            $scope,
+            $data,
             'foo',
             [
                 'foo' => 'baz',
             ],
-            static fn() => '',
-            static fn() => '',
             0,
-            $scope,
-            $data,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $this->subject->add('foo', $function);
@@ -166,15 +168,16 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $scope = [];
         $data = [];
         $options = new Handlebars\HelperOptions(
+            $scope,
+            $data,
             'foo',
             [
                 'foo' => 'baz',
             ],
-            static fn() => '',
-            static fn() => '',
             0,
-            $scope,
-            $data,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $this->subject->add('foo', $function);
@@ -189,15 +192,16 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $scope = [];
         $data = [];
         $options = new Handlebars\HelperOptions(
+            $scope,
+            $data,
             'foo',
             [
                 'foo' => 'baz',
             ],
-            static fn() => '',
-            static fn() => '',
             0,
-            $scope,
-            $data,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $this->subject->add('foo', $function);
@@ -218,15 +222,16 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
             'renderingContext' => 'foo',
         ];
         $options = new Handlebars\HelperOptions(
+            $scope,
+            $data,
             'foo',
             [
                 'foo' => 'baz',
             ],
-            static fn() => '',
-            static fn() => '',
             0,
-            $scope,
-            $data,
+            null,
+            static fn() => '',
+            static fn() => '',
         );
 
         $this->subject->add('foo', $function);

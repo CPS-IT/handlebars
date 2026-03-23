@@ -61,7 +61,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $context = new Src\Renderer\RenderingContext('DummyTemplateErroneous');
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches('/^Wrong variable naming as \'baz!\'/');
+        $this->expectExceptionMessageMatches('/^Parse error on line 1/');
 
         $this->renewSubject(Tests\Unit\Fixtures\Classes\Renderer\DummyRenderer::class)->render($context);
     }
@@ -199,7 +199,7 @@ EOF;
         $this->frontendTypoScript->setConfigArray(['debug' => '1']);
 
         $this->expectExceptionObject(
-            new \Exception('Runtime: [name] does not exist'),
+            new \Exception('"name" not defined'),
         );
 
         $this->renewSubject()->render($context);

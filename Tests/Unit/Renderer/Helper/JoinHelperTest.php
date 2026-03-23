@@ -69,7 +69,7 @@ final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
         $scope = [];
         $data = [];
         $fn = static fn() => '';
-        $options = new Handlebars\HelperOptions('join', [], $fn, $fn, 0, $scope, $data);
+        $options = new Handlebars\HelperOptions($scope, $data, 'join', [], 0, null, $fn, $fn);
 
         $parts = [
             'foo',

@@ -19,7 +19,7 @@
 	"require": {
 		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
 		"ext-json": "*",
-		"devtheorem/php-handlebars": "^0.9.8 || ^1.0.0",
+		"devtheorem/php-handlebars": "^1.0",
 		"psr/event-dispatcher": "^1.0",
 		"psr/http-message": "^1.0 || ^2.0",
 		"psr/log": "^3.0",

@@ -20,7 +20,7 @@ use TYPO3\CMS\Core;
 return Core\Type\Map::fromEntries([
     Core\Security\ContentSecurityPolicy\Scope::frontend(),
     new Core\Security\ContentSecurityPolicy\MutationCollection(
-        // Required to properly render styles in {{varDump}} helper
+        // Required to properly render styles in {{debug}} helper
         new Core\Security\ContentSecurityPolicy\Mutation(
             Core\Security\ContentSecurityPolicy\MutationMode::Extend,
             Core\Security\ContentSecurityPolicy\Directive::StyleSrc,

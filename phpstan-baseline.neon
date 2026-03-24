@@ -1501,12 +1501,6 @@ parameters:
 			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
 
 		-
-			rawMessage: 'Call to internal static method TYPO3\CMS\Core\Utility\DebugUtility::useAnsiColor() from outside its root namespace TYPO3.'
-			identifier: staticMethod.internal
-			count: 2
-			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
-
-		-
 			rawMessage: 'Call to method __construct() of internal class TYPO3\CMS\Core\Http\ServerRequest from outside its root namespace TYPO3.'
 			identifier: method.internalClass
 			count: 1
@@ -1577,12 +1571,6 @@ parameters:
 			identifier: parameter.internalClass
 			count: 2
 			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
-
-		-
-			rawMessage: 'Call to internal static method TYPO3\CMS\Core\Utility\DebugUtility::useAnsiColor() from outside its root namespace TYPO3.'
-			identifier: staticMethod.internal
-			count: 6
-			path: Tests/Unit/Renderer/Helper/VarDumpHelperTest.php
 
 		-
 			rawMessage: Access to constant on internal class TYPO3\CMS\Frontend\ContentObject\ContentObjectFactory.

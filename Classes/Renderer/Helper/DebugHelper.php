@@ -19,29 +19,32 @@ namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 
 use CPSIT\Typo3Handlebars\Attribute;
 use DevTheorem\Handlebars;
-use TYPO3\CMS\Core;
+use TYPO3\CMS\Extbase;
 
 /**
- * VarDumpHelper
+ * DebugHelper
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[Attribute\AsHelper('varDump')]
-final readonly class VarDumpHelper implements Helper
+#[Attribute\AsHelper('debug')]
+final readonly class DebugHelper implements Helper
 {
-    public function render(Handlebars\HelperOptions $options): Handlebars\SafeString
+    public function render(Handlebars\HelperOptions $options, mixed $subject = null): Handlebars\SafeString
     {
-        ob_start();
-
+        $subject ??= $options->scope;
         $title = $options->hash['title'] ?? null;
+        $maxDepth = $options->hash['maxDepth'] ?? null;
 
         if (!is_string($title)) {
             $title = 'Debug';
         }
+        if (!is_numeric($maxDepth)) {
+            $maxDepth = 12;
+        }
 
-        Core\Utility\DebugUtility::debug($options->scope, $title);
+        $dump = Extbase\Utility\DebuggerUtility::var_dump($subject, $title, (int)$maxDepth, false, false, true);
 
-        return new Handlebars\SafeString((string)ob_get_clean());
+        return new Handlebars\SafeString($dump);
     }
 }

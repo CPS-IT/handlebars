@@ -39,10 +39,11 @@ final readonly class RenderHelper implements Helper
     public function render(
         Handlebars\HelperOptions $options,
         ?Renderer\RenderingContext $renderingContext = null,
-        string $name = '',
+        string|Handlebars\SafeString $name = '',
         mixed ...$arguments,
     ): Handlebars\SafeString {
         // Resolve data
+        $name = (string)$name;
         $rootData = $options->data['root'];
         $merge = (bool)($options->hash['merge'] ?? false);
 

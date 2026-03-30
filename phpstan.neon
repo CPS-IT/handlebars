@@ -7,3 +7,5 @@ parameters:
 		- Classes
 		- Configuration
 		- Tests
+	featureToggles:
+		internalTag: false

@@ -73,7 +73,16 @@ final class MergeHelperTest extends TestingFramework\Core\Unit\UnitTestCase
         $scope = [];
         $data = [];
         $fn = static fn() => '';
-        $options = new Handlebars\HelperOptions($scope, $data, 'merge', $hash, 0, null, $fn, $fn);
+        $options = new Handlebars\HelperOptions(
+            $scope,
+            $data,
+            new Handlebars\RuntimeContext(),
+            'merge',
+            $hash,
+            0,
+            $fn,
+            $fn,
+        );
 
         $contexts = [
             [

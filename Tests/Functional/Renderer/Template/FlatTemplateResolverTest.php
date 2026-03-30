@@ -132,10 +132,10 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     public function resolvePartialPathFallsBackToDefaultResolverIfPartialPathCannotBeResolved(): void
     {
         $this->expectExceptionObject(
-            new Src\Exception\PartialPathIsNotResolvable('@baz'),
+            new Src\Exception\PartialPathIsNotResolvable('@boo'),
         );
 
-        $this->getTemplateResolver()->resolvePartialPath('@baz');
+        $this->getTemplateResolver()->resolvePartialPath('@boo');
     }
 
     #[Framework\Attributes\Test]

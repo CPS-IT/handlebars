@@ -124,10 +124,10 @@ final class HandlebarsLayoutTest extends TestingFramework\Core\Unit\UnitTestCase
             new Handlebars\HelperOptions(
                 $renderingContext,
                 $data,
+                new Handlebars\RuntimeContext(),
                 'foo',
                 [],
                 0,
-                null,
                 static fn() => '',
                 static fn() => '',
             ),

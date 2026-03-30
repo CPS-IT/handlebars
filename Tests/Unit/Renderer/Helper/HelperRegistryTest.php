@@ -94,12 +94,12 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $options = new Handlebars\HelperOptions(
             $scope,
             $data,
+            new Handlebars\RuntimeContext(),
             'foo',
             [
                 'foo' => 'baz',
             ],
             0,
-            null,
             static fn() => '',
             static fn() => '',
         );
@@ -146,12 +146,12 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $options = new Handlebars\HelperOptions(
             $scope,
             $data,
+            new Handlebars\RuntimeContext(),
             'foo',
             [
                 'foo' => 'baz',
             ],
             0,
-            null,
             static fn() => '',
             static fn() => '',
         );
@@ -170,12 +170,12 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $options = new Handlebars\HelperOptions(
             $scope,
             $data,
+            new Handlebars\RuntimeContext(),
             'foo',
             [
                 'foo' => 'baz',
             ],
             0,
-            null,
             static fn() => '',
             static fn() => '',
         );
@@ -194,12 +194,12 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $options = new Handlebars\HelperOptions(
             $scope,
             $data,
+            new Handlebars\RuntimeContext(),
             'foo',
             [
                 'foo' => 'baz',
             ],
             0,
-            null,
             static fn() => '',
             static fn() => '',
         );
@@ -224,12 +224,12 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
         $options = new Handlebars\HelperOptions(
             $scope,
             $data,
+            new Handlebars\RuntimeContext(),
             'foo',
             [
                 'foo' => 'baz',
             ],
             0,
-            null,
             static fn() => '',
             static fn() => '',
         );

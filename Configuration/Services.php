@@ -22,6 +22,7 @@ use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Fluid;
 use TYPO3\CMS\Frontend;
+use TYPO3\CMS\Seo;
 
 return static function (
     DependencyInjection\ContainerBuilder $container,
@@ -52,11 +53,19 @@ return static function (
         },
     );
 
-    // Make sure the FLUIDTEMPLATE content object always receives an instance of FluidViewFactory,
-    // because it fails hard if any other view than FluidViewAdapter is resolved, which cannot be
-    // assured when using our custom HandlebarsViewFactory, as we don't know the exact context.
-    $configurator->services()
-        ->get(Frontend\ContentObject\FluidTemplateContentObject::class)
-        ->arg('$viewFactory', new DependencyInjection\Reference(Fluid\View\FluidViewFactory::class))
-    ;
+    // Make sure various services always receive an instance of FluidViewFactory, because they fail
+    // hard if any other view than FluidViewAdapter is resolved, which cannot be assured when using
+    // our custom HandlebarsViewFactory, as we don't know the exact context.
+    $services = $configurator->services();
+    $fluidViewFactoryReference = new DependencyInjection\Reference(Fluid\View\FluidViewFactory::class);
+    $servicesRequestingFluidViewFactory = [
+        Frontend\ContentObject\FluidTemplateContentObject::class => '$viewFactory',
+        Seo\XmlSitemap\XmlSitemapRenderer::class => '$viewFactory',
+    ];
+
+    foreach ($servicesRequestingFluidViewFactory as $className => $argumentName) {
+        if (class_exists($className)) {
+            $services->get($className)->arg($argumentName, $fluidViewFactoryReference);
+        }
+    }
 };

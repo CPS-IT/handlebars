@@ -72,10 +72,11 @@ class HandlebarsRenderer implements Renderer
         // Render content
         $renderer = Handlebars\Handlebars::template($compileResult);
         $content = $renderer($beforeRenderingEvent->getVariables(), [
-            'helpers' => $this->helperRegistry->getAll(),
             'data' => [
                 'renderingContext' => $context,
             ],
+            'helpers' => $this->helperRegistry->getAll(),
+            'partialResolver' => $this->resolvePartial(...),
         ]);
 
         // Dispatch after rendering event
@@ -128,7 +129,6 @@ class HandlebarsRenderer implements Renderer
         return new Handlebars\Options(
             knownHelpers: $this->getKnownHelpers(),
             strict: $this->isDebugModeEnabled(),
-            partialResolver: $this->resolvePartial(...),
         );
     }
 
@@ -148,21 +148,19 @@ class HandlebarsRenderer implements Renderer
     }
 
     /**
-     * Resolve path to given partial using partial resolver.
+     * Resolve given partial using partial resolver.
      *
      * Tries to resolve the given partial using the {@see $templateResolver}. If
      * no partial resolver is registered, `null` is returned. Otherwise, the
-     * partials' file contents are returned. Returning `null` will be handled as
-     * "partial not found" by the renderer.
-     *
-     * This method is called by {@see Handlebars\Partial::resolve()}.
+     * compiled partial is returned. Returning `null` will be handled as "partial
+     * not found" by the renderer.
      *
      * @param string $name Name of the partial to be resolved
-     * @return string|null Partial file contents if partial could be resolved, `null` otherwise
+     * @return \Closure|null Compiled partial if partial could be resolved, `null` otherwise
      * @throws Exception\PartialPathIsNotResolvable
      * @throws Exception\TemplateFormatIsNotSupported
      */
-    protected function resolvePartial(string $name): ?string
+    protected function resolvePartial(string $name): ?\Closure
     {
         $partial = @file_get_contents($this->templateResolver->resolvePartialPath($name));
 
@@ -170,7 +168,7 @@ class HandlebarsRenderer implements Renderer
             return null;
         }
 
-        return $partial;
+        return Handlebars\Handlebars::compile($partial, $this->getCompileOptions());
     }
 
     protected function isCachingDisabled(): bool

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9db320a9d138e13351ae130875d75550",
+    "content-hash": "6c401504f11b6c484f6e0808f0d354f0",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -172,26 +172,26 @@
         },
         {
             "name": "devtheorem/php-handlebars",
-            "version": "v1.2.3",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/devtheorem/php-handlebars.git",
-                "reference": "cd35774eebb0647b3cc75de245bb2b2d1af9794d"
+                "reference": "093e6c96d39cb5050e866147ff57a05ea1c301cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/devtheorem/php-handlebars/zipball/cd35774eebb0647b3cc75de245bb2b2d1af9794d",
-                "reference": "cd35774eebb0647b3cc75de245bb2b2d1af9794d",
+                "url": "https://api.github.com/repos/devtheorem/php-handlebars/zipball/093e6c96d39cb5050e866147ff57a05ea1c301cc",
+                "reference": "093e6c96d39cb5050e866147ff57a05ea1c301cc",
                 "shasum": ""
             },
             "require": {
-                "devtheorem/php-handlebars-parser": "^2.0",
+                "devtheorem/php-handlebars-parser": "^2.1",
                 "php": ">=8.2"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.94",
+                "friendsofphp/php-cs-fixer": "^3.95",
                 "jbboehr/handlebars-spec": "dev-master",
-                "phpstan/phpstan": "^2.1.46",
+                "phpstan/phpstan": "^2.1.51",
                 "phpunit/phpunit": "^11.5"
             },
             "type": "library",
@@ -221,9 +221,9 @@
             ],
             "support": {
                 "issues": "https://github.com/devtheorem/php-handlebars/issues",
-                "source": "https://github.com/devtheorem/php-handlebars/tree/v1.2.3"
+                "source": "https://github.com/devtheorem/php-handlebars/tree/v2.0.0"
             },
-            "time": "2026-04-11T00:01:25+00:00"
+            "time": "2026-04-28T03:00:32+00:00"
         },
         {
             "name": "devtheorem/php-handlebars-parser",

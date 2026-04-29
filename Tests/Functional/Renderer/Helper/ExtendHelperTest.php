@@ -55,6 +55,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
+        $this->partialRootPath = 'EXT:test_extension/Resources/Partials/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
@@ -74,7 +75,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     public function helperCanBeCalledWithoutCustomContext(): void
     {
         $actual = trim(
-            $this->renderer->render(
+            $this->renderer->renderTemplate(
                 new Src\Renderer\RenderingContext('@simple-layout-extended'),
             ),
         );
@@ -94,7 +95,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     public function helperCanBeCalledWithCustomContext(): void
     {
         $actual = trim(
-            $this->renderer->render(
+            $this->renderer->renderTemplate(
                 new Src\Renderer\RenderingContext(
                     '@simple-layout-extended-with-context',
                     [
@@ -128,7 +129,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     public function helperReplacesVariablesCorrectlyInAllContexts(): void
     {
         $actual = trim(
-            $this->renderer->render(
+            $this->renderer->renderTemplate(
                 new Src\Renderer\RenderingContext(
                     '@simple-layout-extended-with-context',
                     [

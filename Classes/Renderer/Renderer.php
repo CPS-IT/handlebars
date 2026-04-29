@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer;
 
+use CPSIT\Typo3Handlebars\Exception;
+
 /**
  * Renderer
  *
@@ -25,5 +27,19 @@ namespace CPSIT\Typo3Handlebars\Renderer;
  */
 interface Renderer
 {
-    public function render(RenderingContext $context): string;
+    /**
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\TemplatePathIsNotResolvable
+     * @throws Exception\ViewIsNotProperlyInitialized
+     */
+    public function renderTemplate(RenderingContext $context): string;
+
+    /**
+     * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\ViewIsNotProperlyInitialized
+     */
+    public function renderPartial(RenderingContext $context): string;
 }

@@ -54,6 +54,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
+        $this->partialRootPath = 'EXT:test_extension/Resources/Partials/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
@@ -73,7 +74,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     #[Framework\Attributes\Test]
     public function helperCanBeCalledFromMainLayout(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext('@main-layout'),
         );
 
@@ -103,7 +104,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     #[Framework\Attributes\Test]
     public function helperCanBeCalledFromExtendedLayout(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@main-layout-extended-with-fifth-content',
                 [

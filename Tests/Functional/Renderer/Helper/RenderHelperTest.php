@@ -54,6 +54,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
+        $this->partialRootPath = 'EXT:test_extension/Resources/Partials/';
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
@@ -73,7 +74,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithDefaultContext(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@render-default-context',
                 [
@@ -90,7 +91,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithCustomContext(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@render-custom-context',
                 [
@@ -107,7 +108,7 @@ final class RenderHelperTest extends TestingFramework\Core\Functional\Functional
     #[Framework\Attributes\Test]
     public function helperCanBeCalledWithMergedContext(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@render-merged-context',
                 [

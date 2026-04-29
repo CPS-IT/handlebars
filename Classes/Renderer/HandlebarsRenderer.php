@@ -47,15 +47,23 @@ class HandlebarsRenderer implements Renderer
         protected readonly Variables\VariableBag $variableBag,
     ) {}
 
-    /**
-     * @throws Exception\TemplateFileIsInvalid
-     * @throws Exception\TemplateFormatIsNotSupported
-     * @throws Exception\TemplatePathIsNotResolvable
-     * @throws Exception\ViewIsNotProperlyInitialized
-     */
-    public function render(RenderingContext $context): string
+    public function renderTemplate(RenderingContext $context): string
     {
-        $compileResult = $this->compile($context);
+        $template = $context->getTemplate($this->templateResolver);
+
+        return $this->render($template, $context);
+    }
+
+    public function renderPartial(RenderingContext $context): string
+    {
+        $partial = $context->getPartial($this->templateResolver);
+
+        return $this->render($partial, $context);
+    }
+
+    protected function render(string $template, RenderingContext $context): string
+    {
+        $compileResult = $this->compile($template);
 
         // Early return if template is empty
         if ($compileResult === null) {
@@ -88,16 +96,9 @@ class HandlebarsRenderer implements Renderer
 
     /**
      * Compile given template by Handlebars compiler.
-     *
-     * @throws Exception\TemplateFileIsInvalid
-     * @throws Exception\TemplateFormatIsNotSupported
-     * @throws Exception\TemplatePathIsNotResolvable
-     * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function compile(RenderingContext $context): ?string
+    protected function compile(string $template): ?string
     {
-        $template = $context->getTemplate($this->templateResolver);
-
         // Early return if template is empty
         if (trim($template) === '') {
             return null;
@@ -158,17 +159,21 @@ class HandlebarsRenderer implements Renderer
      * @param string $name Name of the partial to be resolved
      * @return \Closure|null Compiled partial if partial could be resolved, `null` otherwise
      * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\TemplateFileIsInvalid
      * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\ViewIsNotProperlyInitialized
      */
     protected function resolvePartial(string $name): ?\Closure
     {
-        $partial = @file_get_contents($this->templateResolver->resolvePartialPath($name));
+        $context = new RenderingContext($name);
+        $template = $context->getPartial($this->templateResolver);
+        $compileResult = $this->compile($template);
 
-        if ($partial === false) {
+        if ($compileResult === null) {
             return null;
         }
 
-        return Handlebars\Handlebars::compile($partial, $this->getCompileOptions());
+        return Handlebars\Handlebars::template($compileResult);
     }
 
     protected function isCachingDisabled(): bool

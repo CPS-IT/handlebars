@@ -69,13 +69,13 @@ parameters:
 		-
 			rawMessage: Cannot access offset 'FE' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
+			count: 2
 			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
 
 		-
 			rawMessage: Cannot access offset 'debug' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
+			count: 2
 			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
 
 		-

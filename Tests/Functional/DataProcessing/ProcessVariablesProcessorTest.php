@@ -309,4 +309,65 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
 
         self::assertSame($expected, $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData));
     }
+
+    #[Framework\Attributes\Test]
+    public function processMergesProcessedVariablesWithProcessedData(): void
+    {
+        $this->contentObjectRenderer->data = [
+            'foo' => 'baz',
+        ];
+
+        $processorConfiguration = [
+            'merge' => '1',
+            'variables.' => [
+                'foo' => 'TEXT',
+                'foo.' => [
+                    'field' => 'foo',
+                ],
+            ],
+        ];
+        $processedData = [
+            'baz' => 'foo',
+        ];
+
+        $expected = [
+            'baz' => 'foo',
+            'foo' => 'baz',
+        ];
+
+        self::assertSame($expected, $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData));
+    }
+
+    #[Framework\Attributes\Test]
+    public function processMergesProcessedVariablesWithTargetVariableInProcessedData(): void
+    {
+        $this->contentObjectRenderer->data = [
+            'foo' => 'baz',
+        ];
+
+        $processorConfiguration = [
+            'as' => 'target',
+            'merge' => '1',
+            'variables.' => [
+                'foo' => 'TEXT',
+                'foo.' => [
+                    'field' => 'foo',
+                ],
+            ],
+        ];
+        $processedData = [
+            'target' => [
+                'baz' => 'foo',
+            ],
+        ];
+
+        $expected = [
+            'target' => [
+                'baz' => 'foo',
+                'foo' => 'baz',
+            ],
+        ];
+
+        self::assertSame($expected, $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData));
+    }
 }

@@ -241,6 +241,24 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->renewSubject()->render($context);
     }
 
+    /**
+     * This is a test case for the specific {{> (lookup)}} behavior, which is natively baked
+     * into the devtheorem/php-handlebars library. It's just here to verify this behavior
+     * still works, as it is heavily used in our custom projects.
+     */
+    #[Framework\Attributes\Test]
+    public function lookupResolvesPartialNameFromSubExpression(): void
+    {
+        $context = new Src\Renderer\RenderingContext();
+        $context->setTemplateSource("{{> (lookup . 'templateName')}}");
+        $context->assign('templateName', 'DummyPartial');
+        $context->assign('name', 'foo');
+
+        $actual = $this->subject->render($context);
+
+        self::assertSame('Welcome, foo, I am the partial!', trim($actual));
+    }
+
     private function assertCacheIsEmptyForTemplate(string $template): void
     {
         self::assertNull(

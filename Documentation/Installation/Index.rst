@@ -11,8 +11,8 @@ Installation
 Requirements
 ============
 
-* PHP 8.2 - 8.5
-* TYPO3 13.4 LTS
+-   PHP 8.2 - 8.5
+-   TYPO3 13.4 LTS
 
 ..  _steps:
 
@@ -25,33 +25,5 @@ Require the extension via Composer (recommended):
 
     composer require cpsit/typo3-handlebars
 
-Or download it from
+Or download it from the
 `TYPO3 extension repository <https://extensions.typo3.org/extension/handlebars>`__.
-
-..  _define-dependencies:
-
-Define dependencies
--------------------
-
-..  attention::
-
-    This is an essential step to ensure service configuration is interpreted
-    correctly.
-
-Each extension that depends on EXT:handlebars needs to explicitly define it as
-dependency in the appropriate :file:`ext_emconf.php` file:
-
-::
-
-    # ext_emconf.php
-
-    $EM_CONF[$_EXTKEY] = [
-        'constraints' => [
-            'depends' => [
-                'handlebars' => '0.7.0-0.7.99',
-            ],
-        ],
-    ];
-
-Otherwise, template paths are not evaluated in the right order and might get
-overridden.

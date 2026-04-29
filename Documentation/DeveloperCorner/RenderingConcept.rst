@@ -8,7 +8,6 @@ Rendering concept
 
 ..  image:: ../Images/RenderingChart.svg
     :alt: Rendering chart
-    :target: ../_images/RenderingChart.svg
 
 The following components are involved in the rendering process and
 assume different roles in the MVC pattern:

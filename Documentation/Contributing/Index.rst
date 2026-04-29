@@ -3,11 +3,8 @@
 ..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
     :target: https://coveralls.io/github/CPS-IT/handlebars
 
-..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
-
-..  image:: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
+..  image:: https://img.shields.io/github/actions/workflow/status/CPS-IT/handlebars/ci.yaml?label=CI&logo=github
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/ci.yaml
 
 ..  _contributing:
 
@@ -65,6 +62,11 @@ Now install all Composer dependencies:
 
     composer install
 
+..  _analyze-code:
+
+Analyze code
+------------
+
 ..  _check-code-quality:
 
 ..  code-block:: bash
@@ -80,10 +82,10 @@ Check code quality
 
 ..  code-block:: bash
 
-    # Run all linters
+    # All linters
     composer lint
 
-    # Run specific linters
+    # Specific linters
     composer lint:composer
     composer lint:editorconfig
     composer lint:php
@@ -96,11 +98,12 @@ Check code quality
     composer fix:composer
     composer fix:editorconfig
     composer fix:php
+    composer fix:typoscript
 
-    # Run all static code analyzers
+    # All static code analyzers
     composer sca
 
-    # Run specific static code analyzers
+    # Specific static code analyzers
     composer sca:php
 
 ..  _run-tests:

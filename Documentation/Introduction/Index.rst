@@ -24,11 +24,12 @@ the need to modify these templates again for output in TYPO3.
 Features
 ========
 
-* Full rendering environment for Handlebars templates
-* Native support for custom Handlebars helpers
-* Easy to extend and customize
-* Built on dependency injection for better performance and maintainability
-* Integration with TYPO3's cache framework for compiled templates
+-   Full rendering environment for Handlebars templates
+-   Native support for custom Handlebars helpers
+-   Easy to extend and customize
+-   Built on dependency injection for better performance and maintainability
+-   Integration with TYPO3's cache framework for compiled templates
+-   Compatible with TYPO3 13.4 LTS
 
 ..  _support:
 
@@ -39,14 +40,6 @@ There are several ways to get support for this extension:
 
 * Slack: https://typo3.slack.com/messages/ext-handlebars
 * GitHub: https://github.com/CPS-IT/handlebars/issues
-
-..  _contributors:
-
-Contributors
-============
-
-This extension is based on the great work of `Digitas Pixelpark GmbH <https://www.digitaspixelpark.com/>`_.
-It was heavily extended and is now maintained by `coding. powerful. systems. CPS GmbH <https://www.cps-it.de/>`_.
 
 ..  _license:
 

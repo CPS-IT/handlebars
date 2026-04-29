@@ -87,9 +87,6 @@
 		"vendor-dir": ".Build/vendor"
 	},
 	"extra": {
-		"branch-alias": {
-			"dev-main": "1.x-dev"
-		},
 		"typo3/cms": {
 			"extension-key": "handlebars",
 			"web-dir": ".Build/web"

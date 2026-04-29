@@ -6,6 +6,10 @@
 Extended usage
 ==============
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 ..  important::
 
     Take a look at the chapter :ref:`basic-usage` to get an insight into

@@ -6,6 +6,10 @@
 Migration
 =========
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 This page lists all notable changes and required migrations when
 upgrading to a new major version of this extension.
 

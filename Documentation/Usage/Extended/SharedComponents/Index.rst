@@ -6,6 +6,10 @@
 Shared components
 =================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 It is not always necessary or desired to automatically register all
 related components based on the registration of a `DataProcessor`.
 In some cases, for example, it may be necessary to use a component

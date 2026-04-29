@@ -6,6 +6,10 @@
 Debugging
 =========
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 Rendering of Handlebars templates can be done with additional debugging. This
 results in individual tags being provided with debug output, which can be
 used to better localize errors, especially during development, and thus fix

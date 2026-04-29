@@ -6,6 +6,10 @@
 Custom rendering components
 ===========================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 All components are described using interfaces. This makes it easy to
 exchange individual components. The following illustrates how such a
 use case can look.

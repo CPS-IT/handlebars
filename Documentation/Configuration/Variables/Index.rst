@@ -6,6 +6,10 @@
 Default data
 ============
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 It may happen that several (or all) templates require recurring, consistent
 data. This can be, for example, paths to assets or other firmly defined
 content such as e-mail addresses or names/labels/etc.

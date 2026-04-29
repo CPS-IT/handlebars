@@ -6,6 +6,10 @@
 Basic usage
 ===========
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 This page shows how to create a single module and which components are
 necessary to process data from TYPO3, prepare it and finally output it
 in the frontend using a Handlebars template.

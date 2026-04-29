@@ -6,6 +6,10 @@
 Cache
 =====
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 The Handlebars cache is called `handlebars` and is registered by default
 when installing and activating the extension. Its cache backend is not
 configured explicitly and therefore uses the default setting (database

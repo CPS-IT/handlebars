@@ -6,6 +6,10 @@
 Using the `ContentObjectRenderer`
 =================================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 In some cases, the presence of the current `ContentObjectRenderer` may
 be necessary in the `DataProvider`. For this case a
 :php:`CPSIT\Typo3Handlebars\ContentObjectRendererAware` interface is

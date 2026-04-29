@@ -6,6 +6,10 @@
 `SimpleProcessor`
 =================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 If it is not necessary to further process the data transferred
 by TypoScript, a `SimpleProcessor` is available. This passes the
 transferred data directly to the `Renderer` without any further

@@ -6,6 +6,10 @@
 Template paths
 ==============
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 There exist several ways to declare template root paths and partial root
 paths. The most relevant ones are described below.
 

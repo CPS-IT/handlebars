@@ -6,6 +6,10 @@
 Create a custom `Helper`
 ========================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 Any `Helper` implemented in the frontend via JavaScript and used in Handlebars
 templates must also be replicated in PHP. For this purpose, the extension
 provides a :php:`CPSIT\Typo3Handlebars\Renderer\Helper\Helper` interface.

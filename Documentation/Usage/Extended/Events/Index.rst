@@ -6,6 +6,10 @@
 Events
 ======
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 ..  versionadded:: 0.7.0
 
     `Feature: #10 - Introduce BeforeRenderingEvent and AfterRenderingEvent <https://github.com/CPS-IT/handlebars/pull/10>`__

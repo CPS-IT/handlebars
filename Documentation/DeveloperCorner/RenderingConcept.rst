@@ -6,6 +6,10 @@
 Rendering concept
 =================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 ..  image:: ../Images/RenderingChart.svg
     :alt: Rendering chart
 

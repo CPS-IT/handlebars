@@ -6,6 +6,10 @@
 Asset Management
 ================
 
+..  caution::
+    This page is outdated and does not reflect the current state
+    of the extension. It will be updated soon.
+
 The Handlebars extension integrates with TYPO3's modern AssetCollector API to manage
 JavaScript and CSS assets in your frontend rendering. This feature allows you to
 register external files and inline code directly through TypoScript configuration.

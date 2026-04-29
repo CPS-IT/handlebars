@@ -1,10 +1,16 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
-.. _start:
+..  _start:
 
 ==========
 Handlebars
 ==========
+
+:Extension key:
+    :t3ext:`handlebars <handlebars>`
+
+:Package name:
+    :composer:`cpsit/typo3-handlebars`
 
 :Version:
     |release|
@@ -13,50 +19,85 @@ Handlebars
     en
 
 :Author:
-    Elias Häußler, coding. powerful. systems. CPS GmbH
-
-:Email:
-    e.haeussler@familie-redlich.de
+    coding. powerful. systems. CPS GmbH
 
 :License:
     This extension documentation is published under the
-    `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
-    license
+    `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__
+    (Creative Commons) license.
 
-**TYPO3**
+----
 
-The content of this document is related to TYPO3 CMS,
-a GNU/GPL CMS/Framework available from `typo3.org <https://typo3.org/>`_.
+An extension for TYPO3 CMS that provides an entire rendering environment for
+Handlebars templates. It is seamlessly integrated into TYPO3 and offers
+extensive configuration options to get all the power out of your templates.
+To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 
-**Community documentation**
+----
 
-This documentation is a community documentation for the TYPO3 extension *handlebars*.
-It is maintained as part of this third party extension.
+..  card-grid::
+    :columns: 1
+    :columns-md: 2
+    :gap: 4
+    :card-height: 100
 
-**Contributing to this manual**
+    ..  card::  Introduction
 
-If you find an error or something is missing, please
-`create an issue <https://github.com/CPS-IT/handlebars/issues/new>`_ or click on
-"Edit me on GitHub" on the top right to submit your change request.
+        A quick overview about the main features provided by this extension.
 
-..  _contents:
+        ..  card-footer:: :ref:`Learn more about this extension <introduction>`
+            :button-style: btn btn-secondary stretched-link
 
-Contents
-========
+    ..  card::  Installation
+
+        Instructions on how to install this extension, and which TYPO3 and PHP versions
+        are currently supported.
+
+        ..  card-footer:: :ref:`Getting started <installation>`
+            :button-style: btn btn-secondary stretched-link
+
+    ..  card::  Configuration
+
+        Learn how to configure the extension in various ways. This includes extension
+        configuration, site configuration and TypoScript configuration.
+
+        ..  card-footer:: :ref:`View configuration options <configuration>`
+            :button-style: btn btn-secondary stretched-link
+
+    ..  card::  Usage
+
+        This section describes how to use this extension in various ways, and which
+        additional components exist.
+
+        ..  card-footer:: :ref:`Learn how to use this extension <usage>`
+            :button-style: btn btn-secondary stretched-link
+
+    ..  card::  Developer corner
+
+        A quick overview about all relevant classes provided by this extension.
+
+        ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
+            :button-style: btn btn-secondary stretched-link
+
+    ..  card::  Migration
+
+        Required migration steps when upgrading the extension to a new major version.
+
+        ..  card-footer:: :ref:`View upgrade guide <migration>`
+            :button-style: btn btn-secondary stretched-link
 
 ..  toctree::
-    :maxdepth: 3
+    :hidden:
 
     Introduction/Index
     Installation/Index
     Configuration/Index
     Usage/Index
-    RenderingConcept/Index
-    Compatibility/Index
+    DeveloperCorner/Index
+    Migration/Index
     Contributing/Index
 
 ..  toctree::
     :hidden:
 
     Sitemap
-    genindex

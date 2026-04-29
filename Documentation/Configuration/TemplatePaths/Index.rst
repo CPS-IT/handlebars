@@ -14,11 +14,6 @@ paths. The most relevant ones are described below.
 Configuration via service container
 ===================================
 
-..  attention::
-
-    Make sure you have defined :ref:`EXT:handlebars as dependency <define-dependencies>`
-    in your extension(s). Otherwise, template root paths might not be interpreted correctly.
-
 The easiest way to register your template root paths and partial root paths
 is by using the :file:`Services.yaml` file:
 

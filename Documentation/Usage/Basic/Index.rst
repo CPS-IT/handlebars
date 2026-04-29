@@ -40,11 +40,6 @@ Example
 
         :ref:`Install <installation>` the extension using Composer.
 
-    #.  Define dependencies
-
-        Add the extension as dependency to your extension as described
-        :ref:`here <define-dependencies>`.
-
     #.  `Services.yaml`
 
         Create a basic :file:`Services.yaml` file in your extension. Make sure

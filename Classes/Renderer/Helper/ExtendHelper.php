@@ -63,7 +63,7 @@ final readonly class ExtendHelper implements Helper
 
         // Render layout with merged data
         try {
-            return $this->renderer->render(
+            return $this->renderer->renderPartial(
                 new Renderer\RenderingContext($name, $variables, $renderingContext?->getRequest()),
             );
         } finally {

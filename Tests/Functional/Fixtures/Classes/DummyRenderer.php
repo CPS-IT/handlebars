@@ -34,7 +34,17 @@ final class DummyRenderer implements Renderer\Renderer
     public ?\Closure $testClosure = null;
     public ?Renderer\RenderingContext $lastContext = null;
 
-    public function render(Renderer\RenderingContext $context): string
+    public function renderTemplate(Renderer\RenderingContext $context): string
+    {
+        return $this->render($context) ?? $context->getTemplate();
+    }
+
+    public function renderPartial(Renderer\RenderingContext $context): string
+    {
+        return $this->render($context) ?? $context->getPartial();
+    }
+
+    private function render(Renderer\RenderingContext $context): ?string
     {
         $result = null;
 
@@ -44,6 +54,6 @@ final class DummyRenderer implements Renderer\Renderer
             $result = ($this->testClosure)($context);
         }
 
-        return $result ?? $context->getTemplate();
+        return $result;
     }
 }

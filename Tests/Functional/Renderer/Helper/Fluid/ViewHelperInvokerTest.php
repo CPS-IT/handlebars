@@ -80,7 +80,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
     #[Framework\Attributes\Test]
     public function renderLogsErrorOnInvalidViewHelperName(): void
     {
-        $this->renderer->render(
+        $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext('@viewHelper-invalid', [], $this->request),
         );
 
@@ -97,7 +97,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
     #[Framework\Attributes\Test]
     public function renderDelegatesRenderingToRequestedViewHelper(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@viewHelper',
                 [
@@ -115,7 +115,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
     {
         $this->expectExceptionMessageMatches('/No suitable resolvers were registered for this namespace/');
 
-        $this->renderer->render(
+        $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@viewHelperNamespace',
                 [
@@ -139,7 +139,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
             ],
         ];
 
-        $actual = $this->renderer->render($renderingContext);
+        $actual = $this->renderer->renderTemplate($renderingContext);
 
         self::assertSame('bar', trim($actual));
         self::assertSame($expected, $renderingContext->getVariables());
@@ -169,7 +169,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
             ],
         ];
 
-        $actual = $this->renderer->render($renderingContext);
+        $actual = $this->renderer->renderTemplate($renderingContext);
 
         self::assertSame('bar', trim($actual));
         self::assertSame($expected, $renderingContext->getVariables());

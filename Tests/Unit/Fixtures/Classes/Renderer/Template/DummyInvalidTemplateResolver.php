@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
 
+use CPSIT\Typo3Handlebars\Exception;
 use CPSIT\Typo3Handlebars\Renderer;
 
 /**
@@ -35,11 +36,11 @@ final class DummyInvalidTemplateResolver extends Renderer\Template\BaseTemplateR
 
     public function resolvePartialPath(string $partialPath, ?string $format = null): string
     {
-        return $this->templateMap[$partialPath] ?? '/foo.hbs';
+        return $this->templateMap[$partialPath] ?? throw new Exception\PartialPathIsNotResolvable($partialPath);
     }
 
     public function resolveTemplatePath(string $templatePath, ?string $format = null): string
     {
-        return $this->templateMap[$templatePath] ?? '/foo.hbs';
+        return $this->templateMap[$templatePath] ?? throw new Exception\TemplatePathIsNotResolvable($templatePath);
     }
 }

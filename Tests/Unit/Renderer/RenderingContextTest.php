@@ -133,6 +133,112 @@ final class RenderingContextTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    public function getPartialThrowsExceptionIfNeitherTemplatePathNorTemplateSourceAreDefined(): void
+    {
+        $subject = new Src\Renderer\RenderingContext();
+
+        $this->expectExceptionObject(
+            new Src\Exception\ViewIsNotProperlyInitialized(),
+        );
+
+        $subject->getPartial();
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialReturnsTemplateSourceIfDefined(): void
+    {
+        $this->subject->setTemplateSource('baz');
+
+        self::assertSame('baz', $this->subject->getPartial());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialThrowsExceptionIfPartialPathIsInvalid(): void
+    {
+        $subject = new Src\Renderer\RenderingContext(
+            'DummyPartial',
+            [
+                'foo' => 'baz',
+            ],
+        );
+
+        $this->expectExceptionObject(
+            new Src\Exception\TemplateFileIsInvalid('DummyPartial'),
+        );
+
+        $subject->getPartial();
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialThrowsExceptionIfTemplateFileCannotBeRead(): void
+    {
+        $this->expectException(Src\Exception\TemplateFileIsInvalid::class);
+
+        $this->subject->getPartial(new Tests\Unit\Fixtures\Classes\Renderer\Template\DummyTemplateResolver());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialReturnsPartialFromResolvedPartialPath(): void
+    {
+        $subject = new Src\Renderer\RenderingContext(
+            'DummyPartial',
+            [
+                'foo' => 'baz',
+            ],
+        );
+
+        self::assertStringEqualsFile(
+            $this->partialRootPath . '/DummyPartial.hbs',
+            $subject->getPartial($this->getTemplateResolver()),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialReturnsPartialFromResolvedPartialPathWithConfiguredFormat(): void
+    {
+        $subject = new Src\Renderer\RenderingContext(
+            'DummyPartial',
+            [
+                'foo' => 'baz',
+            ],
+        );
+
+        $subject->setFormat('html');
+
+        self::assertStringEqualsFile(
+            $this->partialRootPath . '/DummyPartial.html',
+            $subject->getPartial($this->getTemplateResolver()),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialReturnsPartialFromConfiguredPartialPath(): void
+    {
+        $templatePath = $this->partialRootPath . '/DummyPartial.hbs';
+
+        $this->subject->setTemplatePath($templatePath);
+
+        self::assertStringEqualsFile(
+            $templatePath,
+            $this->subject->getPartial(),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function getPartialReturnsPartialFromConfiguredPartialPathAndFormat(): void
+    {
+        $templatePath = $this->partialRootPath . '/DummyPartial';
+
+        $this->subject->setTemplatePath($templatePath);
+        $this->subject->setFormat('html');
+
+        self::assertStringEqualsFile(
+            $templatePath . '.html',
+            $this->subject->getPartial(),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function assignAddsGivenVariableToConfiguredVariables(): void
     {
         $expected = [

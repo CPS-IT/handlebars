@@ -49,6 +49,33 @@ final class RenderingContext
      */
     public function getTemplate(?Renderer\Template\TemplateResolver $templateResolver = null): string
     {
+        if ($templateResolver !== null) {
+            return $this->resolveTemplate($templateResolver->resolveTemplatePath(...));
+        }
+
+        return $this->resolveTemplate();
+    }
+
+    /**
+     * @throws Exception\PartialPathIsNotResolvable
+     * @throws Exception\TemplateFileIsInvalid
+     * @throws Exception\TemplateFormatIsNotSupported
+     * @throws Exception\ViewIsNotProperlyInitialized
+     */
+    public function getPartial(?Renderer\Template\TemplateResolver $templateResolver = null): string
+    {
+        if ($templateResolver !== null) {
+            return $this->resolveTemplate($templateResolver->resolvePartialPath(...));
+        }
+
+        return $this->resolveTemplate();
+    }
+
+    /**
+     * @param \Closure(string, string|null): string|null $templateResolver
+     */
+    private function resolveTemplate(?\Closure $templateResolver = null): string
+    {
         if ($this->templateSource !== null) {
             return $this->templateSource;
         }
@@ -58,7 +85,7 @@ final class RenderingContext
         }
 
         if ($templateResolver !== null) {
-            $fullTemplatePath = $templateResolver->resolveTemplatePath($this->templatePath, $this->format);
+            $fullTemplatePath = $templateResolver($this->templatePath, $this->format);
         } else {
             $format = $this->format !== null ? '.' . $this->format : '';
             $fullTemplatePath = $this->templatePath . $format;

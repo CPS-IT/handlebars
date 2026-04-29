@@ -81,7 +81,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         $this->processAssets($conf);
 
         try {
-            $content = $this->renderer->render($context);
+            $content = $this->renderer->renderTemplate($context);
         } finally {
             // Remove current content object rendering from path provider stack
             $this->pathProvider->pop();

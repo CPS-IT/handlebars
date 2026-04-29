@@ -83,7 +83,7 @@ final readonly class RenderHelper implements Helper
             $subContext = [];
         }
 
-        $content = $this->renderer->render(
+        $content = $this->renderer->renderPartial(
             new Renderer\RenderingContext($name, $subContext, $renderingContext?->getRequest()),
         );
 

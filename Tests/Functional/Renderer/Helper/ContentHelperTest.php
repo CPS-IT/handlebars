@@ -55,6 +55,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
         $helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\NullLogger());
 
         $this->templateRootPath = 'EXT:test_extension/Resources/Templates/';
+        $this->partialRootPath = 'EXT:test_extension/Resources/Partials/';
         $this->logger = new Log\Test\TestLogger();
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
@@ -75,7 +76,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\Test]
     public function helperCanBeCalledFromExtendedLayout(): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@main-layout-extended',
                 [
@@ -112,7 +113,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\Test]
     public function helperCannotBeCalledOutsideOfExtendedLayout(): void
     {
-        $this->renderer->render(
+        $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext('@main-layout-content-only'),
         );
 
@@ -129,7 +130,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\Test]
     public function helperUsesReplaceModeIfInvalidModeIsGiven(): void
     {
-        $this->renderer->render(
+        $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@main-layout-extended-with-invalid-mode',
                 [
@@ -152,7 +153,7 @@ final class ContentHelperTest extends TestingFramework\Core\Functional\Functiona
     #[Framework\Attributes\DataProvider('helperCanBeCalledToConditionallyRenderBlocksDataProvider')]
     public function helperCanBeCalledToConditionallyRenderBlocks(bool $renderSecondBlock, string $expected): void
     {
-        $actual = $this->renderer->render(
+        $actual = $this->renderer->renderTemplate(
             new Src\Renderer\RenderingContext(
                 '@main-layout-extended-with-conditional-contents',
                 [

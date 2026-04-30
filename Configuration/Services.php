@@ -20,9 +20,8 @@ namespace CPSIT\Typo3Handlebars\DependencyInjection;
 use CPSIT\Typo3Handlebars\Attribute;
 use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Fluid;
+use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
-use TYPO3\CMS\Seo;
 
 return static function (
     DependencyInjection\ContainerBuilder $container,
@@ -53,19 +52,17 @@ return static function (
         },
     );
 
-    // Make sure various services always receive an instance of FluidViewFactory, because they fail
-    // hard if any other view than FluidViewAdapter is resolved, which cannot be assured when using
-    // our custom HandlebarsViewFactory, as we don't know the exact context.
-    $services = $configurator->services();
-    $fluidViewFactoryReference = new DependencyInjection\Reference(Fluid\View\FluidViewFactory::class);
-    $servicesRequestingFluidViewFactory = [
-        Frontend\ContentObject\FluidTemplateContentObject::class => '$viewFactory',
-        Seo\XmlSitemap\XmlSitemapRenderer::class => '$viewFactory',
-    ];
+    // Make sure various services receive an instance of HandlebarsViewFactory, because they *may*
+    // render Handelbars templates and can easily fall back to Fluid views using the configured
+    // delegate to FluidViewAdapter. All other services must still rely on FluidViewAdapter,
+    // because we cannot safely delegate to FluidViewAdapter in our HandlebarsViewFactory due to
+    // missing knowledge of the exact context (the HandlebarsViewFactory itself cannot decide
+    // whether a Handlebars template actually exists, so the fallback to the FluidViewFactory may
+    // not be triggered in this case, which will fail hard on various services that rely on
+    // FluidViewAdapter being returned by the ViewFactoryInterface implementation).
+    $viewFactoryPass = new CompilerPass\HandlebarsViewFactoryPass();
+    $viewFactoryPass->addMethodCall(Extbase\Mvc\Controller\ActionController::class, 'injectViewFactory');
+    $viewFactoryPass->addProperty(Frontend\ContentObject\PageViewContentObject::class);
 
-    foreach ($servicesRequestingFluidViewFactory as $className => $argumentName) {
-        if (class_exists($className)) {
-            $services->get($className)->arg($argumentName, $fluidViewFactoryReference);
-        }
-    }
+    $container->addCompilerPass($viewFactoryPass, DependencyInjection\Compiler\PassConfig::TYPE_BEFORE_OPTIMIZATION, -100);
 };

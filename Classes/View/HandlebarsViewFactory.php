@@ -30,7 +30,7 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-#[DependencyInjection\Attribute\AsAlias(Core\View\ViewFactoryInterface::class, public: true)]
+#[DependencyInjection\Attribute\Autoconfigure(public: true)]
 final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInterface
 {
     public function __construct(

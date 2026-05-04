@@ -29,7 +29,7 @@ Features
 -   Easy to extend and customize
 -   Built on dependency injection for better performance and maintainability
 -   Integration with TYPO3's cache framework for compiled templates
--   Compatible with TYPO3 13.4 LTS
+-   Compatible with TYPO3 13.4 LTS and 14.3 LTS
 
 ..  _support:
 

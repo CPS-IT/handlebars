@@ -26,8 +26,8 @@ use TYPO3\TestingFramework;
 /**
  * MergeHelperTest
  *
- * @author Elias Häußler <elias@haeussler.dev>
- * @license GPL-3.0-or-later
+ * @author Elias Häußler <e.haeussler@familie-redlich.de>
+ * @license GPL-2.0-or-later
  */
 #[Framework\Attributes\CoversClass(Src\Renderer\Helper\MergeHelper::class)]
 final class MergeHelperTest extends TestingFramework\Core\Unit\UnitTestCase

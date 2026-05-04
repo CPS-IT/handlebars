@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\View;
 
 use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
@@ -36,6 +37,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
     protected bool $resetSingletonInstances = true;
 
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
+    private Tests\Unit\Fixtures\Classes\DummyView $delegate;
     private Src\View\HandlebarsView $subject;
 
     public function setUp(): void
@@ -43,12 +45,15 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
         parent::setUp();
 
         $this->contentObjectRendererMock = $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class);
+        $this->delegate = new Tests\Unit\Fixtures\Classes\DummyView();
         $this->subject = new Src\View\HandlebarsView(
             $this->contentObjectRendererMock,
             new Core\TypoScript\TypoScriptService(),
             [
                 'templateName' => '@foo',
             ],
+            null,
+            $this->delegate,
         );
     }
 
@@ -102,6 +107,14 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
         ]);
 
         $this->subject->render();
+    }
+
+    #[Framework\Attributes\Test]
+    public function assignPassesVariableToDelegateView(): void
+    {
+        $this->subject->assign('foo', 'baz');
+
+        self::assertSame(['foo' => 'baz'], $this->delegate->assignedVariables);
     }
 
     #[Framework\Attributes\Test]
@@ -163,6 +176,26 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
         self::assertEquals($expectedRequest, $contentObject->getRequest());
         self::assertEquals($expectedContentObjectRenderer, $contentObject->getContentObjectRenderer());
         self::assertNotSame($contentObjectRenderer, $contentObject->getContentObjectRenderer());
+    }
+
+    #[Framework\Attributes\Test]
+    public function delegateRenderingReturnsNullOnMissingDelegate(): void
+    {
+        $subject = new Src\View\HandlebarsView(
+            $this->contentObjectRendererMock,
+            new Core\TypoScript\TypoScriptService(),
+            [],
+        );
+
+        self::assertNull($subject->delegateRendering());
+    }
+
+    #[Framework\Attributes\Test]
+    public function delegateRenderingReturnsRenderedTemplateFromDelegate(): void
+    {
+        $this->delegate->expectedTemplateResult = 'foo';
+
+        self::assertSame('foo', $this->subject->delegateRendering());
     }
 
     #[Framework\Attributes\Test]

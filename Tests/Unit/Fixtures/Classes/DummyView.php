@@ -26,11 +26,17 @@ use TYPO3\CMS\Core;
  * @license GPL-2.0-or-later
  * @internal
  */
-final readonly class DummyView implements Core\View\ViewInterface
+final class DummyView implements Core\View\ViewInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
+    public array $assignedVariables = [];
+    public string $expectedTemplateResult = '';
+
     public function assign(string $key, mixed $value): self
     {
-        // Intentionally left blank.
+        $this->assignedVariables[$key] = $value;
 
         return $this;
     }
@@ -40,13 +46,15 @@ final readonly class DummyView implements Core\View\ViewInterface
      */
     public function assignMultiple(array $values): self
     {
-        // Intentionally left blank.
+        foreach ($values as $key => $value) {
+            $this->assign($key, $value);
+        }
 
         return $this;
     }
 
     public function render(string $templateFileName = ''): string
     {
-        return '';
+        return $this->expectedTemplateResult;
     }
 }

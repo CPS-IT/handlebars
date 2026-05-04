@@ -42,10 +42,12 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
 
     public function create(Core\View\ViewFactoryData $data): Core\View\ViewInterface
     {
-        return $this->resolveView($data) ?? $this->delegate->create($data);
+        $delegate = $this->delegate->create($data);
+
+        return $this->resolveView($data, $delegate) ?? $delegate;
     }
 
-    private function resolveView(Core\View\ViewFactoryData $data): ?HandlebarsView
+    private function resolveView(Core\View\ViewFactoryData $data, Core\View\ViewInterface $delegate): ?HandlebarsView
     {
         $request = $data->request;
         $contentObjectRenderer = $request?->getAttribute('currentContentObject');
@@ -78,7 +80,13 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
         }
 
         if ($contentObjectConfiguration !== null) {
-            return new HandlebarsView($contentObjectRenderer, $this->typoScriptService, $contentObjectConfiguration, $request);
+            return new HandlebarsView(
+                $contentObjectRenderer,
+                $this->typoScriptService,
+                $contentObjectConfiguration,
+                $request,
+                $delegate,
+            );
         }
 
         return null;

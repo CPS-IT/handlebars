@@ -20,6 +20,9 @@ use ShipMonk\ComposerDependencyAnalyser;
 
 $configuration = new ComposerDependencyAnalyser\Config\Configuration();
 $configuration
+    ->addPathToScan('Classes', false)
+    ->addPathToScan('Configuration', false)
+    ->addPathToScan('Tests', true)
     ->ignoreUnknownClasses([
         Framework\Attributes\AllowMockObjectsWithoutExpectations::class,
     ])

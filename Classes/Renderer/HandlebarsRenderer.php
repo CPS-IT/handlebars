@@ -49,20 +49,23 @@ class HandlebarsRenderer implements Renderer
 
     public function renderTemplate(RenderingContext $context): string
     {
-        $template = $context->getTemplate($this->templateResolver);
-
-        return $this->render($template, $context);
+        return $this->render($context, $context->getTemplate(...));
     }
 
     public function renderPartial(RenderingContext $context): string
     {
-        $partial = $context->getPartial($this->templateResolver);
-
-        return $this->render($partial, $context);
+        return $this->render($context, $context->getPartial(...));
     }
 
-    protected function render(string $template, RenderingContext $context): string
+    /**
+     * @param \Closure(Template\TemplateResolver): string $templateResolver
+     */
+    protected function render(RenderingContext $context, \Closure $templateResolver): string
     {
+        $this->eventDispatcher->dispatch(new Event\BeforeTemplateCompilationEvent($context, $this));
+
+        // Resolve and compile template
+        $template = $templateResolver($this->templateResolver);
         $compileResult = $this->compile($template);
 
         // Early return if template is empty

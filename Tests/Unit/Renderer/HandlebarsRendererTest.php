@@ -21,7 +21,6 @@ use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use Psr\Log;
-use Symfony\Component\EventDispatcher;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
@@ -40,6 +39,7 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     use Tests\HandlebarsCacheTrait;
     use Tests\HandlebarsTemplateResolverTrait;
 
+    private Tests\Unit\Fixtures\Classes\DummyEventDispatcher $eventDispatcher;
     private Src\Renderer\Helper\HelperRegistry $helperRegistry;
     private Src\Renderer\HandlebarsRenderer $subject;
     private Frontend\Cache\CacheInstruction $cacheInstruction;
@@ -243,6 +243,28 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
+    public function renderTemplateDispatchesEvents(): void
+    {
+        $context = new Src\Renderer\RenderingContext('DummyTemplateVariables', ['another' => 'foo']);
+
+        $this->subject->renderTemplate($context);
+
+        self::assertCount(3, $this->eventDispatcher->dispatchedEvents);
+        self::assertInstanceOf(
+            Src\Event\BeforeTemplateCompilationEvent::class,
+            $this->eventDispatcher->dispatchedEvents[0],
+        );
+        self::assertInstanceOf(
+            Src\Event\BeforeRenderingEvent::class,
+            $this->eventDispatcher->dispatchedEvents[1],
+        );
+        self::assertInstanceOf(
+            Src\Event\AfterRenderingEvent::class,
+            $this->eventDispatcher->dispatchedEvents[2],
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function renderPartialThrowsExceptionIfPartialCompilationFails(): void
     {
         $context = new Src\Renderer\RenderingContext('DummyPartialErroneous');
@@ -400,6 +422,28 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         );
     }
 
+    #[Framework\Attributes\Test]
+    public function renderPartialDispatchesEvents(): void
+    {
+        $context = new Src\Renderer\RenderingContext('DummyPartial', ['name' => 'foo']);
+
+        $this->subject->renderPartial($context);
+
+        self::assertCount(3, $this->eventDispatcher->dispatchedEvents);
+        self::assertInstanceOf(
+            Src\Event\BeforeTemplateCompilationEvent::class,
+            $this->eventDispatcher->dispatchedEvents[0],
+        );
+        self::assertInstanceOf(
+            Src\Event\BeforeRenderingEvent::class,
+            $this->eventDispatcher->dispatchedEvents[1],
+        );
+        self::assertInstanceOf(
+            Src\Event\AfterRenderingEvent::class,
+            $this->eventDispatcher->dispatchedEvents[2],
+        );
+    }
+
     /**
      * This is a test case for the specific {{> (lookup)}} behavior, which is natively baked
      * into the devtheorem/php-handlebars library. It's just here to verify this behavior
@@ -448,11 +492,12 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
      */
     private function renewSubject(string $rendererClass = Src\Renderer\HandlebarsRenderer::class): Src\Renderer\HandlebarsRenderer
     {
+        $this->eventDispatcher = new Tests\Unit\Fixtures\Classes\DummyEventDispatcher();
         $this->helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\Test\TestLogger());
 
         return $this->subject = new $rendererClass(
             $this->getCache(),
-            new EventDispatcher\EventDispatcher(),
+            $this->eventDispatcher,
             $this->helperRegistry,
             $this->getTemplateResolver(),
             new Src\Renderer\Variables\VariableBag([

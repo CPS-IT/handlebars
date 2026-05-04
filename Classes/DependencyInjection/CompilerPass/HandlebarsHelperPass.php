@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\DependencyInjection;
+namespace CPSIT\Typo3Handlebars\DependencyInjection\CompilerPass;
 
 use CPSIT\Typo3Handlebars\Renderer;
 use Symfony\Component\DependencyInjection;

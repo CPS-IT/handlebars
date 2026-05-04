@@ -28,7 +28,7 @@ return static function (
     DependencyInjection\Loader\Configurator\ContainerConfigurator $configurator,
 ): void {
     $container->registerExtension(new Extension\HandlebarsExtension());
-    $container->addCompilerPass(new HandlebarsHelperPass());
+    $container->addCompilerPass(new CompilerPass\HandlebarsHelperPass());
     $container->registerAttributeForAutoconfiguration(
         Attribute\AsHelper::class,
         static function (DependencyInjection\ChildDefinition $definition, Attribute\AsHelper $attribute, \Reflector $reflector): void {
@@ -43,7 +43,7 @@ return static function (
             }
 
             $definition->addTag(
-                HandlebarsHelperPass::TAG_NAME,
+                CompilerPass\HandlebarsHelperPass::TAG_NAME,
                 [
                     'identifier' => $attribute->identifier,
                     'method' => $method,

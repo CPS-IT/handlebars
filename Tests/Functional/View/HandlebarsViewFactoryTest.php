@@ -41,6 +41,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
 
     protected array $testExtensionsToLoad = [
         'handlebars',
+        'test_extension',
     ];
 
     /**
@@ -359,6 +360,26 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
 
         $actual->render();
+    }
+
+    #[Framework\Attributes\Test]
+    public function createReturnsDefaultHandlebarsViewWithDelegateToFallbackView(): void
+    {
+        $request = $this->buildServerRequest();
+        $request = $request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+
+        $data = new Core\View\ViewFactoryData(
+            templateRootPaths: [
+                10 => 'EXT:test_extension/Resources/Templates/Fluid',
+            ],
+            request: $request,
+            format: 'html',
+        );
+
+        $actual = $this->subject->create($data);
+
+        self::assertInstanceOf(Src\View\HandlebarsView::class, $actual);
+        self::assertSame('Hello World!', trim((string)$actual->delegateRendering('Foo')));
     }
 
     /**

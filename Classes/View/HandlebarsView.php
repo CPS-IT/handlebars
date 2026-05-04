@@ -39,6 +39,7 @@ final class HandlebarsView implements Core\View\ViewInterface
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
         private array $contentObjectConfiguration,
         private readonly ?Message\ServerRequestInterface $request = null,
+        private readonly ?Core\View\ViewInterface $delegate = null,
     ) {}
 
     public function assign(string $key, mixed $value): self
@@ -62,6 +63,9 @@ final class HandlebarsView implements Core\View\ViewInterface
                 $this->contentObjectConfiguration['variables.'][$key] = $value;
             }
         }
+
+        // Pass variables to delegate
+        $this->delegate?->assign($key, $value);
 
         return $this;
     }
@@ -93,6 +97,11 @@ final class HandlebarsView implements Core\View\ViewInterface
         }
 
         return $contentObjectRenderer->cObjGetSingle('HANDLEBARSTEMPLATE', $contentObjectConfiguration);
+    }
+
+    public function delegateRendering(string $templateFileName = ''): ?string
+    {
+        return $this->delegate?->render($templateFileName);
     }
 
     public function setTemplateName(string $templateName): self

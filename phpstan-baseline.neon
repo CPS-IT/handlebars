@@ -55,12 +55,6 @@ parameters:
 			path: Classes/View/HandlebarsViewFactory.php
 
 		-
-			rawMessage: Class TYPO3\CMS\Seo\XmlSitemap\XmlSitemapRenderer not found.
-			identifier: class.notFound
-			count: 1
-			path: Configuration/Services.php
-
-		-
 			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
 			identifier: attribute.notFound
 			count: 4

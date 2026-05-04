@@ -55,7 +55,7 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
             $this->get(Src\DataProcessing\DataSource\DataSourceProvider::class),
             $this->logger,
         );
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
+        $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
     }

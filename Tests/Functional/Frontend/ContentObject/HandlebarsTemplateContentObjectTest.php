@@ -62,8 +62,9 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             $this->renderer,
             $this->get(Core\TypoScript\TypoScriptService::class),
             new Src\Frontend\Assets\AssetHandler($this->assetCollector),
+            $this->get(Core\Page\PageRenderer::class),
         );
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
+        $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->pageRenderer = $this->get(Core\Page\PageRenderer::class);
 
         $this->request = $this->buildServerRequest();
@@ -348,7 +349,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertStringContainsString('foo header assets', $this->pageRenderer->render());
+        self::assertStringContainsString('foo header assets', $this->renderWithPageRenderer());
     }
 
     #[Framework\Attributes\Test]
@@ -362,7 +363,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
             ],
         ]);
 
-        self::assertStringContainsString('foo footer assets', $this->pageRenderer->render());
+        self::assertStringContainsString('foo footer assets', $this->renderWithPageRenderer());
     }
 
     #[Framework\Attributes\Test]
@@ -377,5 +378,15 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
                 ],
             ]),
         );
+    }
+
+    public function renderWithPageRenderer(): string
+    {
+        if ((new Core\Information\Typo3Version())->getMajorVersion() >= 14) {
+            return $this->pageRenderer->render($this->request);
+        }
+
+        // @todo Remove once support for TYPO3 v13 is dropped
+        return $this->pageRenderer->render();
     }
 }

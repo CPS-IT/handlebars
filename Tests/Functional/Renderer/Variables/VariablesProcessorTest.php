@@ -49,7 +49,7 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
 
         $request = $this->buildServerRequest();
 
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
+        $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
         $this->subject = Src\Renderer\Variables\VariablesProcessor::for($this->contentObjectRenderer);

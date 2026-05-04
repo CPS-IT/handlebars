@@ -61,6 +61,7 @@ trait FrontendRequestTrait
             ->withAttribute('applicationType', Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_FE)
             ->withAttribute('frontend.cache.instruction', $cacheInstruction)
             ->withAttribute('frontend.typoscript', $frontendTypoScript)
+            ->withAttribute('normalizedParams', new Core\Http\NormalizedParams([], [], 'index.php', '/'))
         ;
 
         $GLOBALS['TYPO3_REQUEST'] = $serverRequest;

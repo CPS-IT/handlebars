@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\Config\RectorConfig;
+use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
@@ -43,6 +44,11 @@ return static function (RectorConfig $rectorConfig): void {
         ],
         FunctionFirstClassCallableRector::class => [
             __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
+        ],
+        // @todo Remove once support for TYPO3 v13 is dropped
+        RemoveExtraParametersRector::class => [
+            __DIR__ . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php',
+            __DIR__ . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php',
         ],
     ]);
 };

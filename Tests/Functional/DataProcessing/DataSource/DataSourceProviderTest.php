@@ -48,7 +48,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
         $this->subject = new Src\DataProcessing\DataSource\DataSourceProvider(
             new Core\TypoScript\TypoScriptService(),
         );
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
+        $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
     }

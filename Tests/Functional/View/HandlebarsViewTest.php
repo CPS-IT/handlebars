@@ -15,7 +15,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Unit\View;
+namespace CPSIT\Typo3Handlebars\Tests\Functional\View;
 
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
@@ -32,9 +32,9 @@ use TYPO3\TestingFramework;
  * @license GPL-2.0-or-later
  */
 #[Framework\Attributes\CoversClass(Src\View\HandlebarsView::class)]
-final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
+final class HandlebarsViewTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
-    protected bool $resetSingletonInstances = true;
+    protected bool $initializeDatabase = false;
 
     private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
     private Tests\Unit\Fixtures\Classes\DummyView $delegate;
@@ -149,12 +149,15 @@ final class HandlebarsViewTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $contentObject = new Src\Tests\Unit\Fixtures\Classes\DummyContentObject();
 
-        $container = new DependencyInjection\Container();
+        $container = $this->getContainer();
+
+        self::assertInstanceOf(DependencyInjection\Container::class, $container);
+
         $container->set('HANDLEBARSTEMPLATE', $contentObject);
         $container->set(Frontend\ContentObject\ContentObjectFactory::class, new Frontend\ContentObject\ContentObjectFactory($container));
 
         $request = new Core\Http\ServerRequest();
-        $contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer(null, $container);
+        $contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $contentObjectRenderer->setRequest($request);
 
         $subject = new Src\View\HandlebarsView(

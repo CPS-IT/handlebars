@@ -20,6 +20,7 @@ namespace CPSIT\Typo3Handlebars\Tests\Functional\Frontend\ContentObject;
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
+use Psr\Http\Message;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
@@ -38,32 +39,28 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
 
     protected array $testExtensionsToLoad = [
         'handlebars',
+        'test_extension',
     ];
 
+    private Message\ServerRequestInterface $request;
     private Core\Page\AssetCollector $assetCollector;
+    private Core\Page\PageRenderer $pageRenderer;
     private Src\Frontend\ContentObject\HandlebarsTemplateContentObject $subject;
-    private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $request = $this->buildServerRequest();
-
+        $this->request = $this->buildServerRequest();
         $this->assetCollector = $this->get(Core\Page\AssetCollector::class);
-        $this->subject = new Src\Frontend\ContentObject\HandlebarsTemplateContentObject(
-            $this->get(Frontend\ContentObject\ContentDataProcessor::class),
-            $this->get(Src\Renderer\Template\Path\ContentObjectPathProvider::class),
-            $this->get(Src\Renderer\Renderer::class),
-            $this->get(Core\TypoScript\TypoScriptService::class),
-            $this->get(Src\Frontend\Assets\AssetHandler::class),
-        );
+        $this->pageRenderer = $this->get(Core\Page\PageRenderer::class);
+        $this->subject = $this->get(Src\Frontend\ContentObject\HandlebarsTemplateContentObject::class);
 
-        $this->contentObjectRenderer = new Frontend\ContentObject\ContentObjectRenderer();
-        $this->contentObjectRenderer->setRequest($request);
+        $contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
+        $contentObjectRenderer->setRequest($this->request);
 
-        $this->subject->setRequest($request);
-        $this->subject->setContentObjectRenderer($this->contentObjectRenderer);
+        $this->subject->setRequest($this->request);
+        $this->subject->setContentObjectRenderer($contentObjectRenderer);
     }
 
     #[Framework\Attributes\Test]
@@ -349,8 +346,6 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
     #[Framework\Attributes\Test]
     public function renderMaintainsBackwardCompatibilityWithLegacyHeaderAssets(): void
     {
-        $pageRenderer = $this->get(Core\Page\PageRenderer::class);
-
         $this->subject->render([
             'template' => 'foo',
             'headerAssets' => 'TEXT',
@@ -359,19 +354,17 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
             ],
         ]);
 
-        self::assertStringContainsString('legacy()', $pageRenderer->render());
+        self::assertStringContainsString('legacy()', $this->renderWithPageRenderer());
     }
 
     #[Framework\Attributes\Test]
     public function renderProcessesBothModernAndLegacyAssets(): void
     {
-        $pageRenderer = $this->get(Core\Page\PageRenderer::class);
-
         $this->subject->render([
             'template' => 'foo',
             'assets.' => [
                 'javaScript.' => [
-                    'modern-script.' => ['source' => 'modern.js'],
+                    'modern-script.' => ['source' => 'EXT:test_extension/Resources/Public/modern.js'],
                 ],
             ],
             'headerAssets' => 'TEXT',
@@ -384,7 +377,7 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         self::assertTrue($this->assetCollector->hasJavaScript('modern-script'));
 
         // Legacy asset via PageRenderer
-        self::assertStringContainsString('legacy()', $pageRenderer->render());
+        self::assertStringContainsString('legacy()', $this->renderWithPageRenderer());
     }
 
     #[Framework\Attributes\Test]
@@ -433,5 +426,15 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         self::assertIsArray($assets['responsive-styles']);
         self::assertIsArray($assets['responsive-styles']['attributes']);
         self::assertSame('screen and (min-width: 768px)', $assets['responsive-styles']['attributes']['media']);
+    }
+
+    public function renderWithPageRenderer(): string
+    {
+        if ((new Core\Information\Typo3Version())->getMajorVersion() >= 14) {
+            return $this->pageRenderer->render($this->request);
+        }
+
+        // @todo Remove once support for TYPO3 v13 is dropped
+        return $this->pageRenderer->render();
     }
 }

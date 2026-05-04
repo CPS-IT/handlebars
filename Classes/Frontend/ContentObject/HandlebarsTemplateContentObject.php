@@ -42,6 +42,7 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         private readonly Renderer\Renderer $renderer,
         private readonly Core\TypoScript\TypoScriptService $typoScriptService,
         private readonly Assets\AssetHandler $assetHandler,
+        protected ?Core\Page\PageRenderer $pageRenderer,
     ) {}
 
     /**
@@ -224,5 +225,14 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
         if (trim($footerAssets) !== '') {
             $this->getPageRenderer()->addFooterData($footerAssets);
         }
+    }
+
+    /**
+     * @todo Change property to "private readonly ?Core\Page\PageRenderer"
+     *       and drop this method once support for TYPO3 v13 is dropped.
+     */
+    protected function getPageRenderer(): Core\Page\PageRenderer
+    {
+        return $this->pageRenderer ??= parent::getPageRenderer();
     }
 }

@@ -5,20 +5,10 @@
 # TYPO3 extension `handlebars`
 
 [![Coverage](https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls)](https://coveralls.io/github/CPS-IT/handlebars)
-[![Tests](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml)
-[![CGL](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml)
-[![Release](https://github.com/CPS-IT/handlebars/actions/workflows/release.yaml/badge.svg)](https://github.com/CPS-IT/handlebars/actions/workflows/release.yaml)
-[![License](http://poser.pugx.org/cpsit/typo3-handlebars/license)](LICENSE.md)\
-[![Version](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/version/shields)](https://extensions.typo3.org/extension/handlebars)
-[![Downloads](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/downloads/shields)](https://extensions.typo3.org/extension/handlebars)
-[![Supported TYPO3 versions](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/typo3/shields)](https://extensions.typo3.org/extension/handlebars)
-[![Extension stability](https://shields.io/endpoint?url=https://typo3-badges.dev/badge/handlebars/stability/shields)](https://extensions.typo3.org/extension/handlebars)
-
-**📙&nbsp;[Documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/)** |
-📦&nbsp;[Packagist](https://packagist.org/packages/cpsit/typo3-handlebars) |
-🐥&nbsp;[TYPO3 extension repository](https://extensions.typo3.org/extension/handlebars) |
-💾&nbsp;[Repository](https://github.com/CPS-IT/handlebars) |
-🐛&nbsp;[Issue tracker](https://github.com/CPS-IT/handlebars/issues)
+[![CGL](https://img.shields.io/github/actions/workflow/status/CPS-IT/handlebars/cgl.yaml?label=cgl&logo=github)](https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/CPS-IT/handlebars/tests.yaml?label=tests&logo=github)](https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml)
+[![Supported TYPO3 versions](https://typo3-badges.dev/badge/handlebars/typo3/shields.svg)](https://extensions.typo3.org/extension/handlebars)
+[![Slack](https://img.shields.io/badge/slack-%23ext--handlebars-4a154b?logo=slack)](https://typo3.slack.com/archives/C0281DBRFCZ)
 
 </div>
 
@@ -38,9 +28,27 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 
 ## 🔥 Installation
 
+### Composer
+
+[![Packagist](https://img.shields.io/packagist/v/cpsit/typo3-handlebars?label=version&logo=packagist)](https://packagist.org/packages/cpsit/typo3-handlebars)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/cpsit/typo3-handlebars?color=brightgreen)](https://packagist.org/packages/cpsit/typo3-handlebars)
+
 ```bash
 composer require cpsit/typo3-handlebars
 ```
+
+### TER
+
+[![TER version](https://typo3-badges.dev/badge/handlebars/version/shields.svg)](https://extensions.typo3.org/extension/handlebars)
+[![TER downloads](https://typo3-badges.dev/badge/handlebars/downloads/shields.svg)](https://extensions.typo3.org/extension/handlebars)
+
+Download the zip file from
+[TYPO3 extension repository (TER)](https://extensions.typo3.org/extension/handlebars).
+
+## 📙 Documentation
+
+Please have a look at the
+[official extension documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/).
 
 ## ⭐ License
 

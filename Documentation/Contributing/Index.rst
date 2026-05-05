@@ -3,8 +3,11 @@
 ..  image:: https://img.shields.io/coverallsCoverage/github/CPS-IT/handlebars?logo=coveralls
     :target: https://coveralls.io/github/CPS-IT/handlebars
 
-..  image:: https://img.shields.io/github/actions/workflow/status/CPS-IT/handlebars/ci.yaml?label=CI&logo=github
-    :target: https://github.com/CPS-IT/handlebars/actions/workflows/ci.yaml
+..  image:: https://img.shields.io/github/actions/workflow/status/CPS-IT/handlebars/cgl.yaml?label=CGL&logo=github
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/cgl.yaml
+
+..  image:: https://img.shields.io/github/actions/workflow/status/CPS-IT/handlebars/tests.yaml?label=Tests&logo=github
+    :target: https://github.com/CPS-IT/handlebars/actions/workflows/tests.yaml
 
 ..  _contributing:
 

@@ -1,0 +1,18 @@
+categories:
+  handlebars:
+    label: Handlebars
+  handlebars.view:
+    label: View
+    parent: handlebars
+
+settings:
+  handlebars.view.templateRootPath:
+    label: 'Path to template root (FE)'
+    type: string
+    default: ''
+    category: handlebars.view
+  handlebars.view.partialRootPath:
+    label: 'Path to partial root (FE)'
+    type: string
+    default: ''
+    category: handlebars.view

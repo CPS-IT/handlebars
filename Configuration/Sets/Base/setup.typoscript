@@ -1,0 +1,11 @@
+plugin.tx_handlebars {
+  view {
+    templateRootPaths {
+      10 = {$handlebars.view.templateRootPath}
+    }
+
+    partialRootPaths {
+      10 = {$handlebars.view.partialRootPath}
+    }
+  }
+}

@@ -68,11 +68,6 @@ class HandlebarsRenderer implements Renderer
         $template = $templateResolver($this->templateResolver);
         $compileResult = $this->compile($template);
 
-        // Early return if template is empty
-        if ($compileResult === null) {
-            return '';
-        }
-
         // Merge variables with default variables
         $mergedVariables = array_merge($this->variableBag->get(), $context->getVariables());
 
@@ -100,13 +95,8 @@ class HandlebarsRenderer implements Renderer
     /**
      * Compile given template by Handlebars compiler.
      */
-    protected function compile(string $template): ?string
+    protected function compile(string $template): string
     {
-        // Early return if template is empty
-        if (trim($template) === '') {
-            return null;
-        }
-
         // Disable cache if debugging is enabled or caching is disabled
         if ($this->isDebugModeEnabled() || $this->isCachingDisabled()) {
             $cache = new Cache\NullCache();
@@ -154,27 +144,21 @@ class HandlebarsRenderer implements Renderer
     /**
      * Resolve given partial using partial resolver.
      *
-     * Tries to resolve the given partial using the {@see $templateResolver}. If
-     * no partial resolver is registered, `null` is returned. Otherwise, the
-     * compiled partial is returned. Returning `null` will be handled as "partial
-     * not found" by the renderer.
+     * Tries to resolve the given partial using the {@see $templateResolver}
+     * and returns the compiled partial.
      *
      * @param string $name Name of the partial to be resolved
-     * @return \Closure|null Compiled partial if partial could be resolved, `null` otherwise
+     * @return \Closure Compiled partial if partial could be resolved
      * @throws Exception\PartialPathIsNotResolvable
      * @throws Exception\TemplateFileIsInvalid
      * @throws Exception\TemplateFormatIsNotSupported
      * @throws Exception\ViewIsNotProperlyInitialized
      */
-    protected function resolvePartial(string $name): ?\Closure
+    protected function resolvePartial(string $name): \Closure
     {
         $context = new RenderingContext($name);
         $template = $context->getPartial($this->templateResolver);
         $compileResult = $this->compile($template);
-
-        if ($compileResult === null) {
-            return null;
-        }
 
         return Handlebars\Handlebars::template($compileResult);
     }

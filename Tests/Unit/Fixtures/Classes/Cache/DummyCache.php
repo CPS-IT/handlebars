@@ -36,19 +36,23 @@ final readonly class DummyCache implements Cache\Cache
         $this->basePath = rtrim($basePath, DIRECTORY_SEPARATOR);
     }
 
-    public function get(string $template): ?string
+    public function get(Cache\CacheContext $context): ?string
     {
-        $cacheFile = $this->resolveCacheFile($template);
+        $cacheFile = $this->resolveCacheFile($context->template);
+
         if (file_exists($cacheFile)) {
             return file_get_contents($cacheFile) ?: '';
         }
+
         return null;
     }
 
-    public function set(string $template, string $compileResult): void
+    public function set(Cache\CacheContext $context, string $compileResult): void
     {
-        $cacheFile = $this->resolveCacheFile($template);
+        $cacheFile = $this->resolveCacheFile($context->template);
+
         Core\Utility\GeneralUtility::mkdir_deep(dirname($cacheFile));
+
         file_put_contents($cacheFile, $compileResult);
     }
 

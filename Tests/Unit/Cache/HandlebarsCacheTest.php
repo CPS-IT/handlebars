@@ -43,13 +43,13 @@ final class HandlebarsCacheTest extends TestingFramework\Core\Unit\UnitTestCase
         $cache = $this->getCache();
         $cacheStub = self::createStub(Core\Cache\Frontend\FrontendInterface::class);
         $cacheStub->method('get')->willReturnCallback(
-            static fn(string $entryIdentifier) => $cache->get($entryIdentifier),
+            static fn(string $entryIdentifier) => $cache->get(new Src\Cache\CacheContext($entryIdentifier)),
         );
         $cacheStub->method('set')->willReturnCallback(
             static function (string $entryIdentifier, mixed $data) use ($cache) {
                 self::assertIsString($data);
 
-                $cache->set($entryIdentifier, $data);
+                $cache->set(new Src\Cache\CacheContext($entryIdentifier), $data);
             },
         );
 
@@ -60,14 +60,20 @@ final class HandlebarsCacheTest extends TestingFramework\Core\Unit\UnitTestCase
     public function getReturnsNullIfTemplateIsNotCached(): void
     {
         $this->clearCache();
-        self::assertNull($this->subject->get('foo'));
+
+        $context = new Src\Cache\CacheContext('foo');
+
+        self::assertNull($this->subject->get($context));
     }
 
     #[Framework\Attributes\Test]
     public function getReturnsCachedTemplate(): void
     {
-        $this->subject->set('foo', 'hello world');
-        self::assertSame('hello world', $this->subject->get('foo'));
+        $context = new Src\Cache\CacheContext('foo');
+
+        $this->subject->set($context, 'hello world');
+
+        self::assertSame('hello world', $this->subject->get($context));
     }
 
     protected function tearDown(): void

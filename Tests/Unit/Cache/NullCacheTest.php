@@ -40,6 +40,8 @@ final class NullCacheTest extends TestingFramework\Core\Unit\UnitTestCase
     #[Framework\Attributes\Test]
     public function getReturnsNull(): void
     {
-        self::assertNull($this->subject->get('foo'));
+        $context = new Src\Cache\CacheContext('foo');
+
+        self::assertNull($this->subject->get($context));
     }
 }

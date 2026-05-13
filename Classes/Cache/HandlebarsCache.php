@@ -34,10 +34,9 @@ final readonly class HandlebarsCache implements Cache
         private Core\Cache\Frontend\FrontendInterface $cache,
     ) {}
 
-    public function get(string $template): ?string
+    public function get(CacheContext $context): ?string
     {
-        $cacheIdentifier = $this->calculateCacheIdentifier($template);
-        $value = $this->cache->get($cacheIdentifier);
+        $value = $this->cache->get($context->calculateCacheIdentifier());
 
         if (!is_string($value)) {
             return null;
@@ -46,16 +45,8 @@ final readonly class HandlebarsCache implements Cache
         return $value;
     }
 
-    public function set(string $template, string $compileResult): void
+    public function set(CacheContext $context, string $compileResult): void
     {
-        $this->cache->set(
-            $this->calculateCacheIdentifier($template),
-            $compileResult,
-        );
-    }
-
-    protected function calculateCacheIdentifier(string $template): string
-    {
-        return sha1($template);
+        $this->cache->set($context->calculateCacheIdentifier(), $compileResult);
     }
 }

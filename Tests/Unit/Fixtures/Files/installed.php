@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the TYPO3 CMS extension "handlebars".
  *
@@ -15,17 +13,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Cache;
-
-/**
- * Cache
- *
- * @author Elias Häußler <e.haeussler@familie-redlich.de>
- * @license GPL-2.0-or-later
- */
-interface Cache
-{
-    public function get(CacheContext $context): ?string;
-
-    public function set(CacheContext $context, string $compileResult): void;
-}
+return [
+    'versions' => [
+        'devtheorem/php-handlebars' => [
+            'version' => '1.0.0.0',
+        ],
+    ],
+];

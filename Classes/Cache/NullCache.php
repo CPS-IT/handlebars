@@ -25,12 +25,12 @@ namespace CPSIT\Typo3Handlebars\Cache;
  */
 final readonly class NullCache implements Cache
 {
-    public function get(string $template): ?string
+    public function get(CacheContext $context): ?string
     {
         return null;
     }
 
-    public function set(string $template, string $compileResult): void
+    public function set(CacheContext $context, string $compileResult): void
     {
         // Intentionally left blank.
     }

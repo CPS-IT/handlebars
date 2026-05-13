@@ -104,16 +104,19 @@ class HandlebarsRenderer implements Renderer
             $cache = $this->cache;
         }
 
+        $compileOptions = $this->getCompileOptions();
+        $cacheContext = new Cache\CacheContext($template, $compileOptions);
+
         // Get compile result from cache
-        $compileResult = $cache->get($template);
+        $compileResult = $cache->get($cacheContext);
         if ($compileResult !== null) {
             return $compileResult;
         }
 
-        $compileResult = Handlebars\Handlebars::precompile($template, $this->getCompileOptions());
+        $compileResult = Handlebars\Handlebars::precompile($template, $compileOptions);
 
         // Write compiled template into cache
-        $cache->set($template, $compileResult);
+        $cache->set($cacheContext, $compileResult);
 
         return $compileResult;
     }

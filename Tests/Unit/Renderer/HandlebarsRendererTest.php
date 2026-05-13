@@ -147,9 +147,11 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     {
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
         $this->getCache()->set(
-            file_get_contents(
-                $this->getTemplateResolver()->resolveTemplatePath('DummyTemplate')
-            ) ?: '',
+            new Src\Cache\CacheContext(
+                file_get_contents(
+                    $this->getTemplateResolver()->resolveTemplatePath('DummyTemplate')
+                ) ?: '',
+            ),
             'return function() { return \'foo\'; };'
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyTemplate.hbs');
@@ -355,9 +357,11 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     {
         $this->assertCacheIsEmptyForTemplate('DummyPartial.hbs', true);
         $this->getCache()->set(
-            file_get_contents(
-                $this->getTemplateResolver()->resolvePartialPath('DummyPartial')
-            ) ?: '',
+            new Src\Cache\CacheContext(
+                file_get_contents(
+                    $this->getTemplateResolver()->resolvePartialPath('DummyPartial')
+                ) ?: '',
+            ),
             'return function() { return \'foo\'; };'
         );
         $this->assertCacheIsNotEmptyForTemplate('DummyPartial.hbs', true);
@@ -467,7 +471,11 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $rootPath = $partial ? $this->partialRootPath : $this->templateRootPath;
 
         self::assertNull(
-            $this->getCache()->get(file_get_contents($rootPath . DIRECTORY_SEPARATOR . $template) ?: '')
+            $this->getCache()->get(
+                new Src\Cache\CacheContext(
+                    file_get_contents($rootPath . DIRECTORY_SEPARATOR . $template) ?: '',
+                ),
+            ),
         );
     }
 
@@ -476,7 +484,11 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $rootPath = $partial ? $this->partialRootPath : $this->templateRootPath;
 
         self::assertNotNull(
-            $this->getCache()->get(file_get_contents($rootPath . DIRECTORY_SEPARATOR . $template) ?: '')
+            $this->getCache()->get(
+                new Src\Cache\CacheContext(
+                    file_get_contents($rootPath . DIRECTORY_SEPARATOR . $template) ?: '',
+                ),
+            ),
         );
     }
 

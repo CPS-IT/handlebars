@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "872cfac50d74237e7b442bf0489539af",
+    "content-hash": "ef1fc55a9780e5763436f8296bf30976",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -5034,16 +5034,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.11",
+            "version": "v7.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e2eb64a57763815ccae07ac1c7653d6cc1c326fd"
+                "reference": "8b6952b56ca6417f25f7a65758cadd0ce02edc51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e2eb64a57763815ccae07ac1c7653d6cc1c326fd",
-                "reference": "e2eb64a57763815ccae07ac1c7653d6cc1c326fd",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/8b6952b56ca6417f25f7a65758cadd0ce02edc51",
+                "reference": "8b6952b56ca6417f25f7a65758cadd0ce02edc51",
                 "shasum": ""
             },
             "require": {
@@ -5086,7 +5086,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.11"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.12"
             },
             "funding": [
                 {
@@ -5106,7 +5106,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-13T12:04:42+00:00"
+            "time": "2026-05-20T07:20:23+00:00"
         },
         {
             "name": "typo3/class-alias-loader",
@@ -6711,16 +6711,16 @@
         },
         {
             "name": "eliashaeussler/version-bumper",
-            "version": "3.3.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/eliashaeussler/version-bumper.git",
-                "reference": "c07e35754ce1c156427f9a75e170fc90a32ef681"
+                "reference": "2e8ba02dca5ff394792414caf1e7da112f9b04e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/eliashaeussler/version-bumper/zipball/c07e35754ce1c156427f9a75e170fc90a32ef681",
-                "reference": "c07e35754ce1c156427f9a75e170fc90a32ef681",
+                "url": "https://api.github.com/repos/eliashaeussler/version-bumper/zipball/2e8ba02dca5ff394792414caf1e7da112f9b04e7",
+                "reference": "2e8ba02dca5ff394792414caf1e7da112f9b04e7",
                 "shasum": ""
             },
             "require": {
@@ -6740,7 +6740,7 @@
             },
             "require-dev": {
                 "armin/editorconfig-cli": "^2.0",
-                "composer/composer": "^2.2",
+                "composer/composer": "~2.2.28 || ~2.9.8",
                 "eliashaeussler/php-cs-fixer-config": "^3.0",
                 "eliashaeussler/phpstan-config": "^4.0",
                 "eliashaeussler/rector-config": "^4.0",
@@ -6776,9 +6776,9 @@
             "description": "Composer plugin to bump project versions during release preparations",
             "support": {
                 "issues": "https://github.com/eliashaeussler/version-bumper/issues",
-                "source": "https://github.com/eliashaeussler/version-bumper/tree/3.3.0"
+                "source": "https://github.com/eliashaeussler/version-bumper/tree/4.0.1"
             },
-            "time": "2026-05-12T07:59:30+00:00"
+            "time": "2026-05-23T18:02:25+00:00"
         },
         {
             "name": "ergebnis/agent-detector",

@@ -29,8 +29,21 @@ use DevTheorem\Handlebars;
 #[Attribute\AsHelper('join')]
 final readonly class JoinHelper implements Helper
 {
-    public function render(Handlebars\HelperOptions $options, string|\Stringable ...$parts): string
+    public function render(Handlebars\HelperOptions $options, mixed ...$parts): string
     {
-        return implode('', $parts);
+        return implode('', array_map($this->convertToString(...), $parts));
+    }
+
+    private function convertToString(mixed $value): ?string
+    {
+        if (is_scalar($value)) {
+            return (string)$value;
+        }
+
+        if ($value instanceof \Stringable) {
+            return (string)$value;
+        }
+
+        return null;
     }
 }

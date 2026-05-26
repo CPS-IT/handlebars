@@ -38,7 +38,7 @@
 		"cpsit/typo3-handlebars-test-extension": "1.0.0",
 		"eliashaeussler/deep-closure-comparator": "^1.2",
 		"eliashaeussler/typo3-vendor-bundler": "^4.0.2",
-		"eliashaeussler/version-bumper": "^3.3 || ^4.0",
+		"eliashaeussler/version-bumper": "^4.0",
 		"ergebnis/composer-normalize": "^2.15",
 		"fig/log-test": "^1.1",
 		"friendsofphp/php-cs-fixer": "^3.57",

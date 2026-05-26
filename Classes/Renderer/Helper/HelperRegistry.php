@@ -153,11 +153,13 @@ final class HelperRegistry implements Core\SingletonInterface
 
         // 4b. class method as array
         // 4c. class method as initialized array
+        /* @phpstan-ignore identical.alwaysTrue */
         if (is_array($function) && count($function) === 2) {
             [$className, $methodName] = $function;
         }
 
         // Early return if either class name or method name cannot be resolved
+        /* @phpstan-ignore identical.alwaysFalse */
         if ($className === null || $methodName === null) {
             throw Exception\InvalidHelperException::forUnsupportedType($function);
         }
@@ -172,6 +174,7 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // Early return if method is invalid
+        /* @phpstan-ignore function.alreadyNarrowedType */
         if (!is_string($methodName)) {
             throw Exception\InvalidHelperException::forUnsupportedType($function);
         }

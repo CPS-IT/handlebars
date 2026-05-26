@@ -64,6 +64,27 @@ final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    public function helperCanBeUsedWithCustomSeparator(): void
+    {
+        self::assertRenderedTemplateEqualsString(
+            '{{join "foo" baz bar separator=","}}',
+            'foo,baz,bar',
+            [
+                'bar' => 'bar',
+                'baz' => new class () implements \Stringable {
+                    public function __toString(): string
+                    {
+                        return 'baz';
+                    }
+                },
+            ],
+            [
+                'join' => $this->subject->render(...),
+            ],
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function renderReturnsImplodedString(): void
     {
         $scope = [];

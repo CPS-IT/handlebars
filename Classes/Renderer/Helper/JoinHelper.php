@@ -31,7 +31,13 @@ final readonly class JoinHelper implements Helper
 {
     public function render(Handlebars\HelperOptions $options, mixed ...$parts): string
     {
-        return implode('', array_map($this->convertToString(...), $parts));
+        $separator = $options->hash['separator'] ?? '';
+
+        if (!is_string($separator)) {
+            $separator = '';
+        }
+
+        return implode($separator, array_filter(array_map($this->convertToString(...), $parts), is_string(...)));
     }
 
     private function convertToString(mixed $value): ?string

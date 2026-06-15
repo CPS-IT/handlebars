@@ -1,0 +1,36 @@
+diff --git a/src/Runtime.php b/src/Runtime.php
+index 1ae8443..f3928c9 100644
+--- a/src/Runtime.php
++++ b/src/Runtime.php
+@@ -118,8 +118,8 @@ final class Runtime
+             if (array_key_exists($key, $base)) {
+                 return $base[$key];
+             }
+-        } elseif (is_object($base) && property_exists($base, $key)) {
+-            return $base->$key;
++        } elseif (is_object($base) && \TYPO3\CMS\Extbase\Reflection\ObjectAccess::isPropertyGettable($base, $key)) {
++            return \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getProperty($base, $key);
+         }
+         $desc = match (true) {
+             is_bool($base) => $base ? 'true' : 'false',
+@@ -275,16 +275,16 @@ final class Runtime
+         if (is_array($in) && array_key_exists($name, $in)) {
+             return $in[$name];
+         }
+-        if (is_object($in) && property_exists($in, $name)) {
+-            return $in->$name;
++        if (is_object($in) && \TYPO3\CMS\Extbase\Reflection\ObjectAccess::isPropertyGettable($in, $name)) {
++            return \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getProperty($in, $name);
+         }
+         for ($i = count($cx->depths) - 1; $i >= 0; $i--) {
+             $ctx = $cx->depths[$i];
+             if (is_array($ctx) && array_key_exists($name, $ctx)) {
+                 return $ctx[$name];
+             }
+-            if (is_object($ctx) && property_exists($ctx, $name)) {
+-                return $ctx->$name;
++            if (is_object($ctx) && \TYPO3\CMS\Extbase\Reflection\ObjectAccess::isPropertyGettable($ctx, $name)) {
++                return \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getProperty($ctx, $name);
+             }
+         }
+         return $strict ? self::strictLookup(null, $name) : null;

@@ -33,6 +33,8 @@ return [
         'gitattributes',
         'gitignore',
         'packaging_exclude.php',
+        'patches.json',
+        'patches.lock.json',
         'php-cs-fixer.php',
         'phpstan.neon',
         'phpstan-baseline.neon',

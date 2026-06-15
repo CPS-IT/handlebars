@@ -1,0 +1,7 @@
+{
+	"patches": {
+		"devtheorem/php-handlebars": {
+			"Use ObjectAccess to lookup object properties and methods": "Resources/Private/Php/handlebars-object-access.diff"
+		}
+	}
+}

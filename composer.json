@@ -19,7 +19,8 @@
 	"require": {
 		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
 		"ext-json": "*",
-		"devtheorem/php-handlebars": "^2.0",
+		"cweagans/composer-patches": "^2.0",
+		"devtheorem/php-handlebars": "^2.1",
 		"psr/event-dispatcher": "^1.0",
 		"psr/http-message": "^1.0 || ^2.0",
 		"psr/log": "^3.0",
@@ -75,6 +76,7 @@
 	},
 	"config": {
 		"allow-plugins": {
+			"cweagans/composer-patches": true,
 			"eliashaeussler/typo3-vendor-bundler": true,
 			"eliashaeussler/version-bumper": true,
 			"ergebnis/composer-normalize": true,

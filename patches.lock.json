@@ -1,0 +1,17 @@
+{
+    "_hash": "3be83bd8d28ab44341e2b594a492d98c2422f50d6b4634f7b92cc84d7df6a1ef",
+    "patches": {
+        "devtheorem/php-handlebars": [
+            {
+                "package": "devtheorem/php-handlebars",
+                "description": "Use ObjectAccess to lookup object properties and methods",
+                "url": "Resources/Private/Php/handlebars-object-access.diff",
+                "sha256": "f9d6558425d5f4d055c3901700281bf08a241a02819e8652bc4b6335abb661d7",
+                "depth": 1,
+                "extra": {
+                    "provenance": "patches-file:patches.json"
+                }
+            }
+        ]
+    }
+}

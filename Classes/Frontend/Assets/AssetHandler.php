@@ -31,7 +31,13 @@ use TYPO3\CMS\Core;
  */
 final readonly class AssetHandler
 {
-    private const KNOWN_OPTIONS = ['priority', 'useNonce'];
+    private const KNOWN_OPTIONS = [
+        'priority',
+        // @todo Deprecated since v14, remove once support for TYPO3 v13 is dropped
+        'useNonce',
+        // TYPO3 >= v14
+        'useCsp',
+    ];
 
     public function __construct(
         private Core\Page\AssetCollector $assetCollector,

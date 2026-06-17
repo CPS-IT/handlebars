@@ -6,9 +6,15 @@
 Developer corner
 ================
 
-tba.
+This section documents the extension points available to developers who need
+to go beyond what TypoScript configuration alone provides. Each page covers
+one or more interfaces: when to implement them, the contract they define, and
+how to wire the implementation into the service container.
 
 ..  toctree::
-    :maxdepth: 3
+    :maxdepth: 1
 
-    RenderingConcept
+    Renderer
+    TemplateResolver
+    DataSourceAwareProcessor
+    PathsAndVariables

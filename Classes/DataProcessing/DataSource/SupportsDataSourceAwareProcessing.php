@@ -55,6 +55,7 @@ trait SupportsDataSourceAwareProcessing
                 throw new Exception\ConfiguredProcessorIsUnsupported($processorClassName);
             }
 
+            /** @var DataSourceAwareProcessor $processor */
             $processor = Core\Utility\GeneralUtility::makeInstance($processorClassName);
             $variables = $processor->process($variables, $collection, $contentObjectRenderer);
         }

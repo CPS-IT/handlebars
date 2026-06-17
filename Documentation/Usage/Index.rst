@@ -6,17 +6,15 @@
 Usage
 =====
 
-..  caution::
-    This page is outdated and does not reflect the current state
-    of the extension. It will be updated soon.
-
-This section describes basic and advanced functionalities and their
-possible applications. Here you can learn how to use the individual
-components of the extension optimally and how to reuse them in your
-own components.
+This section describes how to use the extension to render Handlebars templates
+from TYPO3 content elements and page objects.
 
 ..  toctree::
-    :maxdepth: 3
+    :maxdepth: 1
 
-    Basic/Index
-    Extended/Index
+    QuickStart
+    ContentObject
+    DataProcessors
+    CustomHelpers
+    Events
+    AssetManagement

@@ -52,7 +52,7 @@ Register external JavaScript files using the :typoscript:`javaScript` configurat
                     }
                     options {
                         priority = 1
-                        useCsp = 1
+                        csp = 1
                     }
                 }
             }
@@ -196,15 +196,15 @@ options
 
 :aspect:`Available options`
     *   :typoscript:`priority` (boolean): Render before other assets (default: 0)
-    *   :typoscript:`useCsp` (boolean): Add CSP nonce attribute (default: 0).
+    *   :typoscript:`csp` (boolean): Add CSP nonce attribute (default: 0).
         Requires TYPO3 v14+.
     *   :typoscript:`useNonce` (boolean): Add CSP nonce attribute (default: 0).
-        Deprecated since TYPO3 v14 — use :typoscript:`useCsp` instead.
+        Deprecated since TYPO3 v14 — use :typoscript:`csp` instead.
 
 :aspect:`Example`
     ..  code-block:: typoscript
 
         options {
             priority = 1
-            useCsp = 1
+            csp = 1
         }

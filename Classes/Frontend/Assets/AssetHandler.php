@@ -36,7 +36,7 @@ final readonly class AssetHandler
         // @todo Deprecated since v14, remove once support for TYPO3 v13 is dropped
         'useNonce',
         // TYPO3 >= v14
-        'useCsp',
+        'csp',
     ];
 
     public function __construct(

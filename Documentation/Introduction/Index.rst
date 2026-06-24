@@ -24,12 +24,14 @@ the need to modify these templates again for output in TYPO3.
 Features
 ========
 
--   Full rendering environment for Handlebars templates
--   Native support for custom Handlebars helpers
--   Easy to extend and customize
--   Built on dependency injection for better performance and maintainability
--   Integration with TYPO3's cache framework for compiled templates
--   Compatible with TYPO3 13.4 LTS and 14.3 LTS
+-   **Templating engine:** Full Handlebars rendering environment for TYPO3
+-   **Custom Helpers:** Custom helpers with auto-registration via PHP attributes
+-   **Extbase support:** Controller-based rendering via :php:`HandlebarsView`
+-   **Events:** PSR-14 hooks into the full rendering pipeline
+-   **DI integration:** Built on dependency injection for better performance and maintainability
+-   **Caching:** Integration with TYPO3's cache framework for compiled templates
+-   **Extensibility:** Easy to extend and customize
+-   **Compatibility:** Compatible with TYPO3 13.4 LTS and 14.3 LTS
 
 ..  _support:
 

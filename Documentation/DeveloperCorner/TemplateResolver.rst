@@ -10,7 +10,11 @@ Implement the
 :php:interface:`CPSIT\\Typo3Handlebars\\Renderer\\Template\\TemplateResolver`
 interface to change how template and partial names are resolved to absolute file
 paths — for example to support a different directory layout, an additional file
-extension, or a database-driven path lookup. The default implementation is
+extension, or a database-driven path lookup.
+
+The extension ships two implementations:
+:php:`CPSIT\Typo3Handlebars\Renderer\Template\FlatTemplateResolver` (the
+default) and
 :php:`CPSIT\Typo3Handlebars\Renderer\Template\HandlebarsTemplateResolver`.
 
 :php:`CPSIT\Typo3Handlebars\Renderer\Template\BaseTemplateResolver` implements
@@ -44,6 +48,67 @@ implementations concise.
         :param string $partialPath: Partial name or relative path.
         :param string|null $format: Optional file extension override.
         :returntype: string
+
+..  _developer-corner-template-resolver-flat:
+
+FlatTemplateResolver
+====================
+
+:php:`FlatTemplateResolver` is the default implementation. It scans all
+configured root paths recursively and builds an in-memory map of every
+template file, keyed by its bare filename (without directory). A lookup
+therefore succeeds regardless of where in the directory tree the file lives.
+
+Template and partial names must be prefixed with :file:`@` to trigger flat
+resolution. A name without the prefix is passed directly to
+:php:`HandlebarsTemplateResolver` (see below).
+
+..  code-block:: typoscript
+    :caption: Referencing a flat template in TypoScript
+
+    tt_content.tx_myext_teaser = HANDLEBARSTEMPLATE
+    tt_content.tx_myext_teaser {
+        templateName = @teaser
+    }
+
+..  code-block:: handlebars
+    :caption: Referencing a flat partial in a Handlebars template
+
+    {{> @card}}
+
+**Variant separator**
+
+Appending :file:`--<variant>` to an :file:`@`-prefixed name selects a variant
+of a component. If no file with that exact name exists, the resolver automatically
+falls back to the base name:
+
+..  code-block:: handlebars
+
+    {{> @card--highlighted}}   {{!-- falls back to @card if not found --}}
+
+This convention follows `Fractal's naming rules
+<https://fractal.build/guide/core-concepts/naming.html>`__.
+
+**File precedence**
+
+When the same filename exists under multiple root paths, the higher-priority
+root path wins (see :ref:`template-paths`). Within a single root path, files
+are sorted by name and the first occurrence is used, matching Fractal's
+uniqueness guarantee.
+
+..  _developer-corner-template-resolver-handlebars:
+
+HandlebarsTemplateResolver
+==========================
+
+:php:`HandlebarsTemplateResolver` resolves template and partial names as
+paths relative to the configured root paths. Given the name :file:`Blog/List`,
+it searches each root path (highest priority first) for a matching file —
+for example :file:`Blog/List.hbs`.
+
+This resolver is used as the fallback inside :php:`FlatTemplateResolver`
+for any name that does not start with ``@``, so both resolution strategies
+are active at the same time.
 
 ..  _developer-corner-template-resolver-example:
 

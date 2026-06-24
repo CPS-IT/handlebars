@@ -79,6 +79,14 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
         ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
             :button-style: btn btn-secondary stretched-link
 
+    ..  card::  Guides
+
+        Task-oriented guides for common integration and migration scenarios,
+        including a step-by-step path for migrating from Fluid to Handlebars.
+
+        ..  card-footer:: :ref:`Browse guides <guides>`
+            :button-style: btn btn-secondary stretched-link
+
     ..  card::  Migration
 
         Required migration steps when upgrading the extension to a new major version.
@@ -94,6 +102,7 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
     Configuration/Index
     Usage/Index
     DeveloperCorner/Index
+    Guides/Index
     Migration/Index
     Contributing/Index
 

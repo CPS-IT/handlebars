@@ -227,10 +227,10 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
             'HANDLEBARSTEMPLATE',
             [
                 'templateName' => '@baz',
+                'format' => 'hbs',
                 'variables.' => [
                     'foo' => 'baz',
                 ],
-                'format' => 'hbs',
             ],
         );
 
@@ -272,12 +272,12 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
             'HANDLEBARSTEMPLATE',
             [
                 'templateName' => '@baz',
+                'format' => 'hbs',
                 'variables.' => [
                     'default' => 'foo',
                     'foo' => 'foo',
                     'baz' => 'baz',
                 ],
-                'format' => 'hbs',
             ],
         );
 

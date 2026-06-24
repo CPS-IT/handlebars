@@ -134,7 +134,7 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
         $typoScriptConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray($handlebarsConfiguration);
 
         // Resolve TypoScript configuration based on controller context
-        $resolvedConfiguration = [];
+        $resolvedConfiguration = $defaultConfiguration;
         $possibleConfigurationKeys = [
             // Fallback
             'default',
@@ -152,16 +152,6 @@ final readonly class HandlebarsViewFactory implements Core\View\ViewFactoryInter
                     $typoScriptConfiguration[$possibleConfigurationKey . '.'],
                 );
             }
-        }
-
-        // Early return if no configuration was resolved
-        if ($resolvedConfiguration === []) {
-            return $defaultConfiguration;
-        }
-
-        // Add format
-        if (!isset($resolvedConfiguration['format'])) {
-            $resolvedConfiguration['format'] = $format;
         }
 
         return $resolvedConfiguration;

@@ -153,16 +153,24 @@ The recommended path has three lanes that can be worked independently:
 
     The view factory resolves the template name automatically from the
     controller alias and action name (e.g., :file:`Blog/list.hbs` for
-    :php:`listAction`). Declare the path in TypoScript:
+    :php:`listAction`). Configure paths and per-action overrides via the
+    :typoscript:`handlebars` key in the plugin's TypoScript namespace:
 
     ..  code-block:: typoscript
 
-        plugin.tx_myextension {
-            view {
-                templateRootPaths.10 = EXT:my_extension/Resources/Private/Templates/Handlebars
-                partialRootPaths.10 = EXT:my_extension/Resources/Private/Partials/Handlebars
+        plugin.tx_myextension_myplugin {
+            handlebars {
+                default {
+                    templateRootPaths.10 = EXT:my_extension/Resources/Private/Templates/Handlebars
+                    partialRootPaths.10 = EXT:my_extension/Resources/Private/Partials/Handlebars
+                }
             }
         }
+
+    ..  seealso::
+
+        :ref:`extbase-plugin` for the full configuration reference, including
+        per-controller and per-action overrides.
 
     **Using the Fluid fallback during migration:**
 

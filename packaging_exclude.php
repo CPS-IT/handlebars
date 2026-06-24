@@ -26,6 +26,7 @@ return [
     ],
     'files' => [
         'DS_Store',
+        'CLAUDE.md',
         'composer.lock',
         'composer-dependency-analyser.php',
         'docker-compose.yml',

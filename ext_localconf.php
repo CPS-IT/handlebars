@@ -13,6 +13,12 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-\defined('TYPO3') or die();
+defined('TYPO3') or die();
 
-\CPSIT\Typo3Handlebars\Extension::registerCaches();
+// Configure handlebars cache
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars'] ?? null)) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars'] = [];
+}
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] ?? null)) {
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] = ['pages'];
+}

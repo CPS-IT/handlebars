@@ -22,25 +22,9 @@ namespace CPSIT\Typo3Handlebars;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
- * @codeCoverageIgnore
  */
 final readonly class Extension
 {
     public const KEY = 'handlebars';
     public const NAME = 'Handlebars';
-
-    /**
-     * Register additional caches.
-     *
-     * FOR USE IN ext_localconf.php ONLY.
-     */
-    public static function registerCaches(): void
-    {
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars'] ?? null)) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars'] = [];
-        }
-        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] ?? null)) {
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['handlebars']['groups'] = ['pages'];
-        }
-    }
 }

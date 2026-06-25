@@ -24,11 +24,13 @@ use Rector\ValueObject\PhpVersion;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
 
 return static function (RectorConfig $rectorConfig): void {
+    $rootPath = dirname(__DIR__, 2);
+
     $rectorConfig->paths([
-        __DIR__ . '/Classes',
-        __DIR__ . '/Configuration',
-        __DIR__ . '/Tests',
-        __DIR__ . '/ext_*.php',
+        $rootPath . '/Classes',
+        $rootPath . '/Configuration',
+        $rootPath . '/Tests',
+        $rootPath . '/ext_*.php',
     ]);
 
     $rectorConfig->phpVersion(PhpVersion::PHP_82);
@@ -40,15 +42,15 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         ArrayToFirstClassCallableRector::class => [
-            __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
+            $rootPath . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
         ],
         FunctionFirstClassCallableRector::class => [
-            __DIR__ . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
+            $rootPath . '/Tests/Unit/Renderer/Helper/HelperRegistryTest.php',
         ],
         // @todo Remove once support for TYPO3 v13 is dropped
         RemoveExtraParametersRector::class => [
-            __DIR__ . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php',
-            __DIR__ . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php',
+            $rootPath . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php',
+            $rootPath . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php',
         ],
     ]);
 };

@@ -4,8 +4,8 @@ includes:
 parameters:
 	level: max
 	paths:
-		- Classes
-		- Configuration
-		- Tests
+		- ../../Classes
+		- ../../Configuration
+		- ../../Tests
 	featureToggles:
 		internalTag: false

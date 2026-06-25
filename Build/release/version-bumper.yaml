@@ -1,3 +1,5 @@
 presets:
   - typo3-commit-guidelines
   - typo3-extension
+
+rootPath: ../../

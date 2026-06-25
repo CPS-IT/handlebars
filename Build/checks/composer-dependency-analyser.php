@@ -15,16 +15,18 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
-use TYPO3\CodingStandards\CsFixerConfig;
+use PHPUnit\Framework;
+use ShipMonk\ComposerDependencyAnalyser;
 
-$config = CsFixerConfig::create();
-$config->setParallelConfig(ParallelConfigFactory::detect());
-$config->setHeader('This file is part of the TYPO3 CMS extension "handlebars".');
-$config->getFinder()
-    ->in(__DIR__)
-    ->ignoreVCSIgnored(true)
-    ->ignoreDotFiles(false)
+$rootPath = dirname(__DIR__, 2);
+$configuration = new ComposerDependencyAnalyser\Config\Configuration();
+$configuration
+    ->addPathToScan($rootPath . '/Classes', false)
+    ->addPathToScan($rootPath . '/Configuration', false)
+    ->addPathToScan($rootPath . '/Tests', true)
+    ->ignoreUnknownClasses([
+        Framework\Attributes\AllowMockObjectsWithoutExpectations::class,
+    ])
 ;
 
-return $config;
+return $configuration;

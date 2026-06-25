@@ -4,88 +4,88 @@ parameters:
 			rawMessage: Cannot access offset 'SYS' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: Classes/Extension.php
+			path: ../../Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'cacheConfigurations' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: Classes/Extension.php
+			path: ../../Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'caching' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: Classes/Extension.php
+			path: ../../Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'handlebars' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: Classes/Extension.php
+			path: ../../Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'FE' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/Renderer/HandlebarsRenderer.php
+			path: ../../Classes/Renderer/HandlebarsRenderer.php
 
 		-
 			rawMessage: Cannot access offset 'debug' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/Renderer/HandlebarsRenderer.php
+			path: ../../Classes/Renderer/HandlebarsRenderer.php
 
 		-
 			rawMessage: 'Method CPSIT\Typo3Handlebars\Renderer\Template\Path\TypoScriptPathProvider::getViewConfiguration() should return array{partialRootPaths?: array<int, string>, templateRootPaths?: array<int, string>} but returns array<''partialRootPaths''|''templateRootPaths'', mixed>.'
 			identifier: return.type
 			count: 1
-			path: Classes/Renderer/Template/Path/TypoScriptPathProvider.php
+			path: ../../Classes/Renderer/Template/Path/TypoScriptPathProvider.php
 
 		-
 			rawMessage: Cannot access offset 'alias' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/View/HandlebarsViewFactory.php
+			path: ../../Classes/View/HandlebarsViewFactory.php
 
 		-
 			rawMessage: Cannot access offset string on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: Classes/View/HandlebarsViewFactory.php
+			path: ../../Classes/View/HandlebarsViewFactory.php
 
 		-
 			rawMessage: 'Method TYPO3\CMS\Core\Page\PageRenderer::render() invoked with 1 parameter, 0 required.'
 			identifier: arguments.count
 			count: 1
-			path: Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php
+			path: ../../Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php
 
 		-
 			rawMessage: 'Method TYPO3\CMS\Core\Page\PageRenderer::render() invoked with 1 parameter, 0 required.'
 			identifier: arguments.count
 			count: 1
-			path: Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php
+			path: ../../Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php
 
 		-
 			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
 			identifier: attribute.notFound
 			count: 4
-			path: Tests/Functional/View/HandlebarsViewFactoryTest.php
+			path: ../../Tests/Functional/View/HandlebarsViewFactoryTest.php
 
 		-
 			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
 			identifier: attribute.notFound
 			count: 2
-			path: Tests/Functional/View/HandlebarsViewTest.php
+			path: ../../Tests/Functional/View/HandlebarsViewTest.php
 
 		-
 			rawMessage: Cannot access offset 'FE' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
+			path: ../../Tests/Unit/Renderer/HandlebarsRendererTest.php
 
 		-
 			rawMessage: Cannot access offset 'debug' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: Tests/Unit/Renderer/HandlebarsRendererTest.php
+			path: ../../Tests/Unit/Renderer/HandlebarsRendererTest.php

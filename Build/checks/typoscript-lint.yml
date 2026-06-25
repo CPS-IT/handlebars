@@ -1,7 +1,7 @@
 paths:
-  - Configuration/Sets/*/*.typoscript
-  - Configuration/TypoScript/*
-  - Configuration/TSconfig/*
+  - Configuration
+filePatterns:
+  - "*.typoscript"
 sniffs:
   - class: Indentation
     parameters:

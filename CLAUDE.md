@@ -14,17 +14,31 @@ All development commands run via Composer scripts. The `.Build/` directory is th
 # Install dependencies
 composer install
 
-# Linting (dry-run checks)
-composer lint              # all linters
-composer lint:php          # PHP-CS-Fixer
-composer lint:typoscript   # TypoScript lint
+# Run all checks (deps, refactor, static analysis, style)
+composer check
 
-# Auto-fix
-composer fix               # all fixers
-composer fix:php           # PHP-CS-Fixer
+# Style checks (dry-run)
+composer check:style           # all style checks
+composer check:style:php       # PHP-CS-Fixer
+composer check:style:typoscript # TypoScript lint
+composer check:style:composer  # composer normalize
+composer check:style:editorconfig # EditorConfig
 
 # Static analysis (PHPStan level max)
-composer sca:php
+composer check:static
+
+# Rector dry-run
+composer check:refactor:php
+
+# Dependency analysis
+composer check:deps
+
+# Auto-fix
+composer fix               # all fixers (composer, editorconfig, PHP)
+composer fix:php           # PHP-CS-Fixer
+
+# Apply Rector refactoring
+composer refactor:php
 
 # Tests
 composer test              # unit + functional
@@ -35,11 +49,8 @@ composer test:functional   # functional only (requires MySQL)
 composer test:unit -- Tests/Unit/Renderer/HandlebarsRendererTest.php
 composer test:unit -- --filter testSomeMethodName
 
-# Rector (code migration, dry-run by default)
-composer migration:rector
-
-# Dependency analysis
-composer analyze
+# Docs
+composer docs              # build and open docs
 ```
 
 ## Architecture
@@ -97,8 +108,8 @@ Services are wired in `Configuration/Services.yaml` and `Configuration/Services.
 
 ## Code Conventions
 
-- All files have `declare(strict_types=1)` and a GPL-2.0 license header (enforced by PHP-CS-Fixer via `.php-cs-fixer.php`)
-- PHPStan runs at **level max** — all new code must pass without adding to the baseline (`phpstan-baseline.neon`)
+- All files have `declare(strict_types=1)` and a GPL-2.0 license header (enforced by PHP-CS-Fixer via `Build/checks/.php-cs-fixer.php`)
+- PHPStan runs at **level max** — all new code must pass without adding to the baseline (`Build/checks/phpstan-baseline.neon`)
 - Classes are `final` by default; use `readonly` properties where possible, but prefer `final readonly` classes
 - Namespace root: `CPSIT\Typo3Handlebars\`, tests: `CPSIT\Typo3Handlebars\Tests\`
 
@@ -106,4 +117,4 @@ Services are wired in `Configuration/Services.yaml` and `Configuration/Services.
 
 Unit tests (`Tests/Unit/`) test classes in isolation. Functional tests (`Tests/Functional/`) spin up a real TYPO3 instance and require a MySQL database (configured via environment variables for CI). Functional test fixtures and a companion TYPO3 extension live in `Tests/Functional/Fixtures/`.
 
-Coverage reports are written to `.Build/coverage/` (HTML under `html/`, merged Clover XML at `clover.xml`).
+Coverage reports are written to `Build/tests/coverage/` (HTML under `html/_merged/`, merged Clover XML at `clover.xml`). Run `composer test:coverage` to generate them.

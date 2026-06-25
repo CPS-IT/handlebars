@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer\Template\Path;
 
-use CPSIT\Typo3Handlebars\Configuration;
+use CPSIT\Typo3Handlebars\Extension;
 use TYPO3\CMS\Extbase;
 
 /**
@@ -60,7 +60,7 @@ final class TypoScriptPathProvider implements PathProvider
         if ($this->viewConfiguration === null) {
             $typoScriptConfiguration = $this->configurationManager->getConfiguration(
                 Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
-                Configuration\Extension::NAME,
+                Extension::NAME,
             );
             $viewConfiguration = $typoScriptConfiguration['view'] ?? [];
 

@@ -4,25 +4,25 @@ parameters:
 			rawMessage: Cannot access offset 'SYS' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: Classes/Configuration/Extension.php
+			path: Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'cacheConfigurations' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: Classes/Configuration/Extension.php
+			path: Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'caching' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 4
-			path: Classes/Configuration/Extension.php
+			path: Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'handlebars' on mixed.
 			identifier: offsetAccess.nonOffsetAccessible
 			count: 2
-			path: Classes/Configuration/Extension.php
+			path: Classes/Extension.php
 
 		-
 			rawMessage: Cannot access offset 'FE' on mixed.

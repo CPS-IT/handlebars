@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer\Variables;
 
-use CPSIT\Typo3Handlebars\Configuration;
+use CPSIT\Typo3Handlebars\Extension;
 use TYPO3\CMS\Extbase;
 
 /**
@@ -78,7 +78,7 @@ final class TypoScriptVariableProvider implements VariableProvider
     {
         $typoScriptConfiguration = $this->configurationManager->getConfiguration(
             Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
-            Configuration\Extension::NAME,
+            Extension::NAME,
         );
         $variables = $typoScriptConfiguration['variables'] ?? [];
 

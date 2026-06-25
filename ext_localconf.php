@@ -15,4 +15,4 @@
 
 \defined('TYPO3') or die();
 
-\CPSIT\Typo3Handlebars\Configuration\Extension::registerCaches();
+\CPSIT\Typo3Handlebars\Extension::registerCaches();

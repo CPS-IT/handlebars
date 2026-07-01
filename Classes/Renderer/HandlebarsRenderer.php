@@ -63,7 +63,7 @@ class HandlebarsRenderer implements Renderer
 
         // Resolve and compile template
         $template = $templateResolver($this->templateResolver);
-        $compileResult = $this->compile($template);
+        $compileResult = $this->compile($template, $context->getRequest());
 
         // Merge variables with default variables
         $mergedVariables = array_merge($this->variableBag->get(), $context->getVariables());
@@ -92,9 +92,9 @@ class HandlebarsRenderer implements Renderer
     /**
      * Compile given template by Handlebars compiler.
      */
-    protected function compile(string $template): string
+    protected function compile(string $template, ?Message\ServerRequestInterface $request = null): string
     {
-        if ($this->isCachingDisabled()) {
+        if ($this->isCachingDisabled($request)) {
             $cache = new Cache\NullCache();
         } else {
             $cache = $this->cache;
@@ -161,9 +161,10 @@ class HandlebarsRenderer implements Renderer
         return Handlebars\Handlebars::template($compileResult);
     }
 
-    protected function isCachingDisabled(): bool
+    protected function isCachingDisabled(?Message\ServerRequestInterface $request = null): bool
     {
-        $cacheInstruction = $this->getServerRequest()->getAttribute('frontend.cache.instruction');
+        $request ??= $this->getServerRequest();
+        $cacheInstruction = $request->getAttribute('frontend.cache.instruction');
 
         if ($cacheInstruction instanceof Frontend\Cache\CacheInstruction) {
             return !$cacheInstruction->isCachingAllowed();

@@ -1,18 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			rawMessage: Cannot access offset 'FE' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: ../../Classes/Renderer/HandlebarsRenderer.php
-
-		-
-			rawMessage: Cannot access offset 'debug' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 1
-			path: ../../Classes/Renderer/HandlebarsRenderer.php
-
-		-
 			rawMessage: 'Method CPSIT\Typo3Handlebars\Renderer\Template\Path\TypoScriptPathProvider::getViewConfiguration() should return array{partialRootPaths?: array<int, string>, templateRootPaths?: array<int, string>} but returns array<''partialRootPaths''|''templateRootPaths'', mixed>.'
 			identifier: return.type
 			count: 1
@@ -53,15 +41,3 @@ parameters:
 			identifier: attribute.notFound
 			count: 2
 			path: ../../Tests/Functional/View/HandlebarsViewTest.php
-
-		-
-			rawMessage: Cannot access offset 'FE' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: ../../Tests/Unit/Renderer/HandlebarsRendererTest.php
-
-		-
-			rawMessage: Cannot access offset 'debug' on mixed.
-			identifier: offsetAccess.nonOffsetAccessible
-			count: 2
-			path: ../../Tests/Unit/Renderer/HandlebarsRendererTest.php

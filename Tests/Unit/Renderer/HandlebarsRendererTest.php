@@ -21,7 +21,6 @@ use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use Psr\Log;
-use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
@@ -43,7 +42,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     private Src\Renderer\Helper\HelperRegistry $helperRegistry;
     private Src\Renderer\HandlebarsRenderer $subject;
     private Frontend\Cache\CacheInstruction $cacheInstruction;
-    private Core\TypoScript\FrontendTypoScript $frontendTypoScript;
 
     protected function setUp(): void
     {
@@ -53,7 +51,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->buildServerRequest($cacheInstruction, $frontendTypoScript);
 
         $this->cacheInstruction = $cacheInstruction;
-        $this->frontendTypoScript = $frontendTypoScript;
     }
 
     #[Framework\Attributes\Test]
@@ -162,24 +159,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderTemplateDoesNotStoreRenderedTemplateInCacheIfDebugModeIsEnabled(): void
-    {
-        $context = new Src\Renderer\RenderingContext('DummyTemplate');
-        $context->assign('name', 'foo');
-
-        // Test with TypoScript config.debug = 1
-        $this->frontendTypoScript->setConfigArray(['debug' => '1']);
-        $this->renewSubject()->renderTemplate($context);
-        $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
-
-        // Test with TYPO3_CONF_VARS
-        $this->frontendTypoScript->setConfigArray([]);
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
-        $this->renewSubject()->renderTemplate($context);
-        $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
-    }
-
-    #[Framework\Attributes\Test]
     public function renderTemplateDoesNotStoreRenderedTemplateInCacheIfCachingIsDisabled(): void
     {
         $context = new Src\Renderer\RenderingContext('DummyTemplate');
@@ -189,20 +168,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->subject->renderTemplate($context);
 
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
-    }
-
-    #[Framework\Attributes\Test]
-    public function renderTemplateThrowsExceptionOnErrorIfDebugModeIsEnabled(): void
-    {
-        $context = new Src\Renderer\RenderingContext('DummyTemplate');
-
-        $this->frontendTypoScript->setConfigArray(['debug' => '1']);
-
-        $this->expectExceptionObject(
-            new \Exception('"name" not defined'),
-        );
-
-        $this->renewSubject()->renderTemplate($context);
     }
 
     #[Framework\Attributes\Test]
@@ -372,24 +337,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
-    public function renderPartialDoesNotStoreRenderedPartialInCacheIfDebugModeIsEnabled(): void
-    {
-        $context = new Src\Renderer\RenderingContext('DummyPartial');
-        $context->assign('name', 'foo');
-
-        // Test with TypoScript config.debug = 1
-        $this->frontendTypoScript->setConfigArray(['debug' => '1']);
-        $this->renewSubject()->renderPartial($context);
-        $this->assertCacheIsEmptyForTemplate('DummyPartial.hbs', true);
-
-        // Test with TYPO3_CONF_VARS
-        $this->frontendTypoScript->setConfigArray([]);
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] = 1;
-        $this->renewSubject()->renderPartial($context);
-        $this->assertCacheIsEmptyForTemplate('DummyPartial.hbs', true);
-    }
-
-    #[Framework\Attributes\Test]
     public function renderPartialDoesNotStoreRenderedPartialInCacheIfCachingIsDisabled(): void
     {
         $context = new Src\Renderer\RenderingContext('DummyPartial');
@@ -399,20 +346,6 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->subject->renderPartial($context);
 
         $this->assertCacheIsEmptyForTemplate('DummyPartial.hbs', true);
-    }
-
-    #[Framework\Attributes\Test]
-    public function renderPartialThrowsExceptionOnErrorIfDebugModeIsEnabled(): void
-    {
-        $context = new Src\Renderer\RenderingContext('DummyPartial');
-
-        $this->frontendTypoScript->setConfigArray(['debug' => '1']);
-
-        $this->expectExceptionObject(
-            new \Exception('"name" not defined'),
-        );
-
-        $this->renewSubject()->renderPartial($context);
     }
 
     #[Framework\Attributes\Test]

@@ -24,7 +24,6 @@ use DevTheorem\Handlebars;
 use Psr\EventDispatcher;
 use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -37,8 +36,6 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\Autoconfigure(tags: ['handlebars.renderer'])]
 class HandlebarsRenderer implements Renderer
 {
-    protected ?bool $debugMode = null;
-
     public function __construct(
         protected readonly Cache\Cache $cache,
         protected readonly EventDispatcher\EventDispatcherInterface $eventDispatcher,
@@ -97,8 +94,7 @@ class HandlebarsRenderer implements Renderer
      */
     protected function compile(string $template): string
     {
-        // Disable cache if debugging is enabled or caching is disabled
-        if ($this->isDebugModeEnabled() || $this->isCachingDisabled()) {
+        if ($this->isCachingDisabled()) {
             $cache = new Cache\NullCache();
         } else {
             $cache = $this->cache;
@@ -125,7 +121,6 @@ class HandlebarsRenderer implements Renderer
     {
         return new Handlebars\Options(
             knownHelpers: $this->getKnownHelpers(),
-            strict: $this->isDebugModeEnabled(),
         );
     }
 
@@ -175,21 +170,6 @@ class HandlebarsRenderer implements Renderer
         }
 
         return false;
-    }
-
-    protected function isDebugModeEnabled(): bool
-    {
-        if ($this->debugMode !== null) {
-            return $this->debugMode;
-        }
-
-        $typoScript = $this->getServerRequest()->getAttribute('frontend.typoscript');
-
-        if ($typoScript instanceof Core\TypoScript\FrontendTypoScript && (bool)($typoScript->getConfigArray()['debug'] ?? false)) {
-            return true;
-        }
-
-        return $this->debugMode = (bool)($GLOBALS['TYPO3_CONF_VARS']['FE']['debug'] ?? false);
     }
 
     protected function getServerRequest(): Message\ServerRequestInterface

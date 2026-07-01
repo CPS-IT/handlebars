@@ -147,6 +147,28 @@ Helper registration
 The :file:`Services.yaml` tag approach still works and can be used if you
 cannot modify the helper class (e.g., a third-party class).
 
+..  _migration-1-debug-mode:
+
+Debug mode
+----------
+
+The debug mode built into :php:`HandlebarsRenderer` has been removed. Previously,
+when TYPO3's :typoscript:`config.debug` flag or
+:php:`$GLOBALS['TYPO3_CONF_VARS']['FE']['debug']` was enabled, the renderer
+automatically bypassed the template cache and switched the Handlebars compiler
+to strict mode (throwing on missing variables instead of silently returning
+empty strings).
+
+There is no direct replacement. Use the following alternatives instead:
+
+*   **Cache bypass:** Disable caching explicitly via
+    :ref:`TYPO3's caching framework <t3coreapi:caching>` configuration or by
+    setting :typoscript:`config.no_cache = 1` during development.
+*   **Strict template validation:** Use the shipped :handlebars:`{{debug}}`
+    helper inside templates to inspect variable values at render time. For
+    programmatic checks, call :php:`Handlebars::precompile()` directly to
+    inspect the generated PHP code.
+
 ..  _migration-1-template-paths:
 
 Template path configuration

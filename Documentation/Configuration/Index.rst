@@ -15,4 +15,3 @@ container. This section covers all available options.
     TemplatePaths
     Variables
     Cache
-    Debugging

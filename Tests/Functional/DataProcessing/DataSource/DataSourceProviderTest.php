@@ -37,7 +37,6 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     use Tests\FrontendRequestTrait;
 
     private Src\DataProcessing\DataSource\DataSourceProvider $subject;
-    private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
 
     public function setUp(): void
     {
@@ -48,8 +47,10 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
         $this->subject = new Src\DataProcessing\DataSource\DataSourceProvider(
             new Core\TypoScript\TypoScriptService(),
         );
-        $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
-        $this->contentObjectRenderer->setRequest($request);
+
+        $contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
+        $contentObjectRenderer->setRequest($request);
+
         $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
     }
 

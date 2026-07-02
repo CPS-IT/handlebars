@@ -40,6 +40,7 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
     protected array $testExtensionsToLoad = [
         'handlebars',
         'test_extension',
+        'typed_extconf',
     ];
 
     private Message\ServerRequestInterface $request;

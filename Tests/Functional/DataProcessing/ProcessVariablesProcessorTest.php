@@ -38,6 +38,7 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
 
     protected array $testExtensionsToLoad = [
         'handlebars',
+        'typed_extconf',
     ];
 
     private Log\Test\TestLogger $logger;

@@ -36,6 +36,7 @@ final class FlatTemplateResolverTest extends TestingFramework\Core\Functional\Fu
     protected array $testExtensionsToLoad = [
         'handlebars',
         'test_extension',
+        'typed_extconf',
     ];
 
     protected bool $initializeDatabase = false;

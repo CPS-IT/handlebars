@@ -41,6 +41,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
     protected array $testExtensionsToLoad = [
         'handlebars',
         'test_extension',
+        'typed_extconf',
     ];
 
     private Src\Renderer\HandlebarsRenderer $renderer;
@@ -58,6 +59,7 @@ final class BlockHelperTest extends TestingFramework\Core\Functional\FunctionalT
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
+            $this->get(Src\Configuration\HandlebarsConfiguration::class),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
             $this->templateResolver,

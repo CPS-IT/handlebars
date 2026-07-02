@@ -42,6 +42,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     protected array $testExtensionsToLoad = [
         'handlebars',
         'test_extension',
+        'typed_extconf',
     ];
 
     /**

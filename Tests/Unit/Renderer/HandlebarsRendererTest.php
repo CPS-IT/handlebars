@@ -159,6 +159,16 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
+    public function renderTemplateDoesNotStoreRenderedTemplateInCacheIfStrictModeIsEnabled(): void
+    {
+        $context = new Src\Renderer\RenderingContext('DummyTemplate');
+        $context->assign('name', 'foo');
+
+        $this->renewSubject(enableStrictMode: true)->renderTemplate($context);
+        $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
+    }
+
+    #[Framework\Attributes\Test]
     public function renderTemplateDoesNotStoreRenderedTemplateInCacheIfCachingIsDisabled(): void
     {
         $context = new Src\Renderer\RenderingContext('DummyTemplate');
@@ -168,6 +178,18 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->subject->renderTemplate($context);
 
         $this->assertCacheIsEmptyForTemplate('DummyTemplate.hbs');
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderTemplateThrowsExceptionOnErrorIfStrictModeIsEnabled(): void
+    {
+        $context = new Src\Renderer\RenderingContext('DummyTemplate');
+
+        $this->expectExceptionObject(
+            new \Exception('"name" not defined'),
+        );
+
+        $this->renewSubject(enableStrictMode: true)->renderTemplate($context);
     }
 
     #[Framework\Attributes\Test]
@@ -337,6 +359,16 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     }
 
     #[Framework\Attributes\Test]
+    public function renderPartialDoesNotStoreRenderedPartialInCacheIfStrictModeIsEnabled(): void
+    {
+        $context = new Src\Renderer\RenderingContext('DummyPartial');
+        $context->assign('name', 'foo');
+
+        $this->renewSubject(enableStrictMode: true)->renderPartial($context);
+        $this->assertCacheIsEmptyForTemplate('DummyPartial.hbs', true);
+    }
+
+    #[Framework\Attributes\Test]
     public function renderPartialDoesNotStoreRenderedPartialInCacheIfCachingIsDisabled(): void
     {
         $context = new Src\Renderer\RenderingContext('DummyPartial');
@@ -346,6 +378,18 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
         $this->subject->renderPartial($context);
 
         $this->assertCacheIsEmptyForTemplate('DummyPartial.hbs', true);
+    }
+
+    #[Framework\Attributes\Test]
+    public function renderPartialThrowsExceptionOnErrorIfStrictModeIsEnabled(): void
+    {
+        $context = new Src\Renderer\RenderingContext('DummyPartial');
+
+        $this->expectExceptionObject(
+            new \Exception('"name" not defined'),
+        );
+
+        $this->renewSubject(enableStrictMode: true)->renderPartial($context);
     }
 
     #[Framework\Attributes\Test]
@@ -435,13 +479,16 @@ final class HandlebarsRendererTest extends TestingFramework\Core\Unit\UnitTestCa
     /**
      * @param class-string<Src\Renderer\HandlebarsRenderer> $rendererClass
      */
-    private function renewSubject(string $rendererClass = Src\Renderer\HandlebarsRenderer::class): Src\Renderer\HandlebarsRenderer
-    {
+    private function renewSubject(
+        string $rendererClass = Src\Renderer\HandlebarsRenderer::class,
+        bool $enableStrictMode = false,
+    ): Src\Renderer\HandlebarsRenderer {
         $this->eventDispatcher = new Tests\Unit\Fixtures\Classes\DummyEventDispatcher();
         $this->helperRegistry = new Src\Renderer\Helper\HelperRegistry(new Log\Test\TestLogger());
 
         return $this->subject = new $rendererClass(
             $this->getCache(),
+            new Src\Configuration\HandlebarsConfiguration(new Src\Configuration\RenderingConfiguration($enableStrictMode)),
             $this->eventDispatcher,
             $this->helperRegistry,
             $this->getTemplateResolver(),

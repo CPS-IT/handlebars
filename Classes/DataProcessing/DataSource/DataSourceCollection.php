@@ -89,6 +89,17 @@ final class DataSourceCollection
         return $default;
     }
 
+    public function resolveCurrentUid(): int|string
+    {
+        $uid = $this->resolve('uid', DataSource::ContentObjectRenderer);
+
+        if (!is_numeric($uid)) {
+            return '*unknown*';
+        }
+
+        return (int)$uid;
+    }
+
     /**
      * @param DataSource|list<DataSource> $dataSources
      */

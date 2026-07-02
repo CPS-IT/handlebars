@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Renderer;
 
 use CPSIT\Typo3Handlebars\Cache;
+use CPSIT\Typo3Handlebars\Configuration;
 use CPSIT\Typo3Handlebars\Event;
 use CPSIT\Typo3Handlebars\Exception;
 use DevTheorem\Handlebars;
@@ -38,6 +39,7 @@ class HandlebarsRenderer implements Renderer
 {
     public function __construct(
         protected readonly Cache\Cache $cache,
+        protected readonly Configuration\HandlebarsConfiguration $configuration,
         protected readonly EventDispatcher\EventDispatcherInterface $eventDispatcher,
         protected readonly Helper\HelperRegistry $helperRegistry,
         protected readonly Template\TemplateResolver $templateResolver,
@@ -94,7 +96,7 @@ class HandlebarsRenderer implements Renderer
      */
     protected function compile(string $template, ?Message\ServerRequestInterface $request = null): string
     {
-        if ($this->isCachingDisabled($request)) {
+        if ($this->configuration->rendering->strictMode || $this->isCachingDisabled($request)) {
             $cache = new Cache\NullCache();
         } else {
             $cache = $this->cache;
@@ -121,6 +123,7 @@ class HandlebarsRenderer implements Renderer
     {
         return new Handlebars\Options(
             knownHelpers: $this->getKnownHelpers(),
+            strict: $this->configuration->rendering->strictMode,
         );
     }
 

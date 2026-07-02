@@ -159,11 +159,16 @@ automatically bypassed the template cache and switched the Handlebars compiler
 to strict mode (throwing on missing variables instead of silently returning
 empty strings).
 
-There is no direct replacement. Use the following alternatives instead:
+There is no automatic replacement tied to a debug flag. Use the following
+alternatives instead:
 
 *   **Cache bypass:** Disable caching explicitly via
     :ref:`TYPO3's caching framework <t3coreapi:caching>` configuration or by
     setting :typoscript:`config.no_cache = 1` during development.
+*   **Strict compilation:** Enable
+    :ref:`rendering.strictMode <extension-configuration-rendering-strict-mode>`
+    in the extension configuration. Unlike the previous behavior, this is a
+    persistent setting rather than one tied to TYPO3's debug flags.
 *   **Strict template validation:** Use the shipped :handlebars:`{{debug}}`
     helper inside templates to inspect variable values at render time. For
     programmatic checks, call :php:`Handlebars::precompile()` directly to

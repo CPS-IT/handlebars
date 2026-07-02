@@ -40,6 +40,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
     protected array $testExtensionsToLoad = [
         'handlebars',
         'test_extension',
+        'typed_extconf',
     ];
 
     protected bool $initializeDatabase = false;
@@ -59,6 +60,7 @@ final class ExtendHelperTest extends TestingFramework\Core\Functional\Functional
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
+            $this->get(Src\Configuration\HandlebarsConfiguration::class),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
             $this->templateResolver,

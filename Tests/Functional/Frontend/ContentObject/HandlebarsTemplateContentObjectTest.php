@@ -39,6 +39,7 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
 
     protected array $testExtensionsToLoad = [
         'handlebars',
+        'typed_extconf',
     ];
 
     private Tests\Functional\Fixtures\Classes\DummyRenderer $renderer;

@@ -6,8 +6,9 @@
 Configuration
 =============
 
-The extension is configured through TypoScript and the Symfony service
-container. This section covers all available options.
+The extension is configured through TypoScript, the Symfony service
+container, and TYPO3's extension configuration. This section covers all
+available options.
 
 ..  toctree::
     :maxdepth: 1
@@ -15,3 +16,4 @@ container. This section covers all available options.
     TemplatePaths
     Variables
     Cache
+    ExtensionConfiguration

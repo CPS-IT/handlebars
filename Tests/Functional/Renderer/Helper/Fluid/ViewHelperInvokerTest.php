@@ -41,6 +41,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
     protected array $testExtensionsToLoad = [
         'handlebars',
         'test_extension',
+        'typed_extconf',
     ];
 
     private Log\Test\TestLogger $logger;
@@ -60,6 +61,7 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
         $this->templateResolver = new Src\Renderer\Template\FlatTemplateResolver($this->getTemplatePaths());
         $this->renderer = new Src\Renderer\HandlebarsRenderer(
             new Src\Cache\NullCache(),
+            $this->get(Src\Configuration\HandlebarsConfiguration::class),
             new EventDispatcher\EventDispatcher(),
             $helperRegistry,
             $this->templateResolver,

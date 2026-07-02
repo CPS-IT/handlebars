@@ -1,0 +1,4 @@
+# customsubcategory=options=Options
+
+# cat=rendering/options/10; type=boolean; label=Strict mode:Enable strict mode for the Handlebars renderer, leading to a more opinionated template compilation, which will e.g. fail once a consumed variable does not exist.
+rendering.strictMode = 0

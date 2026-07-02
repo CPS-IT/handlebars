@@ -38,6 +38,7 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
 
     protected array $testExtensionsToLoad = [
         'handlebars',
+        'typed_extconf',
     ];
 
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;

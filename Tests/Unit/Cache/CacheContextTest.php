@@ -51,12 +51,12 @@ final class CacheContextTest extends TestingFramework\Core\Unit\UnitTestCase
     public function calculateCacheIdentifierTakesPackageVersionFromInstalledPhpIntoAccount(): void
     {
         $this->filesystem->copy(
-            \dirname(__DIR__) . '/Fixtures/Files/installed.php',
-            \dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
+            dirname(__DIR__) . '/Fixtures/Files/installed.php',
+            dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
         );
 
-        $expected = \sha1(
-            \serialize([
+        $expected = sha1(
+            serialize([
                 'foo',
                 $this->subject->options,
                 '1.0.0.0',
@@ -70,11 +70,11 @@ final class CacheContextTest extends TestingFramework\Core\Unit\UnitTestCase
     public function calculateCacheIdentifierTakesPackageVersionFromInstalledVersionsClassIntoAccount(): void
     {
         $this->filesystem->remove(
-            \dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
+            dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
         );
 
-        $expected = \sha1(
-            \serialize([
+        $expected = sha1(
+            serialize([
                 'foo',
                 $this->subject->options,
                 InstalledVersions::getVersion('devtheorem/php-handlebars'),
@@ -89,15 +89,15 @@ final class CacheContextTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         // Make sure installed.php does not exist
         $this->filesystem->remove(
-            \dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
+            dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
         );
 
         $cacheIdentifier = $this->subject->calculateCacheIdentifier();
 
         // Trigger package version change
         $this->filesystem->copy(
-            \dirname(__DIR__) . '/Fixtures/Files/installed.php',
-            \dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
+            dirname(__DIR__) . '/Fixtures/Files/installed.php',
+            dirname(__DIR__, 3) . '/Resources/Private/Libs/vendor/composer/installed.php',
         );
 
         $clone = clone $this->subject;

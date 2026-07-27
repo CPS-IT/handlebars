@@ -70,8 +70,8 @@ final readonly class VariablesProcessor
             // after left angle bracket is intended to avoid treating static text like <foo> as reference.
             // Since all refernces are written like =< foo, we can safely assume a combination of a left
             // angle bracket followed by a whitespace is a reference to be resolved.
-            if (is_string($value) &&
-                ($this->contentObjectRenderer->getContentObject($value) !== null || str_starts_with($value, '< '))
+            if (is_string($value)
+                && ($this->contentObjectRenderer->getContentObject($value) !== null || str_starts_with($value, '< '))
             ) {
                 $cObjConfName = $name . '.';
                 $variablesToProcess[$name] = $value;

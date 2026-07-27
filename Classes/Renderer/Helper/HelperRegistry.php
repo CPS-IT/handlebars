@@ -49,7 +49,7 @@ final class HelperRegistry implements Core\SingletonInterface
             $this->helpers[$name] = $this->decorateHelperFunction(
                 $this->resolveHelperFunction($function),
             );
-        } catch (Exception\InvalidHelperException | \ReflectionException $exception) {
+        } catch (Exception\InvalidHelperException|\ReflectionException $exception) {
             $this->logger->critical(
                 'Error while registering Handlebars helper "' . $name . '".',
                 [

@@ -50,7 +50,7 @@ final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
             '{{join "foo" baz}}',
             'foobaz',
             [
-                'baz' => new class () implements \Stringable {
+                'baz' => new class implements \Stringable {
                     public function __toString(): string
                     {
                         return 'baz';
@@ -71,7 +71,7 @@ final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
             'foo,baz,bar',
             [
                 'bar' => 'bar',
-                'baz' => new class () implements \Stringable {
+                'baz' => new class implements \Stringable {
                     public function __toString(): string
                     {
                         return 'baz';
@@ -103,7 +103,7 @@ final class JoinHelperTest extends TestingFramework\Core\Unit\UnitTestCase
 
         $parts = [
             'foo',
-            new class () implements \Stringable {
+            new class implements \Stringable {
                 public function __toString(): string
                 {
                     return 'baz';

@@ -409,7 +409,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         $this->cObjGetSingleCalls[$nextKey] = [$contentObjectName, $contentObjectConfiguration, $return];
 
         if ($nextKey === $count - 1) {
-            $this->contentObjectRendererMock->expects(self::exactly($count))
+            $this->contentObjectRendererMock->expects($this->exactly($count))
                 ->method('cObjGetSingle')
                 /* @phpstan-ignore argument.type */
                 ->willReturnMap($this->cObjGetSingleCalls)

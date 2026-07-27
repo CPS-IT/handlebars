@@ -64,8 +64,8 @@ final class TypoScriptPathProvider implements PathProvider
             );
             $viewConfiguration = $typoScriptConfiguration['view'] ?? [];
 
-            if (\is_array($viewConfiguration)) {
-                $this->viewConfiguration = \array_intersect_key($viewConfiguration, [self::PARTIALS => true, self::TEMPLATES => true]);
+            if (is_array($viewConfiguration)) {
+                $this->viewConfiguration = array_intersect_key($viewConfiguration, [self::PARTIALS => true, self::TEMPLATES => true]);
             } else {
                 $this->viewConfiguration = [];
             }

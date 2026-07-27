@@ -229,7 +229,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Functional\Function
             $contentObjectConfiguration['templateName'] = '@foo';
         }
 
-        $this->contentObjectRendererMock->expects(self::once())
+        $this->contentObjectRendererMock->expects($this->once())
             ->method('cObjGetSingle')
             ->with('HANDLEBARSTEMPLATE', $contentObjectConfiguration)
             ->willReturn($return)

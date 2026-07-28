@@ -39,6 +39,7 @@ final class TestController extends Controller\HandlebarsController
     public function renderedTemplateAction(): Message\ResponseInterface
     {
         $this->view->assign('name', 'Foo');
+        $this->view->assign('request', $this->request);
 
         return $this->htmlResponse(
             $this->renderView(),

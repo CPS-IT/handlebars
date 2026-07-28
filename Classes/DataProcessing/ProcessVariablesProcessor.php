@@ -153,7 +153,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
                 [
                     'source' => $exception->dataSource->value,
                     'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolve('uid', DataSource\DataSource::ContentObjectRenderer, '*unknown*'),
+                    'uid' => $collection->resolveCurrentUid(),
                 ],
             );
         } catch (Exception\DataSourceIsNotSupported $exception) {
@@ -162,7 +162,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
                 [
                     'source' => $exception->dataSourceIdentifier,
                     'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolve('uid', DataSource\DataSource::ContentObjectRenderer, '*unknown*'),
+                    'uid' => $collection->resolveCurrentUid(),
                 ],
             );
         } catch (Exception\PathIsMissingInDataSource $exception) {
@@ -172,7 +172,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
                     'path' => $exception->path,
                     'source' => $exception->dataSource->value,
                     'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolve('uid', DataSource\DataSource::ContentObjectRenderer, '*unknown*'),
+                    'uid' => $collection->resolveCurrentUid(),
                 ],
             );
         }

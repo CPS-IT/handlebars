@@ -22,7 +22,7 @@ Extbase\Utility\ExtensionUtility::configurePlugin(
     'TestExtension',
     'TestDefaultTemplate',
     [
-        Controller\TestController::class => 'defaultTemplate',
+        Controller\TestController::class => ['defaultTemplate'],
     ],
     [],
     Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
@@ -32,7 +32,7 @@ Extbase\Utility\ExtensionUtility::configurePlugin(
     'TestExtension',
     'TestRenderedTemplate',
     [
-        Controller\TestController::class => 'renderedTemplate',
+        Controller\TestController::class => ['renderedTemplate'],
     ],
     [],
     Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
@@ -42,7 +42,7 @@ Extbase\Utility\ExtensionUtility::configurePlugin(
     'TestExtension',
     'TestSpecificTemplate',
     [
-        Controller\TestController::class => 'specificTemplate',
+        Controller\TestController::class => ['specificTemplate'],
     ],
     [],
     Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,

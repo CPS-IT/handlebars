@@ -46,7 +46,7 @@ final class HandlebarsControllerTest extends TestingFramework\Core\Functional\Fu
 
         $this->importCSVDataSet(dirname(__DIR__) . '/Fixtures/Database/pages.csv');
         $this->setUpFrontendRootPage(1, [
-            'EXT:test_extension/Configuration/TypoScript/setup.typoscript',
+            'EXT:test_extension/Configuration/Sets/Test/setup.typoscript',
         ]);
     }
 
@@ -66,12 +66,13 @@ final class HandlebarsControllerTest extends TestingFramework\Core\Functional\Fu
     #[Framework\Attributes\Test]
     public function renderViewRendersConfiguredExtbaseHandlebarsView(): void
     {
-        $response = $this->executeFrontendSubRequest(
-            new TestingFramework\Core\Functional\Framework\Frontend\InternalRequest('http://typo3-testing.local/subpage-1'),
-        );
+        $request = new TestingFramework\Core\Functional\Framework\Frontend\InternalRequest('http://typo3-testing.local/subpage-1');
+        $request = $request->withHeader('X-FOO', 'baz');
+
+        $response = $this->executeFrontendSubRequest($request);
 
         self::assertSame(
-            'This is the rendered template, Foo!',
+            'This is the rendered template, Foo! Foo: baz',
             trim((string)$response->getBody()),
         );
     }

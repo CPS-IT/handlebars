@@ -22,3 +22,16 @@ plugin.tx_handlebars {
     }
   }
 }
+
+plugin.tx_testextension.handlebars {
+  Test::renderedTemplate {
+    dataProcessing {
+      10 = object-access
+      10 {
+        object = request
+        path = headers[X-FOO][0]
+        as = foo
+      }
+    }
+  }
+}

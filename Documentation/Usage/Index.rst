@@ -15,7 +15,7 @@ from TYPO3 content elements and page objects.
     QuickStart
     ContentObject
     ExtbasePlugin
-    DataProcessors
+    DataProcessors/Index
     CustomHelpers
     Events
     AssetManagement

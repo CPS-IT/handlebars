@@ -94,7 +94,11 @@
 	},
 	"extra": {
 		"typo3/cms": {
+			"Package": {
+				"providesPackages": {}
+			},
 			"extension-key": "handlebars",
+			"version": "1.0.0",
 			"web-dir": ".Build/web"
 		},
 		"version-bumper": {

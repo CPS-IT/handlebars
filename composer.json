@@ -14,7 +14,8 @@
 	"support": {
 		"issues": "https://github.com/CPS-IT/handlebars/issues",
 		"source": "https://github.com/CPS-IT/handlebars",
-		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/"
+		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/",
+		"security": "https://github.com/CPS-IT/handlebars/blob/main/SECURITY.md"
 	},
 	"require": {
 		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",

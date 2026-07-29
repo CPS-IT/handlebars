@@ -43,6 +43,14 @@ There are several ways to get support for this extension:
 * Slack: https://typo3.slack.com/messages/ext-handlebars
 * GitHub: https://github.com/CPS-IT/handlebars/issues
 
+..  _security-policy:
+
+Security Policy
+===============
+
+Please read our `security policy <https://github.com/CPS-IT/handlebars/blob/main/SECURITY.md>`__
+if you discover a security vulnerability in this extension.
+
 ..  _license:
 
 License

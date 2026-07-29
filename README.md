@@ -52,6 +52,11 @@ Download the zip file from
 Please have a look at the
 [official extension documentation](https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/).
 
+## 🔒 Security Policy
+
+Please read our [security policy](SECURITY.md) if you discover a security
+vulnerability in this extension.
+
 ## ⭐ License
 
 This project is licensed under [GNU General Public License 2.0 (or later)](LICENSE.md).

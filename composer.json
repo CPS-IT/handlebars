@@ -13,6 +13,7 @@
 	],
 	"support": {
 		"issues": "https://github.com/CPS-IT/handlebars/issues",
+		"chat": "https://typo3.slack.com/archives/C0281DBRFCZ",
 		"source": "https://github.com/CPS-IT/handlebars",
 		"docs": "https://docs.typo3.org/p/cpsit/typo3-handlebars/main/en-us/",
 		"security": "https://github.com/CPS-IT/handlebars/blob/main/SECURITY.md"

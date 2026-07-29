@@ -40,7 +40,7 @@ Support
 
 There are several ways to get support for this extension:
 
-* Slack: https://typo3.slack.com/messages/ext-handlebars
+* Slack: https://typo3.slack.com/archives/C0281DBRFCZ
 * GitHub: https://github.com/CPS-IT/handlebars/issues
 
 ..  _security-policy:

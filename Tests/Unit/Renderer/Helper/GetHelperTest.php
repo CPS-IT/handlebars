@@ -49,7 +49,7 @@ final class GetHelperTest extends TestingFramework\Core\Unit\UnitTestCase
         $context->assign('foo', 'baz');
 
         self::assertRenderedTemplateEqualsString(
-            '{{get context "variables[foo]"}}',
+            '{{get context "variables.foo"}}',
             'baz',
             [
                 'context' => $context,

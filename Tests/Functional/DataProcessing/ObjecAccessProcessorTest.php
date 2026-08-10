@@ -137,30 +137,25 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
-    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredPathIsNotGettable(): void
+    public function processAppliesNullToTargetVariableIfConfiguredPathIsNotGettable(): void
     {
+        $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
         $processorConfiguration = [
             'object' => 'someObject',
             'path' => 'unknownProperty',
         ];
         $processedData = [
-            'someObject' => new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
+            'someObject' => $object,
+        ];
+
+        $expected = [
+            'someObject' => $object,
+            'result' => null,
         ];
 
         self::assertSame(
-            $processedData,
+            $expected,
             $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
-        );
-        self::assertTrue(
-            $this->logger->hasWarning([
-                'message' => 'Configured object path "{path}" is not gettable for object at "{objectSource}" while processing {table}:{uid}.',
-                'context' => [
-                    'path' => 'unknownProperty',
-                    'objectSource' => 'someObject',
-                    'table' => 'tt_content',
-                    'uid' => 123,
-                ],
-            ]),
         );
     }
 

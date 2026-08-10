@@ -221,9 +221,8 @@ Dynamic property access
 =======================
 
 Handlebars dot-path notation resolves nested public properties:
-:handlebars:`{{user.address.city}}`. For getter resolution (using Extbase's
-:php:`ObjectAccess`) and dynamic key lookups (where the key itself is a variable),
-use the built-in :php:`get` helper:
+:handlebars:`{{user.address.city}}`. For getter resolution and dynamic key lookups
+(where the key itself is a variable), use the built-in :php:`get` helper:
 
 **Fluid:**
 
@@ -237,7 +236,7 @@ use the built-in :php:`get` helper:
 ..  code-block:: handlebars
 
     {{get object dynamicKey}}
-    {{get object 'privateProperty[arrayKey]'}}
+    {{get object 'privateProperty.arrayKey'}}
 
 ..  _migration-from-fluid-syntax-comments:
 

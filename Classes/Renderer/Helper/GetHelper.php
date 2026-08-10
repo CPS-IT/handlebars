@@ -20,7 +20,7 @@ namespace CPSIT\Typo3Handlebars\Renderer\Helper;
 use CPSIT\Typo3Handlebars\Attribute;
 use CPSIT\Typo3Handlebars\Exception;
 use DevTheorem\Handlebars;
-use TYPO3\CMS\Extbase;
+use TYPO3Fluid\Fluid;
 
 /**
  * GetHelper
@@ -33,7 +33,6 @@ final readonly class GetHelper implements Helper
 {
     /**
      * @throws Exception\TypeIsNotSupported
-     * @throws Extbase\Reflection\Exception\PropertyNotAccessibleException
      */
     public function render(Handlebars\HelperOptions $options, mixed $subject = null, ?string $name = null): mixed
     {
@@ -45,6 +44,10 @@ final readonly class GetHelper implements Helper
             throw new Exception\TypeIsNotSupported('string', $name);
         }
 
-        return Extbase\Reflection\ObjectAccess::getProperty($subject, $name);
+        $variableProvider = new Fluid\Core\Variables\StandardVariableProvider([
+            'subject' => $subject,
+        ]);
+
+        return $variableProvider->getByPath('subject.' . $name);
     }
 }

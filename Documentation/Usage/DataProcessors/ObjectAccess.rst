@@ -94,7 +94,7 @@ Properties
     :ref:`data-processor-object-access-data-sources`). Required.
 
 :typoscript:`path`
-    Property path passed to :php:`TYPO3\CMS\Extbase\Reflection\ObjectAccess::getProperty()`.
+    Property path passed to :php:`TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider::getByPath()`.
     Supports plain property names as well as dot-separated nested paths
     (e.g. :typoscript:`category.title`). Required.
 

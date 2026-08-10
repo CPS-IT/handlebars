@@ -19,8 +19,8 @@ namespace CPSIT\Typo3Handlebars\DataProcessing;
 
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
-use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
+use TYPO3Fluid\Fluid;
 
 /**
  * Data processor to access a given object by a given property path.
@@ -41,8 +41,6 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
      * @param array<string, mixed> $processorConfiguration
      * @param array<string|int, mixed> $processedData
      * @return array<string|int, mixed>
-     * @throws Extbase\Reflection\Exception\PropertyNotAccessibleException
-     * @throws Frontend\ContentObject\Exception\ContentRenderingException
      */
     public function process(
         Frontend\ContentObject\ContentObjectRenderer $cObj,
@@ -89,23 +87,9 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
             return $processedData;
         }
 
-        // Early return if object path is not gettable
-        if (!Extbase\Reflection\ObjectAccess::isPropertyGettable($object, $path)) {
-            $this->logger->warning(
-                'Configured object path "{path}" is not gettable for object at "{objectSource}" while processing {table}:{uid}.',
-                [
-                    'path' => $path,
-                    'objectSource' => $objectSource,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-
-            return $processedData;
-        }
-
         // Resolve property
-        $processedData[$as] = Extbase\Reflection\ObjectAccess::getProperty($object, $path);
+        $variableProvider = new Fluid\Core\Variables\StandardVariableProvider(['subject' => $object]);
+        $processedData[$as] = $variableProvider->getByPath('subject.' . $path);
 
         // Process additional data processors
         if (is_array($processedData[$as])) {

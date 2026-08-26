@@ -68,7 +68,7 @@ class HandlebarsRenderer implements Renderer
         $compileResult = $this->compile($template, $context->getRequest());
 
         // Merge variables with default variables
-        $mergedVariables = array_merge($this->variableBag->get(), $context->getVariables());
+        $mergedVariables = array_merge($this->variableBag->get($context->getRequest()), $context->getVariables());
 
         // Dispatch before rendering event
         $beforeRenderingEvent = new Event\BeforeRenderingEvent($context, $mergedVariables, $this);

@@ -15,11 +15,13 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Variables;
+namespace CPSIT\Typo3Handlebars\Tests\Functional\Renderer\Variables;
 
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
+use TYPO3\CMS\Core;
+use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
 /**
@@ -29,10 +31,13 @@ use TYPO3\TestingFramework;
  * @license GPL-2.0-or-later
  */
 #[Framework\Attributes\CoversClass(Src\Renderer\Variables\TypoScriptVariableProvider::class)]
-final class TypoScriptVariableProviderTest extends TestingFramework\Core\Unit\UnitTestCase
+final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    use Tests\FrontendRequestTrait;
+
     private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
     private Src\Renderer\Variables\TypoScriptVariableProvider $subject;
+    private \Psr\Http\Message\ServerRequestInterface $request;
 
     public function setUp(): void
     {
@@ -41,22 +46,57 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Unit\Un
         $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
         $this->configurationManager->configuration = [
             'variables' => [
-                'foo' => 'baz',
+                'foo' => [
+                    '_typoScriptNodeValue' => 'TEXT',
+                    'value' => 'baz',
+                ],
             ],
         ];
 
-        $this->subject = new Src\Renderer\Variables\TypoScriptVariableProvider($this->configurationManager);
+        $this->subject = new Src\Renderer\Variables\TypoScriptVariableProvider(
+            $this->configurationManager,
+            $this->get(Frontend\ContentObject\ContentDataProcessor::class),
+            $this->get(Core\TypoScript\TypoScriptService::class),
+        );
+
+        $this->request = $this->buildServerRequest();
+        $this->request = $this->request->withAttribute(
+            'currentContentObject',
+            $this->get(Frontend\ContentObject\ContentObjectRenderer::class),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function getReturnsEmptyArrayIfContentObjectRendererCannotBeResolved(): void
+    {
+        self::assertSame([], $this->subject->get());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getReturnsEmptyArrayIfResolvedVariablesAreInvalid(): void
+    {
+        $this->configurationManager->configuration = [
+            'variables' => 'foo',
+        ];
+
+        $this->subject->setRequest($this->request);
+
+        self::assertSame([], $this->subject->get());
     }
 
     #[Framework\Attributes\Test]
     public function getReturnsVariablesFetchedViaConfigurationManager(): void
     {
+        $this->subject->setRequest($this->request);
+
         self::assertSame(['foo' => 'baz'], $this->subject->get());
     }
 
     #[Framework\Attributes\Test]
     public function getCachesFetchedVariables(): void
     {
+        $this->subject->setRequest($this->request);
+
         self::assertSame(['foo' => 'baz'], $this->subject->get());
 
         $this->configurationManager->configuration = [];
@@ -65,8 +105,20 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Unit\Un
     }
 
     #[Framework\Attributes\Test]
+    public function isCacheableReturnsFalseIfRequestIsNotAttached(): void
+    {
+        self::assertFalse($this->subject->isCacheable());
+
+        $this->subject->setRequest($this->request);
+
+        self::assertTrue($this->subject->isCacheable());
+    }
+
+    #[Framework\Attributes\Test]
     public function objectCanBeAccessedAsReadOnlyArray(): void
     {
+        $this->subject->setRequest($this->request);
+
         // offsetExists
         self::assertTrue(isset($this->subject['foo']));
         self::assertFalse(isset($this->subject['baz']));

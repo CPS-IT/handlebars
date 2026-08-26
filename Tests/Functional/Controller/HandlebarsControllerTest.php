@@ -72,7 +72,7 @@ final class HandlebarsControllerTest extends TestingFramework\Core\Functional\Fu
         $response = $this->executeFrontendSubRequest($request);
 
         self::assertSame(
-            'This is the rendered template, Foo! Foo: baz',
+            'This is the rendered template, Foo! Foo: baz UID: 2',
             trim((string)$response->getBody()),
         );
     }

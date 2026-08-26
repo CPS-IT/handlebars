@@ -21,6 +21,11 @@ plugin.tx_handlebars {
       0 = EXT:test_extension/Resources/Templates
     }
   }
+
+  variables {
+    uid = TEXT
+    uid.field = uid
+  }
 }
 
 plugin.tx_testextension.handlebars {

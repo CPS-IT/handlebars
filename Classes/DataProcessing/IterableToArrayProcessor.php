@@ -19,11 +19,12 @@ namespace CPSIT\Typo3Handlebars\DataProcessing;
 
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
+use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
 
 /**
- * Data processor to convert a given iterable (e.g. a {@see \TYPO3\CMS\Extbase\Persistence\QueryResultInterface}
- * as returned by an Extbase repository, an {@see \TYPO3\CMS\Extbase\Persistence\ObjectStorage}, an
+ * Data processor to convert a given iterable (e.g. a {@see Extbase\Persistence\QueryResultInterface}
+ * as returned by an Extbase repository, an {@see Extbase\Persistence\ObjectStorage}, an
  * {@see \Iterator} or a {@see \Generator}) into a plain array.
  *
  * Example:
@@ -33,7 +34,7 @@ use TYPO3\CMS\Frontend;
  *
  *   $view->assign('news', $this->newsRepository->findAll());
  *
- * the resulting {@see \TYPO3\CMS\Extbase\Persistence\QueryResultInterface} is available as
+ * the resulting {@see Extbase\Persistence\QueryResultInterface} is available as
  * "news" variable and can be converted into a plain array for use within the Handlebars template.
  * Each converted item is made available as "data" and can be further transformed using nested
  * data processors:

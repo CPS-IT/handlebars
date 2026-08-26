@@ -80,7 +80,7 @@ Custom Handlebars helpers implement `Helper` and are auto-registered via the `#[
 
 ### Variable System
 
-Variables flow through `VariableProvider` implementations into `VariableBag`. The `VariablesProcessor` merges providers (TypoScript-sourced, global, etc.) before rendering. `MarkerBasedValueProcessor` handles `###MARKER###`-style substitution.
+Variables flow through `VariableProvider` implementations into `VariableBag`. The `VariablesProcessor` merges providers (TypoScript-sourced, global, etc.) before rendering. `MarkerBasedValueProcessor` handles `###MARKER###`-style substitution. Each provider declares `isCacheable()`; if any registered provider returns `false`, `VariableBag` skips caching its merged result and recomputes it on every `get()` call instead of memoizing it.
 
 ### TYPO3 Integration Points
 
@@ -98,7 +98,7 @@ Four interfaces are designed to be replaced or extended by consuming extensions:
 | `Renderer\Renderer` | `alias:` in `Services.yaml` | Replace full rendering stack |
 | `Renderer\Template\TemplateResolver` | `alias:` in `Services.yaml` | Replace template/partial path resolution; `BaseTemplateResolver` provides helpers |
 | `Renderer\Template\Path\PathProvider` | Auto via `#[AutoconfigureTag('handlebars.template_path_provider')]` | Contribute paths; requires `getPriority()` |
-| `Renderer\Variables\VariableProvider` | Auto via `#[AutoconfigureTag('handlebars.variable_provider')]` | Inject global variables; extends `\ArrayAccess`; requires `getPriority()` |
+| `Renderer\Variables\VariableProvider` | Auto via `#[AutoconfigureTag('handlebars.variable_provider')]` | Inject global variables; extends `\ArrayAccess`; requires `getPriority()` and `isCacheable()` |
 
 `DataProcessing\DataSource\DataSourceAwareProcessor` is used for `preProcessing`/`postProcessing` hooks inside `ProcessVariablesProcessor` and `HandlebarsTemplateContentObject`. Implementations are referenced by FQCN in TypoScript and instantiated via `GeneralUtility::makeInstance()` (see `SupportsDataSourceAwareProcessing` trait). `DataSourceCollection::resolve()` searches the four data sources (`ProcessorConfiguration`, `ProcessedData`, `ContentObjectRenderer`, `ContentObjectConfiguration`) in priority order.
 

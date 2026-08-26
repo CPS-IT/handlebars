@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Variables;
 
 use CPSIT\Typo3Handlebars as Src;
+use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
 use TYPO3\TestingFramework;
 
@@ -30,13 +31,18 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\Renderer\Variables\VariableBag::class)]
 final class VariableBagTest extends TestingFramework\Core\Unit\UnitTestCase
 {
+    private Tests\Unit\Fixtures\Classes\Renderer\Variables\DummyVariableProvider $variableProvider;
     private Src\Renderer\Variables\VariableBag $subject;
 
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->variableProvider = new Tests\Unit\Fixtures\Classes\Renderer\Variables\DummyVariableProvider([
+            'baz' => 'boo',
+        ]);
         $this->subject = new Src\Renderer\Variables\VariableBag([
+            $this->variableProvider,
             new Src\Renderer\Variables\GlobalVariableProvider([
                 'foo' => 'boo',
                 'baz' => 'foo',
@@ -52,10 +58,22 @@ final class VariableBagTest extends TestingFramework\Core\Unit\UnitTestCase
     {
         $expected = [
             'foo' => 'boo',
-            'baz' => 'foo',
+            'baz' => 'boo',
         ];
 
         self::assertSame($expected, $this->subject->get());
+    }
+
+    #[Framework\Attributes\Test]
+    public function getRespectsNonCacheableStateOfProviders(): void
+    {
+        $this->variableProvider->cacheable = false;
+
+        self::assertSame('boo', $this->subject->get()['baz']);
+
+        $this->variableProvider->variables = [];
+
+        self::assertSame('foo', $this->subject->get()['baz']);
     }
 
     #[Framework\Attributes\Test]
@@ -68,7 +86,7 @@ final class VariableBagTest extends TestingFramework\Core\Unit\UnitTestCase
 
         // offsetGet
         self::assertSame('boo', $this->subject['foo']);
-        self::assertSame('foo', $this->subject['baz']);
+        self::assertSame('boo', $this->subject['baz']);
         self::assertNull($this->subject['boo']);
     }
 

@@ -123,6 +123,16 @@ can overwrite keys from a lower-priority one. The built-in
 
         :returntype: array
 
+    ..  php:method:: isCacheable()
+
+        Return :php:`true` if the variables provided by this provider may be
+        cached. Return :php:`false` for request-dependent variables. If any
+        registered provider returns :php:`false`, the merged
+        :php:`VariableBag` result is not cached and is recomputed on every
+        access.
+
+        :returntype: bool
+
     ..  php:method:: getPriority()
 
         Return the priority of this provider. Higher values win.
@@ -148,6 +158,11 @@ can overwrite keys from a lower-priority one. The built-in
             return [
                 'siteName' => $this->siteFinder->getSiteByPageId(0)->getIdentifier(),
             ];
+        }
+
+        public function isCacheable(): bool
+        {
+            return true;
         }
 
         public function offsetExists(mixed $offset): bool

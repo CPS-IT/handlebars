@@ -27,14 +27,20 @@ Via TypoScript
 --------------
 
 Use :typoscript:`plugin.tx_handlebars.variables` to define variables available
-on every page where the TypoScript is active:
+on every page where the TypoScript is active. This is best suited for
+**dynamic** variables that depend on the current request context, since the
+underlying provider can only resolve them once a request is available (see
+the tip below):
 
 ..  code-block:: typoscript
 
     plugin.tx_handlebars {
         variables {
-            publicPath = /assets
-            siteName = My Site
+            pageTitle = TEXT
+            pageTitle.data = page:title
+
+            campaign = TEXT
+            campaign.field = campaign
         }
     }
 
@@ -58,6 +64,23 @@ These apply regardless of TypoScript configuration:
 
     When the same key is defined in both sources, the TypoScript value takes
     precedence.
+
+..  tip::
+
+    Prefer the service container for **static** variables. The underlying
+    :php:`GlobalVariableProvider` is always cacheable, so its variables are
+    resolved once and reused across renderings.
+
+    :typoscript:`plugin.tx_handlebars.variables` is backed by
+    :php:`TypoScriptVariableProvider`, which cannot resolve variables until a
+    request with a :php:`ContentObjectRenderer` attached is available — this
+    may not yet be the case during early bootstrapping. Because of this, it
+    reports itself as non-cacheable until a request has been resolved, which
+    disables caching of the merged variable set for that rendering. Reserve
+    :typoscript:`plugin.tx_handlebars.variables` for **dynamic** variables
+    that genuinely depend on the current request context, for example a
+    :typoscript:`TEXT` content object reading a GET parameter or the current
+    page record.
 
 ..  _variables-per-rendering:
 

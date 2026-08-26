@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer\Variables;
 
+use Psr\Http\Message;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
@@ -45,13 +46,13 @@ final class VariableBag implements \ArrayAccess
     /**
      * @return array<string|int, mixed>
      */
-    public function get(): array
+    public function get(?Message\ServerRequestInterface $request = null): array
     {
         $variables = $this->variables;
 
         if ($variables === null) {
             $storeInCache = true;
-            $variables = $this->fetchVariablesFromProviders($storeInCache);
+            $variables = $this->fetchVariablesFromProviders($request, $storeInCache);
 
             if ($storeInCache) {
                 $this->variables = $variables;
@@ -84,12 +85,16 @@ final class VariableBag implements \ArrayAccess
     /**
      * @return array<string|int, mixed>
      */
-    private function fetchVariablesFromProviders(bool &$storeInCache = true): array
+    private function fetchVariablesFromProviders(?Message\ServerRequestInterface $request, bool &$storeInCache = true): array
     {
         $providerVariables = [];
         $mergedVariables = [];
 
         foreach ($this->providers as $provider) {
+            if ($request !== null && $provider instanceof RequestAwareVariableProvider) {
+                $provider->setRequest($request);
+            }
+
             array_unshift($providerVariables, $provider->get());
 
             if (!$provider->isCacheable()) {

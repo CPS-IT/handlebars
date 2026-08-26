@@ -18,7 +18,10 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Renderer\Variables;
 
 use CPSIT\Typo3Handlebars\Extension;
+use Psr\Http\Message;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
+use TYPO3\CMS\Frontend;
 
 /**
  * TypoScriptVariableProvider
@@ -26,15 +29,18 @@ use TYPO3\CMS\Extbase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
-final class TypoScriptVariableProvider implements VariableProvider
+final class TypoScriptVariableProvider implements RequestAwareVariableProvider
 {
     /**
      * @var array<string|int, mixed>|null
      */
     private ?array $variables = null;
+    private ?Message\ServerRequestInterface $request = null;
 
     public function __construct(
         private readonly Extbase\Configuration\ConfigurationManagerInterface $configurationManager,
+        private readonly Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
+        private readonly Core\TypoScript\TypoScriptService $typoScriptService,
     ) {}
 
     public function get(): array
@@ -43,12 +49,15 @@ final class TypoScriptVariableProvider implements VariableProvider
             $this->variables = $this->fetchVariables();
         }
 
-        return $this->variables;
+        return $this->variables ?? [];
     }
 
     public function isCacheable(): bool
     {
-        return true;
+        // Once we have a request attached, the resulting variables can be safely cached.
+        // Otherwise, caching should be avoided until we can resolve and process all variables
+        // in the context of the given request.
+        return $this->request !== null;
     }
 
     public function offsetExists(mixed $offset): bool
@@ -71,26 +80,56 @@ final class TypoScriptVariableProvider implements VariableProvider
         throw new \LogicException('Variables cannot be modified.', 1736274336);
     }
 
+    public function setRequest(Message\ServerRequestInterface $request): void
+    {
+        $this->request = $request;
+    }
+
     public static function getPriority(): int
     {
         return 50;
     }
 
     /**
-     * @return array<string|int, mixed>
+     * @return array<string|int, mixed>|null
      */
-    private function fetchVariables(): array
+    private function fetchVariables(): ?array
     {
-        $typoScriptConfiguration = $this->configurationManager->getConfiguration(
-            Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
-            Extension::NAME,
-        );
-        $variables = $typoScriptConfiguration['variables'] ?? [];
+        $cObj = $this->resolveContentObjectRenderer();
 
-        if (!is_array($variables)) {
+        // Early return if content object renderer is not (yet) available, but don't persist
+        // anything to allow variable resolution at a later time, where cObj might be available.
+        if ($cObj === null) {
+            return null;
+        }
+
+        $typoScriptConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray(
+            $this->configurationManager->getConfiguration(
+                Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
+                Extension::NAME,
+            ),
+        );
+
+        // Early return if variables are invalid
+        if (!is_array($variables = $typoScriptConfiguration['variables.'] ?? null)) {
             return [];
         }
 
-        return $variables;
+        // Process content object variables and simple variables
+        $variables = VariablesProcessor::for($cObj)->process($variables);
+
+        // Process variables with configured data processors
+        return $this->contentDataProcessor->process($cObj, $typoScriptConfiguration, $variables);
+    }
+
+    private function resolveContentObjectRenderer(): ?Frontend\ContentObject\ContentObjectRenderer
+    {
+        $contentObjectRenderer = $this->request?->getAttribute('currentContentObject');
+
+        if (!($contentObjectRenderer instanceof Frontend\ContentObject\ContentObjectRenderer)) {
+            return null;
+        }
+
+        return $contentObjectRenderer;
     }
 }

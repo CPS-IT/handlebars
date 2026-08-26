@@ -51,6 +51,14 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
                     'value' => 'baz',
                 ],
             ],
+            'dataProcessing' => [
+                '10' => [
+                    '_typoScriptNodeValue' => 'split',
+                    'fieldName' => 'foo',
+                    'delimiter' => ',',
+                    'as' => 'baz',
+                ],
+            ],
         ];
 
         $this->subject = new Src\Renderer\Variables\TypoScriptVariableProvider(
@@ -59,11 +67,13 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
             $this->get(Core\TypoScript\TypoScriptService::class),
         );
 
+        $cObj = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
+        $cObj->data = [
+            'foo' => '1,2,3',
+        ];
+
         $this->request = $this->buildServerRequest();
-        $this->request = $this->request->withAttribute(
-            'currentContentObject',
-            $this->get(Frontend\ContentObject\ContentObjectRenderer::class),
-        );
+        $this->request = $this->request->withAttribute('currentContentObject', $cObj);
     }
 
     #[Framework\Attributes\Test]
@@ -89,7 +99,12 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
     {
         $this->subject->setRequest($this->request);
 
-        self::assertSame(['foo' => 'baz'], $this->subject->get());
+        $expected = [
+            'foo' => 'baz',
+            'baz' => ['1', '2', '3'],
+        ];
+
+        self::assertSame($expected, $this->subject->get());
     }
 
     #[Framework\Attributes\Test]
@@ -97,11 +112,16 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
     {
         $this->subject->setRequest($this->request);
 
-        self::assertSame(['foo' => 'baz'], $this->subject->get());
+        $expected = [
+            'foo' => 'baz',
+            'baz' => ['1', '2', '3'],
+        ];
+
+        self::assertSame($expected, $this->subject->get());
 
         $this->configurationManager->configuration = [];
 
-        self::assertSame(['foo' => 'baz'], $this->subject->get());
+        self::assertSame($expected, $this->subject->get());
     }
 
     #[Framework\Attributes\Test]
@@ -121,11 +141,13 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
 
         // offsetExists
         self::assertTrue(isset($this->subject['foo']));
-        self::assertFalse(isset($this->subject['baz']));
+        self::assertTrue(isset($this->subject['baz']));
+        self::assertFalse(isset($this->subject['boo']));
 
         // offsetGet
         self::assertSame('baz', $this->subject['foo']);
-        self::assertNull($this->subject['baz']);
+        self::assertSame(['1', '2', '3'], $this->subject['baz']);
+        self::assertNull($this->subject['boo']);
     }
 
     #[Framework\Attributes\Test]

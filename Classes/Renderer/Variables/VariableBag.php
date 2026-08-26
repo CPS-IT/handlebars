@@ -47,11 +47,18 @@ final class VariableBag implements \ArrayAccess
      */
     public function get(): array
     {
-        if ($this->variables === null) {
-            $this->variables = $this->fetchVariablesFromProviders();
+        $variables = $this->variables;
+
+        if ($variables === null) {
+            $storeInCache = true;
+            $variables = $this->fetchVariablesFromProviders($storeInCache);
+
+            if ($storeInCache) {
+                $this->variables = $variables;
+            }
         }
 
-        return $this->variables;
+        return $variables;
     }
 
     public function offsetExists(mixed $offset): bool
@@ -77,13 +84,17 @@ final class VariableBag implements \ArrayAccess
     /**
      * @return array<string|int, mixed>
      */
-    private function fetchVariablesFromProviders(): array
+    private function fetchVariablesFromProviders(bool &$storeInCache = true): array
     {
         $providerVariables = [];
         $mergedVariables = [];
 
         foreach ($this->providers as $provider) {
             array_unshift($providerVariables, $provider->get());
+
+            if (!$provider->isCacheable()) {
+                $storeInCache = false;
+            }
         }
 
         foreach ($providerVariables as $variables) {

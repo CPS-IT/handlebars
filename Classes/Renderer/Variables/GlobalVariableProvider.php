@@ -40,6 +40,11 @@ final readonly class GlobalVariableProvider implements VariableProvider
         return $this->variables;
     }
 
+    public function isCacheable(): bool
+    {
+        return true;
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return isset($this->variables[$offset]);

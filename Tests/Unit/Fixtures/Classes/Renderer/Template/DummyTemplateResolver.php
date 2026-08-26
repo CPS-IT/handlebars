@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template;
 
 use CPSIT\Typo3Handlebars\Renderer;
-use CPSIT\Typo3Handlebars\Renderer\Template\TemplatePaths;
 use org\bovigo\vfs;
 
 /**
@@ -52,7 +51,7 @@ final class DummyTemplateResolver extends Renderer\Template\BaseTemplateResolver
         return parent::resolveFilename($path, $rootPath, $extension);
     }
 
-    public function resolveTemplatePaths(TemplatePaths $templatePaths): array
+    public function resolveTemplatePaths(Renderer\Template\TemplatePaths $templatePaths): array
     {
         return parent::resolveTemplatePaths($templatePaths);
     }

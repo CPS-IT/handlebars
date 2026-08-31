@@ -225,9 +225,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Functional\Function
      */
     private function expectContentObjectConfiguration(array $contentObjectConfiguration = [], string $return = ''): void
     {
-        if (!isset($contentObjectConfiguration['templateName'])) {
-            $contentObjectConfiguration['templateName'] = '@foo';
-        }
+        $contentObjectConfiguration['templateName'] ??= '@foo';
 
         $this->contentObjectRendererMock->expects($this->once())
             ->method('cObjGetSingle')

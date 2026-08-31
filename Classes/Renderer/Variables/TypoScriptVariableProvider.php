@@ -45,9 +45,7 @@ final class TypoScriptVariableProvider implements RequestAwareVariableProvider
 
     public function get(): array
     {
-        if ($this->variables === null) {
-            $this->variables = $this->fetchVariables();
-        }
+        $this->variables ??= $this->fetchVariables();
 
         return $this->variables ?? [];
     }

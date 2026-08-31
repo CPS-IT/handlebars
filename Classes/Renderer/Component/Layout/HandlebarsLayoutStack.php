@@ -48,9 +48,7 @@ final class HandlebarsLayoutStack implements Core\SingletonInterface, \IteratorA
         }
 
         // Generate new stack if necessary
-        if (!isset($scope[self::SCOPE_IDENTIFIER])) {
-            $scope[self::SCOPE_IDENTIFIER] = new self();
-        }
+        $scope[self::SCOPE_IDENTIFIER] ??= new self();
 
         // Early return if invalid stack was persisted
         if (!($scope[self::SCOPE_IDENTIFIER] instanceof self)) {

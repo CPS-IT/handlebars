@@ -37,11 +37,7 @@ final class CacheContext
 
     public function calculateCacheIdentifier(): string
     {
-        if ($this->cacheIdentifier === null) {
-            $this->cacheIdentifier = sha1(serialize($this->composeCacheIdentifierComponents()));
-        }
-
-        return $this->cacheIdentifier;
+        return $this->cacheIdentifier ??= sha1(serialize($this->composeCacheIdentifierComponents()));
     }
 
     /**

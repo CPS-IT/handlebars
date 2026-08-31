@@ -34,9 +34,7 @@ trait HandlebarsCacheTrait
 
     protected function getCache(): Src\Cache\Cache
     {
-        if ($this->cache === null) {
-            $this->cache = new Fixtures\Classes\Cache\DummyCache($this->getCachePath());
-        }
+        $this->cache ??= new Fixtures\Classes\Cache\DummyCache($this->getCachePath());
         return $this->cache;
     }
 

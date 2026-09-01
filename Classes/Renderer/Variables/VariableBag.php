@@ -39,7 +39,7 @@ final class VariableBag implements \ArrayAccess
      * @param iterable<VariableProvider> $providers
      */
     public function __construct(
-        #[DependencyInjection\Attribute\AutowireIterator('handlebars.variable_provider', defaultPriorityMethod: 'getPriority')]
+        #[DependencyInjection\Attribute\AutowireIterator('handlebars.variable_provider')]
         private readonly iterable $providers,
     ) {}
 

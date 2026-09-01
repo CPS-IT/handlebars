@@ -97,8 +97,8 @@ Four interfaces are designed to be replaced or extended by consuming extensions:
 |---|---|---|
 | `Renderer\Renderer` | `alias:` in `Services.yaml` | Replace full rendering stack |
 | `Renderer\Template\TemplateResolver` | `alias:` in `Services.yaml` | Replace template/partial path resolution; `BaseTemplateResolver` provides helpers |
-| `Renderer\Template\Path\PathProvider` | Auto via `#[AutoconfigureTag('handlebars.template_path_provider')]` | Contribute paths; requires `getPriority()` |
-| `Renderer\Variables\VariableProvider` | Auto via `#[AutoconfigureTag('handlebars.variable_provider')]` | Inject global variables; extends `\ArrayAccess`; requires `getPriority()` and `isCacheable()` |
+| `Renderer\Template\Path\PathProvider` | Auto via `#[AutoconfigureTag('handlebars.template_path_provider')]` | Contribute paths; priority set via `#[AsTaggedItem(priority: N)]` on the implementation |
+| `Renderer\Variables\VariableProvider` | Auto via `#[AutoconfigureTag('handlebars.variable_provider')]` | Inject global variables; extends `\ArrayAccess`; requires `isCacheable()`; priority set via `#[AsTaggedItem(priority: N)]` on the implementation |
 
 `DataProcessing\DataSource\DataSourceAwareProcessor` is used for `preProcessing`/`postProcessing` hooks inside `ProcessVariablesProcessor` and `HandlebarsTemplateContentObject`. Implementations are referenced by FQCN in TypoScript and instantiated via `GeneralUtility::makeInstance()` (see `SupportsDataSourceAwareProcessing` trait). `DataSourceCollection::resolve()` searches the four data sources (`ProcessorConfiguration`, `ProcessedData`, `ContentObjectRenderer`, `ContentObjectConfiguration`) in priority order.
 

@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Renderer\Template\Path;
 
 use CPSIT\Typo3Handlebars\Extension;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
 
 /**
@@ -26,6 +27,7 @@ use TYPO3\CMS\Extbase;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 50)]
 final class TypoScriptPathProvider implements PathProvider
 {
     /**
@@ -72,10 +74,5 @@ final class TypoScriptPathProvider implements PathProvider
         }
 
         return $this->viewConfiguration;
-    }
-
-    public static function getPriority(): int
-    {
-        return 50;
     }
 }

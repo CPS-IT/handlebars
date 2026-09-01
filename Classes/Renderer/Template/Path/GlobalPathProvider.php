@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 0)]
 final readonly class GlobalPathProvider implements PathProvider
 {
     /**
@@ -67,10 +68,5 @@ final readonly class GlobalPathProvider implements PathProvider
     public function isCacheable(): bool
     {
         return true;
-    }
-
-    public static function getPriority(): int
-    {
-        return 0;
     }
 }

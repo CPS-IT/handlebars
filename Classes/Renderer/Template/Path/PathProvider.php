@@ -42,6 +42,4 @@ interface PathProvider
     public function getTemplateRootPaths(): array;
 
     public function isCacheable(): bool;
-
-    public static function getPriority(): int;
 }

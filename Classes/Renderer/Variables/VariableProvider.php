@@ -35,6 +35,4 @@ interface VariableProvider extends \ArrayAccess
     public function get(): array;
 
     public function isCacheable(): bool;
-
-    public static function getPriority(): int;
 }

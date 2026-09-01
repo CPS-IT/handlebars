@@ -9,7 +9,8 @@ PathProvider & VariableProvider
 Two further interfaces allow contributing template paths and global variables
 from PHP rather than from TypoScript or :file:`Services.yaml` configuration.
 Both are auto-registered via :php:`#[AutoconfigureTag]` and both use a
-priority integer to control merge order.
+priority integer to control merge order, set via Symfony's
+:php:`#[AsTaggedItem(priority: ...)]` attribute on the implementing class.
 
 ..  contents::
     :local:
@@ -53,20 +54,16 @@ ones. The three built-in providers use 0 (:php:`GlobalPathProvider`), 50
 
         :returntype: bool
 
-    ..  php:method:: getPriority()
-
-        Return the priority of this provider. Higher values win.
-
-        :returntype: int
-
 ..  code-block:: php
     :caption: EXT:my_extension/Classes/Renderer/Template/Path/SitePathProvider.php
 
     namespace Vendor\Extension\Renderer\Template\Path;
 
     use CPSIT\Typo3Handlebars\Renderer\Template\Path\PathProvider;
+    use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
     use TYPO3\CMS\Core\Site\SiteFinder;
 
+    #[AsTaggedItem(priority: 25)]
     final readonly class SitePathProvider implements PathProvider
     {
         public function __construct(
@@ -87,16 +84,13 @@ ones. The three built-in providers use 0 (:php:`GlobalPathProvider`), 50
         {
             return false;
         }
-
-        public static function getPriority(): int
-        {
-            return 25;
-        }
     }
 
 The class is picked up automatically because :php:`PathProvider` carries
 :php:`#[AutoconfigureTag('handlebars.template_path_provider')]`. No extra
-:file:`Services.yaml` entry is needed beyond standard autowiring.
+:file:`Services.yaml` entry is needed beyond standard autowiring. The
+:php:`#[AsTaggedItem(priority: ...)]` attribute on the class determines merge
+order; without it, the provider defaults to priority 0.
 
 ..  _developer-corner-variable-provider:
 
@@ -133,20 +127,16 @@ can overwrite keys from a lower-priority one. The built-in
 
         :returntype: bool
 
-    ..  php:method:: getPriority()
-
-        Return the priority of this provider. Higher values win.
-
-        :returntype: int
-
 ..  code-block:: php
     :caption: EXT:my_extension/Classes/Renderer/Variables/SiteVariableProvider.php
 
     namespace Vendor\Extension\Renderer\Variables;
 
     use CPSIT\Typo3Handlebars\Renderer\Variables\VariableProvider;
+    use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
     use TYPO3\CMS\Core\Site\SiteFinder;
 
+    #[AsTaggedItem(priority: 10)]
     final readonly class SiteVariableProvider implements VariableProvider
     {
         public function __construct(
@@ -184,12 +174,9 @@ can overwrite keys from a lower-priority one. The built-in
         {
             throw new \LogicException('Variables are read-only.', 1781693639);
         }
-
-        public static function getPriority(): int
-        {
-            return 10;
-        }
     }
 
 Like :php:`PathProvider`, the class is picked up automatically via
 :php:`#[AutoconfigureTag('handlebars.variable_provider')]` on the interface.
+The :php:`#[AsTaggedItem(priority: ...)]` attribute on the class determines
+merge order; without it, the provider defaults to priority 0.

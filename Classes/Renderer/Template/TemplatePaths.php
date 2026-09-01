@@ -41,7 +41,7 @@ final class TemplatePaths
      * @param iterable<Path\PathProvider> $pathProviders
      */
     public function __construct(
-        #[DependencyInjection\Attribute\AutowireIterator('handlebars.template_path_provider', defaultPriorityMethod: 'getPriority')]
+        #[DependencyInjection\Attribute\AutowireIterator('handlebars.template_path_provider')]
         private readonly iterable $pathProviders,
     ) {}
 

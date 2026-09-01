@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\Renderer\Template\Path;
 
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 
 /**
@@ -30,6 +31,7 @@ use TYPO3\CMS\Core;
  *     merged: array<int, string>|null,
  * }
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 100)]
 final class ContentObjectPathProvider implements PathProvider, Core\SingletonInterface
 {
     /**
@@ -144,10 +146,5 @@ final class ContentObjectPathProvider implements PathProvider, Core\SingletonInt
         }
 
         return $this->stack[$this->currentItem][$type]['merged'];
-    }
-
-    public static function getPriority(): int
-    {
-        return 100;
     }
 }

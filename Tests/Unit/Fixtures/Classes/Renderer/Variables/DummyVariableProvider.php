@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Variables;
 
 use CPSIT\Typo3Handlebars\Renderer;
+use Symfony\Component\DependencyInjection;
 
 /**
  * DummyVariableProvider
@@ -28,6 +29,7 @@ use CPSIT\Typo3Handlebars\Renderer;
  *
  * @extends \ArrayObject<string, mixed>
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 100)]
 final class DummyVariableProvider extends \ArrayObject implements Renderer\Variables\VariableProvider
 {
     /**
@@ -48,10 +50,5 @@ final class DummyVariableProvider extends \ArrayObject implements Renderer\Varia
     public function isCacheable(): bool
     {
         return $this->cacheable;
-    }
-
-    public static function getPriority(): int
-    {
-        return 100;
     }
 }

@@ -25,6 +25,7 @@ use Symfony\Component\DependencyInjection;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 0)]
 final readonly class GlobalVariableProvider implements VariableProvider
 {
     /**
@@ -63,10 +64,5 @@ final readonly class GlobalVariableProvider implements VariableProvider
     public function offsetUnset(mixed $offset): never
     {
         throw new \LogicException('Variables cannot be modified.', 1736274551);
-    }
-
-    public static function getPriority(): int
-    {
-        return 0;
     }
 }

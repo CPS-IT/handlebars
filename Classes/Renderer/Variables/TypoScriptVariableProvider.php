@@ -19,6 +19,7 @@ namespace CPSIT\Typo3Handlebars\Renderer\Variables;
 
 use CPSIT\Typo3Handlebars\Extension;
 use Psr\Http\Message;
+use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
@@ -29,6 +30,7 @@ use TYPO3\CMS\Frontend;
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 50)]
 final class TypoScriptVariableProvider implements RequestAwareVariableProvider
 {
     /**
@@ -81,11 +83,6 @@ final class TypoScriptVariableProvider implements RequestAwareVariableProvider
     public function setRequest(Message\ServerRequestInterface $request): void
     {
         $this->request = $request;
-    }
-
-    public static function getPriority(): int
-    {
-        return 50;
     }
 
     /**

@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\Tests\Unit\Fixtures\Classes\Renderer\Template\Path;
 
 use CPSIT\Typo3Handlebars\Renderer;
+use Symfony\Component\DependencyInjection;
 
 /**
  * DummyPathProvider
@@ -26,6 +27,7 @@ use CPSIT\Typo3Handlebars\Renderer;
  * @license GPL-2.0-or-later
  * @internal
  */
+#[DependencyInjection\Attribute\AsTaggedItem(priority: 10)]
 final class DummyPathProvider implements Renderer\Template\Path\PathProvider
 {
     /**
@@ -51,10 +53,5 @@ final class DummyPathProvider implements Renderer\Template\Path\PathProvider
     public function isCacheable(): bool
     {
         return $this->cacheable;
-    }
-
-    public static function getPriority(): int
-    {
-        return 10;
     }
 }

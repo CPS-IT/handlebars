@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace CPSIT\Typo3Handlebars\DataProcessing\DataSource;
 
 use CPSIT\Typo3Handlebars\Exception;
+use TYPO3\CMS\Frontend;
 
 /**
  * DataSourceCollection
@@ -31,6 +32,35 @@ final class DataSourceCollection
      * @var array<value-of<DataSource>, array<string|int, mixed>>
      */
     private array $dataSources = [];
+
+    /**
+     * @param array<string, mixed>|null $contentObjectConfiguration
+     * @param array<string, mixed>|null $processorConfiguration
+     * @param array<string|int, mixed>|null $processedData
+     */
+    public static function for(
+        ?Frontend\ContentObject\ContentObjectRenderer $cObj = null,
+        ?array $contentObjectConfiguration = null,
+        ?array $processorConfiguration = null,
+        ?array $processedData = null,
+    ): self {
+        $collection = new self();
+
+        if ($cObj !== null) {
+            $collection->set(DataSource::ContentObjectRenderer, $cObj->data);
+        }
+        if ($contentObjectConfiguration !== null) {
+            $collection->set(DataSource::ContentObjectConfiguration, $contentObjectConfiguration);
+        }
+        if ($processedData !== null) {
+            $collection->set(DataSource::ProcessedData, $processedData);
+        }
+        if ($processorConfiguration !== null) {
+            $collection->set(DataSource::ProcessorConfiguration, $processorConfiguration);
+        }
+
+        return $collection;
+    }
 
     /**
      * @return array<string|int, mixed>

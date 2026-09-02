@@ -137,9 +137,10 @@ final class HandlebarsTemplateContentObject extends Frontend\ContentObject\Abstr
      */
     private function resolveVariables(array $config): array
     {
-        $collection = new DataProcessing\DataSource\DataSourceCollection();
-        $collection->set(DataProcessing\DataSource\DataSource::ContentObjectRenderer, $this->cObj->data ?? []);
-        $collection->set(DataProcessing\DataSource\DataSource::ProcessorConfiguration, $config);
+        $collection = DataProcessing\DataSource\DataSourceCollection::for(
+            cObj: $this->cObj,
+            processorConfiguration: $config,
+        );
 
         if ($this->cObj !== null) {
             if (is_array($config['variables.'] ?? null)) {

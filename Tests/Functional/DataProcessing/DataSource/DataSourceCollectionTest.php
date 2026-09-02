@@ -15,10 +15,11 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace CPSIT\Typo3Handlebars\Tests\Unit\DataProcessing\DataSource;
+namespace CPSIT\Typo3Handlebars\Tests\Functional\DataProcessing\DataSource;
 
 use CPSIT\Typo3Handlebars as Src;
 use PHPUnit\Framework;
+use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
 
 /**
@@ -28,7 +29,7 @@ use TYPO3\TestingFramework;
  * @license GPL-2.0-or-later
  */
 #[Framework\Attributes\CoversClass(Src\DataProcessing\DataSource\DataSourceCollection::class)]
-final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTestCase
+final class DataSourceCollectionTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
     private Src\DataProcessing\DataSource\DataSourceCollection $subject;
 
@@ -37,6 +38,50 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
         parent::setUp();
 
         $this->subject = new Src\DataProcessing\DataSource\DataSourceCollection();
+    }
+
+    #[Framework\Attributes\Test]
+    public function forCreatesCollectionWithAllGivenDataSources(): void
+    {
+        $cObj = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
+        $cObj->data = ['uid' => 1];
+
+        $collection = Src\DataProcessing\DataSource\DataSourceCollection::for(
+            $cObj,
+            ['foo' => 'COC-BAZ'],
+            ['foo' => 'PC-BAZ'],
+            ['foo' => 'PD-BAZ'],
+        );
+
+        self::assertSame(
+            ['uid' => 1],
+            $collection->get(Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer),
+        );
+        self::assertSame(
+            ['foo' => 'COC-BAZ'],
+            $collection->get(Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration),
+        );
+        self::assertSame(
+            ['foo' => 'PC-BAZ'],
+            $collection->get(Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration),
+        );
+        self::assertSame(
+            ['foo' => 'PD-BAZ'],
+            $collection->get(Src\DataProcessing\DataSource\DataSource::ProcessedData),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function forOnlySetsExplicitlyGivenDataSources(): void
+    {
+        $collection = Src\DataProcessing\DataSource\DataSourceCollection::for(
+            processedData: ['foo' => 'PD-BAZ'],
+        );
+
+        self::assertTrue($collection->has(Src\DataProcessing\DataSource\DataSource::ProcessedData));
+        self::assertFalse($collection->has(Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer));
+        self::assertFalse($collection->has(Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration));
+        self::assertFalse($collection->has(Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration));
     }
 
     #[Framework\Attributes\Test]

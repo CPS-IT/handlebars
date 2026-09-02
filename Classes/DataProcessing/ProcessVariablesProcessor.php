@@ -120,15 +120,15 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         array $processorConfiguration,
         array $processedData,
     ): array {
+        $collection = DataSource\DataSourceCollection::for(
+            $cObj,
+            $contentObjectConfiguration,
+            $processorConfiguration,
+            $processedData,
+        );
+
         $data = null;
-
-        $collection = new DataSource\DataSourceCollection();
-        $collection->set(DataSource\DataSource::ContentObjectRenderer, $cObj->data);
-        $collection->set(DataSource\DataSource::ContentObjectConfiguration, $contentObjectConfiguration);
-        $collection->set(DataSource\DataSource::ProcessedData, $processedData);
-        $collection->set(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
-        $merge = (bool)($processorConfiguration['merge'] ?? false);
-
+        $merge = (bool)$collection->resolve('merge', DataSource\DataSource::ProcessorConfiguration);
         $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
 
         // Early return if no or invalid variables to process are configured

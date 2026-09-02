@@ -49,11 +49,12 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
         array $processorConfiguration,
         array $processedData,
     ): array {
-        $collection = new DataSource\DataSourceCollection();
-        $collection->set(DataSource\DataSource::ContentObjectRenderer, $cObj->data);
-        $collection->set(DataSource\DataSource::ContentObjectConfiguration, $contentObjectConfiguration);
-        $collection->set(DataSource\DataSource::ProcessedData, $processedData);
-        $collection->set(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
+        $collection = DataSource\DataSourceCollection::for(
+            $cObj,
+            $contentObjectConfiguration,
+            $processorConfiguration,
+            $processedData,
+        );
 
         try {
             [$object] = $collection->resolveKeyword('object');

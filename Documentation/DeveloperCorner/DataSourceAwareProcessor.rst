@@ -60,6 +60,42 @@ The four :php:`DataSource` cases are:
 *   :php:`DataSource::ContentObjectRenderer` — current record's field values
 *   :php:`DataSource::ContentObjectConfiguration` — top-level :typoscript:`HANDLEBARSTEMPLATE` config
 
+..  _developer-corner-data-source-aware-processor-keyword:
+
+Resolving a keyword-configured variable
+========================================
+
+Processors often accept a configuration option whose value is itself the
+name of another variable to resolve — for example, an :typoscript:`iterable`
+option that names the variable to iterate over.
+:php:`DataSourceCollection::resolveKeyword()` covers this pattern in one
+call: it looks up :php:`$keyword` in
+:php:`DataSource::ProcessorConfiguration` to obtain the variable name, then
+resolves that variable name against the given (or, by default, all) data
+sources. It throws
+:php:`CPSIT\Typo3Handlebars\Exception\KeywordCannotBeResolved` if the
+keyword is not configured or resolves to an empty string.
+
+..  code-block:: php
+
+    use CPSIT\Typo3Handlebars\DataProcessing\DataSource\DataSource;
+    use CPSIT\Typo3Handlebars\Exception\KeywordCannotBeResolved;
+
+    try {
+        // Resolves the "iterable" processor option to a variable name,
+        // then resolves that variable name against all data sources
+        [$value, $variableName] = $collection->resolveKeyword('iterable');
+    } catch (KeywordCannotBeResolved) {
+        // The "iterable" option is not configured
+    }
+
+    // Restrict the variable lookup to a specific data source, with a default
+    [$value, $variableName] = $collection->resolveKeyword(
+        'iterable',
+        DataSource::ProcessedData,
+        [],
+    );
+
 ..  _developer-corner-data-source-aware-processor-implement:
 
 Example implementation

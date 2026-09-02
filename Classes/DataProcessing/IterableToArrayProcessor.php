@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\DataProcessing;
 
+use CPSIT\Typo3Handlebars\Exception;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
@@ -93,10 +94,9 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
         $collection->set(DataSource\DataSource::ProcessedData, $processedData);
         $collection->set(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
 
-        $iterableSource = $collection->resolve('iterable', DataSource\DataSource::ProcessorConfiguration);
-
-        // Early return if iterable source is not configured
-        if (!is_string($iterableSource) || $iterableSource === '') {
+        try {
+            [$iterable, $iterableSource] = $collection->resolveKeyword('iterable');
+        } catch (Exception\KeywordCannotBeResolved) {
             $this->logger->warning(
                 'Invalid iterable source configured for "iterable-to-array" data processor while processing {table}:{uid}.',
                 [
@@ -105,13 +105,13 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
                 ],
             );
 
+            // Early return if iterable source is not configured
             return $processedData;
         }
 
         /** @var string $as */
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
         $preserveKeys = (bool)$collection->resolve('preserveKeys', DataSource\DataSource::ProcessorConfiguration, false);
-        $iterable = $collection->resolve($iterableSource);
 
         // Early return if resolved value is not iterable
         if (!is_iterable($iterable)) {

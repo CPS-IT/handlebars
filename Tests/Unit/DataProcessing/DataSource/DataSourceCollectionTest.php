@@ -154,6 +154,67 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Unit\UnitTest
     }
 
     #[Framework\Attributes\Test]
+    public function resolveKeywordThrowsExceptionIfKeywordCannotBeResolvedToVariableName(): void
+    {
+        $this->expectExceptionObject(
+            new Src\Exception\KeywordCannotBeResolved('myKeyword'),
+        );
+
+        $this->subject->resolveKeyword('myKeyword');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveKeywordThrowsExceptionIfResolvedVariableNameIsEmpty(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
+            ['myKeyword' => ''],
+        );
+
+        $this->expectExceptionObject(
+            new Src\Exception\KeywordCannotBeResolved('myKeyword'),
+        );
+
+        $this->subject->resolveKeyword('myKeyword');
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveKeywordResolvesVariableNameFromProcessorConfigurationAndReturnsResolvedValue(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
+            ['myKeyword' => 'foo'],
+        );
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ['foo' => 'PD-BAZ'],
+        );
+
+        self::assertSame(
+            ['PD-BAZ', 'foo'],
+            $this->subject->resolveKeyword('myKeyword'),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveKeywordReturnsDefaultValueIfVariableNameCannotBeResolvedInGivenDataSources(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
+            ['myKeyword' => 'foo'],
+        );
+
+        self::assertSame(
+            ['baz', 'foo'],
+            $this->subject->resolveKeyword(
+                'myKeyword',
+                Src\DataProcessing\DataSource\DataSource::ContentObjectRenderer,
+                'baz',
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function withAppliesGivenValueToAllDataSources(): void
     {
         $this->subject->set(

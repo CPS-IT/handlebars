@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\DataProcessing;
 
+use CPSIT\Typo3Handlebars\Exception;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Frontend;
@@ -54,10 +55,9 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
         $collection->set(DataSource\DataSource::ProcessedData, $processedData);
         $collection->set(DataSource\DataSource::ProcessorConfiguration, $processorConfiguration);
 
-        $objectSource = $collection->resolve('object', DataSource\DataSource::ProcessorConfiguration);
-
-        // Early return if object source is not configured
-        if (!is_string($objectSource) || $objectSource === '') {
+        try {
+            [$object] = $collection->resolveKeyword('object');
+        } catch (Exception\KeywordCannotBeResolved) {
             $this->logger->warning(
                 'Invalid object source configured for "object-access" data processor while processing {table}:{uid}.',
                 [
@@ -66,13 +66,13 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
                 ],
             );
 
+            // Early return if object source is not configured
             return $processedData;
         }
 
         /** @var string $as */
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
         $path = $collection->resolve('path', DataSource\DataSource::ProcessorConfiguration);
-        $object = $collection->resolve($objectSource);
 
         // Early return if either object or path is not valid
         if (!is_string($path) || !is_object($object)) {

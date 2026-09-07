@@ -127,7 +127,7 @@
 			"@check:style:typoscript"
 		],
 		"check:style:composer": "@fix:composer --dry-run",
-		"check:style:editorconfig": "ec --git-only",
+		"check:style:editorconfig": "ec",
 		"check:style:php": "@fix:php --dry-run",
 		"check:style:typoscript": "typoscript-lint -c Build/checks/typoscript-lint.yml --fail-on-warnings",
 		"docs": [

@@ -31,6 +31,8 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\DataProcessing\UnflattenVariableNamesProcessor::class)]
 final class UnflattenVariableNamesProcessorTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    protected bool $initializeDatabase = false;
+
     private Src\DataProcessing\UnflattenVariableNamesProcessor $subject;
 
     public function setUp(): void

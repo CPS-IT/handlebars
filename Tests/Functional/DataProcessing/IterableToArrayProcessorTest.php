@@ -41,6 +41,8 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         'typed_extconf',
     ];
 
+    protected bool $initializeDatabase = false;
+
     private Log\Test\TestLogger $logger;
     private Src\DataProcessing\IterableToArrayProcessor $subject;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;

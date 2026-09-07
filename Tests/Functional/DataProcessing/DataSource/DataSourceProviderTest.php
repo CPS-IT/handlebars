@@ -36,6 +36,8 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
 {
     use Tests\FrontendRequestTrait;
 
+    protected bool $initializeDatabase = false;
+
     private Src\DataProcessing\DataSource\DataSourceProvider $subject;
 
     public function setUp(): void

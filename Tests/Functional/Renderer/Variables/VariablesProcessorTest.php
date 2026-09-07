@@ -41,6 +41,8 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
         'typed_extconf',
     ];
 
+    protected bool $initializeDatabase = false;
+
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
     private Src\Renderer\Variables\VariablesProcessor $subject;
 

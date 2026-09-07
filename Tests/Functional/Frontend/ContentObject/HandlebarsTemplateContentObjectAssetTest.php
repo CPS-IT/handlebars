@@ -43,6 +43,8 @@ final class HandlebarsTemplateContentObjectAssetTest extends TestingFramework\Co
         'typed_extconf',
     ];
 
+    protected bool $initializeDatabase = false;
+
     private Message\ServerRequestInterface $request;
     private Core\Page\AssetCollector $assetCollector;
     private Core\Page\PageRenderer $pageRenderer;

@@ -152,6 +152,7 @@ final readonly class ProcessEachProcessor implements Frontend\ContentObject\Data
 
         try {
             // Process each variable (both "variables." as well as "dataProcessing." are respected)
+            /** @var array-key $key */
             foreach ($data as $key => $value) {
                 $cObj->setCurrentVal($value);
 

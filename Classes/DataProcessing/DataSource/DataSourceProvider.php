@@ -33,16 +33,13 @@ final readonly class DataSourceProvider
     ) {}
 
     /**
-     * @return array<string|int, mixed>|null
      * @throws Exception\DataSourceIsMissingInCollection
      * @throws Exception\DataSourceIsNotSupported
      * @throws Exception\PathIsMissingInDataSource
      */
-    public function provide(DataSourceCollection $collection): ?array
+    public function provide(DataSourceCollection $collection): mixed
     {
-        /** @var array<string|int, mixed>|null $dataFromConfiguration */
         $dataFromConfiguration = $collection->resolve('data.', DataSource::ProcessorConfiguration);
-        /** @var array<string|int, mixed>|null $dataFromProcessedData */
         $dataFromProcessedData = $collection->resolve('data', DataSource::ProcessedData);
         /** @var string|array<int, string>|null $dataSources */
         $dataSources = $collection->resolve('dataSource.', DataSource::ProcessorConfiguration)
@@ -50,9 +47,7 @@ final readonly class DataSourceProvider
 
         // Early return if no data sources are configured
         if ($dataSources === null) {
-            $data = $dataFromConfiguration ?? $dataFromProcessedData;
-
-            return is_array($data) ? $data : null;
+            return $dataFromConfiguration ?? $dataFromProcessedData;
         }
 
         // Normalize content object configuration
@@ -73,22 +68,20 @@ final readonly class DataSourceProvider
 
         return array_reduce(
             $dataSources,
-            fn(?array $carry, string $keyword) => $this->processDataSource($carry, $keyword, $normalizedCollection),
+            fn(mixed $carry, string $keyword) => $this->processDataSource($carry, $keyword, $normalizedCollection),
         );
     }
 
     /**
-     * @param array<string|int, mixed>|null $processedDataSources
-     * @return array<string|int, mixed>
      * @throws Exception\DataSourceIsMissingInCollection
      * @throws Exception\DataSourceIsNotSupported
      * @throws Exception\PathIsMissingInDataSource
      */
     private function processDataSource(
-        ?array $processedDataSources,
+        mixed $processedDataSource,
         string $dataSourceIdentifier,
         DataSourceCollection $collection,
-    ): array {
+    ): mixed {
         if (str_contains($dataSourceIdentifier, ':')) {
             [$dataSourceIdentifier, $path] = Core\Utility\GeneralUtility::trimExplode(':', $dataSourceIdentifier, true, 2);
         } else {
@@ -113,14 +106,12 @@ final readonly class DataSourceProvider
             }
         }
 
-        if (!is_array($processedDataSources)) {
-            $processedDataSources = [];
+        if (!is_array($data) || !is_array($processedDataSource)) {
+            return $data;
         }
 
-        if (is_array($data)) {
-            Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedDataSources, $data);
-        }
+        Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedDataSource, $data);
 
-        return $processedDataSources;
+        return $processedDataSource;
     }
 }

@@ -22,26 +22,31 @@ such as :typoscript:`database-query`, allowing per-record variable processing.
 Data sources
 ============
 
-When resolving configuration values, the processor draws from four data
-sources, tried in the order listed:
+:typoscript:`as`, :typoscript:`merge` and :typoscript:`variables` are read
+from this processor's own configuration block
+(:typoscript:`processorConfiguration`) only. :typoscript:`table` is also read
+from there, but falls back to a same-named key already present in
+:php:`processedData` — this is why :typoscript:`table`, once set by an outer
+processor (e.g. :typoscript:`database-query`), can be picked up by a nested
+:typoscript:`process-variables` without being repeated explicitly. See
+:ref:`usage-data-sources` for what these two sources contain.
 
-+-----------------------------------+---------------------------------------------------+
-| Data source identifier            | Contains                                          |
-+===================================+===================================================+
-| :php:`contentObjectRenderer`      | Current record's field values                     |
-+-----------------------------------+---------------------------------------------------+
-| :php:`contentObjectConfiguration` | Top-level :typoscript:`HANDLEBARSTEMPLATE` config |
-+-----------------------------------+---------------------------------------------------+
-| :php:`processedData`              | Accumulated output from previous processors       |
-+-----------------------------------+---------------------------------------------------+
-| :php:`processorConfiguration`     | This processor's own config block                 |
-+-----------------------------------+---------------------------------------------------+
+The :typoscript:`preProcessing` and :typoscript:`postProcessing` hooks
+receive the full :php:`DataSourceCollection`, so custom
+:php:`DataSourceAwareProcessor` implementations have access to all four
+sources (see :ref:`developer-corner-data-source-aware-processor`).
 
-This is why options like :typoscript:`table` and :typoscript:`as` can be set
-by an outer processor and automatically picked up by a nested
-:typoscript:`process-variables` without being repeated explicitly.
-The :typoscript:`preProcessing` and :typoscript:`postProcessing` hooks receive
-the same collection, so they have access to all four sources as well.
+..  _data-processor-process-variables-payload:
+
+Choosing which record to process
+=================================
+
+By default, the :typoscript:`field` option of a :typoscript:`variables`
+entry resolves against the current content element's own record. Configure
+:typoscript:`dataSource` (or an inline :typoscript:`data` array) to process
+a different record or array instead — see :ref:`usage-data-sources-payload`
+for how it is resolved. If the resolved payload is not an array, it is
+ignored and the current record's own field values are used instead.
 
 ..  _data-processor-process-variables-standalone:
 
@@ -112,6 +117,16 @@ Properties
 :typoscript:`table`
     Database table of the record to use as the data source for field
     lookups. Defaults to the current content element table.
+
+:typoscript:`data`
+    Inline data used as the field-lookup source for :typoscript:`variables`,
+    if :typoscript:`dataSource` is not configured (see
+    :ref:`data-processor-process-variables-payload`).
+
+:typoscript:`dataSource`
+    Data source(s) to use as the field-lookup source for
+    :typoscript:`variables`, instead of the current record (see
+    :ref:`data-processor-process-variables-payload`).
 
 :typoscript:`as`
     Target key in the processed data array. When set, the processed

@@ -26,6 +26,29 @@ use TYPO3Fluid\Fluid;
 /**
  * Data processor to access a given object by a given property path.
  *
+ * Example:
+ * ========
+ *
+ * Given an Extbase controller assigns a domain object to the view, e.g.:
+ *
+ *   $this->view->assign('post', $post);
+ *
+ * the "category" property of the assigned "post" object can be resolved and stored as
+ * "categoryTitle" for use within the Handlebars template:
+ *
+ * plugin.tx_myextension_blog.handlebars {
+ *   Blog::show {
+ *     dataProcessing {
+ *       10 = object-access
+ *       10 {
+ *         object = post
+ *         path = category.title
+ *         as = categoryTitle
+ *       }
+ *     }
+ *   }
+ * }
+ *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
  */

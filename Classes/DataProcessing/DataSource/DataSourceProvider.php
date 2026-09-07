@@ -50,7 +50,9 @@ final readonly class DataSourceProvider
 
         // Early return if no data sources are configured
         if ($dataSources === null) {
-            return $dataFromConfiguration ?? $dataFromProcessedData;
+            $data = $dataFromConfiguration ?? $dataFromProcessedData;
+
+            return is_array($data) ? $data : null;
         }
 
         // Normalize content object configuration

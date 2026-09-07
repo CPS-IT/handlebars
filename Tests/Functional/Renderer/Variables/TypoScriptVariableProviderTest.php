@@ -20,6 +20,7 @@ namespace CPSIT\Typo3Handlebars\Tests\Functional\Renderer\Variables;
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
+use Psr\Http\Message;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 use TYPO3\TestingFramework;
@@ -35,9 +36,11 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
 {
     use Tests\FrontendRequestTrait;
 
+    protected bool $initializeDatabase = false;
+
     private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
     private Src\Renderer\Variables\TypoScriptVariableProvider $subject;
-    private \Psr\Http\Message\ServerRequestInterface $request;
+    private Message\ServerRequestInterface $request;
 
     public function setUp(): void
     {

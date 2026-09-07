@@ -36,6 +36,8 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
 {
     use Tests\FrontendRequestTrait;
 
+    protected bool $initializeDatabase = false;
+
     private Log\Test\TestLogger $logger;
     private Src\DataProcessing\ObjecAccessProcessor $subject;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;

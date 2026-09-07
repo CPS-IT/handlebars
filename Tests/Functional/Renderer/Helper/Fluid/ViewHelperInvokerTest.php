@@ -44,6 +44,8 @@ final class ViewHelperInvokerTest extends TestingFramework\Core\Functional\Funct
         'typed_extconf',
     ];
 
+    protected bool $initializeDatabase = false;
+
     private Log\Test\TestLogger $logger;
     private Src\Renderer\HandlebarsRenderer $renderer;
     private Message\ServerRequestInterface $request;

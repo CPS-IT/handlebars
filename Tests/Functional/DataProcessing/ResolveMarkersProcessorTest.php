@@ -35,6 +35,8 @@ final class ResolveMarkersProcessorTest extends TestingFramework\Core\Functional
 {
     use Tests\FrontendRequestTrait;
 
+    protected bool $initializeDatabase = false;
+
     private Src\DataProcessing\ResolveMarkersProcessor $subject;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
 

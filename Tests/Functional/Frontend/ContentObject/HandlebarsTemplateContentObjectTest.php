@@ -42,6 +42,8 @@ final class HandlebarsTemplateContentObjectTest extends TestingFramework\Core\Fu
         'typed_extconf',
     ];
 
+    protected bool $initializeDatabase = false;
+
     private Tests\Functional\Fixtures\Classes\DummyRenderer $renderer;
     private Src\Renderer\Template\Path\ContentObjectPathProvider $pathProvider;
     private Core\Page\AssetCollector $assetCollector;

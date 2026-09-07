@@ -31,6 +31,8 @@ use TYPO3\TestingFramework;
 #[Framework\Attributes\CoversClass(Src\DataProcessing\DataSource\DataSourceCollection::class)]
 final class DataSourceCollectionTest extends TestingFramework\Core\Functional\FunctionalTestCase
 {
+    protected bool $initializeDatabase = false;
+
     private Src\DataProcessing\DataSource\DataSourceCollection $subject;
 
     public function setUp(): void

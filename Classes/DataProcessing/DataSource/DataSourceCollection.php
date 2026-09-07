@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\DataProcessing\DataSource;
 
-use CPSIT\Typo3Handlebars\Exception;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -119,28 +118,6 @@ final class DataSourceCollection
         }
 
         return $default;
-    }
-
-    /**
-     * @template T
-     * @param non-empty-string $keyword
-     * @param DataSource|list<DataSource> $dataSources
-     * @param T $default
-     * @return array{mixed|T, non-empty-string}
-     * @throws Exception\KeywordCannotBeResolved
-     */
-    public function resolveKeyword(string $keyword, DataSource|array $dataSources = [], mixed $default = null): array
-    {
-        $variableName = $this->resolve($keyword, DataSource::ProcessorConfiguration);
-
-        if (!is_string($variableName) || $variableName === '') {
-            throw new Exception\KeywordCannotBeResolved($keyword);
-        }
-
-        return [
-            $this->resolve($variableName, $dataSources, $default),
-            $variableName,
-        ];
     }
 
     public function resolveCurrentUid(): int|string

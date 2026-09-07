@@ -273,7 +273,7 @@ final class ProcessEachProcessorTest extends TestingFramework\Core\Functional\Fu
             'dataProcessing.' => [
                 '10' => 'object-access',
                 '10.' => [
-                    'object' => 'value',
+                    'object' => 'contentObjectConfiguration:currentValue',
                     'path' => 'name',
                     'as' => 'name',
                 ],

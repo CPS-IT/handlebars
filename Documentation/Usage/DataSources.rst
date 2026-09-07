@@ -67,21 +67,6 @@ repeated explicitly — as long as the nested processor actually queries that
 source (some processors restrict a given option to a specific source, or a
 specific subset, rather than searching all four).
 
-..  _usage-data-sources-keyword:
-
-Resolving a keyword-configured variable
-=======================================
-
-Some processor options do not name a value directly, but the *key* under
-which the value is stored — for example :typoscript:`iterable` on
-:ref:`data-processor-iterable-to-array` or :typoscript:`object` on
-:ref:`data-processor-object-access`. The configured option is itself
-resolved from :typoscript:`processorConfiguration` to obtain that key, which
-is then looked up across data sources as described above. If the option is
-not configured, or resolves to an empty string, the value cannot be
-resolved, and the processor logs a warning and returns the processed data
-unchanged.
-
 ..  _usage-data-sources-payload:
 
 Resolving a data payload (`dataSource` / `data`)
@@ -91,8 +76,12 @@ Resolving a data payload (`dataSource` / `data`)
 accept a :typoscript:`dataSource` (or inline :typoscript:`data`) option to
 pick the actual payload they operate on, independently of whatever their own
 configuration otherwise resolves from the four sources above.
+:ref:`data-processor-iterable-to-array` and :ref:`data-processor-object-access`
+use the exact same mechanism under a processor-specific option name —
+:typoscript:`iterable` and :typoscript:`object` respectively — instead of the
+generic :typoscript:`dataSource`.
 
-:typoscript:`dataSource`
+:typoscript:`dataSource` (or the processor-specific option name)
     One or more data source references, each optionally scoped to a
     sub-path with a colon (e.g. :typoscript:`processedData:files`). A single
     reference is resolved and used as-is, whatever its type — it is not
@@ -108,13 +97,21 @@ configuration otherwise resolves from the four sources above.
         including any that were arrays, are discarded rather than
         partially merged.
 
-    A warning is logged, and the payload cannot be resolved, if
-    :typoscript:`dataSource` references an unsupported data source
-    identifier, a data source that is missing in the current context, or a
-    sub-path that does not exist within a data source.
+    A warning is logged, and the payload cannot be resolved, if the option
+    is empty, references an unsupported data source identifier, a data
+    source that is missing in the current context, or a sub-path that does
+    not exist within a data source. Note that an *unconfigured* option
+    (rather than one configured with an invalid value) is not itself an
+    error — see the fallback below and each processor's own documentation
+    for what happens next.
 
 :typoscript:`data`
-    Inline data, used only if :typoscript:`dataSource` is not configured.
+    Inline data, used as a fallback if the option above is not configured
+    at all. This fallback always uses the fixed key :typoscript:`data`
+    (:typoscript:`data.` for an inline array in :typoscript:`processorConfiguration`,
+    or a plain :typoscript:`data` key already present in
+    :typoscript:`processedData`), regardless of what the primary option is
+    called for a given processor.
 
 See each processor's own documentation for further, processor-specific
 fallbacks once neither option yields a value.

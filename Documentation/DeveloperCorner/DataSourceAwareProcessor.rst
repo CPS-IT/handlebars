@@ -60,39 +60,50 @@ The four :php:`DataSource` cases mirror the :typoscript:`processorConfiguration`
 
 ..  _developer-corner-data-source-aware-processor-keyword:
 
-Resolving a keyword-configured variable
-========================================
+Resolving a data payload via a configurable keyword
+===================================================
 
-Processors often accept a configuration option whose value is itself the
-name of another variable to resolve — for example, an :typoscript:`iterable`
-option that names the variable to iterate over.
-:php:`DataSourceCollection::resolveKeyword()` covers this pattern in one
-call: it looks up :php:`$keyword` in
-:php:`DataSource::ProcessorConfiguration` to obtain the variable name, then
-resolves that variable name against the given (or, by default, all) data
-sources. It throws
-:php:`CPSIT\Typo3Handlebars\Exception\KeywordCannotBeResolved` if the
-keyword is not configured or resolves to an empty string.
+Processors often accept a configuration option that itself points at the
+payload to work with — for example, an :typoscript:`iterable` option
+naming the data source to iterate over (see
+:ref:`usage-data-sources-payload` for the full resolution rules).
+:php:`DataSourceProvider::provide()` covers this pattern in one call: it
+reads the option named by its :php:`$keyword` argument (default
+:typoscript:`dataSource`) from :php:`DataSource::ProcessorConfiguration` and
+resolves it. Since :php:`DataSourceAwareProcessor` implementations are
+instantiated via :php:`GeneralUtility::makeInstance()`, :php:`DataSourceProvider`
+can be injected through the constructor like any other service:
 
 ..  code-block:: php
 
-    use CPSIT\Typo3Handlebars\DataProcessing\DataSource\DataSource;
-    use CPSIT\Typo3Handlebars\Exception\KeywordCannotBeResolved;
+    use CPSIT\Typo3Handlebars\DataProcessing\DataSource\DataSourceProvider;
+    use CPSIT\Typo3Handlebars\Exception;
 
-    try {
-        // Resolves the "iterable" processor option to a variable name,
-        // then resolves that variable name against all data sources
-        [$value, $variableName] = $collection->resolveKeyword('iterable');
-    } catch (KeywordCannotBeResolved) {
-        // The "iterable" option is not configured
+    final readonly class MyPreProcessor implements DataSourceAwareProcessor
+    {
+        public function __construct(
+            private DataSourceProvider $dataSourceProvider,
+        ) {}
+
+        public function process(
+            array $variables,
+            DataSourceCollection $collection,
+            ContentObjectRenderer $contentObjectRenderer,
+        ): array {
+            try {
+                // Resolves the "iterable" processor option, e.g. "processedData:news"
+                $variables['items'] = $this->dataSourceProvider->provide($collection, 'iterable');
+            } catch (
+                Exception\DataSourceIsNotSupported
+                | Exception\DataSourceIsMissingInCollection
+                | Exception\PathIsMissingInDataSource
+            ) {
+                // The "iterable" option is not configured, or invalid
+            }
+
+            return $variables;
+        }
     }
-
-    // Restrict the variable lookup to a specific data source, with a default
-    [$value, $variableName] = $collection->resolveKeyword(
-        'iterable',
-        DataSource::ProcessedData,
-        [],
-    );
 
 ..  _developer-corner-data-source-aware-processor-implement:
 

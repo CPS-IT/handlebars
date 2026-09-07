@@ -33,17 +33,18 @@ final readonly class DataSourceProvider
     ) {}
 
     /**
+     * @param non-empty-string $keyword
      * @throws Exception\DataSourceIsMissingInCollection
      * @throws Exception\DataSourceIsNotSupported
      * @throws Exception\PathIsMissingInDataSource
      */
-    public function provide(DataSourceCollection $collection): mixed
+    public function provide(DataSourceCollection $collection, string $keyword = 'dataSource'): mixed
     {
         $dataFromConfiguration = $collection->resolve('data.', DataSource::ProcessorConfiguration);
         $dataFromProcessedData = $collection->resolve('data', DataSource::ProcessedData);
         /** @var string|array<int, string>|null $dataSources */
-        $dataSources = $collection->resolve('dataSource.', DataSource::ProcessorConfiguration)
-            ?? $collection->resolve('dataSource', DataSource::ProcessorConfiguration);
+        $dataSources = $collection->resolve($keyword . '.', DataSource::ProcessorConfiguration)
+            ?? $collection->resolve($keyword, DataSource::ProcessorConfiguration);
 
         // Early return if no data sources are configured
         if ($dataSources === null) {

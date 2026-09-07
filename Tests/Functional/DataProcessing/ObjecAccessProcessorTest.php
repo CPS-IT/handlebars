@@ -36,6 +36,11 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
 {
     use Tests\FrontendRequestTrait;
 
+    protected array $testExtensionsToLoad = [
+        'handlebars',
+        'typed_extconf',
+    ];
+
     protected bool $initializeDatabase = false;
 
     private Log\Test\TestLogger $logger;
@@ -52,6 +57,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
         $this->subject = new Src\DataProcessing\ObjecAccessProcessor(
             $this->logger,
             $this->get(Frontend\ContentObject\ContentDataProcessor::class),
+            $this->get(Src\DataProcessing\DataSource\DataSourceProvider::class),
         );
         $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
@@ -65,7 +71,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
         self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], [], []));
         self::assertTrue(
             $this->logger->hasWarning([
-                'message' => 'Invalid object source configured for "object-access" data processor while processing {table}:{uid}.',
+                'message' => 'Invalid object or path configured for "object-access" data processor while processing {table}:{uid}.',
                 'context' => [
                     'table' => 'tt_content',
                     'uid' => 123,
@@ -84,8 +90,68 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
         self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []));
         self::assertTrue(
             $this->logger->hasWarning([
-                'message' => 'Invalid object source configured for "object-access" data processor while processing {table}:{uid}.',
+                'message' => 'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
                 'context' => [
+                    'source' => '',
+                    'table' => 'tt_content',
+                    'uid' => 123,
+                ],
+            ]),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfObjectIsNotPrefixedWithDataSourceIdentifier(): void
+    {
+        $processorConfiguration = [
+            'object' => 'someObject',
+            'path' => 'name',
+        ];
+        $processedData = [
+            'someObject' => new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
+        ];
+
+        self::assertSame(
+            $processedData,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+        self::assertTrue(
+            $this->logger->hasWarning([
+                'message' => 'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
+                'context' => [
+                    'source' => 'someObject',
+                    'table' => 'tt_content',
+                    'uid' => 123,
+                ],
+            ]),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredObjectPathIsMissing(): void
+    {
+        $processorConfiguration = [
+            'object' => 'processedData:foo.bar',
+            'path' => 'name',
+        ];
+        $processedData = [
+            'foo' => [
+                'baz' => [
+                    'bar' => 'foo',
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            $processedData,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+        self::assertTrue(
+            $this->logger->hasWarning([
+                'message' => 'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
+                'context' => [
+                    'path' => 'foo.bar',
+                    'source' => 'processedData',
                     'table' => 'tt_content',
                     'uid' => 123,
                 ],
@@ -97,7 +163,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfPathIsNotConfigured(): void
     {
         $processorConfiguration = [
-            'object' => 'someObject',
+            'object' => 'processedData:someObject',
         ];
         $processedData = [
             'someObject' => new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
@@ -122,7 +188,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredObjectCannotBeResolved(): void
     {
         $processorConfiguration = [
-            'object' => 'someObject',
+            'object' => 'processedData:someObject',
             'path' => 'name',
         ];
 
@@ -143,7 +209,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     {
         $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
         $processorConfiguration = [
-            'object' => 'someObject',
+            'object' => 'processedData:someObject',
             'path' => 'unknownProperty',
         ];
         $processedData = [
@@ -166,7 +232,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     {
         $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
         $processorConfiguration = [
-            'object' => 'someObject',
+            'object' => 'processedData:someObject',
             'path' => 'name',
         ];
         $processedData = [
@@ -189,7 +255,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     {
         $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
         $processorConfiguration = [
-            'object' => 'someObject',
+            'object' => 'processedData:someObject',
             'path' => 'name',
             'as' => 'theName',
         ];
@@ -213,7 +279,7 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     {
         $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo', ['foo.bar' => 'baz']);
         $processorConfiguration = [
-            'object' => 'someObject',
+            'object' => 'processedData:someObject',
             'path' => 'items',
             'dataProcessing.' => [
                 '10' => Src\DataProcessing\UnflattenVariableNamesProcessor::class,

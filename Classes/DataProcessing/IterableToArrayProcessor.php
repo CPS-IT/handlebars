@@ -36,9 +36,9 @@ use TYPO3\CMS\Frontend;
  *   $view->assign('news', $this->newsRepository->findAll());
  *
  * the resulting {@see Extbase\Persistence\QueryResultInterface} is available as
- * "news" variable and can be converted into a plain array for use within the Handlebars template.
- * Each converted item is made available as "data" and can be further transformed using nested
- * data processors:
+ * "news" variable in the processed data and can be converted into a plain array for use
+ * within the Handlebars template. Each converted item is made available as "currentValue"
+ * and can be further transformed using nested data processors:
  *
  * plugin.tx_news {
  *   handlebars {
@@ -48,13 +48,13 @@ use TYPO3\CMS\Frontend;
  *       dataProcessing {
  *         10 = iterable-to-array
  *         10 {
- *           iterable = news
+ *           iterable = processedData:news
  *           as = newsItems
  *
  *           dataProcessing {
  *             10 = object-access
  *             10 {
- *               object = data
+ *               object = contentObjectConfiguration:currentValue
  *               path = title
  *               as = title
  *             }
@@ -74,6 +74,7 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
     public function __construct(
         private Log\LoggerInterface $logger,
         private Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
+        private DataSource\DataSourceProvider $dataSourceProvider,
     ) {}
 
     /**
@@ -95,31 +96,49 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
             $processedData,
         );
 
+        /** @var string $as */
+        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
+        $preserveKeys = (bool)$collection->resolve('preserveKeys', DataSource\DataSource::ProcessorConfiguration, false);
+        $dataProcessing = $collection->resolve('dataProcessing.', DataSource\DataSource::ProcessorConfiguration);
+        $iterable = null;
+
         try {
-            [$iterable, $iterableSource] = $collection->resolveKeyword('iterable');
-        } catch (Exception\KeywordCannotBeResolved) {
+            $iterable = $this->dataSourceProvider->provide($collection, 'iterable');
+        } catch (Exception\DataSourceIsMissingInCollection $exception) {
             $this->logger->warning(
-                'Invalid iterable source configured for "iterable-to-array" data processor while processing {table}:{uid}.',
+                'No variables provided for data source "{source}" while processing {table}:{uid}.',
                 [
+                    'source' => $exception->dataSource->value,
                     'table' => $cObj->getCurrentTable(),
                     'uid' => $collection->resolveCurrentUid(),
                 ],
             );
-
-            // Early return if iterable source is not configured
-            return $processedData;
+        } catch (Exception\DataSourceIsNotSupported $exception) {
+            $this->logger->warning(
+                'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
+                [
+                    'source' => $exception->dataSourceIdentifier,
+                    'table' => $cObj->getCurrentTable(),
+                    'uid' => $collection->resolveCurrentUid(),
+                ],
+            );
+        } catch (Exception\PathIsMissingInDataSource $exception) {
+            $this->logger->warning(
+                'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
+                [
+                    'path' => $exception->path,
+                    'source' => $exception->dataSource->value,
+                    'table' => $cObj->getCurrentTable(),
+                    'uid' => $collection->resolveCurrentUid(),
+                ],
+            );
         }
-
-        /** @var string $as */
-        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
-        $preserveKeys = (bool)$collection->resolve('preserveKeys', DataSource\DataSource::ProcessorConfiguration, false);
 
         // Early return if resolved value is not iterable
         if (!is_iterable($iterable)) {
             $this->logger->warning(
-                'Configured value at "{iterableSource}" is not iterable while processing {table}:{uid}.',
+                'Invalid iterable configured for "iterable-to-array" data processor while processing {table}:{uid}.',
                 [
-                    'iterableSource' => $iterableSource,
                     'table' => $cObj->getCurrentTable(),
                     'uid' => $collection->resolveCurrentUid(),
                 ],
@@ -131,9 +150,16 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
         $array = is_array($iterable) ? $iterable : iterator_to_array($iterable, $preserveKeys);
 
         // Process additional data processors for each item
-        if (is_array($processorConfiguration['dataProcessing.'] ?? null)) {
+        if (is_array($dataProcessing)) {
             foreach ($array as $key => $item) {
-                $array[$key] = $this->contentDataProcessor->process($cObj, $processorConfiguration, ['data' => $item]);
+                $array[$key] = $this->contentDataProcessor->process(
+                    $cObj,
+                    [
+                        'dataProcessing.' => $dataProcessing,
+                        'currentValue' => $item,
+                    ],
+                    [],
+                );
             }
         }
 

@@ -33,7 +33,7 @@ plugin.tx_testextension.handlebars {
     dataProcessing {
       10 = object-access
       10 {
-        object = request
+        object = processedData:request
         path = headers.X-FOO.0
         as = foo
       }

@@ -70,14 +70,14 @@ Usage
                 dataProcessing {
                     10 = object-access
                     10 {
-                        object = value
+                        object = contentObjectConfiguration:currentValue
                         path = publicUrl
                         as = url
                     }
 
                     20 = object-access
                     20 {
-                        object = value
+                        object = contentObjectConfiguration:currentValue
                         path = fileType
                         as = type
                     }
@@ -88,9 +88,11 @@ Usage
 
 Each file reference resolved by the core :typoscript:`files` processor is
 made available to the nested :typoscript:`dataProcessing` chain as
-:typoscript:`value`, so :typoscript:`object-access` can pull individual
-properties off it. The per-item results are collected — keyed by the
-original array keys — under :typoscript:`processedFiles`.
+:typoscript:`currentValue`, reachable as
+:typoscript:`contentObjectConfiguration:currentValue` (see
+:ref:`usage-data-sources`), so :typoscript:`object-access` can pull
+individual properties off it. The per-item results are collected — keyed by
+the original array keys — under :typoscript:`processedFiles`.
 
 ..  _data-processor-process-each-per-item:
 
@@ -126,8 +128,8 @@ Two mechanisms are available for each item, and can be combined:
 :typoscript:`dataProcessing`
     A standard nested :typoscript:`dataProcessing` chain (see
     :ref:`data-processor-process-each-usage`), with the item exposed as
-    :typoscript:`value`. Its result is merged with — and overrides — whatever
-    :typoscript:`variables` produced for the same item.
+    :typoscript:`currentValue`. Its result is merged with — and overrides —
+    whatever :typoscript:`variables` produced for the same item.
 
 ..  _data-processor-process-each-properties:
 

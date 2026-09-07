@@ -57,6 +57,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         $this->subject = new Src\DataProcessing\IterableToArrayProcessor(
             $this->logger,
             $this->get(Frontend\ContentObject\ContentDataProcessor::class),
+            $this->get(Src\DataProcessing\DataSource\DataSourceProvider::class),
         );
         $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $this->contentObjectRenderer->setRequest($request);
@@ -70,7 +71,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], [], []));
         self::assertTrue(
             $this->logger->hasWarning([
-                'message' => 'Invalid iterable source configured for "iterable-to-array" data processor while processing {table}:{uid}.',
+                'message' => 'Invalid iterable configured for "iterable-to-array" data processor while processing {table}:{uid}.',
                 'context' => [
                     'table' => 'tt_content',
                     'uid' => 123,
@@ -89,8 +90,9 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         self::assertSame([], $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []));
         self::assertTrue(
             $this->logger->hasWarning([
-                'message' => 'Invalid iterable source configured for "iterable-to-array" data processor while processing {table}:{uid}.',
+                'message' => 'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
                 'context' => [
+                    'source' => '',
                     'table' => 'tt_content',
                     'uid' => 123,
                 ],
@@ -99,7 +101,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
     }
 
     #[Framework\Attributes\Test]
-    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredValueIsNotIterable(): void
+    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfIterableIsNotPrefixedWithDataSourceIdentifier(): void
     {
         $processorConfiguration = [
             'iterable' => 'someValue',
@@ -114,9 +116,65 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         );
         self::assertTrue(
             $this->logger->hasWarning([
-                'message' => 'Configured value at "{iterableSource}" is not iterable while processing {table}:{uid}.',
+                'message' => 'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
                 'context' => [
-                    'iterableSource' => 'someValue',
+                    'source' => 'someValue',
+                    'table' => 'tt_content',
+                    'uid' => 123,
+                ],
+            ]),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredIterablePathIsMissing(): void
+    {
+        $processorConfiguration = [
+            'iterable' => 'processedData:foo.bar',
+        ];
+        $processedData = [
+            'foo' => [
+                'baz' => [
+                    'bar' => 'foo',
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            $processedData,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+        self::assertTrue(
+            $this->logger->hasWarning([
+                'message' => 'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
+                'context' => [
+                    'path' => 'foo.bar',
+                    'source' => 'processedData',
+                    'table' => 'tt_content',
+                    'uid' => 123,
+                ],
+            ]),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredValueIsNotIterable(): void
+    {
+        $processorConfiguration = [
+            'iterable' => 'processedData:someValue',
+        ];
+        $processedData = [
+            'someValue' => new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
+        ];
+
+        self::assertSame(
+            $processedData,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+        self::assertTrue(
+            $this->logger->hasWarning([
+                'message' => 'Invalid iterable configured for "iterable-to-array" data processor while processing {table}:{uid}.',
+                'context' => [
                     'table' => 'tt_content',
                     'uid' => 123,
                 ],
@@ -128,7 +186,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
     public function processConvertsPlainArrayToListByDefault(): void
     {
         $processorConfiguration = [
-            'iterable' => 'someArray',
+            'iterable' => 'processedData:someArray',
         ];
         $processedData = [
             'someArray' => [
@@ -155,7 +213,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
     public function processPreservesKeysIfConfigured(): void
     {
         $processorConfiguration = [
-            'iterable' => 'someArray',
+            'iterable' => 'processedData:someArray',
             'preserveKeys' => '1',
         ];
         $processedData = [
@@ -207,7 +265,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
     public function processConvertsIterableToArray(iterable $iterable, array $expectedItems): void
     {
         $processorConfiguration = [
-            'iterable' => 'someIterable',
+            'iterable' => 'processedData:someIterable',
         ];
         $processedData = [
             'someIterable' => $iterable,
@@ -230,7 +288,7 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
 
         $processorConfiguration = [
-            'iterable' => 'someArray',
+            'iterable' => 'processedData:someArray',
         ];
         $processedData = [
             'someArray' => [$object],
@@ -254,12 +312,12 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         $object2 = new Tests\Functional\Fixtures\Classes\DummyObject('baz');
 
         $processorConfiguration = [
-            'iterable' => 'someArray',
+            'iterable' => 'processedData:someArray',
             'as' => 'items',
             'dataProcessing.' => [
                 '10' => 'object-access',
                 '10.' => [
-                    'object' => 'data',
+                    'object' => 'contentObjectConfiguration:currentValue',
                     'path' => 'name',
                     'as' => 'name',
                 ],
@@ -273,11 +331,9 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
             'someArray' => [$object1, $object2],
             'items' => [
                 [
-                    'data' => $object1,
                     'name' => 'foo',
                 ],
                 [
-                    'data' => $object2,
                     'name' => 'baz',
                 ],
             ],

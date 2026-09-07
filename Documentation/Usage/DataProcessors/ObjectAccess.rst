@@ -23,14 +23,17 @@ without having to expose the whole object to the template.
 Data sources
 ============
 
-The :typoscript:`object` property does not name a source object directly.
-Instead, it names the *key* under which the object is stored, and that key is
-looked up across data sources as described in :ref:`usage-data-sources-keyword`.
+:typoscript:`object` is resolved exactly like :typoscript:`dataSource` on
+:ref:`data-processor-process-each` — see :ref:`usage-data-sources-payload`
+for the full syntax, including what happens when multiple references are
+configured. It just uses a processor-specific option name instead of the
+generic :typoscript:`dataSource`.
 
 This is what allows :typoscript:`object` to refer to a value placed into
 :typoscript:`processedData` by a preceding processor's :typoscript:`as`
 option, or to a variable an Extbase controller assigned directly to the
-view.
+view (Extbase-assigned view variables end up in :typoscript:`processedData`
+too, under the assigned key).
 
 ..  _data-processor-object-access-usage:
 
@@ -64,7 +67,7 @@ available to :typoscript:`object-access` under the assigned key:
                 # Pull the related category's title off the assigned "post" object
                 10 = object-access
                 10 {
-                    object = post
+                    object = processedData:post
                     path = category.title
                     as = categoryTitle
                 }
@@ -78,7 +81,7 @@ Properties
 ==========
 
 :typoscript:`object`
-    Key under which the source object is looked up (see
+    Data source reference(s) the source object is read from (see
     :ref:`data-processor-object-access-data-sources`). Required.
 
 :typoscript:`path`

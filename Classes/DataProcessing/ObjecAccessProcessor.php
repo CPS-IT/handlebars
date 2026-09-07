@@ -41,7 +41,7 @@ use TYPO3Fluid\Fluid;
  *     dataProcessing {
  *       10 = object-access
  *       10 {
- *         object = post
+ *         object = processedData:post
  *         path = category.title
  *         as = categoryTitle
  *       }
@@ -58,6 +58,7 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
     public function __construct(
         private Log\LoggerInterface $logger,
         private Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
+        private DataSource\DataSourceProvider $dataSourceProvider,
     ) {}
 
     /**
@@ -72,6 +73,7 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
         array $processorConfiguration,
         array $processedData,
     ): array {
+        $object = null;
         $collection = DataSource\DataSourceCollection::for(
             $cObj,
             $contentObjectConfiguration,
@@ -80,18 +82,35 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
         );
 
         try {
-            [$object] = $collection->resolveKeyword('object');
-        } catch (Exception\KeywordCannotBeResolved) {
+            $object = $this->dataSourceProvider->provide($collection, 'object');
+        } catch (Exception\DataSourceIsMissingInCollection $exception) {
             $this->logger->warning(
-                'Invalid object source configured for "object-access" data processor while processing {table}:{uid}.',
+                'No variables provided for data source "{source}" while processing {table}:{uid}.',
                 [
+                    'source' => $exception->dataSource->value,
                     'table' => $cObj->getCurrentTable(),
                     'uid' => $collection->resolveCurrentUid(),
                 ],
             );
-
-            // Early return if object source is not configured
-            return $processedData;
+        } catch (Exception\DataSourceIsNotSupported $exception) {
+            $this->logger->warning(
+                'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
+                [
+                    'source' => $exception->dataSourceIdentifier,
+                    'table' => $cObj->getCurrentTable(),
+                    'uid' => $collection->resolveCurrentUid(),
+                ],
+            );
+        } catch (Exception\PathIsMissingInDataSource $exception) {
+            $this->logger->warning(
+                'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
+                [
+                    'path' => $exception->path,
+                    'source' => $exception->dataSource->value,
+                    'table' => $cObj->getCurrentTable(),
+                    'uid' => $collection->resolveCurrentUid(),
+                ],
+            );
         }
 
         /** @var string $as */

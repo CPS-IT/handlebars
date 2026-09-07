@@ -24,13 +24,17 @@ bridge between a repository result and the rest of the
 Data sources
 ============
 
-The :typoscript:`iterable` property does not name the source value directly.
-Instead, it names the *key* under which the value is stored, and that key is
-looked up across data sources as described in :ref:`usage-data-sources-keyword`.
+:typoscript:`iterable` is resolved exactly like :typoscript:`dataSource` on
+:ref:`data-processor-process-each` — see :ref:`usage-data-sources-payload`
+for the full syntax, including what happens when multiple references are
+configured. It just uses a processor-specific option name instead of the
+generic :typoscript:`dataSource`.
 
 This is what allows :typoscript:`iterable` to refer to a value placed into
 :typoscript:`processedData` by a preceding processor's :typoscript:`as`
-option, or to a variable an Extbase controller assigned directly to the view.
+option, or to a variable an Extbase controller assigned directly to the view
+(Extbase-assigned view variables end up in :typoscript:`processedData` too,
+under the assigned key).
 
 ..  _data-processor-iterable-to-array-usage:
 
@@ -57,7 +61,7 @@ Usage
             dataProcessing {
                 10 = iterable-to-array
                 10 {
-                    iterable = news
+                    iterable = processedData:news
                     as = newsItems
                 }
             }
@@ -69,24 +73,24 @@ Usage
 Processing individual items
 ============================
 
-Each converted item is wrapped as :typoscript:`data` and run through a
-nested :typoscript:`dataProcessing` chain, just like TYPO3's own
-:typoscript:`database-query` processor does for its records. This only
-happens when a nested chain is actually configured, so plain conversions are
-left untouched:
+Each converted item is exposed to a nested :typoscript:`dataProcessing`
+chain as :typoscript:`currentValue`, reachable as
+:typoscript:`contentObjectConfiguration:currentValue` (see
+:ref:`usage-data-sources`). This only happens when a nested chain is
+actually configured, so plain conversions are left untouched:
 
 ..  code-block:: typoscript
 
     dataProcessing {
         10 = iterable-to-array
         10 {
-            iterable = news
+            iterable = processedData:news
             as = newsItems
 
             dataProcessing {
                 10 = object-access
                 10 {
-                    object = data
+                    object = contentObjectConfiguration:currentValue
                     path = title
                     as = title
                 }
@@ -100,7 +104,7 @@ Properties
 ==========
 
 :typoscript:`iterable`
-    Key under which the source value is looked up (see
+    Data source reference(s) the value to convert is read from (see
     :ref:`data-processor-iterable-to-array-data-sources`). Required.
 
 :typoscript:`as`

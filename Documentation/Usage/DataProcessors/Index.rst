@@ -6,7 +6,7 @@
 Data processors
 ===============
 
-The extension provides five data processors that integrate with the standard
+The extension provides various data processors that integrate with the standard
 TypoScript :typoscript:`dataProcessing` chain inside :typoscript:`HANDLEBARSTEMPLATE`
 content objects.
 
@@ -15,6 +15,7 @@ content objects.
 
     IterableToArray
     ObjectAccess
+    ProcessEach
     ProcessVariables
     ResolveMarkers
     UnflattenVariableNames

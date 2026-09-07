@@ -16,6 +16,7 @@ from TYPO3 content elements and page objects.
     ContentObject
     ExtbasePlugin
     DataProcessors/Index
+    DataSources
     CustomHelpers
     Events
     AssetManagement

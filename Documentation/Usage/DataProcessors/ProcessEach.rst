@@ -27,22 +27,9 @@ Resolving the items to iterate
 
 The value to iterate over is resolved in the following order:
 
-#.  :typoscript:`dataSource`, if configured — one or more data source
-    references, each optionally scoped to a sub-path with a colon (e.g.
-    :typoscript:`processedData:files`). Multiple entries, configured as a
-    TypoScript array with numeric keys, are merged in ascending key order:
-
-    +-----------------------------------+---------------------------------------------------+
-    | Data source identifier            | Contains                                          |
-    +===================================+===================================================+
-    | :php:`processorConfiguration`     | This processor's own config block                 |
-    +-----------------------------------+---------------------------------------------------+
-    | :php:`processedData`              | Accumulated output from previous processors       |
-    +-----------------------------------+---------------------------------------------------+
-    | :php:`contentObjectRenderer`      | Current record's field values                     |
-    +-----------------------------------+---------------------------------------------------+
-    | :php:`contentObjectConfiguration` | Top-level :typoscript:`HANDLEBARSTEMPLATE` config |
-    +-----------------------------------+---------------------------------------------------+
+#.  :typoscript:`dataSource`, if configured — see
+    :ref:`usage-data-sources-payload` for how it is resolved, including what
+    happens when multiple references are configured.
 
 #.  Otherwise, an inline :typoscript:`data` array configured directly on
     this processor.
@@ -55,10 +42,7 @@ The value to iterate over is resolved in the following order:
     chain — without having to repeat :typoscript:`dataSource` explicitly.
 
 If none of these yield an iterable value, the processed data is returned
-unchanged. The same happens, after a warning is logged, if
-:typoscript:`dataSource` references an unsupported data source identifier, a
-data source that is missing from the collection, or a path that does not
-exist within a data source.
+unchanged.
 
 ..  _data-processor-process-each-usage:
 

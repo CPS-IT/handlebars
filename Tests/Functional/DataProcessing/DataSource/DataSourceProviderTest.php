@@ -179,7 +179,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
     }
 
     /**
-     * @return \Generator<string, array{array<int, string>, array<string, mixed>|null}>
+     * @return \Generator<string, array{array<int, string>, mixed}>
      */
     public static function provideAcceptsDifferentDataSourcesDataProvider(): \Generator
     {
@@ -199,15 +199,32 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
             ],
             ['foo' => 'COC-BAZ'],
         ];
+        yield 'single data source resolving to non-array value' => [
+            ['contentObjectRenderer:foo'],
+            'COR-BAZ',
+        ];
+        yield 'multiple data sources not all arrays, non-array value configured last' => [
+            [
+                10 => 'contentObjectConfiguration:bar',
+                20 => 'contentObjectRenderer:foo',
+            ],
+            'COR-BAZ',
+        ];
+        yield 'multiple data sources not all arrays, array value configured last' => [
+            [
+                10 => 'contentObjectRenderer:foo',
+                20 => 'processedData',
+            ],
+            ['foo' => 'PD-BAZ'],
+        ];
     }
 
     /**
      * @param array<int, string> $dataSources
-     * @param array<string, mixed>|null $expected
      */
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('provideAcceptsDifferentDataSourcesDataProvider')]
-    public function provideAcceptsDifferentDataSources(array $dataSources, ?array $expected): void
+    public function provideAcceptsDifferentDataSources(array $dataSources, mixed $expected): void
     {
         $collection = new Src\DataProcessing\DataSource\DataSourceCollection();
         $collection->set(

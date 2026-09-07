@@ -26,19 +26,7 @@ Data sources
 
 The :typoscript:`iterable` property does not name the source value directly.
 Instead, it names the *key* under which the value is stored, and that key is
-looked up across all four data sources, tried in the order listed:
-
-+-----------------------------------+---------------------------------------------------+
-| Data source identifier            | Contains                                          |
-+===================================+===================================================+
-| :php:`processorConfiguration`     | This processor's own config block                 |
-+-----------------------------------+---------------------------------------------------+
-| :php:`processedData`              | Accumulated output from previous processors       |
-+-----------------------------------+---------------------------------------------------+
-| :php:`contentObjectRenderer`      | Current record's field values                     |
-+-----------------------------------+---------------------------------------------------+
-| :php:`contentObjectConfiguration` | Top-level :typoscript:`HANDLEBARSTEMPLATE` config |
-+-----------------------------------+---------------------------------------------------+
+looked up across data sources as described in :ref:`usage-data-sources-keyword`.
 
 This is what allows :typoscript:`iterable` to refer to a value placed into
 :typoscript:`processedData` by a preceding processor's :typoscript:`as`

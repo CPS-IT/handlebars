@@ -53,12 +53,10 @@ restrict the lookup:
         DataSource::ContentObjectConfiguration,
     ]);
 
-The four :php:`DataSource` cases are:
-
-*   :php:`DataSource::ProcessorConfiguration` — this processor's own config block
-*   :php:`DataSource::ProcessedData` — accumulated output from previous processors
-*   :php:`DataSource::ContentObjectRenderer` — current record's field values
-*   :php:`DataSource::ContentObjectConfiguration` — top-level :typoscript:`HANDLEBARSTEMPLATE` config
+The four :php:`DataSource` cases mirror the :typoscript:`processorConfiguration`,
+:typoscript:`processedData`, :typoscript:`contentObjectRenderer` and
+:typoscript:`contentObjectConfiguration` identifiers described in
+:ref:`usage-data-sources`.
 
 ..  _developer-corner-data-source-aware-processor-keyword:
 

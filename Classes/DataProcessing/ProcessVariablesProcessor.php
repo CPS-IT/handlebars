@@ -188,8 +188,10 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration);
 
         // Use temporary cObj for processing
-        $cObj = clone $cObj;
-        $cObj->start($data, $table);
+        if (is_array($data)) {
+            $cObj = clone $cObj;
+            $cObj->start($data, $table);
+        }
 
         // Early return if processing should be skipped according to a configured condition
         if (is_array($processorConfiguration['if.'] ?? null) && !$cObj->checkIf($processorConfiguration['if.'])) {

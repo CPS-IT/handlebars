@@ -68,6 +68,7 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\AutoconfigureTag('data.processor', ['identifier' => 'process-each'])]
 final readonly class ProcessEachProcessor implements Frontend\ContentObject\DataProcessorInterface
 {
+    use DataSource\SupportsDataSource;
     use DataSource\SupportsDataSourceAwareProcessing;
 
     public function __construct(
@@ -97,48 +98,17 @@ final readonly class ProcessEachProcessor implements Frontend\ContentObject\Data
             $processedData,
         );
 
-        /** @var string $as */
-        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
-        $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
-        $dataProcessing = $collection->resolve('dataProcessing.', DataSource\DataSource::ProcessorConfiguration);
-        $data = null;
-
-        try {
-            $data = $this->dataSourceProvider->provide($collection);
-        } catch (Exception\DataSourceIsMissingInCollection $exception) {
-            $this->logger->warning(
-                'No variables provided for data source "{source}" while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\DataSourceIsNotSupported $exception) {
-            $this->logger->warning(
-                'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSourceIdentifier,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\PathIsMissingInDataSource $exception) {
-            $this->logger->warning(
-                'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
-                [
-                    'path' => $exception->path,
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        }
+        $data = $this->provideData($cObj, $collection);
 
         // Early return if resolved variables are not iterable
         if (!is_iterable($data)) {
             return $processedData;
         }
+
+        /** @var string $as */
+        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
+        $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
+        $dataProcessing = $collection->resolve('dataProcessing.', DataSource\DataSource::ProcessorConfiguration);
 
         // Early return if neither "variables." nor "dataProcessing." are properly defined
         if (!is_array($variables) && !is_array($dataProcessing)) {

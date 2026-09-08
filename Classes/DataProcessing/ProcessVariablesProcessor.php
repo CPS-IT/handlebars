@@ -98,6 +98,7 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\AutoconfigureTag('data.processor', ['identifier' => 'process-variables'])]
 final readonly class ProcessVariablesProcessor implements Frontend\ContentObject\DataProcessorInterface
 {
+    use DataSource\SupportsDataSource;
     use DataSource\SupportsDataSourceAwareProcessing;
 
     public function __construct(
@@ -127,7 +128,6 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
             $processedData,
         );
 
-        $data = null;
         $merge = (bool)$collection->resolve('merge', DataSource\DataSource::ProcessorConfiguration);
         $variables = $collection->resolve('variables.', DataSource\DataSource::ProcessorConfiguration);
 
@@ -145,39 +145,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
             $cObj,
         );
 
-        try {
-            $data = $this->dataSourceProvider->provide($collection);
-        } catch (Exception\DataSourceIsMissingInCollection $exception) {
-            $this->logger->warning(
-                'No data provided for data source "{source}" while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\DataSourceIsNotSupported $exception) {
-            $this->logger->warning(
-                'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSourceIdentifier,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\PathIsMissingInDataSource $exception) {
-            $this->logger->warning(
-                'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
-                [
-                    'path' => $exception->path,
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        }
-
-        $data ??= $cObj->data;
+        $data = $this->provideData($cObj, $collection) ?? $cObj->data;
         /** @var string $table */
         $table = $collection->resolve(
             'table',

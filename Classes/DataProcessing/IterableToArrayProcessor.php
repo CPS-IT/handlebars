@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\DataProcessing;
 
-use CPSIT\Typo3Handlebars\Exception;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Extbase;
@@ -71,6 +70,8 @@ use TYPO3\CMS\Frontend;
 #[DependencyInjection\Attribute\AutoconfigureTag('data.processor', ['identifier' => 'iterable-to-array'])]
 final readonly class IterableToArrayProcessor implements Frontend\ContentObject\DataProcessorInterface
 {
+    use DataSource\SupportsDataSource;
+
     public function __construct(
         private Log\LoggerInterface $logger,
         private Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
@@ -96,43 +97,7 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
             $processedData,
         );
 
-        /** @var string $as */
-        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
-        $preserveKeys = (bool)$collection->resolve('preserveKeys', DataSource\DataSource::ProcessorConfiguration, false);
-        $dataProcessing = $collection->resolve('dataProcessing.', DataSource\DataSource::ProcessorConfiguration);
-        $iterable = null;
-
-        try {
-            $iterable = $this->dataSourceProvider->provide($collection, 'iterable');
-        } catch (Exception\DataSourceIsMissingInCollection $exception) {
-            $this->logger->warning(
-                'No variables provided for data source "{source}" while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\DataSourceIsNotSupported $exception) {
-            $this->logger->warning(
-                'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSourceIdentifier,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\PathIsMissingInDataSource $exception) {
-            $this->logger->warning(
-                'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
-                [
-                    'path' => $exception->path,
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        }
+        $iterable = $this->provideData($cObj, $collection, 'iterable');
 
         // Early return if resolved value is not iterable
         if (!is_iterable($iterable)) {
@@ -147,6 +112,10 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
             return $processedData;
         }
 
+        /** @var string $as */
+        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
+        $preserveKeys = (bool)$collection->resolve('preserveKeys', DataSource\DataSource::ProcessorConfiguration, false);
+        $dataProcessing = $collection->resolve('dataProcessing.', DataSource\DataSource::ProcessorConfiguration);
         $array = is_array($iterable) ? $iterable : iterator_to_array($iterable, $preserveKeys);
 
         // Process additional data processors for each item

@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\DataProcessing;
 
-use CPSIT\Typo3Handlebars\Exception;
 use Psr\Log;
 use Symfony\Component\DependencyInjection;
 use TYPO3\CMS\Frontend;
@@ -55,6 +54,8 @@ use TYPO3Fluid\Fluid;
 #[DependencyInjection\Attribute\AutoconfigureTag('data.processor', ['identifier' => 'object-access'])]
 final readonly class ObjecAccessProcessor implements Frontend\ContentObject\DataProcessorInterface
 {
+    use DataSource\SupportsDataSource;
+
     public function __construct(
         private Log\LoggerInterface $logger,
         private Frontend\ContentObject\ContentDataProcessor $contentDataProcessor,
@@ -73,7 +74,6 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
         array $processorConfiguration,
         array $processedData,
     ): array {
-        $object = null;
         $collection = DataSource\DataSourceCollection::for(
             $cObj,
             $contentObjectConfiguration,
@@ -81,41 +81,10 @@ final readonly class ObjecAccessProcessor implements Frontend\ContentObject\Data
             $processedData,
         );
 
-        try {
-            $object = $this->dataSourceProvider->provide($collection, 'object');
-        } catch (Exception\DataSourceIsMissingInCollection $exception) {
-            $this->logger->warning(
-                'No variables provided for data source "{source}" while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\DataSourceIsNotSupported $exception) {
-            $this->logger->warning(
-                'Invalid data source keyword "{source}" passed while processing {table}:{uid}.',
-                [
-                    'source' => $exception->dataSourceIdentifier,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        } catch (Exception\PathIsMissingInDataSource $exception) {
-            $this->logger->warning(
-                'Invalid path "{path}" for data source "{source}" passed while processing {table}:{uid}.',
-                [
-                    'path' => $exception->path,
-                    'source' => $exception->dataSource->value,
-                    'table' => $cObj->getCurrentTable(),
-                    'uid' => $collection->resolveCurrentUid(),
-                ],
-            );
-        }
-
         /** @var string $as */
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
         $path = $collection->resolve('path', DataSource\DataSource::ProcessorConfiguration);
+        $object = $this->provideData($cObj, $collection, 'object');
 
         // Early return if either object or path is not valid
         if (!is_string($path) || !is_object($object)) {

@@ -33,7 +33,7 @@ final class PathIsMissingInDataSource extends Exception
         ?\Throwable $previous = null
     ) {
         parent::__construct(
-            sprintf('The request path "%s" is missing in data source "%s".', $this->path, $dataSource->value),
+            sprintf('The requested path "%s" is missing in data source "%s".', $this->path, $dataSource->value),
             1768386419,
             $previous,
         );

@@ -96,15 +96,10 @@ final readonly class DataSourceProvider
             throw new Exception\DataSourceIsMissingInCollection($dataSource);
         }
 
-        $data = $collection->get($dataSource);
-
-        // Limit data to configured path
         if ($path !== null) {
-            try {
-                $data = Core\Utility\ArrayUtility::getValueByPath($data, $path, '.');
-            } catch (Core\Utility\Exception\MissingArrayPathException $exception) {
-                throw new Exception\PathIsMissingInDataSource($path, $dataSource, $exception);
-            }
+            $data = $collection->resolve($path, $dataSource, null, false);
+        } else {
+            $data = $collection->get($dataSource);
         }
 
         if (!is_array($data) || !is_array($processedDataSource)) {

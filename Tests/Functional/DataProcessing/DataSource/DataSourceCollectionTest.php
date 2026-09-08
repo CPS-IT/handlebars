@@ -201,6 +201,173 @@ final class DataSourceCollectionTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function resolveSupportsSlashSeparatedPathToReachNestedKeys(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            [
+                'nested' => [
+                    'deep' => [
+                        'value' => 'bar',
+                    ],
+                ],
+            ],
+        );
+
+        self::assertSame(
+            'bar',
+            $this->subject->resolve(
+                'nested/deep/value',
+                Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveReturnsDefaultValueIfNestedPathSegmentIsMissing(): void
+    {
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            [
+                'nested' => [
+                    'deep' => [
+                        'value' => 'bar',
+                    ],
+                ],
+            ],
+        );
+
+        self::assertSame(
+            'baz',
+            $this->subject->resolve(
+                'nested/missing',
+                Src\DataProcessing\DataSource\DataSource::ProcessedData,
+                'baz',
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveTreatsKeyWithTrailingDotAsLiteralKeyRatherThanAsPath(): void
+    {
+        // TypoScript arrays store sub-properties of e.g. "dataProcessing { ... }" under a single
+        // flat key with a literal trailing dot ("dataProcessing."), not as a nested "dataProcessing"
+        // path segment. Resolving such a key must keep matching it literally.
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
+            [
+                'dataProcessing.' => [
+                    '10' => 'foo',
+                ],
+            ],
+        );
+
+        self::assertSame(
+            ['10' => 'foo'],
+            $this->subject->resolve(
+                'dataProcessing.',
+                Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveThrowsExceptionIfKeyCannotBeFoundAndNotOptionalAndNoDefaultIsGiven(): void
+    {
+        $this->subject->set(Src\DataProcessing\DataSource\DataSource::ProcessedData, []);
+
+        $this->expectExceptionObject(
+            new Src\Exception\PathIsMissingInDataSource(
+                'foo',
+                Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            ),
+        );
+
+        $this->subject->resolve(
+            'foo',
+            Src\DataProcessing\DataSource\DataSource::ProcessedData,
+            optional: false,
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveReturnsDefaultValueInsteadOfThrowingIfDefaultIsGivenEvenWhenNotOptional(): void
+    {
+        $this->subject->set(Src\DataProcessing\DataSource\DataSource::ProcessedData, []);
+
+        self::assertSame(
+            'baz',
+            $this->subject->resolve(
+                'foo',
+                Src\DataProcessing\DataSource\DataSource::ProcessedData,
+                'baz',
+                optional: false,
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveDoesNotThrowByDefaultIfKeyCannotBeFound(): void
+    {
+        $this->subject->set(Src\DataProcessing\DataSource\DataSource::ProcessedData, []);
+
+        self::assertNull(
+            $this->subject->resolve('foo', Src\DataProcessing\DataSource\DataSource::ProcessedData),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveReturnsValueFromLaterDataSourceInsteadOfThrowingIfNotOptional(): void
+    {
+        $this->subject->set(Src\DataProcessing\DataSource\DataSource::ProcessedData, []);
+        $this->subject->set(
+            Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+            ['foo' => 'COC-BAZ'],
+        );
+
+        self::assertSame(
+            'COC-BAZ',
+            $this->subject->resolve(
+                'foo',
+                [
+                    Src\DataProcessing\DataSource\DataSource::ProcessedData,
+                    Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+                ],
+                optional: false,
+            ),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveThrowsExceptionReferencingLastAttemptedDataSourceIfNoneMatchAndNotOptional(): void
+    {
+        $this->subject->set(Src\DataProcessing\DataSource\DataSource::ProcessedData, []);
+        $this->subject->set(Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration, []);
+
+        $this->expectExceptionObject(
+            new Src\Exception\PathIsMissingInDataSource(
+                'foo',
+                Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+            ),
+        );
+
+        $this->subject->resolve(
+            'foo',
+            [
+                Src\DataProcessing\DataSource\DataSource::ProcessedData,
+                Src\DataProcessing\DataSource\DataSource::ContentObjectConfiguration,
+            ],
+            optional: false,
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function resolveDoesNotThrowIfNotOptionalButNoDataSourcesAreConfiguredAtAll(): void
+    {
+        self::assertNull($this->subject->resolve('foo', optional: false));
+    }
+
+    #[Framework\Attributes\Test]
     public function withAppliesGivenValueToAllDataSources(): void
     {
         $this->subject->set(

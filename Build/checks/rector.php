@@ -18,6 +18,7 @@ declare(strict_types=1);
 use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\Php71\Rector\FuncCall\RemoveExtraParametersRector;
+use Rector\Php80\Rector\Catch_\RemoveUnusedVariableInCatchRector;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\ValueObject\PhpVersion;
@@ -51,6 +52,9 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveExtraParametersRector::class => [
             $rootPath . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectAssetTest.php',
             $rootPath . '/Tests/Functional/Frontend/ContentObject/HandlebarsTemplateContentObjectTest.php',
+        ],
+        RemoveUnusedVariableInCatchRector::class => [
+            $rootPath . '/Classes/DataProcessing/DataSource/DataSourceCollection.php',
         ],
     ]);
 };

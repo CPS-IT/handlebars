@@ -26,6 +26,7 @@ $configuration
     ->addPathToScan($rootPath . '/Tests', true)
     ->ignoreUnknownClasses([
         Framework\Attributes\AllowMockObjectsWithoutExpectations::class,
+        Framework\Attributes\IgnorePhpunitWarnings::class,
     ])
 ;
 

@@ -20,7 +20,6 @@ namespace CPSIT\Typo3Handlebars\Tests\Unit\Renderer\Helper;
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use DevTheorem\Handlebars;
-use EliasHaeussler\DeepClosureComparator;
 use PHPUnit\Framework;
 use Psr\Log;
 use TYPO3\TestingFramework;
@@ -71,17 +70,19 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
      */
     #[Framework\Attributes\Test]
     #[Framework\Attributes\DataProvider('addRegistersHelperCorrectlyDataProvider')]
+    #[Framework\Attributes\IgnorePhpunitWarnings('Comparing closures for equality is problematic because there is no reliable way to determine whether two closures are equal')]
     public function addRegistersHelperCorrectly(mixed $function, callable $expectedCallable): void
     {
         $this->subject->add('foo', $function);
 
         $expected = $this->mapExpectedCallable($expectedCallable);
 
-        DeepClosureComparator\DeepClosureAssert::assertEquals($expected, $this->subject->get('foo'));
+        self::assertEquals($expected, $this->subject->get('foo'));
     }
 
-    #[Framework\Attributes\DataProvider('addDecoratesHelperFunctionDataProvider')]
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('addDecoratesHelperFunctionDataProvider')]
+    #[Framework\Attributes\IgnorePhpunitWarnings('Comparing closures for equality is problematic because there is no reliable way to determine whether two closures are equal')]
     public function addDecoratesHelperFunction(callable $function, string $expected): void
     {
         $renderingContext = new Src\Renderer\RenderingContext();
@@ -110,18 +111,19 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\IgnorePhpunitWarnings('Comparing closures for equality is problematic because there is no reliable way to determine whether two closures are equal')]
     public function addOverridesAvailableHelper(): void
     {
         $this->subject->add('foo', 'trim');
 
-        DeepClosureComparator\DeepClosureAssert::assertEquals(
+        self::assertEquals(
             $this->mapExpectedCallable('trim'),
             $this->subject->get('foo'),
         );
 
         $this->subject->add('foo', 'strtolower');
 
-        DeepClosureComparator\DeepClosureAssert::assertEquals(
+        self::assertEquals(
             $this->mapExpectedCallable('strtolower'),
             $this->subject->get('foo'),
         );
@@ -244,24 +246,26 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\IgnorePhpunitWarnings('Comparing closures for equality is problematic because there is no reliable way to determine whether two closures are equal')]
     public function getReturnsRegisteredHelper(): void
     {
         $this->subject->add('foo', 'trim');
 
-        DeepClosureComparator\DeepClosureAssert::assertEquals(
+        self::assertEquals(
             $this->mapExpectedCallable('trim'),
             $this->subject->get('foo'),
         );
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\IgnorePhpunitWarnings('Comparing closures for equality is problematic because there is no reliable way to determine whether two closures are equal')]
     public function getAllReturnsRegisteredHelpers(): void
     {
         self::assertSame([], $this->subject->getAll());
 
         $this->subject->add('foo', 'strtolower');
 
-        DeepClosureComparator\DeepClosureAssert::assertEquals(
+        self::assertEquals(
             ['foo' => $this->mapExpectedCallable('strtolower')],
             $this->subject->getAll(),
         );
@@ -305,14 +309,11 @@ final class HelperRegistryTest extends TestingFramework\Core\Unit\UnitTestCase
             Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper::class,
             (new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyHelper())->render(...),
         ];
-        yield 'callable as closure' => [
-            static fn() => 'foo',
-            static fn() => 'foo',
-        ];
-        yield 'callable as first class callable syntax' => [
-            trim(...),
-            trim(...),
-        ];
+
+        // Important: Variables must stay on the same line, otherwise closure comparison fails!
+        yield 'callable as closure' => [static fn() => 'foo', static fn() => 'foo'];
+        yield 'callable as first class callable syntax' => [trim(...), trim(...)];
+
         yield 'invokable class as object' => [
             new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyInvokableHelper(),
             new Tests\Unit\Fixtures\Classes\Renderer\Helper\DummyInvokableHelper(),

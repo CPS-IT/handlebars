@@ -39,7 +39,6 @@
 	"require-dev": {
 		"armin/editorconfig-cli": "^2.0",
 		"cpsit/typo3-handlebars-test-extension": "1.0.0",
-		"eliashaeussler/deep-closure-comparator": "^1.2",
 		"eliashaeussler/typo3-vendor-bundler": "^4.0.2",
 		"eliashaeussler/version-bumper": "^4.0",
 		"ergebnis/composer-normalize": "^2.15",

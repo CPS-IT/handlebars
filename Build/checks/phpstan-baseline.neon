@@ -41,3 +41,9 @@ parameters:
 			identifier: attribute.notFound
 			count: 2
 			path: ../../Tests/Functional/View/HandlebarsViewTest.php
+
+		-
+			rawMessage: Attribute class PHPUnit\Framework\Attributes\IgnorePhpunitWarnings does not exist.
+			identifier: attribute.notFound
+			count: 5
+			path: ../../Tests/Unit/Renderer/Helper/HelperRegistryTest.php

@@ -20,6 +20,7 @@ namespace CPSIT\Typo3Handlebars\Tests\Functional\Renderer\Variables;
 use CPSIT\Typo3Handlebars as Src;
 use CPSIT\Typo3Handlebars\Tests;
 use PHPUnit\Framework;
+use Psr\Http\Message;
 use TYPO3\CMS\Core;
 use TYPO3\CMS\Extbase;
 use TYPO3\CMS\Frontend;
@@ -43,6 +44,7 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
 
     protected bool $initializeDatabase = false;
 
+    private Message\ServerRequestInterface $request;
     private Frontend\ContentObject\ContentObjectRenderer $contentObjectRenderer;
     private Src\Renderer\Variables\VariablesProcessor $subject;
 
@@ -50,11 +52,10 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
     {
         parent::setUp();
 
-        $request = $this->buildServerRequest();
-
+        $this->request = $this->buildServerRequest();
         $this->contentObjectRenderer = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
-        $this->contentObjectRenderer->setRequest($request);
-        $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($request);
+        $this->contentObjectRenderer->setRequest($this->request);
+        $this->get(Extbase\Configuration\ConfigurationManagerInterface::class)->setRequest($this->request);
         $this->subject = Src\Renderer\Variables\VariablesProcessor::for($this->contentObjectRenderer);
     }
 
@@ -152,7 +153,7 @@ final class VariablesProcessorTest extends TestingFramework\Core\Functional\Func
         ]);
 
         $this->contentObjectRenderer->setRequest(
-            $this->contentObjectRenderer->getRequest()->withAttribute('frontend.typoscript', $frontendTypoScript),
+            $this->request->withAttribute('frontend.typoscript', $frontendTypoScript),
         );
 
         $actual = $this->subject->process([

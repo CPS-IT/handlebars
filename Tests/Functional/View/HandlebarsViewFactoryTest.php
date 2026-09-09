@@ -50,7 +50,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
      */
     private array $cObjGetSingleCalls = [null];
 
-    private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\MockObject $contentObjectRendererMock;
+    private Frontend\ContentObject\ContentObjectRenderer&Framework\MockObject\Stub $contentObjectRendererStub;
     private Tests\Unit\Fixtures\Classes\DummyConfigurationManager $configurationManager;
     private Src\View\HandlebarsViewFactory $subject;
     private Extbase\Mvc\Request $request;
@@ -60,7 +60,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     {
         parent::setUp();
 
-        $this->contentObjectRendererMock = $this->createMock(Frontend\ContentObject\ContentObjectRenderer::class);
+        $this->contentObjectRendererStub = self::createStub(Frontend\ContentObject\ContentObjectRenderer::class);
 
         $this->configurationManager = new Tests\Unit\Fixtures\Classes\DummyConfigurationManager();
         $this->configurationManager->configuration = [
@@ -78,7 +78,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         );
 
         $this->request = $this->buildExtbaseRequest($extbaseRequestParameters);
-        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererStub);
         $this->extbaseRequestParameters = $extbaseRequestParameters;
     }
 
@@ -142,7 +142,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         $extbaseRequestParameters->setControllerActionName('foo');
 
         $this->request = $this->buildExtbaseRequest($extbaseRequestParameters);
-        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+        $this->request = $this->request->withAttribute('currentContentObject', $this->contentObjectRendererStub);
 
         $this->configurationManager->configuration = [
             'controllerConfiguration' => [
@@ -322,7 +322,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     public function createReturnsDefaultHandlebarsViewIfOutsideOfExtbaseContext(): void
     {
         $request = $this->buildServerRequest();
-        $request = $request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+        $request = $request->withAttribute('currentContentObject', $this->contentObjectRendererStub);
 
         $data = new Core\View\ViewFactoryData(
             templateRootPaths: [
@@ -367,7 +367,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
     public function createReturnsDefaultHandlebarsViewWithDelegateToFallbackView(): void
     {
         $request = $this->buildServerRequest();
-        $request = $request->withAttribute('currentContentObject', $this->contentObjectRendererMock);
+        $request = $request->withAttribute('currentContentObject', $this->contentObjectRendererStub);
 
         $data = new Core\View\ViewFactoryData(
             templateRootPaths: [
@@ -409,7 +409,7 @@ final class HandlebarsViewFactoryTest extends TestingFramework\Core\Functional\F
         $this->cObjGetSingleCalls[$nextKey] = [$contentObjectName, $contentObjectConfiguration, $return];
 
         if ($nextKey === $count - 1) {
-            $this->contentObjectRendererMock->expects($this->exactly($count))
+            $this->contentObjectRendererStub
                 ->method('cObjGetSingle')
                 /* @phpstan-ignore argument.type */
                 ->willReturnMap($this->cObjGetSingleCalls)

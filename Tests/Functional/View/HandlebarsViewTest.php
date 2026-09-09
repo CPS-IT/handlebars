@@ -110,6 +110,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Functional\Function
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function assignPassesVariableToDelegateView(): void
     {
         $this->subject->assign('foo', 'baz');
@@ -182,6 +183,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Functional\Function
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function delegateRenderingReturnsNullOnMissingDelegate(): void
     {
         $subject = new Src\View\HandlebarsView(
@@ -194,6 +196,7 @@ final class HandlebarsViewTest extends TestingFramework\Core\Functional\Function
     }
 
     #[Framework\Attributes\Test]
+    #[Framework\Attributes\AllowMockObjectsWithoutExpectations]
     public function delegateRenderingReturnsRenderedTemplateFromDelegate(): void
     {
         $this->delegate->expectedTemplateResult = 'foo';

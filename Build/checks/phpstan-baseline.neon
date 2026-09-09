@@ -39,7 +39,7 @@ parameters:
 		-
 			rawMessage: Attribute class PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations does not exist.
 			identifier: attribute.notFound
-			count: 2
+			count: 5
 			path: ../../Tests/Functional/View/HandlebarsViewTest.php
 
 		-

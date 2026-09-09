@@ -69,13 +69,14 @@ final class TypoScriptVariableProviderTest extends TestingFramework\Core\Functio
             $this->get(Frontend\ContentObject\ContentDataProcessor::class),
             $this->get(Core\TypoScript\TypoScriptService::class),
         );
+        $this->request = $this->buildServerRequest();
 
         $cObj = $this->get(Frontend\ContentObject\ContentObjectRenderer::class);
         $cObj->data = [
             'foo' => '1,2,3',
         ];
+        $cObj->setRequest($this->request);
 
-        $this->request = $this->buildServerRequest();
         $this->request = $this->request->withAttribute('currentContentObject', $cObj);
     }
 

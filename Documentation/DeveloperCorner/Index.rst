@@ -18,3 +18,4 @@ how to wire the implementation into the service container.
     TemplateResolver
     DataSourceAwareProcessor
     PathsAndVariables
+    MediaProcessor

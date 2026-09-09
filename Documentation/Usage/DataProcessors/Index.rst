@@ -14,6 +14,7 @@ content objects.
     :maxdepth: 1
 
     IterableToArray
+    Media
     ObjectAccess
     ProcessEach
     ProcessVariables

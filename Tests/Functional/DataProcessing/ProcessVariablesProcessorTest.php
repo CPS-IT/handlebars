@@ -216,6 +216,35 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
     }
 
     #[Framework\Attributes\Test]
+    public function processUsesCurrentContentObjectValueAsDataIfDataSourceCurrentIsConfigured(): void
+    {
+        $this->contentObjectRenderer->setCurrentVal([
+            'foo' => 'baz',
+        ]);
+
+        $processorConfiguration = [
+            'dataSource.' => [
+                'current' => '1',
+            ],
+            'variables.' => [
+                'foo' => 'TEXT',
+                'foo.' => [
+                    'field' => 'foo',
+                ],
+            ],
+        ];
+
+        $expected = [
+            'foo' => 'baz',
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function processDoesNothingIfGivenConditionDoesNotMatch(): void
     {
         $this->contentObjectRenderer->data = [

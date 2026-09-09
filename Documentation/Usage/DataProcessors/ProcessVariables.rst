@@ -45,8 +45,9 @@ By default, the :typoscript:`field` option of a :typoscript:`variables`
 entry resolves against the current content element's own record. Configure
 :typoscript:`dataSource` (or an inline :typoscript:`data` array) to process
 a different record or array instead — see :ref:`usage-data-sources-payload`
-for how it is resolved. If the resolved payload is not an array, it is
-ignored and the current record's own field values are used instead.
+for how it is resolved, and :ref:`usage-data-sources-current` for
+:typoscript:`dataSource.current`. If the resolved payload is not an array,
+it is ignored and the current record's own field values are used instead.
 
 ..  _data-processor-process-variables-standalone:
 

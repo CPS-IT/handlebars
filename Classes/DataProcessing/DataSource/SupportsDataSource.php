@@ -40,6 +40,12 @@ trait SupportsDataSource
         DataSourceCollection $collection,
         string $keyword = 'dataSource',
     ): mixed {
+        $returnCurrent = (bool)$collection->resolve($keyword . './current', DataSource::ProcessorConfiguration);
+
+        if ($returnCurrent) {
+            return $contentObjectRenderer->getCurrentVal();
+        }
+
         try {
             return $this->dataSourceProvider->provide($collection, $keyword);
         } catch (Exception\DataSourceIsMissingInCollection $exception) {

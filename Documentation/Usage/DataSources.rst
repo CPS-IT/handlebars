@@ -133,3 +133,25 @@ generic :typoscript:`dataSource`.
 
 See each processor's own documentation for further, processor-specific
 fallbacks once neither option yields a value.
+
+..  _usage-data-sources-current:
+
+Using the content object's current value
+========================================
+
+Setting :typoscript:`current = 1` as a sub-property of :typoscript:`dataSource`
+(or the processor-specific option name) bypasses the resolution described
+above entirely and uses the content object's *current value* — see
+:php:`ContentObjectRenderer::getCurrentVal()` — as the payload instead:
+
+..  code-block:: typoscript
+
+    dataSource {
+        current = 1
+    }
+
+This is most useful for a nested processor that operates directly on the
+value a parent :ref:`data-processor-process-each` set as *current* for the
+item being processed, without having to route that value through
+:typoscript:`processedData` or :typoscript:`contentObjectConfiguration:currentValue`
+first.

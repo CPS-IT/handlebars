@@ -29,7 +29,8 @@ The value to iterate over is resolved in the following order:
 
 #.  :typoscript:`dataSource`, if configured — see
     :ref:`usage-data-sources-payload` for how it is resolved, including what
-    happens when multiple references are configured.
+    happens when multiple references are configured, and
+    :ref:`usage-data-sources-current` for :typoscript:`dataSource.current`.
 
 #.  Otherwise, an inline :typoscript:`data` array configured directly on
     this processor.
@@ -143,6 +144,8 @@ Properties
 :typoscript:`dataSource`
     Data source(s) to read the iterable from (see
     :ref:`data-processor-process-each-source`).
+    :typoscript:`dataSource.current` uses the content object's current value
+    instead (see :ref:`usage-data-sources-current`).
 
 :typoscript:`as`
     Target key in the processed data array the resulting (keyed) array is

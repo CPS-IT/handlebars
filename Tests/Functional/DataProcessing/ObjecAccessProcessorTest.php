@@ -205,6 +205,29 @@ final class ObjecAccessProcessorTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function processResolvesPropertyFromCurrentContentObjectValueIfObjectCurrentIsConfigured(): void
+    {
+        $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
+        $this->contentObjectRenderer->setCurrentVal($object);
+
+        $processorConfiguration = [
+            'object.' => [
+                'current' => '1',
+            ],
+            'path' => 'name',
+        ];
+
+        $expected = [
+            'result' => 'foo',
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function processAppliesNullToTargetVariableIfConfiguredPathIsNotGettable(): void
     {
         $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');

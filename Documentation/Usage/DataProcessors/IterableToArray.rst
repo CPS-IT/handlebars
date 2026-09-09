@@ -28,7 +28,9 @@ Data sources
 :ref:`data-processor-process-each` — see :ref:`usage-data-sources-payload`
 for the full syntax, including what happens when multiple references are
 configured. It just uses a processor-specific option name instead of the
-generic :typoscript:`dataSource`.
+generic :typoscript:`dataSource`. :typoscript:`iterable.current` uses the
+content object's current value instead (see
+:ref:`usage-data-sources-current`).
 
 This is what allows :typoscript:`iterable` to refer to a value placed into
 :typoscript:`processedData` by a preceding processor's :typoscript:`as`

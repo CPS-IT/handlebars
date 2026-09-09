@@ -173,6 +173,33 @@ final class ProcessEachProcessorTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function processUsesCurrentContentObjectValueAsIterableIfDataSourceCurrentIsConfigured(): void
+    {
+        $this->contentObjectRenderer->setCurrentVal([
+            'foo' => 'a',
+            'bar' => 'b',
+        ]);
+
+        $processorConfiguration = [
+            'dataSource.' => [
+                'current' => '1',
+            ],
+        ];
+
+        $expected = [
+            'result' => [
+                'foo' => 'a',
+                'bar' => 'b',
+            ],
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function processLogsWarningAndReturnsProcessedDataUnmodifiedIfConfiguredDataSourceKeywordIsNotSupported(): void
     {
         $processorConfiguration = [

@@ -183,6 +183,30 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
     }
 
     #[Framework\Attributes\Test]
+    public function processConvertsCurrentContentObjectValueToArrayIfIterableCurrentIsConfigured(): void
+    {
+        $this->contentObjectRenderer->setCurrentVal([
+            'foo' => 'a',
+            'bar' => 'b',
+        ]);
+
+        $processorConfiguration = [
+            'iterable.' => [
+                'current' => '1',
+            ],
+        ];
+
+        $expected = [
+            'result' => ['a', 'b'],
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function processConvertsPlainArrayToListByDefault(): void
     {
         $processorConfiguration = [

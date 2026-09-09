@@ -58,6 +58,26 @@ The four :php:`DataSource` cases mirror the :typoscript:`processorConfiguration`
 :typoscript:`contentObjectConfiguration` identifiers described in
 :ref:`usage-data-sources`.
 
+The :php:`$key` argument may use :typoscript:`/` to reach into a nested array
+within the searched source(s), e.g. :php:`$collection->resolve('some/nested/key')`
+— see :ref:`usage-data-sources-nested-keys`.
+
+By default, a key (or path segment) that cannot be found in any searched
+source simply yields the given :php:`$default` value (:php:`null` if none is
+given). Pass :php:`optional: false` to make :php:`resolve()` throw
+:php:`Exception\PathIsMissingInDataSource` instead, once none of the
+searched sources match and no default is configured:
+
+..  code-block:: php
+
+    use CPSIT\Typo3Handlebars\Exception;
+
+    try {
+        $value = $collection->resolve('some/nested/key', optional: false);
+    } catch (Exception\PathIsMissingInDataSource $exception) {
+        // None of the searched sources had "some/nested/key"
+    }
+
 ..  _developer-corner-data-source-aware-processor-keyword:
 
 Resolving a data payload via a configurable keyword

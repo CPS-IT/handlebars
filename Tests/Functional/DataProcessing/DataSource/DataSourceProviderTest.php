@@ -312,7 +312,7 @@ final class DataSourceProviderTest extends TestingFramework\Core\Functional\Func
         $collection->set(
             Src\DataProcessing\DataSource\DataSource::ProcessorConfiguration,
             [
-                'dataSource' => 'processedData:foo.baz',
+                'dataSource' => 'processedData:foo/baz',
                 'variables.' => [
                     'bar' => 'TEXT',
                     'bar.' => [

@@ -67,6 +67,22 @@ repeated explicitly — as long as the nested processor actually queries that
 source (some processors restrict a given option to a specific source, or a
 specific subset, rather than searching all four).
 
+..  _usage-data-sources-nested-keys:
+
+Reaching into nested keys
+=========================
+
+A lookup key may use :typoscript:`/` to reach into a nested array within a
+single data source, e.g. :typoscript:`some/nested/key`. Each segment is
+looked up literally, one level at a time; the lookup fails (and any
+configured default value is used) as soon as one segment does not exist.
+
+A key is otherwise always matched literally, dots and all. This matters for
+raw TypoScript arrays, which store sub-properties of a key under that same
+key with a literal trailing dot appended (e.g. :typoscript:`dataProcessing.`
+for the contents of a :typoscript:`dataProcessing { ... }` block) — such a
+key is looked up as-is and is not itself treated as a path.
+
 ..  _usage-data-sources-payload:
 
 Resolving a data payload (`dataSource` / `data`)
@@ -83,9 +99,11 @@ generic :typoscript:`dataSource`.
 
 :typoscript:`dataSource` (or the processor-specific option name)
     One or more data source references, each optionally scoped to a
-    sub-path with a colon (e.g. :typoscript:`processedData:files`). A single
-    reference is resolved and used as-is, whatever its type — it is not
-    coerced into an array.
+    sub-path with a colon (e.g. :typoscript:`processedData:files`). The
+    sub-path itself may use :typoscript:`/` to reach further into a nested
+    key (e.g. :typoscript:`processedData:files/0`) — see
+    :ref:`usage-data-sources-nested-keys`. A single reference is resolved
+    and used as-is, whatever its type — it is not coerced into an array.
 
     Multiple references, configured as a TypoScript array with numeric
     keys, are resolved in ascending key order:

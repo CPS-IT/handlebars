@@ -88,7 +88,7 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
     }
 
     #[Framework\Attributes\Test]
-    public function processThrowsExceptionIfConfiguredPreProcessorOrPostProcessorIsunsupported(): void
+    public function processThrowsExceptionIfConfiguredPreProcessorOrPostProcessorIsUnsupported(): void
     {
         $processorConfiguration = [
             'variables.' => [],

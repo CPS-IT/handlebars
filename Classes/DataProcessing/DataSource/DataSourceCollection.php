@@ -17,6 +17,8 @@ declare(strict_types=1);
 
 namespace CPSIT\Typo3Handlebars\DataProcessing\DataSource;
 
+use CPSIT\Typo3Handlebars\Exception;
+use TYPO3\CMS\Core;
 use TYPO3\CMS\Frontend;
 
 /**
@@ -97,9 +99,14 @@ final class DataSourceCollection
      * @param DataSource|list<DataSource> $dataSources
      * @param T $default
      * @return mixed|T
+     * @throws Exception\PathIsMissingInDataSource
      */
-    public function resolve(string $key, DataSource|array $dataSources = [], mixed $default = null): mixed
-    {
+    public function resolve(
+        string $key,
+        DataSource|array $dataSources = [],
+        mixed $default = null,
+        bool $optional = true,
+    ): mixed {
         // Get from all configured data sources (in the given order) if no data sources are configured explicitly
         // The order can be seen as priority for each single data source
         if ($dataSources === []) {
@@ -108,13 +115,20 @@ final class DataSourceCollection
             $dataSources = [$dataSources];
         }
 
-        foreach ($dataSources as $dataSource) {
-            $found = false;
-            $result = $this->resolveForDataSource($key, $dataSource, $found);
+        $exception = null;
 
-            if ($found) {
-                return $result;
+        foreach ($dataSources as $dataSource) {
+            try {
+                return $this->resolveForDataSource($key, $dataSource);
+            } catch (Exception\PathIsMissingInDataSource $exception) {
+                // Store exception and throw later after all possible data sources have been iterated.
             }
+        }
+
+        // If data could not be resolved finally and no default is configured, throw a dedicated exception.
+        // This rather strict behavior can be bypassed by passing either a default value or $optional = true.
+        if ($exception !== null && $default === null && !$optional) {
+            throw $exception;
         }
 
         return $default;
@@ -157,12 +171,18 @@ final class DataSourceCollection
         return $this;
     }
 
-    private function resolveForDataSource(string $key, DataSource $dataSource, bool &$found = false): mixed
+    /**
+     * @throws Exception\PathIsMissingInDataSource
+     */
+    private function resolveForDataSource(string $key, DataSource $dataSource): mixed
     {
         $configuration = $this->get($dataSource);
-        $found = array_key_exists($key, $configuration);
 
-        return $found ? $configuration[$key] : null;
+        try {
+            return Core\Utility\ArrayUtility::getValueByPath($configuration, $key);
+        } catch (Core\Utility\Exception\MissingArrayPathException $exception) {
+            throw new Exception\PathIsMissingInDataSource($key, $dataSource, $exception);
+        }
     }
 
     /**

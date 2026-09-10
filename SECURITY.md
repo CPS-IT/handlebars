@@ -1,9 +1,31 @@
 # Security Policy
 
-> [!CAUTION]
-> **Do not open GitHub issues for security vulnerabilities.**
+## Supported Versions
 
-Please contact the [TYPO3 Security Team](https://typo3.community/contribute/teams-committees/security)
-in case you have discovered a potential security vulnerability. You can also consult
-[TYPO3's Security Policy](https://github.com/TYPO3/typo3/blob/main/SECURITY.md) for
-further information.
+| Version | Supported          |
+|---------| ------------------ |
+| 1.x     | :white_check_mark: |
+| < 1.x   | :x:                |
+
+## Reporting a Vulnerability
+
+> [!CAUTION]
+> **Do not open public GitHub issues for security vulnerabilities.**
+
+To report a security vulnerability, please use our [vulnerability disclosure form]
+or [GitHub Security Advisories](https://github.com/CPS-IT/handlebars/security/advisories/new).
+
+### What to include
+- A description of the vulnerability
+- Steps to reproduce it
+- Affected versions
+- Any potential mitigations you have identified
+
+### What to expect
+- An acknowledgment within 48 hours
+- Regular updates on remediation progress
+- Credit in the security advisory (if desired)
+
+## Disclosure Policy
+
+We follow a coordinated disclosure process with a standard 90-day timeline.

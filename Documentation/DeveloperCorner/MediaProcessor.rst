@@ -28,7 +28,8 @@ The interface
     ..  php:method:: process(contentObjectRenderer, resource, configuration = [])
 
         Process the given resource and return the resulting array, which is
-        stored under :typoscript:`media`'s :typoscript:`as` key.
+        stored under :typoscript:`media`'s :typoscript:`as` key, or merged
+        recursively into the processed data if :typoscript:`as` is omitted.
 
         :param ContentObjectRenderer contentObjectRenderer: The current content object renderer.
         :param resource: The resolved resource — a core

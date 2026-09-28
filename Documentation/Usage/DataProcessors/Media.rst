@@ -77,7 +77,8 @@ Properties
 
 :typoscript:`as`
     Target key in the processed data array the media processor's result is
-    stored under. Default: :typoscript:`result`.
+    stored under. Optional — if omitted, the result is merged recursively
+    into the processed data instead.
 
 :typoscript:`config.<name>`
     Configuration passed to the media processor registered under

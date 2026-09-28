@@ -43,9 +43,13 @@ use TYPO3\CMS\Frontend;
  *     20 = media
  *     20 {
  *       file = processedData:files.0
+ *       # "as" can also be omitted here. The media processor's result would then be
+ *       # merged recursively into the processed data instead of being nested under a key.
  *       as = image
  *
  *       config {
+ *         # Here you can provide individual config for each available media processor.
+ *         # Key (here: image) equals processor identifier (see #[AsTaggedItem] attributes).
  *         image {
  *           sourceSets {
  *             default {
@@ -104,8 +108,8 @@ final readonly class MediaProcessor implements Frontend\ContentObject\DataProces
             return $processedData;
         }
 
-        /** @var string $as */
-        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration, 'result');
+        /** @var string|null $as */
+        $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration);
         $fileConfig = $collection->resolve('config.', DataSource\DataSource::ProcessorConfiguration, []);
 
         // Convert file config
@@ -119,11 +123,18 @@ final readonly class MediaProcessor implements Frontend\ContentObject\DataProces
             if ($mediaProcessor->supports($file)) {
                 /** @var array<string, mixed>|null $mediaProcessorConfiguration */
                 $mediaProcessorConfiguration = $fileConfig[$name] ?? null;
-                $processedData[$as] = $mediaProcessor->process(
+                $processedVariables = $mediaProcessor->process(
                     $cObj,
                     $file,
                     is_array($mediaProcessorConfiguration) ? $mediaProcessorConfiguration : [],
                 );
+
+                if ($as === null) {
+                    Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($processedData, $processedVariables);
+                    /** @var array<string, mixed> $processedData */
+                } else {
+                    $processedData[$as] = $processedVariables;
+                }
 
                 return $processedData;
             }

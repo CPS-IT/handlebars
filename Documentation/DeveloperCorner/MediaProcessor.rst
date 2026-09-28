@@ -8,9 +8,11 @@ MediaProcessor
 
 The :ref:`media <data-processor-media>` data processor resolves a file
 resource and hands it to whichever registered media processor's
-:php:`supports()` method matches it first. Implement the interface
-yourself to support whatever resource kinds you need (images, documents,
-videos, download links, ...).
+:php:`supports()` method matches it first — the built-in
+:php:`CPSIT\Typo3Handlebars\DataProcessing\Media\ImageProcessor` is one such
+implementation. Implement the interface yourself to support other resource
+kinds (documents, videos, download links, ...) or to replace the built-in
+image handling.
 
 ..  contents::
     :local:
@@ -94,7 +96,8 @@ up its :typoscript:`config.<name>` block.
     }
 
 With this registered, :typoscript:`config.download.label` becomes available
-wherever :typoscript:`media` is used.
+next to the built-in :typoscript:`config.image.*` options wherever
+:typoscript:`media` is used.
 
 ..  _developer-corner-media-processor-configurable:
 
@@ -102,11 +105,11 @@ Typed configuration with ConfigurableProcessor
 ==============================================
 
 Mapping :typoscript:`configuration` by hand, as above, is fine for a couple
-of options. For more involved configuration, extend the abstract
-:php:`CPSIT\Typo3Handlebars\DataProcessing\Media\ConfigurableProcessor`
-instead, which uses `cuyz/valinor <https://github.com/CuyZ/Valinor>`__ to
-map the raw configuration array onto a typed, immutable configuration
-object before :php:`processFile()` is called:
+of options. The built-in :php:`ImageProcessor` instead extends the abstract
+:php:`CPSIT\Typo3Handlebars\DataProcessing\Media\ConfigurableProcessor`,
+which uses `cuyz/valinor <https://github.com/CuyZ/Valinor>`__ to map the raw
+configuration array onto a typed, immutable configuration object before
+:php:`processFile()` is called:
 
 ..  code-block:: php
 
@@ -136,7 +139,9 @@ object before :php:`processFile()` is called:
 
 :php:`MyConfiguration` only needs to implement the empty marker interface
 :php:`CPSIT\Typo3Handlebars\DataProcessing\Media\Configuration\Configuration`
-and declare its accepted options as constructor-promoted properties.
+and declare its accepted options as constructor-promoted properties — see
+`ImageConfiguration <https://github.com/CPS-IT/handlebars/blob/main/Classes/DataProcessing/Media/Configuration/ImageConfiguration.php>`__
+for reference.
 
 ..  seealso::
 

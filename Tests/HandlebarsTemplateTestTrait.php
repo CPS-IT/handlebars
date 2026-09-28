@@ -24,6 +24,7 @@ use DevTheorem\Handlebars;
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
+ * @internal
  */
 trait HandlebarsTemplateTestTrait
 {
@@ -31,7 +32,7 @@ trait HandlebarsTemplateTestTrait
      * @param array<string, mixed> $variables
      * @param array<string, callable> $helpers
      */
-    public static function renderTemplate(string $template, array $variables = [], array $helpers = []): string
+    protected static function renderTemplate(string $template, array $variables = [], array $helpers = []): string
     {
         $options = new Handlebars\Options(
             knownHelpers: array_map(
@@ -59,7 +60,7 @@ trait HandlebarsTemplateTestTrait
      * @param array<string, mixed> $variables
      * @param array<string, callable> $helpers
      */
-    public static function assertRenderedTemplateEqualsString(
+    protected static function assertRenderedTemplateEqualsString(
         string $template,
         string $expected,
         array $variables = [],

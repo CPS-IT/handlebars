@@ -11,7 +11,7 @@ media
 Resolves a file or file reference and runs it through a matching *media
 processor* — a pluggable component that turns a resource into whatever
 shape a template needs (for example, an image with responsive source sets).
-The extension does not ship any media processors itself; see
+The extension ships with a single built-in media processor for images; see
 :ref:`developer-corner-media-processor` for how to register your own.
 
 ..  contents::
@@ -53,7 +53,11 @@ Usage
 
                 config {
                     image {
-                        # options for a registered "image" media processor
+                        sourceSets {
+                            small {
+                                maxW = 600c
+                            }
+                        }
                     }
                 }
             }
@@ -61,10 +65,32 @@ Usage
     }
 
 The first file resolved by the core :typoscript:`files` processor is passed
-to :typoscript:`media`, which picks whichever registered media processor's
-:php:`supports()` method matches it first — here, a media processor
-registered under the name :typoscript:`image` — and stores its result under
+to :typoscript:`media`, which picks the matching media processor — here,
+the built-in :typoscript:`image` processor — and stores its result under
 :typoscript:`image`.
+
+..  _data-processor-media-image:
+
+Built-in media processor: image
+===============================
+
+The built-in image processor matches any resource that is an image. It
+generates one processed image per configured source set, using
+:php:`ContentObjectRenderer::getImgResource()` under the hood, so each
+source set accepts the same configuration as TYPO3's core :ref:`t3tsref:imgresource`
+function (e.g. :typoscript:`maxW`, :typoscript:`maxH`, :typoscript:`width`,
+:typoscript:`height`).
+
+Its configuration is nested under :typoscript:`config.image` (see
+:ref:`data-processor-media-properties` below) and results in the
+following shape:
+
+:typoscript:`sourceSets`
+    A map of the configured source set names to their processed image data
+    (:typoscript:`src`, :typoscript:`width`, :typoscript:`height`).
+
+:typoscript:`originalFile`
+    The resolved, unprocessed file (:php:`TYPO3\CMS\Core\Resource\AbstractFile`).
 
 ..  _data-processor-media-properties:
 
@@ -82,8 +108,9 @@ Properties
 
 :typoscript:`config.<name>`
     Configuration passed to the media processor registered under
-    :typoscript:`<name>`. Only applied if that processor actually matches
-    the resolved resource.
+    :typoscript:`<name>` (e.g. :typoscript:`config.image` for the built-in
+    image processor). Only applied if that processor actually matches the
+    resolved resource.
 
 If :typoscript:`file` cannot be resolved, or no registered media processor
 supports the resolved resource, a warning is logged and the processed data

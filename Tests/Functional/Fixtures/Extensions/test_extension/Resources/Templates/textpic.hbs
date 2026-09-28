@@ -1,0 +1,32 @@
+{{#each processedFiles}}
+    <div>
+        <picture>
+            {{#if sourceSets.sm}}
+                <source srcset="{{sourceSets.sm.src}}"
+                        width="{{sourceSets.sm.width}}"
+                        height="{{sourceSets.sm.height}}"
+                >
+            {{/if}}
+            {{#if sourceSets.md}}
+                <source media="(min-width: 640px)"
+                        srcset="{{sourceSets.md.src}}"
+                        width="{{sourceSets.md.width}}"
+                        height="{{sourceSets.md.height}}"
+                >
+            {{/if}}
+            {{#if sourceSets.lg}}
+                <source media="(min-width: 1024px)"
+                        srcset="{{sourceSets.lg.src}}"
+                        width="{{sourceSets.lg.width}}"
+                        height="{{sourceSets.lg.height}}"
+                >
+            {{/if}}
+
+            <img src="{{url}}"
+                 width="{{get originalFile 'properties.width'}}"
+                 height="{{get originalFile 'properties.width'}}"
+                 alt="{{get originalFile 'alternative'}}"
+            >
+        </picture>
+    </div>
+{{/each}}

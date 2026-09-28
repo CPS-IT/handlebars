@@ -13,6 +13,11 @@ page.10 {
   page.10.pluginName = TestSpecificTemplate
 [end]
 
+[page["uid"] == 4]
+  page.10 >
+  page.10 < styles.content.get
+[end]
+
 config.disableAllHeaderCode = 1
 
 plugin.tx_handlebars {
@@ -36,6 +41,71 @@ plugin.tx_testextension.handlebars {
         object = processedData:request
         path = headers.X-FOO.0
         as = foo
+      }
+    }
+  }
+}
+
+tt_content.textpic = HANDLEBARSTEMPLATE
+tt_content.textpic {
+  templateName = @textpic
+
+  dataProcessing {
+    10 = files
+    10 {
+      references.fieldName = image
+      as = files
+    }
+
+    20 = process-each
+    20 {
+      dataSource = processedData:files
+      as = processedFiles
+
+      dataProcessing {
+        10 = object-access
+        10 {
+          object.current = 1
+          path = properties.width
+          as = dimensions.width
+        }
+
+        11 = object-access
+        11 {
+          object.current = 1
+          path = properties.height
+          as = dimensions.height
+        }
+
+        12 = object-access
+        12 {
+          object.current = 1
+          path = publicUrl
+          as = url
+        }
+
+        13 = object-access
+        13 {
+          object.current = 1
+          path = fileType
+          as = type
+        }
+
+        20 = media
+        20 {
+          file.current = 1
+          config {
+            image {
+              sourceSets {
+                sm.maxW = 200c
+                md.maxW = 260c
+                lg.maxW = 320c
+              }
+            }
+          }
+        }
+
+        999 = unflatten-variable-names
       }
     }
   }

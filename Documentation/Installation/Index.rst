@@ -56,3 +56,11 @@ configuration or any other site set.
     dependencies:
       - cpsit/handlebars
       - cpsit/handlebars-content-element
+
+..  _installation-next-steps:
+
+Next steps
+==========
+
+Continue with the :ref:`quick-start` to render your first content element
+with a Handlebars template.

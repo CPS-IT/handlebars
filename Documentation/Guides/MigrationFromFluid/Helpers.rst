@@ -24,7 +24,7 @@ A Fluid ViewHelper is a PHP class that implements
 declared via :php:`initializeArguments()` and the class is resolved by its
 namespace prefix (e.g., :fluid:`f:`, :fluid:`myext:`).
 
-A Handlebars helper is any PHP callable registered via the :php: `#[AsHelper]`
+A Handlebars helper is any PHP callable registered via the :php:`#[AsHelper]`
 attribute. Arguments reach the callable either as named hash arguments
 (:handlebars:`name=value` pairs after the helper name) or as positional arguments
 (bare values in order). There is no argument declaration step — the method
@@ -219,5 +219,6 @@ To use ViewHelpers from a custom namespace, register the namespace first with
 
 ..  seealso::
 
-    :ref:`custom-helpers` — full reference for implementing and registering
-    Handlebars helpers.
+    *   :ref:`custom-helpers` — full reference for implementing and registering
+        Handlebars helpers
+    *   :ref:`templates-helpers` — all helpers shipped with the extension

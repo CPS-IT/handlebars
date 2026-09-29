@@ -56,11 +56,11 @@ restrict the lookup:
 The four :php:`DataSource` cases mirror the :typoscript:`processorConfiguration`,
 :typoscript:`processedData`, :typoscript:`contentObjectRenderer` and
 :typoscript:`contentObjectConfiguration` identifiers described in
-:ref:`usage-data-sources`.
+:ref:`developer-corner-data-sources`.
 
 The :php:`$key` argument may use :typoscript:`/` to reach into a nested array
 within the searched source(s), e.g. :php:`$collection->resolve('some/nested/key')`
-— see :ref:`usage-data-sources-nested-keys`.
+— see :ref:`developer-corner-data-sources-nested-keys`.
 
 By default, a key (or path segment) that cannot be found in any searched
 source simply yields the given :php:`$default` value (:php:`null` if none is
@@ -86,7 +86,7 @@ Resolving a data payload via a configurable keyword
 Processors often accept a configuration option that itself points at the
 payload to work with — for example, an :typoscript:`iterable` option
 naming the data source to iterate over (see
-:ref:`usage-data-sources-payload` for the full resolution rules).
+:ref:`developer-corner-data-sources-payload` for the full resolution rules).
 :php:`DataSourceProvider::provide()` covers this pattern in one call: it
 reads the option named by its :php:`$keyword` argument (default
 :typoscript:`dataSource`) from :php:`DataSource::ProcessorConfiguration` and

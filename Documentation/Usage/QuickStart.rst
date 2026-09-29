@@ -9,41 +9,29 @@ Quick start
 This page walks through a minimal working example: rendering the `header`
 CType with a Handlebars template.
 
-..  rst-class:: bignums-xxl
+..  rst-class:: bignums
 
-#.  Include site sets
+#.  Include the site set
 
-    The extension ships two site sets. Include them in your site's
-    configuration via the site module or :file:`config/sites/<site>/sets.yaml`.
+    Add the :typoscript:`cpsit/handlebars` site set to your site configuration
+    (see :ref:`site-sets`):
 
-    :typoscript:`cpsit/handlebars` (required)
-        Wires :typoscript:`plugin.tx_handlebars.view` paths from the site
-        settings :typoscript:`handlebars.view.templateRootPath` and
-        :typoscript:`handlebars.view.partialRootPath`. Required for every site
-        that renders Handlebars templates.
+    ..  code-block:: yaml
+        :caption: config/sites/<my-site>/config.yaml
 
-    :typoscript:`cpsit/handlebars-content-element` (optional)
-        Sets :typoscript:`lib.contentElement = HANDLEBARSTEMPLATE`, replacing
-        the default Fluid base object. Include this set when all content
-        elements should use Handlebars rendering by default.
+        dependencies:
+          - cpsit/handlebars
 
 #.  Configure template paths
 
-    Declare where your :file:`.hbs` files are located. The simplest option is
-    TypoScript:
+    Declare where your :file:`.hbs` files are located using the site settings
+    provided by the site set:
 
-    ..  code-block:: typoscript
+    ..  code-block:: yaml
+        :caption: config/sites/<my-site>/settings.yaml
 
-        plugin.tx_handlebars {
-            view {
-                templateRootPaths {
-                    10 = EXT:my_sitepackage/Resources/Private/Templates/Handlebars
-                }
-                partialRootPaths {
-                    10 = EXT:my_sitepackage/Resources/Private/Partials/Handlebars
-                }
-            }
-        }
+        handlebars.view.templateRootPath: 'EXT:my_sitepackage/Resources/Private/Templates/Handlebars'
+        handlebars.view.partialRootPath: 'EXT:my_sitepackage/Resources/Private/Partials/Handlebars'
 
     ..  seealso::
 
@@ -102,6 +90,7 @@ Next steps
 
 *   :ref:`content-object` — complete reference for all
     :typoscript:`HANDLEBARSTEMPLATE` properties
+*   :ref:`templates` — template names, partials, layouts and built-in helpers
 *   :ref:`data-processors` — enrich templates with database queries, menus,
     and custom variable processing
 *   :ref:`custom-helpers` — expose custom PHP logic to templates

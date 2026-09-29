@@ -48,81 +48,81 @@ Development workflow
 
 A typical contribution workflow looks like this:
 
-..  rst-class:: bignums-xxl
+..  rst-class:: bignums
 
-    1.  Apply automatic fixes
+#.  Apply automatic fixes
 
-        Use the following commands to normalize and format the code base:
+    Use the following commands to normalize and format the code base:
 
-        ..  code-block:: bash
+    ..  code-block:: bash
 
-            # Apply all automatic fixes
-            composer fix
+        # Apply all automatic fixes
+        composer fix
 
-            # Apply specific fixes
-            composer fix:composer
-            composer fix:editorconfig
-            composer fix:php
+        # Apply specific fixes
+        composer fix:composer
+        composer fix:editorconfig
+        composer fix:php
 
-    2.  Run checks
+#.  Run checks
 
-        Use :bash:`composer check` to run the full code quality pipeline locally.
-        This command bundles dependency analysis, static analysis, coding style checks,
-        and Rector in dry-run mode so that potential refactorings can be reviewed
-        without changing files.
+    Use :bash:`composer check` to run the full code quality pipeline locally.
+    This command bundles dependency analysis, static analysis, coding style checks,
+    and Rector in dry-run mode so that potential refactorings can be reviewed
+    without changing files.
 
-        ..  code-block:: bash
+    ..  code-block:: bash
 
-            # Run all checks
-            composer check
+        # Run all checks
+        composer check
 
-            # Run specific checks
-            composer check:deps
-            composer check:refactor
-            composer check:static
-            composer check:style
+        # Run specific checks
+        composer check:deps
+        composer check:refactor
+        composer check:static
+        composer check:style
 
-            # Run specific style checks
-            composer check:style:composer
-            composer check:style:editorconfig
-            composer check:style:php
-            composer check:style:typoscript
+        # Run specific style checks
+        composer check:style:composer
+        composer check:style:editorconfig
+        composer check:style:php
+        composer check:style:typoscript
 
-        ..  _refactorings:
+    ..  _refactorings:
 
-    3.  Run refactorings
+#.  Run refactorings
 
-        Refactorings are intentionally separated from regular checks because they may
-        change the code base.
+    Refactorings are intentionally separated from regular checks because they may
+    change the code base.
 
-        ..  code-block:: bash
+    ..  code-block:: bash
 
-            # Run all configured refactorings
-            composer refactor
+        # Run all configured refactorings
+        composer refactor
 
-            # Run specific refactorings
-            composer refactor:php
+        # Run specific refactorings
+        composer refactor:php
 
-    4.  Run tests
+#.  Run tests
 
-        Run the full test suite before opening a pull request:
+    Run the full test suite before opening a pull request:
 
-        ..  code-block:: bash
+    ..  code-block:: bash
 
-            # Run all tests
-            ddev composer test
-            ddev composer test:coverage
+        # Run all tests
+        ddev composer test
+        ddev composer test:coverage
 
-            # Run functional tests
-            ddev composer test:functional
-            ddev composer test:functional:coverage
+        # Run functional tests
+        ddev composer test:functional
+        ddev composer test:functional:coverage
 
-            # Run unit tests
-            ddev composer test:unit
-            ddev composer test:unit:coverage
+        # Run unit tests
+        ddev composer test:unit
+        ddev composer test:unit:coverage
 
-            # Merge coverage reports
-            ddev composer test:merge-coverage
+        # Merge coverage reports
+        ddev composer test:merge-coverage
 
 ..  _coverage-reports:
 

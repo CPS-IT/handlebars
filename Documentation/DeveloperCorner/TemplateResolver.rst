@@ -60,36 +60,9 @@ template file, keyed by its bare filename (without directory). A lookup
 therefore succeeds regardless of where in the directory tree the file lives.
 
 Template and partial names must be prefixed with :file:`@` to trigger flat
-resolution. A name without the prefix is passed directly to
-:php:`HandlebarsTemplateResolver` (see below).
-
-..  code-block:: typoscript
-    :caption: Referencing a flat template in TypoScript
-
-    tt_content.tx_myext_teaser = HANDLEBARSTEMPLATE
-    tt_content.tx_myext_teaser {
-        templateName = @teaser
-    }
-
-..  code-block:: handlebars
-    :caption: Referencing a flat partial in a Handlebars template
-
-    {{> @card}}
-
-**Variant separator**
-
-Appending :file:`--<variant>` to an :file:`@`-prefixed name selects a variant
-of a component. If no file with that exact name exists, the resolver automatically
-falls back to the base name:
-
-..  code-block:: handlebars
-
-    {{> @card--highlighted}}   {{!-- falls back to @card if not found --}}
-
-This convention follows `Fractal's naming rules
-<https://fractal.build/guide/core-concepts/naming.html>`__.
-
-**File precedence**
+resolution, optionally with a :file:`--<variant>` suffix that falls back to
+the base name (see :ref:`templates-names` for usage). A name without the
+prefix is passed directly to :php:`HandlebarsTemplateResolver` (see below).
 
 When the same filename exists under multiple root paths, the higher-priority
 root path wins (see :ref:`template-paths`). Within a single root path, files

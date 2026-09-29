@@ -54,9 +54,9 @@ Detailed examples for each row are given in the linked pages.
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
 | :fluid:`<f:render partial="Name" arguments="{key: value}" />` | :handlebars:`{{> Name key=value}}`                         | :ref:`migration-from-fluid-syntax`      |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
-| :fluid:`<f:layout name="Main" />`                             | :handlebars:`{{#extend "Main"}} … {{/extend}}`             | :ref:`migration-from-fluid-layouts`     |
+| :fluid:`<f:layout name="Default" />`                          | :handlebars:`{{#extend "default"}} … {{/extend}}`          | :ref:`migration-from-fluid-layouts`     |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
-| :fluid:`<f:section name="Main">` (in layout)                  | :handlebars:`{{#block "main"}} … {{/block}}`               | :ref:`migration-from-fluid-layouts`     |
+| :fluid:`<f:render section="Main">` (in layout)                | :handlebars:`{{#block "main"}} … {{/block}}`               | :ref:`migration-from-fluid-layouts`     |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
 | :fluid:`<f:section name="Main">` (in template)                | :handlebars:`{{#content "main"}} … {{/content}}`           | :ref:`migration-from-fluid-layouts`     |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
@@ -66,7 +66,9 @@ Detailed examples for each row are given in the linked pages.
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
 | :fluid:`<f:format.date format="..." />`                       | Custom :php:`formatDate` helper                            | :ref:`migration-from-fluid-helpers`     |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
-| Variables from controller :php:`assign()`                     | TypoScript :typoscript:`variables` block                   | :ref:`migration-from-fluid-gradual`     |
+| :typoscript:`FLUIDTEMPLATE` content object                    | :typoscript:`HANDLEBARSTEMPLATE` content object            | :ref:`migration-from-fluid-gradual`     |
++---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
+| Extbase :php:`ActionController`                               | :php:`HandlebarsController` (:php:`assign()` still works)  | :ref:`extbase-plugin`                   |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+
 | :typoscript:`plugin.tx_myext.view.templateRootPaths`          | :typoscript:`plugin.tx_handlebars.view.templateRootPaths`  | :ref:`template-paths`                   |
 +---------------------------------------------------------------+------------------------------------------------------------+-----------------------------------------+

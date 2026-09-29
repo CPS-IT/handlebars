@@ -24,19 +24,10 @@ bridge between a repository result and the rest of the
 Data sources
 ============
 
-:typoscript:`iterable` is resolved exactly like :typoscript:`dataSource` on
-:ref:`data-processor-process-each` — see :ref:`usage-data-sources-payload`
-for the full syntax, including what happens when multiple references are
-configured. It just uses a processor-specific option name instead of the
-generic :typoscript:`dataSource`. :typoscript:`iterable.current` uses the
-content object's current value instead (see
-:ref:`usage-data-sources-current`).
-
-This is what allows :typoscript:`iterable` to refer to a value placed into
-:typoscript:`processedData` by a preceding processor's :typoscript:`as`
-option, or to a variable an Extbase controller assigned directly to the view
-(Extbase-assigned view variables end up in :typoscript:`processedData` too,
-under the assigned key).
+:typoscript:`iterable` references the value to convert, e.g. the output of a
+preceding processor or a variable assigned by an Extbase controller
+(:typoscript:`processedData:news`). See :ref:`usage-data-sources-payload`
+for the syntax.
 
 ..  _data-processor-iterable-to-array-usage:
 
@@ -78,7 +69,7 @@ Processing individual items
 Each converted item is exposed to a nested :typoscript:`dataProcessing`
 chain as :typoscript:`currentValue`, reachable as
 :typoscript:`contentObjectConfiguration:currentValue` (see
-:ref:`usage-data-sources`). This only happens when a nested chain is
+:ref:`usage-data-sources-current`). This only happens when a nested chain is
 actually configured, so plain conversions are left untouched:
 
 ..  code-block:: typoscript

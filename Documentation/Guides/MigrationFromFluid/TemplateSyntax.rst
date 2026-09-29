@@ -244,13 +244,14 @@ Comments
 ========
 
 Handlebars comments are stripped from the rendered output and never appear in
-the HTML source. Use them for template-internal notes.
+the HTML source, just like Fluid's :fluid:`<f:comment>`. Use them for
+template-internal notes.
 
 **Fluid:**
 
 ..  code-block:: html
 
-    <!-- this comment appears in HTML source -->
+    <f:comment>this comment is stripped from the output</f:comment>
 
 **Handlebars:**
 
@@ -263,11 +264,20 @@ the HTML source. Use them for template-internal notes.
 Escaping Handlebars delimiters
 ==============================
 
-To output a literal :handlebars:`{{` in the rendered HTML, use the raw
-block syntax:
+To output a literal Handlebars expression in the rendered HTML, prefix it
+with a backslash:
 
 ..  code-block:: handlebars
 
-    {{{raw}}}}
-        This {{{will not be}}} parsed as Handlebars.
-    {{{{/raw}}}}
+    \{{header}}   {{!-- renders "{{header}}" --}}
+
+Handlebars also supports
+`raw blocks <https://handlebarsjs.com/guide/block-helpers.html#raw-blocks>`__
+(:handlebars:`{{{{name}}}} … {{{{/name}}}}`). Note that a raw block invokes
+a helper with the given name, which must be registered as
+:ref:`custom helper <custom-helpers>` — the extension does not ship one.
+
+..  seealso::
+
+    `Escaping Handlebars expressions <https://handlebarsjs.com/guide/expressions.html#escaping-handlebars-expressions>`__
+    in the Handlebars language guide.

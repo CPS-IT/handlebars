@@ -36,8 +36,9 @@ use TYPO3\CMS\Frontend;
  *
  * the resulting {@see Extbase\Persistence\QueryResultInterface} is available as
  * "news" variable in the processed data and can be converted into a plain array for use
- * within the Handlebars template. Each converted item is made available as "currentValue"
- * and can be further transformed using nested data processors:
+ * within the Handlebars template. Each converted item is set as current value of the
+ * content object (and is additionally made available as "currentValue") and can be further
+ * transformed using nested data processors:
  *
  * plugin.tx_news {
  *   handlebars {
@@ -53,7 +54,7 @@ use TYPO3\CMS\Frontend;
  *           dataProcessing {
  *             10 = object-access
  *             10 {
- *               object = contentObjectConfiguration:currentValue
+ *               object.current = 1
  *               path = title
  *               as = title
  *             }
@@ -120,15 +121,24 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
 
         // Process additional data processors for each item
         if (is_array($dataProcessing)) {
-            foreach ($array as $key => $item) {
-                $array[$key] = $this->contentDataProcessor->process(
-                    $cObj,
-                    [
-                        'dataProcessing.' => $dataProcessing,
-                        'currentValue' => $item,
-                    ],
-                    [],
-                );
+            $currentValue = $cObj->getCurrentVal();
+
+            try {
+                foreach ($array as $key => $item) {
+                    $cObj->setCurrentVal($item);
+
+                    $array[$key] = $this->contentDataProcessor->process(
+                        $cObj,
+                        [
+                            'dataProcessing.' => $dataProcessing,
+                            'currentValue' => $item,
+                        ],
+                        [],
+                    );
+                }
+            } finally {
+                // Restore current value
+                $cObj->setCurrentVal($currentValue);
             }
         }
 

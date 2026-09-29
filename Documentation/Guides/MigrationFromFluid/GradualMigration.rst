@@ -2,9 +2,9 @@
 
 ..  _migration-from-fluid-gradual:
 
-================
+=================
 Gradual migration
-================
+=================
 
 Replacing every Fluid template in one step is rarely practical. This page
 describes an incremental approach that lets Fluid and Handlebars coexist in
@@ -28,7 +28,7 @@ The recommended path has three lanes that can be worked independently:
 
 ..  rst-class:: bignums
 
-#.  **Install and configure paths**
+#.  Install and configure paths
 
     Install the extension and include the base site set without the
     content-element set. The content-element set replaces
@@ -60,7 +60,7 @@ The recommended path has three lanes that can be worked independently:
     Fluid and Handlebars path registrations are completely independent, so
     there is no risk of one system picking up the other's files.
 
-#.  **Migrate content elements one at a time**
+#.  Migrate content elements one at a time
 
     For each content element, convert the TypoScript definition from
     :typoscript:`FLUIDTEMPLATE` to :typoscript:`HANDLEBARSTEMPLATE` and create
@@ -81,7 +81,7 @@ The recommended path has three lanes that can be worked independently:
                 title.field = header
             }
             dataProcessing {
-                10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+                10 = files
                 10 {
                     references.fieldName = image
                     as = images
@@ -114,7 +114,7 @@ The recommended path has three lanes that can be worked independently:
     All other :typoscript:`tt_content.*` definitions that are not yet migrated
     continue to use Fluid without any changes.
 
-#.  **Migrate Extbase controllers**
+#.  Migrate Extbase controllers
 
     For controller-based rendering, the extension provides
     :php:`HandlebarsViewFactory`, which replaces TYPO3's default
@@ -192,7 +192,7 @@ The recommended path has three lanes that can be worked independently:
             return $this->htmlResponse((string)$content);
         }
 
-#.  **Migrate the page layout shell**
+#.  Migrate the page layout shell
 
     The layout shell (the outer HTML document, header, navigation, footer) is
     typically the last thing to migrate because it is shared by every page.
@@ -203,7 +203,7 @@ The recommended path has three lanes that can be worked independently:
     layout partial using the :handlebars:`extend` / :handlebars:`block` /
     :handlebars:`content` pattern described in :ref:`migration-from-fluid-layouts`.
 
-#.  **Switch the lib.contentElement default**
+#.  Switch the lib.contentElement default
 
     After every content element has been migrated to :typoscript:`HANDLEBARSTEMPLATE`,
     include the :yaml:`cpsit/handlebars-content-element` site set. This sets

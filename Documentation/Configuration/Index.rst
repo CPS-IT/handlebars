@@ -15,5 +15,5 @@ available options.
 
     TemplatePaths
     Variables
-    Cache
     ExtensionConfiguration
+    Cache

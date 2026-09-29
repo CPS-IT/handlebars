@@ -169,7 +169,7 @@ alternatives instead:
     :ref:`rendering.strictMode <extension-configuration-rendering-strict-mode>`
     in the extension configuration. Unlike the previous behavior, this is a
     persistent setting rather than one tied to TYPO3's debug flags.
-*   **Strict template validation:** Use the shipped :handlebars:`{{debug}}`
+*   **Strict template validation:** Use the shipped :ref:`{{debug}} <templates-helpers-debug>`
     helper inside templates to inspect variable values at render time. For
     programmatic checks, call :php:`Handlebars::precompile()` directly to
     inspect the generated PHP code.
@@ -179,18 +179,6 @@ alternatives instead:
 Template path configuration
 ----------------------------
 
-Template path configuration via :file:`Services.yaml` and TypoScript remains
-unchanged. In addition, paths can now also be set per-content-object directly
-in :typoscript:`HANDLEBARSTEMPLATE`:
-
-..  code-block:: typoscript
-
-    tt_content.textmedia = HANDLEBARSTEMPLATE
-    tt_content.textmedia {
-        templateRootPaths.10 = EXT:my_extension/Resources/Private/Templates
-        partialRootPaths.10 = EXT:my_extension/Resources/Private/Partials
-    }
-
-..  seealso::
-
-    :ref:`template-paths` for the full configuration reference.
+No migration needed. Template path configuration via :file:`Services.yaml`
+and TypoScript remains unchanged; paths can now additionally be set per
+content object (see :ref:`template-paths`).

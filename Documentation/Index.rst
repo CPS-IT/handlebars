@@ -56,27 +56,20 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
         ..  card-footer:: :ref:`Getting started <installation>`
             :button-style: btn btn-secondary stretched-link
 
-    ..  card::  Configuration
-
-        Learn how to configure the extension in various ways. This includes extension
-        configuration, site configuration and TypoScript configuration.
-
-        ..  card-footer:: :ref:`View configuration options <configuration>`
-            :button-style: btn btn-secondary stretched-link
-
     ..  card::  Usage
 
-        This section describes how to use this extension in various ways, and which
-        additional components exist.
+        Start with a quick start example, then learn how to render templates
+        with content objects, data processors, custom helpers and Extbase plugins.
 
         ..  card-footer:: :ref:`Learn how to use this extension <usage>`
             :button-style: btn btn-secondary stretched-link
 
-    ..  card::  Developer corner
+    ..  card::  Configuration
 
-        A quick overview about all relevant classes provided by this extension.
+        Learn how to configure the extension in various ways. This includes template
+        paths, global variables, caching and extension configuration.
 
-        ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
+        ..  card-footer:: :ref:`View configuration options <configuration>`
             :button-style: btn btn-secondary stretched-link
 
     ..  card::  Guides
@@ -94,16 +87,32 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
         ..  card-footer:: :ref:`View upgrade guide <migration>`
             :button-style: btn btn-secondary stretched-link
 
+    ..  card::  Developer corner
+
+        Events and extension points for developers who need to go beyond
+        TypoScript configuration.
+
+        ..  card-footer:: :ref:`Deep dive into classes & concepts <developer-corner>`
+            :button-style: btn btn-secondary stretched-link
+
+    ..  card::  Contributing
+
+        Learn how to set up a local development environment and contribute
+        to this extension.
+
+        ..  card-footer:: :ref:`Read the contribution guide <contributing>`
+            :button-style: btn btn-secondary stretched-link
+
 ..  toctree::
     :hidden:
 
     Introduction/Index
     Installation/Index
-    Configuration/Index
     Usage/Index
-    DeveloperCorner/Index
+    Configuration/Index
     Guides/Index
     Migration/Index
+    DeveloperCorner/Index
     Contributing/Index
 
 ..  toctree::

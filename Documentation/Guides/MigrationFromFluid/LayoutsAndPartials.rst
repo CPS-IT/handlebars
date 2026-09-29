@@ -100,7 +100,7 @@ Side-by-side example
 ..  code-block:: html
     :caption: EXT:my_extension/Resources/Private/Templates/MyElement.html
 
-    <f:layout name="Main" />
+    <f:layout name="Default" />
 
     <f:section name="Head">
         <title>{header}</title>
@@ -119,7 +119,7 @@ Side-by-side example
 ..  code-block:: handlebars
     :caption: EXT:my_extension/Resources/Private/Templates/my-element.hbs
 
-    {{#extend "Main"}}
+    {{#extend "default"}}
         {{#content "head"}}
             <title>{{header}}</title>
         {{/content}}
@@ -150,7 +150,7 @@ the equivalent of Fluid's :fluid:`optional="true"` on :fluid:`<f:render section=
 combined with a fallback in the layout.
 
 ..  code-block:: handlebars
-    :caption: EXT:my_extension/Resources/Private/Partials/Main.hbs
+    :caption: EXT:my_extension/Resources/Private/Partials/default.hbs
 
     <footer>
         {{#block "footer"}}
@@ -173,7 +173,7 @@ it. This has no direct Fluid equivalent and is often used for accumulating
 ..  code-block:: handlebars
     :caption: EXT:my_extension/Resources/Private/Templates/my-element.hbs
 
-    {{#extend "Main"}}
+    {{#extend "default"}}
         {{#content "head" mode="append"}}
             <link rel="stylesheet" href="/assets/my-element.css">
         {{/content}}
@@ -195,5 +195,6 @@ create a :file:`.hbs` file in the partial root path and include it with
 
 ..  seealso::
 
+    *   :ref:`templates` — template names, layouts and built-in helpers
     *   :ref:`migration-from-fluid-syntax-partials` — partial inclusion syntax
     *   :ref:`template-paths` — how to configure partial root paths

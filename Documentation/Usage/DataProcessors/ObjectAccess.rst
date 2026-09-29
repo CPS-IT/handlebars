@@ -23,19 +23,11 @@ without having to expose the whole object to the template.
 Data sources
 ============
 
-:typoscript:`object` is resolved exactly like :typoscript:`dataSource` on
-:ref:`data-processor-process-each` — see :ref:`usage-data-sources-payload`
-for the full syntax, including what happens when multiple references are
-configured. It just uses a processor-specific option name instead of the
-generic :typoscript:`dataSource`. :typoscript:`object.current` uses the
-content object's current value instead (see
-:ref:`usage-data-sources-current`).
-
-This is what allows :typoscript:`object` to refer to a value placed into
-:typoscript:`processedData` by a preceding processor's :typoscript:`as`
-option, or to a variable an Extbase controller assigned directly to the
-view (Extbase-assigned view variables end up in :typoscript:`processedData`
-too, under the assigned key).
+:typoscript:`object` references the source object, e.g. the output of a
+preceding processor or a variable assigned by an Extbase controller
+(:typoscript:`processedData:post`). See :ref:`usage-data-sources-payload`
+for the syntax and :ref:`usage-data-sources-current` for how to access the
+current item inside :ref:`data-processor-process-each`.
 
 ..  _data-processor-object-access-usage:
 
@@ -87,9 +79,10 @@ Properties
     :ref:`data-processor-object-access-data-sources`). Required.
 
 :typoscript:`path`
-    Property path passed to :php:`TYPO3Fluid\Fluid\Core\Variables\StandardVariableProvider::getByPath()`.
-    Supports plain property names as well as dot-separated nested paths
-    (e.g. :typoscript:`category.title`). Required.
+    Property path to resolve. Supports plain property names as well as
+    dot-separated nested paths (e.g. :typoscript:`category.title`). Paths are
+    resolved the same way as :ref:`variable paths in Fluid templates <fluid:variable-access-objects>`,
+    including getter methods. Required.
 
 :typoscript:`as`
     Target key in the processed data array the resolved value is stored

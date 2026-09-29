@@ -2,9 +2,9 @@
 
 ..  _migration-from-fluid:
 
-===================
+====================
 Migration from Fluid
-===================
+====================
 
 This chapter is aimed at developers who are familiar with TYPO3's built-in Fluid
 templating engine and want to adopt Handlebars for new or existing projects. It

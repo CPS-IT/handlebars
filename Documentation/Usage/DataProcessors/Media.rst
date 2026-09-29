@@ -23,10 +23,10 @@ The extension ships with a single built-in media processor for images; see
 Data sources
 ============
 
-:typoscript:`file` is resolved exactly like :typoscript:`object` on
-:ref:`data-processor-object-access` — see :ref:`usage-data-sources-payload`
-for the full syntax. It just uses a processor-specific option name instead
-of the generic :typoscript:`dataSource`.
+:typoscript:`file` references the file or file reference to process, e.g.
+the first file resolved by TYPO3's :typoscript:`files` processor
+(:typoscript:`processedData:files/0`). See :ref:`usage-data-sources-payload`
+for the syntax.
 
 ..  _data-processor-media-usage:
 
@@ -48,7 +48,7 @@ Usage
 
             20 = media
             20 {
-                file = processedData:files.0
+                file = processedData:files/0
                 as = image
 
                 config {
@@ -69,28 +69,46 @@ to :typoscript:`media`, which picks the matching media processor — here,
 the built-in :typoscript:`image` processor — and stores its result under
 :typoscript:`image`.
 
-..  _data-processor-media-image:
+..  tip::
 
-Built-in media processor: image
-===============================
+    To process all files instead of only the first one, nest
+    :typoscript:`media` inside a :ref:`data-processor-process-each` processor
+    and use :typoscript:`file.current = 1` to reference the file currently
+    being processed:
 
-The built-in image processor matches any resource that is an image. It
-generates one processed image per configured source set, using
-:php:`ContentObjectRenderer::getImgResource()` under the hood, so each
-source set accepts the same configuration as TYPO3's core :ref:`t3tsref:imgresource`
-function (e.g. :typoscript:`maxW`, :typoscript:`maxH`, :typoscript:`width`,
-:typoscript:`height`).
+    ..  code-block:: typoscript
 
-Its configuration is nested under :typoscript:`config.image` (see
-:ref:`data-processor-media-properties` below) and results in the
-following shape:
+        20 = process-each
+        20 {
+            dataSource = processedData:files
+            as = images
 
-:typoscript:`sourceSets`
-    A map of the configured source set names to their processed image data
-    (:typoscript:`src`, :typoscript:`width`, :typoscript:`height`).
+            dataProcessing {
+                10 = media
+                10 {
+                    file.current = 1
 
-:typoscript:`originalFile`
-    The resolved, unprocessed file (:php:`TYPO3\CMS\Core\Resource\AbstractFile`).
+                    config {
+                        image {
+                            sourceSets {
+                                small {
+                                    maxW = 600c
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    Since :typoscript:`as` is omitted on :typoscript:`media`, the result is
+    merged into each item. The template can then iterate over all images:
+
+    ..  code-block:: handlebars
+
+        {{#each images}}
+            <img src="{{sourceSets.small.src}}" alt="">
+        {{/each}}
 
 ..  _data-processor-media-properties:
 
@@ -115,3 +133,26 @@ Properties
 If :typoscript:`file` cannot be resolved, or no registered media processor
 supports the resolved resource, a warning is logged and the processed data
 is returned unchanged.
+
+..  _data-processor-media-image:
+
+Built-in media processor: image
+===============================
+
+The built-in image processor matches any resource that is an image. It
+generates one processed image per configured source set, using
+:php:`ContentObjectRenderer::getImgResource()` under the hood, so each
+source set accepts the same configuration as TYPO3's core :ref:`t3tsref:imgresource`
+function (e.g. :typoscript:`maxW`, :typoscript:`maxH`, :typoscript:`width`,
+:typoscript:`height`).
+
+Its configuration is nested under :typoscript:`config.image` (see
+:ref:`data-processor-media-properties` below) and results in the
+following shape:
+
+:typoscript:`sourceSets`
+    A map of the configured source set names to their processed image data
+    (:typoscript:`src`, :typoscript:`width`, :typoscript:`height`).
+
+:typoscript:`originalFile`
+    The resolved, unprocessed file (:php:`TYPO3\CMS\Core\Resource\AbstractFile`).

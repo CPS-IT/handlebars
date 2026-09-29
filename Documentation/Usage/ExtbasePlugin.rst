@@ -77,33 +77,24 @@ from least to most specific so that narrower entries override broader ones:
         }
     }
 
-The controller alias matches the value registered in
-:php:`ExtensionUtility::configurePlugin()`. For the example above,
-:php:`BlogController` would typically have alias :typoscript:`Blog`.
+The controller alias is derived by Extbase from the controller class name
+registered in :php:`ExtensionUtility::configurePlugin()`: it is the short
+class name without the :php:`Controller` suffix. For the example above,
+:php:`Vendor\MyExtension\Controller\BlogController` has the alias
+:typoscript:`Blog`.
 
 ..  _extbase-plugin-typoscript-properties:
 
 Properties
 ----------
 
-Each resolution key accepts the same properties as a
-:ref:`HANDLEBARSTEMPLATE <content-object>` content object:
-
-+----------------------------------------------+---------+-------------------------------------------+
-| Property                                     | Type    | Description                               |
-+==============================================+=========+===========================================+
-| :typoscript:`templateName`                   | string  | Template name or ``@``-prefixed flat name.|
-|                                              |         | Defaults to                               |
-|                                              |         | :typoscript:`<ControllerAlias>/<action>`. |
-+----------------------------------------------+---------+-------------------------------------------+
-| :typoscript:`format`                         | string  | File extension. Defaults to ``hbs``.      |
-+----------------------------------------------+---------+-------------------------------------------+
-| :typoscript:`templateRootPaths`              | array   | Additional template root paths.           |
-+----------------------------------------------+---------+-------------------------------------------+
-| :typoscript:`partialRootPaths`               | array   | Additional partial root paths.            |
-+----------------------------------------------+---------+-------------------------------------------+
-| :typoscript:`variables`                      | array   | Extra variables passed to the template.   |
-+----------------------------------------------+---------+-------------------------------------------+
+Each resolution key accepts all properties of a
+:ref:`HANDLEBARSTEMPLATE <content-object>` content object, for example
+:typoscript:`templateName`, :typoscript:`templateRootPaths`,
+:typoscript:`variables` or :typoscript:`dataProcessing`. Variables assigned
+in the controller are passed to the template as well and are available to
+data processors via :typoscript:`processedData`. For HTML requests, the
+template file extension defaults to :file:`hbs`.
 
 ..  _extbase-plugin-default-template:
 

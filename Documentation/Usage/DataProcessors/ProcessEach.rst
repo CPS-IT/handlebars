@@ -27,19 +27,17 @@ Resolving the items to iterate
 
 The value to iterate over is resolved in the following order:
 
-#.  :typoscript:`dataSource`, if configured — see
-    :ref:`usage-data-sources-payload` for how it is resolved, including what
-    happens when multiple references are configured, and
-    :ref:`usage-data-sources-current` for :typoscript:`dataSource.current`.
+#.  :typoscript:`dataSource`, if configured (see
+    :ref:`usage-data-sources-payload`).
 
 #.  Otherwise, an inline :typoscript:`data` array configured directly on
     this processor.
 
 #.  Otherwise, a :typoscript:`data` key already present in
     :php:`processedData`. This makes :typoscript:`process-each` usable as a
-    nested processor inside :typoscript:`iterable-to-array` or
-    :typoscript:`object-access` — both of which wrap each item as
-    :typoscript:`data` for their own nested :typoscript:`dataProcessing`
+    nested processor inside TYPO3's core processors such as
+    :typoscript:`database-query` or :typoscript:`menu` — which expose each
+    record as :typoscript:`data` to their nested :typoscript:`dataProcessing`
     chain — without having to repeat :typoscript:`dataSource` explicitly.
 
 If none of these yield an iterable value, the processed data is returned
@@ -71,14 +69,14 @@ Usage
                 dataProcessing {
                     10 = object-access
                     10 {
-                        object = contentObjectConfiguration:currentValue
+                        object.current = 1
                         path = publicUrl
                         as = url
                     }
 
                     20 = object-access
                     20 {
-                        object = contentObjectConfiguration:currentValue
+                        object.current = 1
                         path = fileType
                         as = type
                     }
@@ -88,11 +86,10 @@ Usage
     }
 
 Each file reference resolved by the core :typoscript:`files` processor is
-made available to the nested :typoscript:`dataProcessing` chain as
-:typoscript:`currentValue`, reachable as
-:typoscript:`contentObjectConfiguration:currentValue` (see
-:ref:`usage-data-sources`), so :typoscript:`object-access` can pull
-individual properties off it. The per-item results are collected — keyed by
+set as the content object's current value while the nested
+:typoscript:`dataProcessing` chain runs, so :typoscript:`object-access` can
+pull individual properties off it with :typoscript:`object.current = 1`
+(see :ref:`usage-data-sources-current`). The per-item results are collected — keyed by
 the original array keys — under :typoscript:`processedFiles`.
 
 ..  _data-processor-process-each-per-item:

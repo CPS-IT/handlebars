@@ -22,19 +22,14 @@ such as :typoscript:`database-query`, allowing per-record variable processing.
 Data sources
 ============
 
-:typoscript:`as`, :typoscript:`merge` and :typoscript:`variables` are read
-from this processor's own configuration block
-(:typoscript:`processorConfiguration`) only. :typoscript:`table` is also read
-from there, but falls back to a same-named key already present in
-:php:`processedData` — this is why :typoscript:`table`, once set by an outer
-processor (e.g. :typoscript:`database-query`), can be picked up by a nested
-:typoscript:`process-variables` without being repeated explicitly. See
-:ref:`usage-data-sources` for what these two sources contain.
+All options are read from this processor's own configuration block.
+:typoscript:`table` additionally falls back to a same-named key in
+:typoscript:`processedData`, and finally to the table of the current content
+object.
 
 The :typoscript:`preProcessing` and :typoscript:`postProcessing` hooks
-receive the full :php:`DataSourceCollection`, so custom
-:php:`DataSourceAwareProcessor` implementations have access to all four
-sources (see :ref:`developer-corner-data-source-aware-processor`).
+have access to all data sources (see
+:ref:`developer-corner-data-source-aware-processor`).
 
 ..  _data-processor-process-variables-payload:
 
@@ -69,7 +64,7 @@ Standalone usage
 
                     teaser = TEXT
                     teaser.field = bodytext
-                    teaser.parseFunc < lib.parseFunc_RTE
+                    teaser.parseFunc =< lib.parseFunc_RTE
                 }
             }
         }
@@ -91,7 +86,6 @@ Nested inside another processor
             dataProcessing {
                 10 = process-variables
                 10 {
-                    table = tx_myext_domain_model_item
                     as = item
                     variables {
                         title = TEXT
@@ -99,7 +93,7 @@ Nested inside another processor
 
                         body = TEXT
                         body.field = bodytext
-                        body.parseFunc < lib.parseFunc_RTE
+                        body.parseFunc =< lib.parseFunc_RTE
                     }
                 }
             }
@@ -117,7 +111,7 @@ Properties
 
 :typoscript:`table`
     Database table of the record to use as the data source for field
-    lookups. Defaults to the current content element table.
+    lookups. Defaults to the current table in content object renderer.
 
 :typoscript:`data`
     Inline data used as the field-lookup source for :typoscript:`variables`,
@@ -147,9 +141,9 @@ Properties
     is returned unchanged.
 
 :typoscript:`preProcessing`
-    Data source aware processors run before :typoscript:`variables` are
-    processed.
+    :ref:`Data source aware processors <developer-corner-data-source-aware-processor>`
+    run before :typoscript:`variables` are processed.
 
 :typoscript:`postProcessing`
-    Data source aware processors run after :typoscript:`variables` are
-    processed.
+    :ref:`Data source aware processors <developer-corner-data-source-aware-processor>`
+    run after :typoscript:`variables` are processed.

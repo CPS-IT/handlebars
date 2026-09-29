@@ -11,6 +11,17 @@ this extension. It compiles and renders a Handlebars template, resolving
 template paths, processing variables, and registering assets — all from
 TypoScript configuration.
 
+The content object tries to follow the implementation details of TYPO3's
+:ref:`FLUIDTEMPLATE <t3tsref:cobj-fluidtemplate>` content object as closely
+as possible. Properties such as :typoscript:`templateName`,
+:typoscript:`templateRootPaths`, :typoscript:`variables`,
+:typoscript:`settings` and :typoscript:`dataProcessing` work the same way,
+including the reserved :typoscript:`data` and :typoscript:`current`
+variables. Existing :typoscript:`FLUIDTEMPLATE` configuration can therefore
+be reused in most cases. The main difference is that there are no
+:typoscript:`layoutRootPaths`, since Handlebars layouts are
+:ref:`resolved as partials <templates-layouts>`.
+
 ..  code-block:: typoscript
 
     tt_content.header = HANDLEBARSTEMPLATE
@@ -34,16 +45,40 @@ templateName
 :aspect:`Description`
     Name of the template to render. The value is resolved as a filename
     (without the :file:`.hbs` extension) relative to the configured template
-    root paths. Exactly one of :typoscript:`templateName`, :typoscript:`template`,
-    or :typoscript:`file` must be set.
+    root paths. Prefix the name with :file:`@` to look up the file by its bare
+    filename, see :ref:`templates-names`. Exactly one of
+    :typoscript:`templateName`, :typoscript:`template`, or :typoscript:`file`
+    must be set.
 
 :aspect:`Example`
     ..  code-block:: typoscript
 
         templateName = Header
 
+        # Flat name
+        templateName = @header
+
         # With stdWrap
         templateName.field = tx_myext_template_name
+
+----
+
+format
+======
+
+:aspect:`Type`
+    string / stdWrap
+
+:aspect:`Description`
+    File extension of the template file. If not set, the file extensions
+    :file:`hbs`, :file:`handlebars` and :file:`html` are tried in this order.
+    Setting a format restricts the lookup to this file extension. It must be
+    one of the supported file extensions.
+
+:aspect:`Example`
+    ..  code-block:: typoscript
+
+        format = handlebars
 
 ----
 
@@ -160,10 +195,13 @@ variables
 
             bodytext = TEXT
             bodytext.field = bodytext
-            bodytext.parseFunc < lib.parseFunc_RTE
+            bodytext.parseFunc =< lib.parseFunc_RTE
 
             image = FILES
             image.references.fieldName = image
+
+            # Simple variable (no content object rendering)
+            wrapperClass = container
         }
 
 ----
@@ -184,7 +222,6 @@ settings
 
         settings {
             showDate = 1
-            dateFormat = d.m.Y
         }
 
     In the template:
@@ -192,7 +229,7 @@ settings
     ..  code-block:: handlebars
 
         {{#if settings.showDate}}
-            <time>{{formatDate date settings.dateFormat}}</time>
+            <time>{{date}}</time>
         {{/if}}
 
 ----
@@ -208,9 +245,9 @@ dataProcessing
     Processors receive and return the :php:`$processedData` array. Any key added
     by a processor is available as a template variable.
 
-    The extension provides three additional processors:
-    :typoscript:`process-variables`, :typoscript:`resolve-markers`, and
-    :typoscript:`unflatten-variable-names`.
+    The extension provides additional processors, e.g.
+    :typoscript:`process-variables`, :typoscript:`process-each` and
+    :typoscript:`media`. See :ref:`data-processors` for the complete list.
 
 :aspect:`Example`
     ..  code-block:: typoscript
@@ -233,11 +270,6 @@ dataProcessing
             }
         }
 
-..  seealso::
-
-    :ref:`data-processors` for documentation of the extension-specific
-    processors.
-
 ----
 
 preProcessing
@@ -247,10 +279,11 @@ preProcessing
     array
 
 :aspect:`Description`
-    Data source aware processors executed before :typoscript:`variables`
-    are processed. These can read from multiple data sources (content element
-    record, processed data, processor configuration) and modify the variable
-    set before content object rendering begins.
+    :ref:`Data source aware processors <developer-corner-data-source-aware-processor>`
+    executed before :typoscript:`variables` are processed. These can read from
+    multiple data sources (content element record, processed data, processor
+    configuration) and modify the variable set before content object rendering
+    begins.
 
 ----
 
@@ -261,9 +294,9 @@ postProcessing
     array
 
 :aspect:`Description`
-    Data source aware processors executed after :typoscript:`variables` have
-    been resolved and data processors have run, but before the template is
-    rendered.
+    :ref:`Data source aware processors <developer-corner-data-source-aware-processor>`
+    executed after :typoscript:`variables` have been resolved and data processors
+    have run, but before the template is rendered.
 
 ----
 
@@ -274,8 +307,8 @@ assets
     array
 
 :aspect:`Description`
-    Registers JavaScript and CSS assets via TYPO3's AssetCollector API. Supports
-    four sub-keys: :typoscript:`javaScript`, :typoscript:`inlineJavaScript`,
+    Registers JavaScript and CSS assets via TYPO3's :ref:`Asset collector <t3coreapi:asset-collector>`
+    API. Supports four sub-keys: :typoscript:`javaScript`, :typoscript:`inlineJavaScript`,
     :typoscript:`css`, :typoscript:`inlineCss`.
 
 :aspect:`Example`

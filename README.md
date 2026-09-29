@@ -20,12 +20,15 @@ To meet everyone's needs, it is easily extensible using TYPO3 on-board tools.
 ## 🚀 Features
 
 * **Templating engine:** Full Handlebars rendering environment for TYPO3
-* **Custom Helpers:** Custom helpers with auto-registration via PHP attributes
+* **TypoScript integration:** `HANDLEBARSTEMPLATE` content object and
+  additional data processors to prepare template variables
+* **Component libraries:** Fractal-compatible template names (`@name`, `@name--variant`)
+* **Layouts:** Layout inheritance with `extend`, `block` and `content` helpers
+* **Custom helpers:** Custom helpers with auto-registration via PHP attributes
 * **Extbase support:** Controller-based rendering via `HandlebarsView`
-* **Events:** PSR-14 hooks into the full rendering pipeline
-* **DI integration:** Built on dependency injection for better performance and maintainability
 * **Caching:** Integration with TYPO3's cache framework for compiled templates
-* **Extensibility:** Easy to extend and customize
+* **Extensibility:** PSR-14 events and replaceable services for all parts of
+    the rendering pipeline
 * **Compatibility:** Compatible with TYPO3 13.4 LTS and 14.3 LTS
 
 ## 🔥 Installation

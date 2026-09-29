@@ -27,6 +27,7 @@ return [
     ],
     'files' => [
         'DS_Store',
+        'AGENTS.md',
         'CLAUDE.md',
         'CODE_OF_CONDUCT.md',
         'composer.lock',

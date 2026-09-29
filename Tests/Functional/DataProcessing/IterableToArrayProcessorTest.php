@@ -369,6 +369,77 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
         );
     }
 
+    #[Framework\Attributes\Test]
+    public function processSetsEachItemAsCurrentContentObjectValueForNestedDataProcessing(): void
+    {
+        $object1 = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
+        $object2 = new Tests\Functional\Fixtures\Classes\DummyObject('baz');
+
+        $processorConfiguration = [
+            'iterable' => 'processedData:someArray',
+            'as' => 'items',
+            'dataProcessing.' => [
+                '10' => 'object-access',
+                '10.' => [
+                    'object.' => [
+                        'current' => '1',
+                    ],
+                    'path' => 'name',
+                    'as' => 'name',
+                ],
+            ],
+        ];
+        $processedData = [
+            'someArray' => [$object1, $object2],
+        ];
+
+        $expected = [
+            'someArray' => [$object1, $object2],
+            'items' => [
+                [
+                    'name' => 'foo',
+                ],
+                [
+                    'name' => 'baz',
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processRestoresCurrentContentObjectValueAfterProcessing(): void
+    {
+        $this->contentObjectRenderer->setCurrentVal('original');
+
+        $processorConfiguration = [
+            'iterable' => 'processedData:someArray',
+            'dataProcessing.' => [
+                '10' => 'object-access',
+                '10.' => [
+                    'object.' => [
+                        'current' => '1',
+                    ],
+                    'path' => 'name',
+                    'as' => 'name',
+                ],
+            ],
+        ];
+        $processedData = [
+            'someArray' => [
+                new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
+            ],
+        ];
+
+        $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData);
+
+        self::assertSame('original', $this->contentObjectRenderer->getCurrentVal());
+    }
+
     /**
      * @return \Generator<string>
      */

@@ -100,16 +100,9 @@ Using the current value
 =======================
 
 Processors that run nested inside :ref:`data-processor-process-each` or
-:ref:`data-processor-iterable-to-array` can reference the item currently
-being processed as :typoscript:`contentObjectConfiguration:currentValue`:
-
-..  code-block:: typoscript
-
-    object = contentObjectConfiguration:currentValue
-
-Inside :ref:`data-processor-process-each`, the item is additionally set as the
-content object's *current value*. Set :typoscript:`current = 1` as
-sub-property of the data source option to use it. This works for all
+:ref:`data-processor-iterable-to-array` receive the item currently being
+processed as the content object's *current value*. Set :typoscript:`current = 1`
+as sub-property of the data source option to use it. This works for all
 processors listed above, e.g. :typoscript:`dataSource.current`,
 :typoscript:`object.current` or :typoscript:`iterable.current`:
 
@@ -123,10 +116,12 @@ processors listed above, e.g. :typoscript:`dataSource.current`,
         dataProcessing {
             10 = object-access
             10 {
-                # Same as "object = contentObjectConfiguration:currentValue"
                 object.current = 1
                 path = publicUrl
                 as = url
             }
         }
     }
+
+Alternatively, the item can be referenced as
+:typoscript:`contentObjectConfiguration:currentValue`.

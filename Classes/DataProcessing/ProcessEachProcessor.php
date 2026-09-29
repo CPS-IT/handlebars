@@ -49,7 +49,7 @@ use TYPO3\CMS\Frontend;
  *       dataProcessing {
  *         10 = object-access
  *         10 {
- *           object = contentObjectConfiguration:currentValue
+ *           object.current = 1
  *           path = publicUrl
  *           as = url
  *         }
@@ -59,7 +59,7 @@ use TYPO3\CMS\Frontend;
  * }
  *
  * Each file reference resolved by the core "files" processor is made available to the nested
- * "dataProcessing" chain as "currentValue", so "object-access" can pull individual properties off it.
+ * "dataProcessing" chain as current value, so "object-access" can pull individual properties off it.
  * The per-item results are collected — keyed by the original array keys — under "processedFiles".
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>

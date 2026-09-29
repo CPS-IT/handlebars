@@ -125,8 +125,8 @@ Two mechanisms are available for each item, and can be combined:
 
 :typoscript:`dataProcessing`
     A standard nested :typoscript:`dataProcessing` chain (see
-    :ref:`data-processor-process-each-usage`), with the item exposed as
-    :typoscript:`currentValue`. Its result is merged with — and overrides —
+    :ref:`data-processor-process-each-usage`), with the item set as current
+    value. Its result is merged with — and overrides —
     whatever :typoscript:`variables` produced for the same item.
 
 ..  _data-processor-process-each-properties:

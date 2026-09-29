@@ -6,7 +6,7 @@ on:
 
 env:
   TYPO3_EXTENSION_KEY: handlebars
-  TYPO3_EXCLUDE_FROM_PACKAGING: packaging_exclude.php
+  TYPO3_EXCLUDE_FROM_PACKAGING: Build/release/packaging_exclude.php
   EXTENSION_ARTEFACT: handlebars_${{ github.ref_name }}.zip
 
 jobs:

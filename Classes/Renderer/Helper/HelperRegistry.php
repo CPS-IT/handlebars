@@ -146,8 +146,7 @@ final class HelperRegistry implements Core\SingletonInterface
         $methodName = null;
 
         // 4a. class method as string
-        /* @phpstan-ignore booleanAnd.rightAlwaysFalse */
-        if (is_string($function) && str_contains($function, '::')) {
+        if (is_string($function)) {
             [$className, $methodName] = explode('::', $function, 2);
         }
 
@@ -159,7 +158,6 @@ final class HelperRegistry implements Core\SingletonInterface
         }
 
         // Early return if either class name or method name cannot be resolved
-        /* @phpstan-ignore identical.alwaysFalse */
         if ($className === null || $methodName === null) {
             throw Exception\InvalidHelperException::forUnsupportedType($function);
         }

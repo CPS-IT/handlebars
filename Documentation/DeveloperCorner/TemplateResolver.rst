@@ -80,7 +80,7 @@ it searches each root path (highest priority first) for a matching file —
 for example :file:`Blog/List.hbs`.
 
 This resolver is used as the fallback inside :php:`FlatTemplateResolver`
-for any name that does not start with ``@``, so both resolution strategies
+for any name that does not start with `@`, so both resolution strategies
 are active at the same time.
 
 ..  _developer-corner-template-resolver-example:

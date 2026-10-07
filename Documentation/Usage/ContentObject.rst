@@ -141,7 +141,7 @@ templateRootPaths
 ..  note::
 
     The shorthand :typoscript:`templateRootPath` (singular) sets a single
-    path at key ``0``.
+    path at key `0`.
 
 ----
 
@@ -165,7 +165,7 @@ partialRootPaths
 ..  note::
 
     The shorthand :typoscript:`partialRootPath` (singular) sets a single
-    path at key ``0``.
+    path at key `0`.
 
 ----
 

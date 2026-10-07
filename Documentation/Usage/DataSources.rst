@@ -125,3 +125,27 @@ processors listed above, e.g. :typoscript:`dataSource.current`,
 
 Alternatively, the item can be referenced as
 :typoscript:`contentObjectConfiguration:currentValue`.
+
+..  _usage-data-sources-current-wrapped:
+
+Wrapped current values
+----------------------
+
+:typoscript:`stdWrap` functions expect the current value to be a string.
+Values which cannot be converted to strings, such as arrays or objects, would
+therefore break TypoScript such as :typoscript:`current = 1` or
+:typoscript:`if.isTrue.current = 1`. To prevent this, such values are wrapped
+in a :php:`CPSIT\Typo3Handlebars\DataProcessing\DataSource\CurrentValue`
+object before being provided as current value. Scalar values, :php:`null` and
+stringable objects (implementing :php:`\Stringable`) are provided as-is.
+
+For wrapped, non-stringable values, the following applies:
+
+*   Within :typoscript:`stdWrap`, the current value resolves to an empty
+    string (so e.g. :typoscript:`ifEmpty` applies).
+*   The :typoscript:`current = 1` sub-property of data source options (e.g.
+    :typoscript:`object.current`) resolves to the original, unwrapped value.
+*   Custom code reading the current value via
+    :php:`ContentObjectRenderer::getCurrentVal()` receives the wrapper and can
+    access the original value via its :php:`value` property, see
+    :ref:`developer-corner-data-source-aware-processor-current-value`.

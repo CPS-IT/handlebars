@@ -69,8 +69,10 @@ Processing individual items
 Each converted item is set as the content object's current value while a
 nested :typoscript:`dataProcessing` chain runs, so nested processors can
 reference it with :typoscript:`current = 1` (see
-:ref:`usage-data-sources-current`). This only happens when a nested chain is
-actually configured, so plain conversions are left untouched:
+:ref:`usage-data-sources-current`). Arrays and non-stringable objects are
+wrapped before being set as current value (see
+:ref:`usage-data-sources-current-wrapped`). This only happens when a nested
+chain is actually configured, so plain conversions are left untouched:
 
 ..  code-block:: typoscript
 

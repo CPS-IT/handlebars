@@ -287,6 +287,99 @@ final class ProcessEachProcessorTest extends TestingFramework\Core\Functional\Fu
     }
 
     #[Framework\Attributes\Test]
+    public function processProvidesObjectItemsAsWrappedCurrentValue(): void
+    {
+        $processorConfiguration = [
+            'data.' => [
+                'first' => new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
+            ],
+            'variables.' => [
+                'label' => 'TEXT',
+                'label.' => [
+                    'current' => '1',
+                    'ifEmpty' => 'empty',
+                ],
+            ],
+            'dataProcessing.' => [
+                '10' => 'object-access',
+                '10.' => [
+                    'object.' => [
+                        'current' => '1',
+                    ],
+                    'path' => 'name',
+                    'as' => 'name',
+                ],
+            ],
+        ];
+
+        // Objects cannot be converted to string, hence "ifEmpty" applies, but they are still
+        // accessible as unwrapped objects by data processors using "current = 1"
+        $expected = [
+            'result' => [
+                'first' => [
+                    'label' => 'empty',
+                    'name' => 'foo',
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processProvidesArrayItemsAsWrappedCurrentValue(): void
+    {
+        $processorConfiguration = [
+            'data.' => [
+                'first' => [
+                    'name' => 'foo',
+                ],
+            ],
+            'variables.' => [
+                'label' => 'TEXT',
+                'label.' => [
+                    'current' => '1',
+                    'ifEmpty' => 'empty',
+                ],
+            ],
+            'dataProcessing.' => [
+                '10' => 'process-variables',
+                '10.' => [
+                    'dataSource.' => [
+                        'current' => '1',
+                    ],
+                    'merge' => '1',
+                    'variables.' => [
+                        'name' => 'TEXT',
+                        'name.' => [
+                            'field' => 'name',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        // Arrays cannot be converted to string, hence "ifEmpty" applies, but they are still
+        // accessible as unwrapped arrays by data processors using "current = 1"
+        $expected = [
+            'result' => [
+                'first' => [
+                    'label' => 'empty',
+                    'name' => 'foo',
+                ],
+            ],
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, []),
+        );
+    }
+
+    #[Framework\Attributes\Test]
     public function processExposesEachItemAsValueToNestedDataProcessingChain(): void
     {
         $foo = new Tests\Functional\Fixtures\Classes\DummyObject('foo');

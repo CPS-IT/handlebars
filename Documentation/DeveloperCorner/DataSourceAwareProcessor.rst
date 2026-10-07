@@ -154,6 +154,26 @@ Example implementation
         }
     }
 
+..  _developer-corner-data-source-aware-processor-current-value:
+
+Accessing the current value
+===========================
+
+Arrays and objects provided as current value of the content object are
+wrapped in a :php:`CurrentValue` object, unless they implement
+:php:`\Stringable` (see :ref:`usage-data-sources-current-wrapped`). Unwrap
+it to access the original value:
+
+..  code-block:: php
+
+    use CPSIT\Typo3Handlebars\DataProcessing\DataSource\CurrentValue;
+
+    $currentValue = $contentObjectRenderer->getCurrentVal();
+
+    if ($currentValue instanceof CurrentValue) {
+        $currentValue = $currentValue->value;
+    }
+
 ..  _developer-corner-data-source-aware-processor-register:
 
 Registering the processor

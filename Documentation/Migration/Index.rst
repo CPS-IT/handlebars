@@ -6,8 +6,46 @@
 Migration
 =========
 
-This page lists required migration steps when upgrading to a new major version
-of the extension.
+This page lists required migration steps when upgrading to a new version of
+the extension.
+
+..  _version-1.1.0:
+
+Version 1.1.0
+=============
+
+..  _migration-1.1-process-variables-non-array-data:
+
+Non-array data in `process-variables`
+-------------------------------------
+
+If the payload resolved by :ref:`data-processor-process-variables` (e.g. via
+:typoscript:`dataSource`) is not an array, the current record's own field
+values are no longer used as a fallback. Instead, :typoscript:`variables` are
+processed against an empty record, and the payload is provided as the content
+object's current value (see :ref:`data-processor-process-variables-payload`).
+
+Variables using :typoscript:`field` in such a configuration now resolve to an
+empty value. Either convert the payload to an array beforehand (e.g. using a
+:typoscript:`preProcessing` processor), or reference the payload with
+:typoscript:`current = 1` instead.
+
+..  _migration-1.1-wrapped-current-values:
+
+Wrapped current values
+----------------------
+
+:ref:`data-processor-process-each`, :ref:`data-processor-iterable-to-array`
+and :ref:`data-processor-process-variables` now wrap arrays and objects which
+cannot be converted to strings in a :php:`CurrentValue` object before providing
+them as current value (see :ref:`usage-data-sources-current-wrapped`).
+TypoScript is not affected, apart from such values no longer causing errors in
+:typoscript:`stdWrap`.
+
+Custom PHP code reading :php:`ContentObjectRenderer::getCurrentVal()` within
+these processors (e.g. user functions or data source aware processors) must
+unwrap the value, see
+:ref:`developer-corner-data-source-aware-processor-current-value`.
 
 ..  _version-1.0.0:
 

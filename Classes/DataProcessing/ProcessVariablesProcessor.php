@@ -113,6 +113,7 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
      * @return array<string|int, mixed>
      * @throws Frontend\ContentObject\Exception\ContentRenderingException
      * @throws Exception\ConfiguredProcessorIsUnsupported
+     * @throws Exception\PathIsMissingInDataSource
      * @throws Exception\ReservedVariableCannotBeUsed
      */
     public function process(
@@ -156,9 +157,25 @@ final readonly class ProcessVariablesProcessor implements Frontend\ContentObject
         $as = $collection->resolve('as', DataSource\DataSource::ProcessorConfiguration);
 
         // Use temporary cObj for processing
+        $cObj = clone $cObj;
+
         if (is_array($data)) {
-            $cObj = clone $cObj;
             $cObj->start($data, $table);
+        } else {
+            // Non-array data (e.g. objects or scalar values) cannot be used for field lookups. Instead of
+            // falling back to the current record (which would mix data of different contexts), we start
+            // with an empty record and provide the resolved data as current value of the content object.
+            $this->logger->debug(
+                'Resolved data of type "{type}" is not an array and is therefore provided as current value while processing {table}:{uid}.',
+                [
+                    'type' => get_debug_type($data),
+                    'table' => $cObj->getCurrentTable(),
+                    'uid' => $collection->resolveCurrentUid(),
+                ],
+            );
+
+            $cObj->start([], $table);
+            $cObj->setCurrentVal(DataSource\CurrentValue::wrap($data));
         }
 
         // Early return if processing should be skipped according to a configured condition

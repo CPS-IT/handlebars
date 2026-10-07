@@ -89,8 +89,10 @@ Each file reference resolved by the core :typoscript:`files` processor is
 set as the content object's current value while the nested
 :typoscript:`dataProcessing` chain runs, so :typoscript:`object-access` can
 pull individual properties off it with :typoscript:`object.current = 1`
-(see :ref:`usage-data-sources-current`). The per-item results are collected — keyed by
-the original array keys — under :typoscript:`processedFiles`.
+(see :ref:`usage-data-sources-current`). Since file references cannot be
+converted to strings, they are wrapped before being set as current value (see
+:ref:`usage-data-sources-current-wrapped`). The per-item results are collected
+under :typoscript:`processedFiles` (keyed by the original array keys).
 
 ..  _data-processor-process-each-per-item:
 

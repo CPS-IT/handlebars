@@ -59,8 +59,9 @@ use TYPO3\CMS\Frontend;
  * }
  *
  * Each file reference resolved by the core "files" processor is made available to the nested
- * "dataProcessing" chain as current value, so "object-access" can pull individual properties off it.
- * The per-item results are collected — keyed by the original array keys — under "processedFiles".
+ * "dataProcessing" chain as current value (wrapped using {@see DataSource\CurrentValue}), so
+ * "object-access" can pull individual properties off it. The per-item results are collected
+ * under "processedFiles" (keyed by the original array keys).
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
@@ -124,7 +125,7 @@ final readonly class ProcessEachProcessor implements Frontend\ContentObject\Data
             // Process each variable (both "variables." as well as "dataProcessing." are respected)
             /** @var array-key $key */
             foreach ($data as $key => $value) {
-                $cObj->setCurrentVal($value);
+                $cObj->setCurrentVal(DataSource\CurrentValue::wrap($value));
 
                 // Process "variables."
                 if (is_array($variables)) {

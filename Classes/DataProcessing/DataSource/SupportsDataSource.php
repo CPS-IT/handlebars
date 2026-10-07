@@ -43,7 +43,14 @@ trait SupportsDataSource
         $returnCurrent = (bool)$collection->resolve($keyword . './current', DataSource::ProcessorConfiguration);
 
         if ($returnCurrent) {
-            return $contentObjectRenderer->getCurrentVal();
+            $currentValue = $contentObjectRenderer->getCurrentVal();
+
+            // Unwrap current value
+            if ($currentValue instanceof CurrentValue) {
+                $currentValue = $currentValue->value;
+            }
+
+            return $currentValue;
         }
 
         try {

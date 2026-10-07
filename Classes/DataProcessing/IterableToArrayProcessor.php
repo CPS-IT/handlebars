@@ -38,7 +38,8 @@ use TYPO3\CMS\Frontend;
  * "news" variable in the processed data and can be converted into a plain array for use
  * within the Handlebars template. Each converted item is set as current value of the
  * content object (and is additionally made available as "currentValue") and can be further
- * transformed using nested data processors:
+ * transformed using nested data processors. Arrays and non-stringable objects are wrapped
+ * using {@see DataSource\CurrentValue} before being set as current value:
  *
  * plugin.tx_news {
  *   handlebars {
@@ -125,7 +126,7 @@ final readonly class IterableToArrayProcessor implements Frontend\ContentObject\
 
             try {
                 foreach ($array as $key => $item) {
-                    $cObj->setCurrentVal($item);
+                    $cObj->setCurrentVal(DataSource\CurrentValue::wrap($item));
 
                     $array[$key] = $this->contentDataProcessor->process(
                         $cObj,

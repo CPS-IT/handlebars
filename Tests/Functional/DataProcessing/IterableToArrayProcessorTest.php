@@ -412,6 +412,43 @@ final class IterableToArrayProcessorTest extends TestingFramework\Core\Functiona
     }
 
     #[Framework\Attributes\Test]
+    public function processProvidesObjectItemsAsWrappedCurrentValueForNestedDataProcessing(): void
+    {
+        $processorConfiguration = [
+            'iterable' => 'processedData:someArray',
+            'as' => 'items',
+            'dataProcessing.' => [
+                '10' => 'process-variables',
+                '10.' => [
+                    'variables.' => [
+                        'label' => 'TEXT',
+                        'label.' => [
+                            'current' => '1',
+                            'ifEmpty' => 'empty',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $processedData = [
+            'someArray' => [
+                new Tests\Functional\Fixtures\Classes\DummyObject('foo'),
+            ],
+        ];
+
+        // Objects cannot be converted to string, hence "ifEmpty" applies
+        $expected = [
+            [
+                'label' => 'empty',
+            ],
+        ];
+
+        $actual = $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData);
+
+        self::assertSame($expected, $actual['items'] ?? null);
+    }
+
+    #[Framework\Attributes\Test]
     public function processRestoresCurrentContentObjectValueAfterProcessing(): void
     {
         $this->contentObjectRenderer->setCurrentVal('original');

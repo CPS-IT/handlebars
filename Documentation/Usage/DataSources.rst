@@ -101,7 +101,9 @@ Using the current value
 
 Processors that run nested inside :ref:`data-processor-process-each` or
 :ref:`data-processor-iterable-to-array` receive the item currently being
-processed as the content object's *current value*. Set :typoscript:`current = 1`
+processed as the content object's *current value*. The same applies to
+:ref:`data-processor-process-variables` if its resolved payload is not an
+array. Set :typoscript:`current = 1`
 as sub-property of the data source option to use it. This works for all
 processors listed above, e.g. :typoscript:`dataSource.current`,
 :typoscript:`object.current` or :typoscript:`iterable.current`:

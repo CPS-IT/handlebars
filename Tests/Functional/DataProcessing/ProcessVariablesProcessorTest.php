@@ -245,6 +245,126 @@ final class ProcessVariablesProcessorTest extends TestingFramework\Core\Function
     }
 
     #[Framework\Attributes\Test]
+    public function processProvidesNonArrayDataAsCurrentValue(): void
+    {
+        $this->contentObjectRenderer->start(['uid' => 123, 'header' => 'outer'], 'tt_content');
+
+        $processorConfiguration = [
+            'dataSource' => 'processedData:foo',
+            'variables.' => [
+                'foo' => 'TEXT',
+                'foo.' => [
+                    'current' => '1',
+                ],
+                'header' => 'TEXT',
+                'header.' => [
+                    'field' => 'header',
+                ],
+            ],
+        ];
+        $processedData = [
+            'foo' => 'baz',
+        ];
+
+        // "header" is empty (and therefore omitted), since the current record must not be used
+        $expected = [
+            'foo' => 'baz',
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+        self::assertTrue(
+            $this->logger->hasDebug([
+                'message' => 'Resolved data of type "{type}" is not an array and is therefore provided as current value while processing {table}:{uid}.',
+                'context' => [
+                    'type' => 'string',
+                    'table' => 'tt_content',
+                    'uid' => 123,
+                ],
+            ]),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processProvidesStringableObjectDataAsCurrentValue(): void
+    {
+        $this->contentObjectRenderer->start(['uid' => 123, 'header' => 'outer'], 'tt_content');
+
+        $processorConfiguration = [
+            'dataSource' => 'processedData:foo',
+            'variables.' => [
+                'foo' => 'TEXT',
+                'foo.' => [
+                    'current' => '1',
+                    'wrap' => '<b>|</b>',
+                ],
+                'header' => 'TEXT',
+                'header.' => [
+                    'field' => 'header',
+                ],
+            ],
+        ];
+        $processedData = [
+            'foo' => new class implements \Stringable {
+                public function __toString(): string
+                {
+                    return 'baz';
+                }
+            },
+        ];
+
+        // "header" is empty (and therefore omitted), since the current record must not be used
+        $expected = [
+            'foo' => '<b>baz</b>',
+        ];
+
+        self::assertSame(
+            $expected,
+            $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData),
+        );
+    }
+
+    #[Framework\Attributes\Test]
+    public function processProvidesObjectDataAsWrappedCurrentValue(): void
+    {
+        $this->contentObjectRenderer->start(['uid' => 123, 'header' => 'outer'], 'tt_content');
+        $this->contentObjectRenderer->setCurrentVal('outer');
+
+        $object = new Tests\Functional\Fixtures\Classes\DummyObject('foo');
+        $processorConfiguration = [
+            'dataSource' => 'processedData:foo',
+            'variables.' => [
+                'foo' => 'TEXT',
+                'foo.' => [
+                    'current' => '1',
+                    'ifEmpty' => 'empty',
+                ],
+                'header' => 'TEXT',
+                'header.' => [
+                    'field' => 'header',
+                ],
+            ],
+            'postProcessing.' => [
+                '10' => Tests\Functional\Fixtures\Classes\CurrentValueExposingPostProcessor::class,
+            ],
+        ];
+        $processedData = [
+            'foo' => $object,
+        ];
+
+        $actual = $this->subject->process($this->contentObjectRenderer, [], $processorConfiguration, $processedData);
+
+        // Object cannot be converted to string, hence "ifEmpty" applies. "header" is empty
+        // (and therefore omitted), since the current record must not be used.
+        self::assertSame('empty', $actual['foo'] ?? null);
+        self::assertArrayNotHasKey('header', $actual);
+        self::assertInstanceOf(Src\DataProcessing\DataSource\CurrentValue::class, $actual['currentValue'] ?? null);
+        self::assertSame($object, $actual['currentValue']->value);
+    }
+
+    #[Framework\Attributes\Test]
     public function processDoesNothingIfGivenConditionDoesNotMatch(): void
     {
         $this->contentObjectRenderer->data = [

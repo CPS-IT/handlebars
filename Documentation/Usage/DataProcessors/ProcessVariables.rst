@@ -41,8 +41,28 @@ entry resolves against the current content element's own record. Configure
 :typoscript:`dataSource` (or an inline :typoscript:`data` array) to process
 a different record or array instead — see :ref:`usage-data-sources-payload`
 for how it is resolved, and :ref:`usage-data-sources-current` for
-:typoscript:`dataSource.current`. If the resolved payload is not an array,
-it is ignored and the current record's own field values are used instead.
+:typoscript:`dataSource.current`.
+
+If the resolved payload is not an array (e.g. an object or a scalar value),
+it cannot be used for field lookups. Instead, :typoscript:`variables` are
+processed against an empty record, and the payload is provided as the
+content object's *current value*, reachable via :typoscript:`current = 1`:
+
+..  code-block:: typoscript
+
+    10 = process-variables
+    10 {
+        dataSource = processedData:title
+        variables {
+            title = TEXT
+            title.current = 1
+        }
+    }
+
+Objects which cannot be converted to strings are provided in a wrapped form,
+see :ref:`usage-data-sources-current-wrapped`. The current record's own field
+values are deliberately *not* used as a fallback, to avoid mixing data of
+different records.
 
 ..  _data-processor-process-variables-standalone:
 

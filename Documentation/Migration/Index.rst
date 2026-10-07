@@ -40,7 +40,9 @@ and :ref:`data-processor-process-variables` now wrap arrays and objects which
 cannot be converted to strings in a :php:`CurrentValue` object before providing
 them as current value (see :ref:`usage-data-sources-current-wrapped`).
 TypoScript is not affected, apart from such values no longer causing errors in
-:typoscript:`stdWrap`.
+:typoscript:`stdWrap`. Within :typoscript:`stdWrap`, arrays now resolve to a
+comma-separated list of their scalar values and stringable objects, all other
+wrapped values resolve to an empty string.
 
 Custom PHP code reading :php:`ContentObjectRenderer::getCurrentVal()` within
 these processors (e.g. user functions or data source aware processors) must

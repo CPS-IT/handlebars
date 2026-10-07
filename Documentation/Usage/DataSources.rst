@@ -143,8 +143,11 @@ stringable objects (implementing :php:`\Stringable`) are provided as-is.
 
 For wrapped, non-stringable values, the following applies:
 
-*   Within :typoscript:`stdWrap`, the current value resolves to an empty
-    string (so e.g. :typoscript:`ifEmpty` applies).
+*   Within :typoscript:`stdWrap`, arrays resolve to a comma-separated list
+    of their scalar values and stringable objects (e.g. `foo,bar`). Nested
+    arrays, non-stringable objects and :php:`null` values are skipped. All
+    other values resolve to an empty string (so e.g. :typoscript:`ifEmpty`
+    applies).
 *   The :typoscript:`current = 1` sub-property of data source options (e.g.
     :typoscript:`object.current`) resolves to the original, unwrapped value.
 *   Custom code reading the current value via

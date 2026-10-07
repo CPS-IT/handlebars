@@ -74,7 +74,50 @@ final class CurrentValueTest extends TestingFramework\Core\Unit\UnitTestCase
 
         self::assertInstanceOf(Src\DataProcessing\DataSource\CurrentValue::class, $actual);
         self::assertSame($value, $actual->value);
-        self::assertSame('', (string)$actual);
+    }
+
+    /**
+     * @return \Generator<string, array{array<mixed>, string}>
+     */
+    public static function toStringReturnsCommaSeparatedListOfStringableArrayValuesDataProvider(): \Generator
+    {
+        yield 'empty array' => [[], ''];
+        yield 'list' => [['foo', 'bar'], 'foo,bar'];
+        yield 'associative array' => [['foo' => 'bar', 'baz' => 42], 'bar,42'];
+        yield 'mixed values' => [['foo', ['baz'], null, new \stdClass(), true, 1.5, 'bar'], 'foo,1,1.5,bar'];
+        yield 'stringable objects' => [
+            [
+                'foo',
+                new class implements \Stringable {
+                    public function __toString(): string
+                    {
+                        return 'baz';
+                    }
+                },
+                'bar',
+            ],
+            'foo,baz,bar',
+        ];
+    }
+
+    /**
+     * @param array<mixed> $value
+     */
+    #[Framework\Attributes\Test]
+    #[Framework\Attributes\DataProvider('toStringReturnsCommaSeparatedListOfStringableArrayValuesDataProvider')]
+    public function toStringReturnsCommaSeparatedListOfStringableArrayValues(array $value, string $expected): void
+    {
+        $subject = new Src\DataProcessing\DataSource\CurrentValue($value);
+
+        self::assertSame($expected, (string)$subject);
+    }
+
+    #[Framework\Attributes\Test]
+    public function toStringReturnsEmptyStringForNonStringableObject(): void
+    {
+        $subject = new Src\DataProcessing\DataSource\CurrentValue(new \stdClass());
+
+        self::assertSame('', (string)$subject);
     }
 
     #[Framework\Attributes\Test]

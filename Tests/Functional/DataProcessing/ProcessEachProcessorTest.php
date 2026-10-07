@@ -362,12 +362,12 @@ final class ProcessEachProcessorTest extends TestingFramework\Core\Functional\Fu
             ],
         ];
 
-        // Arrays cannot be converted to string, hence "ifEmpty" applies, but they are still
-        // accessible as unwrapped arrays by data processors using "current = 1"
+        // Arrays are converted to a comma-separated list of their scalar values, but they are
+        // still accessible as unwrapped arrays by data processors using "current = 1"
         $expected = [
             'result' => [
                 'first' => [
-                    'label' => 'empty',
+                    'label' => 'foo',
                     'name' => 'foo',
                 ],
             ],

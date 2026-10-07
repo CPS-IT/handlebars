@@ -25,8 +25,10 @@ use CPSIT\Typo3Handlebars\Utility;
  * stdWrap functions (e.g. "current = 1") expect the current value to be a string
  * and fail for values which cannot be converted to strings, such as objects. This
  * wrapper provides a safe string representation, while the original value remains
- * accessible. Stringable values (scalar values, null, and stringable objects) are
- * not wrapped.
+ * accessible. Arrays are represented as comma-separated list of their stringable
+ * values (except null), all other values which cannot be converted to strings are
+ * represented as empty string. Stringable values (scalar values, null, and stringable
+ * objects) are not wrapped.
  *
  * @author Elias Häußler <e.haeussler@familie-redlich.de>
  * @license GPL-2.0-or-later
@@ -51,6 +53,16 @@ final readonly class CurrentValue implements \Stringable
     {
         if (Utility\StringUtility::isStringable($this->value)) {
             return (string)$this->value;
+        }
+
+        if (is_array($this->value)) {
+            return implode(
+                ',',
+                array_filter(
+                    $this->value,
+                    static fn(mixed $item) => $item !== null && Utility\StringUtility::isStringable($item),
+                ),
+            );
         }
 
         return '';

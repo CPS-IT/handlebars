@@ -19,7 +19,7 @@
 		"security": "https://github.com/CPS-IT/handlebars/blob/main/SECURITY.md"
 	},
 	"require": {
-		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0 || ~8.6.0",
 		"ext-json": "*",
 		"cuyz/valinor": "^2.6",
 		"devtheorem/php-handlebars": "^2.0",
